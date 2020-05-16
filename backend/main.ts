@@ -4,7 +4,9 @@ import path from "path";
 import expressSession from 'express-session'
 import bodyParser from "body-parser";
 import multer from "multer"; // auto change the photo filename and put photo file to upload folder
+//@ts-ignore
 import * as services from './services';
+//@ts-ignore
 import * as routers from './routes';
 import cors from 'cors'
 
@@ -18,6 +20,7 @@ app.use(cors({
   }))
 /* Database configuration */
 const knexConfig = require("./knexfile");
+//@ts-ignore
 const knex = Knex(knexConfig[process.env.NODE_ENV || "development"]);
 
 /* Multer configuration */
@@ -32,7 +35,7 @@ const storage = multer.diskStorage({
         ); // category and dish refer to html form name tag
     },
 });
-
+//@ts-ignore
 const upload = multer({ storage: storage });
 
 
@@ -59,6 +62,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* Routes */
+//@ts-ignore
 const API_VERSION = "/api/v1";
 
 
