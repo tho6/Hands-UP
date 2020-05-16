@@ -6,9 +6,16 @@ import bodyParser from "body-parser";
 import multer from "multer"; // auto change the photo filename and put photo file to upload folder
 import * as services from './services';
 import * as routers from './routes';
+import cors from 'cors'
 
 const app = express();
 
+/* Enable cors */
+app.use(cors({
+    origin: [
+      'http://localhost:3000',
+    ]
+  }))
 /* Database configuration */
 const knexConfig = require("./knexfile");
 const knex = Knex(knexConfig[process.env.NODE_ENV || "development"]);
