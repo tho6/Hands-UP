@@ -7,7 +7,7 @@ import multer from "multer"; // auto change the photo filename and put photo fil
 //@ts-ignore
 import * as services from './services';
 //@ts-ignore
-import * as routers from './routes';
+import * as routers from './routers';
 import cors from 'cors'
 
 const app = express();
