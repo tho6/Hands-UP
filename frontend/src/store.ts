@@ -2,6 +2,8 @@ import { createStore, combineReducers, compose, applyMiddleware, AnyAction } fro
 import { createBrowserHistory } from 'history';
 import { RouterState, connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk, { ThunkDispatch as OldThunkDispatch } from 'redux-thunk';
+import { QuestionsActions } from './redux/questions/actions';
+import { QuestionState, questionsReducer } from './redux/questions/reducers';
 
 
 declare global {
@@ -11,17 +13,19 @@ declare global {
   }
 }
 
-export type RootAction = AnyAction;
+export type RootAction = QuestionsActions;
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 
 export const history = createBrowserHistory();
 
 export interface RootState {
+  questions: QuestionState
   router: RouterState
 }
 
 const reducer = combineReducers<RootState>({
+  questions: questionsReducer,
   router: connectRouter(history)
 })
 
