@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IQuestion } from "../../../models/model";
+import { IQuestion } from "../models/IQuestion";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import useReactRouter from "use-react-router";
@@ -8,11 +8,12 @@ import Question from "./Question";
 interface IQuestionPageProps {
   user: { id: number; isHost: boolean; name: string;};
   canUploadFiles: boolean;
-  rate: number;
+  rate: number; //per 10s
   isModerate: boolean;
 }
 
 const QuestionPage: React.FC<IQuestionPageProps> = (props) => {
+  //get room config
   const router = useReactRouter<{ id: string }>();
   const meetingId = router.match.params.id;
   const questionIds = useSelector((rootState: RootState) =>

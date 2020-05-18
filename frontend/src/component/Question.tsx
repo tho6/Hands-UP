@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IQuestion } from "../../../models/model";
+import { IQuestion } from "../models/IQuestion";
 import "./question.scss";
 import YesNoModal from "./YesNoModal";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const [formState, { textarea }] = useFormState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const canEdit =
     props.user.isHost || props.user.id === props.question.questioner.id
       ? true
@@ -98,7 +99,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 >
                   <i className="fas fa-trash-alt"></i>
                 </div>
-                <div className="p-2 mx-sm-3" onClick={() => setIsEdit(false)}>
+                <div className="p-2 mx-sm-3" onClick={() => setShowCancelModal(true)}>
                   <i className="fas fa-ban"></i>
                 </div>
               </>
@@ -136,6 +137,19 @@ const Question: React.FC<IQuestionProps> = (props) => {
           }}
           no={() => {
             setShowDeleteModal(false);
+          }}
+        />
+      )}
+      {showCancelModal && (
+        <YesNoModal
+          title="Discard Changes"
+          message="Are you sure you want to discard your changes?"
+          yes={() => {
+            setShowCancelModal(false);
+            setIsEdit(false);
+          }}
+          no={() => {
+            setShowCancelModal(false);
           }}
         />
       )}
