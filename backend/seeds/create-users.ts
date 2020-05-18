@@ -14,27 +14,27 @@ export async function seed(knex: Knex): Promise<any> {
 
     const trx = await knex.transaction();
     try {
-        await trx.raw(/*sql*/ `TRUNCATE users RESTART IDENTITY CASCADE`);
+        await trx.raw(/*sql*/ `TRUNCATE users RESTART IDENTITY`);
 
         await trx("users").insert([{
             name: "ivan",
             email: "ivan@gmail.com",
-            password: "test"
+            google_id: 1        
         },
         {
             name: "peter",
             email: "peter@hibye.com",
-            password: "test"
+            google_id: 2        
         },
         {
-            name:'guest',
-            email: "guest1@guest.com",
-            password: "test"
+            name:'mary',
+            email: "mary1@hey.com",
+            google_id: 3
         }])
-        trx.commit();
+        await trx.commit();
     } catch (error) {
 
         console.log('[seed] Error\n' + error)
-        trx.rollback();
+        await trx.rollback();
     }
 };
