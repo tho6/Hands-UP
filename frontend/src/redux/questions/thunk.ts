@@ -1,14 +1,16 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestionPlainText } from "./actions";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionPlainTextSuccess } from "../../fakeResponse";
 
 // Thunk Action
 export function fetchQuestions(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try{
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions?meetingId=${meetingId}`, {
-                credentials: "include"
-            }); // GET + 'memos'
-            const result = await res.json();
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions?meetingId=${meetingId}`, {
+            //     credentials: "include"
+            // }); // GET + 'memos'
+            // const result = await res.json();
+            const result = tFetchQuestions;
             if (result.status) {
                 dispatch(loadQuestions(meetingId, result.message));
             } else {
@@ -23,11 +25,12 @@ export function fetchQuestions(meetingId: number) {
 export function deleteQuestion(questionId: number, meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
-                method: 'DELETE',
-                credentials: "include"
-            });
-            const result = await res.json();
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
+            //     method: 'DELETE',
+            //     credentials: "include"
+            // });
+            // const result = await res.json();
+            const result = tDeleteQuestionSuccess;
             if (result.status) {
                 dispatch(successfullyDeleteQuestion(questionId, meetingId));
             } else {
@@ -41,15 +44,16 @@ export function deleteQuestion(questionId: number, meetingId: number) {
 export function editQuestionPlainText(questionId: number, content:string) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
-                method: 'PUT',
-                credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({content})
-            });
-            const result = await res.json();
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
+            //     method: 'PUT',
+            //     credentials: "include",
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //       },
+            //       body: JSON.stringify({content})
+            // });
+            //const result = await res.json();
+            const result = tEditQuestionPlainTextSuccess;
             if (result.status) {
                 dispatch(successfullyUpdateQuestionPlainText(questionId, content));
             } else {

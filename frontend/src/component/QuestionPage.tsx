@@ -5,7 +5,6 @@ import { RootState } from "../store";
 import useReactRouter from "use-react-router";
 import Question from "./Question";
 import { fetchRoomInformation, restoreLoginInRoom } from "../redux/rooms/thunk";
-import { testingroomInformation, testingquestion, testinguserInformation } from "../testing";
 
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string }>();
@@ -17,24 +16,23 @@ const QuestionPage: React.FC = () => {
   const questions = useSelector((rootState: RootState) =>
     questionIds?.map((id) => rootState.questions.questions[`${id}`])
   );
-  // const roomInformation = useSelector(
-  //   (rootState: RootState) =>
-  //     rootState.roomsInformation.roomsInformation[meetingId]
-  // );
-  // const userInformation = useSelector(
-  //   (rootState: RootState) => rootState.roomsInformation.userInformation
-  // );
+  const roomInformation = useSelector(
+    (rootState: RootState) =>
+      rootState.roomsInformation.roomsInformation[meetingId]
+  );
+  const userInformation = useSelector(
+    (rootState: RootState) => rootState.roomsInformation.userInformation
+  );
 
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(fetchRoomInformation(parseInt(meetingId)));
-  // }, [dispatch, roomInformation]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchRoomInformation(parseInt(meetingId)));
+  }, [dispatch, roomInformation]);
 
-  // useEffect(() => {
-  //   dispatch(restoreLoginInRoom(parseInt(meetingId), true));
-  // }, [dispatch]);
- const roomInformation = testingroomInformation;
- const userInformation = testinguserInformation;
+  useEffect(() => {
+    dispatch(restoreLoginInRoom(parseInt(meetingId), true));
+  }, [dispatch]);
+
   return (
     <div>
       <div>
