@@ -1,4 +1,4 @@
-import { IQuestion } from "../../../../models/model";
+import { IQuestion } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
