@@ -25,5 +25,4 @@ export type file = {
 export type questioner = {
     id:number;
     name:string;
-    isHost:boolean;
 }

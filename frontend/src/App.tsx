@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
        <Route path="/questions/room/:id" exact>
-      <QuestionPage user={{id:1, name:'Anonymous', isHost:false}} canUploadFiles={false} rate={10} isModerate={false}/>
+      <QuestionPage />
        </Route>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

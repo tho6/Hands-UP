@@ -3,12 +3,16 @@ import { IQuestion } from "../models/IQuestion";
 import "./question.scss";
 import YesNoModal from "./YesNoModal";
 import { useDispatch } from "react-redux";
-import { deleteQuestion, editQuestionPlainText } from "../redux/questions/thunk";
+import {
+  deleteQuestion,
+  editQuestionPlainText,
+} from "../redux/questions/thunk";
 import { useFormState } from "react-use-form-state";
+import { IUserQ, IGuest } from "../models/IUserQ";
 
 interface IQuestionProps {
   question: IQuestion;
-  user: { id: number; isHost: boolean; name: string };
+  user: (IUserQ & IGuest) | null;
   canUploadFiles: boolean;
   answering: boolean;
 }
@@ -19,10 +23,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const canEdit =
-    props.user.isHost || props.user.id === props.question.questioner.id
-      ? true
-      : false;
+  const {user, question, canUploadFiles, answering} = props
+  const canEdit = user?.guestId === question.questioner.id;
   const dispatch = useDispatch();
 
   return (
@@ -31,7 +33,10 @@ const Question: React.FC<IQuestionProps> = (props) => {
         <div className="d-flex question-content-area">
           <div className="content text-wrap p-2">
             {isEdit ? (
-              <textarea className='p-2 rounded' {...textarea("content")}></textarea>
+              <textarea
+                className="p-2 rounded"
+                {...textarea("content")}
+              ></textarea>
             ) : (
               props.question.content
             )}
@@ -86,9 +91,12 @@ const Question: React.FC<IQuestionProps> = (props) => {
             <div className="p-2 mx-sm-3">{props.question.questioner.name}</div>
             {isEdit && (
               <>
-                <div className="p-2 mx-sm-3" onClick={()=>{
-                  setShowSaveModal(true);
-                }}>
+                <div
+                  className="p-2 mx-sm-3"
+                  onClick={() => {
+                    setShowSaveModal(true);
+                  }}
+                >
                   <i className="fas fa-cloud-upload-alt"></i>
                 </div>
                 <div
@@ -99,7 +107,10 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 >
                   <i className="fas fa-trash-alt"></i>
                 </div>
-                <div className="p-2 mx-sm-3" onClick={() => setShowCancelModal(true)}>
+                <div
+                  className="p-2 mx-sm-3"
+                  onClick={() => setShowCancelModal(true)}
+                >
                   <i className="fas fa-ban"></i>
                 </div>
               </>
@@ -108,7 +119,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
               <div
                 className="p-2 mx-sm-3"
                 onClick={() => {
-                  formState.setField('content',props.question.content) 
+                  formState.setField("content", props.question.content);
                   setIsEdit(true);
                 }}
               >
@@ -153,13 +164,13 @@ const Question: React.FC<IQuestionProps> = (props) => {
           }}
         />
       )}
-        {showSaveModal && (
+      {showSaveModal && (
         <YesNoModal
           title="Save"
           message="Save Changes?"
           yes={() => {
-            if(!formState.values.content.trim()){
-              window.alert('Question cannot be empty!');
+            if (!formState.values.content.trim()) {
+              window.alert("Question cannot be empty!");
               return;
             }
             dispatch(

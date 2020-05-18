@@ -1,34 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IQuestion } from "../models/IQuestion";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import useReactRouter from "use-react-router";
 import Question from "./Question";
+import { fetchRoomInformation, restoreLoginInRoom } from "../redux/rooms/thunk";
+import { testingroomInformation, testingquestion, testinguserInformation } from "../testing";
 
-interface IQuestionPageProps {
-  user: { id: number; isHost: boolean; name: string;};
-  canUploadFiles: boolean;
-  rate: number; //per 10s
-  isModerate: boolean;
-}
-
-const QuestionPage: React.FC<IQuestionPageProps> = (props) => {
-  //get room config
+const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string }>();
   const meetingId = router.match.params.id;
-  const questionIds = useSelector((rootState: RootState) =>
-    meetingId ? rootState.questions.questionsByMeetingId[meetingId] : null
+  const questionIds = useSelector(
+    (rootState: RootState) =>
+      rootState.questions.questionsByMeetingId[meetingId]
   );
   const questions = useSelector((rootState: RootState) =>
     questionIds?.map((id) => rootState.questions.questions[`${id}`])
   );
-  return (<div>
+  // const roomInformation = useSelector(
+  //   (rootState: RootState) =>
+  //     rootState.roomsInformation.roomsInformation[meetingId]
+  // );
+  // const userInformation = useSelector(
+  //   (rootState: RootState) => rootState.roomsInformation.userInformation
+  // );
+
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchRoomInformation(parseInt(meetingId)));
+  // }, [dispatch, roomInformation]);
+
+  // useEffect(() => {
+  //   dispatch(restoreLoginInRoom(parseInt(meetingId), true));
+  // }, [dispatch]);
+ const roomInformation = testingroomInformation;
+ const userInformation = testinguserInformation;
+  return (
     <div>
-     {questions?.map((question, i)=>{
-       return  <Question key={question.id} user={props.user} canUploadFiles={props.canUploadFiles} question={question} answering={i===0?true:false}/>
-     })}
+      <div>
+        {questions?.map((question, i) => {
+          return (
+            <Question
+              key={question.id}
+              user={userInformation.user}
+              canUploadFiles={roomInformation.canUploadFiles}
+              question={question}
+              answering={i === 0 ? true : false}
+            />
+          );
+        })}
+      </div>
     </div>
-  </div>)
+  );
 };
 
 export default QuestionPage;
