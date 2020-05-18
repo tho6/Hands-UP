@@ -14,26 +14,19 @@ export async function seed(knex: Knex): Promise<any> {
 
     const trx = await knex.transaction();
     try {
-        await trx.raw(/*sql*/ `TRUNCATE users RESTART IDENTITY`);
+        await trx.raw(/*sql*/ `TRUNCATE guests RESTART IDENTITY`);
 
-        await trx("users").insert([{
-            name: "ivan",
-            email: "ivan@gmail.com",
-            google_id: 1        
+        await trx("guests").insert([{
+            name: "guest1"    
         },
         {
-            name: "peter",
-            email: "peter@hibye.com",
-            google_id: 2        
+            name: "guest2"  
         },
         {
-            name:'mary',
-            email: "mary1@hey.com",
-            google_id: 3
+            name:'guest3'
         }])
         await trx.commit();
     } catch (error) {
-
         console.log('[seed] Error\n' + error)
         await trx.rollback();
     }
