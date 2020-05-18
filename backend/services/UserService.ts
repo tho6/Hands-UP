@@ -11,11 +11,10 @@ export class UserService {
             email,
             google_id: googleId
         }).returning('id')
-        console.log(result[0])
+        // console.log(result[0])
         return result[0]
         
     }
-
     //get users
 
     getAllUsers = async () => {
@@ -34,7 +33,7 @@ export class UserService {
                 /*sql*/ `SELECT id, name, email, google_id as "googleId"
                         FROM users 
                         WHERE id = ANY(?)`, [ids])
-            console.log(result.rows)
+            // console.log(result.rows)
             return result.rows
 
         } catch (error) {

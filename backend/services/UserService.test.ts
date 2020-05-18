@@ -163,7 +163,7 @@ describe('testing User Service', ()=>{
 
     // ------------------------ END getUserByEmail ------------------------
 
-    // ------------------------ START getUserByID ------------------------
+    // ------------------------ START getUserByGoogleID ------------------------
     it('get user by google ID - one user', async ()=>{
         const googleId = ["1"]
         const result = [{
@@ -206,7 +206,7 @@ describe('testing User Service', ()=>{
         expect(serviceResult).toEqual([]);
     })
 
-    // ------------------------ END getUserByID ------------------------
+    // ------------------------ END getUserByGoogleID ------------------------
 
     // ------------------------ START creatUser ------------------------
 
