@@ -335,9 +335,9 @@ describe('testing User Service', ()=>{
             email: 'testing@gmail.com',
             googleId: 'testGoogleId'
         }]
-        const upadtedRows = await userService.updateUserById(updateForms)
+        const updatedRows = await userService.updateUserById(updateForms)
         // const serviceResult = await userService.getUserById([999])
-        expect(upadtedRows).toEqual(0)
+        expect(updatedRows).toEqual(0)
     })
 
     it('update user by ID - not providing GoogleID', async()=>{

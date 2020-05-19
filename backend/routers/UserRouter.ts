@@ -10,8 +10,8 @@ export class UserRouter {
         const router = express.Router();
         router.get('/all', this.getAllUsers)
         router.get('/:paramsArray', this.getUsers)
-        // router.post()
-        // router.put()
+        router.delete('/', this.deleteUsers)
+        router.put('/', this.updateUsers)
         return router
     }
     //get all users

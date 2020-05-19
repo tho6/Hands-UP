@@ -74,13 +74,13 @@ export class GuestService {
     }
 
     //update guest
-    updateUserById = async (updateForms: GuestForm[]) => {
+    updateGuestById = async (updateForms: GuestForm[]) => {
         if (updateForms.length === 0) throw new RangeError("Update array is empty")
         const trx = await this.knex.transaction();
         let updated = 0
         try {
             for (const updateForm of updateForms){
-                const updatedRows = await this.knex.raw(/*SQL*/`WITH updated as (UPDATE users SET
+                const updatedRows = await this.knex.raw(/*SQL*/`WITH updated as (UPDATE guests SET
                                 name = ?
                                 WHERE id = ? RETURNING *)
                                 SELECT count(*) FROM updated`,
