@@ -4,3 +4,4 @@ node_modules
 456.png
 testing.ts
 backup
+.prettierrc

@@ -10,17 +10,17 @@ export const tFetchRoomInformation = {
 }
 export const tLoginAsGuest = {
     status: true, message: 'fakeToken'
-    
+
 }
 export const tUserIsNotAHost = {
-    status: true, message: {userId:1, isHost:false, name:'im not a host'}
-    
+    status: true, message: { userId: 1, isHost: false, name: 'im not a host' }
+
 }
 export const tCurrentGuest = {
-    status: true, message: {guestId:1, name:'Anonymous'}
-    
+    status: true, message: { guestId: 1, name: 'Anonymous' }
+
 }
-export const tFetchQuestions = {
+export const tFetchQuestions = {//load questions at first
     status: true, message: [{
         id: 1,
         questioner: {
@@ -30,16 +30,35 @@ export const tFetchQuestions = {
         content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
         likes: 10,
         replies: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        isEdit: false,
         files: [],
         meetingId: 1,
         isHide: false,
         isAnswered: false,
-        isModerate: false
+        isModerate: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
     }]
 }
-export const tDeleteQuestionSuccess = {status: true, message:''}
-export const tEditQuestionPlainTextSuccess = {status: true, message:''}
+export const tNewReply = {//add reply
+    status: true, message: {
+        id: 1,
+        guestId: 1,
+        guestName: 'Anonymous',
+        content: 'string string',
+        questionId: 1,
+        isEdit: false
+    }
+}
+export const tUpdateReply = {//add reply
+    status: true, message: {
+        questionId: 1,
+        replyId: 1,
+        content: 'update reply'
+    }
+}
+export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId:1 } }
+export const tDeleteQuestionSuccess = { status: true, message: { meetingId: 1, questionId: 1 } }
+export const tEditQuestionPlainTextSuccess = { status: true, message: { content: 'string string string', questionId: 1 } }
 export const tUserToken = null;
 export const tGuestToken = null;
