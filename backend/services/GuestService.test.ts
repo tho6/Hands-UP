@@ -12,8 +12,8 @@ describe('testing Guest Service', () => {
         guestService = new GuestService(knex)
     })
 
-    afterAll(() => {
-        knex.destroy();
+    afterAll(async () => {
+        await knex.destroy();
     })
 
     // ------------------------ START getGuestByID ------------------------

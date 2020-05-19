@@ -1,7 +1,7 @@
 import Knex from "knex";
 import express from "express";
 import path from "path";
-import expressSession from 'express-session'
+// import expressSession from 'express-session'
 import bodyParser from "body-parser";
 import multer from "multer"; // auto change the photo filename and put photo file to upload folder
 //@ts-ignore
@@ -9,6 +9,10 @@ import * as services from './services';
 //@ts-ignore
 import * as routers from './routers';
 import cors from 'cors'
+import { UserService } from "./services/UserService";
+import { UserRouter } from "./routers/UserRouter";
+
+
 
 const app = express();
 
@@ -40,19 +44,21 @@ const upload = multer({ storage: storage });
 
 
 /* Services */
+const userService = new UserService(knex);
+
 
 
 /* Routers */
-
+const userRouter = new UserRouter(userService);
 
 /* Session */
-app.use(
-    expressSession({
-        secret: 'project 3',
-        resave: false,
-        saveUninitialized: false,
-    })
-);
+// app.use(
+//     expressSession({
+//         secret: 'project 3',
+//         resave: false,
+//         saveUninitialized: false,
+//     })
+// );
 
 /* Serve files */
 app.use(express.static(path.join(__dirname, "uploads")));
@@ -64,6 +70,7 @@ app.use(bodyParser.json());
 /* Routes */
 //@ts-ignore
 const API_VERSION = "/api/v1";
+app.use('/user', userRouter.router())
 
 
 /* Listening port */

@@ -1,0 +1,14 @@
+@backend_url = {{$dotenv BACKEND_URL}}
+
+###
+GET {{backend_url}}/user/1,2,3,4
+
+###
+GET http://localhost:8080/user/1
+
+###
+GET {{backend_url}}/user/1?getBy=id
+
+###
+# get all users
+GET {{backend_url}}/user/all

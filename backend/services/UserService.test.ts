@@ -1,7 +1,7 @@
 import { seed } from '../seeds/create-users'
 import Knex from 'knex'
 import { UserService } from './UserService';
-import { UserForm } from './models/UserInterface';
+import { UserForm } from '../models/UserInterface';
 
 const knexConfig = require('../knexfile');
 const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
@@ -13,8 +13,8 @@ describe('testing User Service', ()=>{
         userService = new UserService(knex)
     })
 
-    afterAll(()=>{
-        knex.destroy();
+    afterAll(async ()=>{
+        await knex.destroy();
     })
 
     // ------------------------ START getUserByID ------------------------
@@ -339,6 +339,24 @@ describe('testing User Service', ()=>{
         // const serviceResult = await userService.getUserById([999])
         expect(upadtedRows).toEqual(0)
     })
+
+    it('update user by ID - not providing GoogleID', async()=>{
+        const updateForms:UserForm[] = [{
+            id: 1,
+            name: 'test',
+            email: 'testing@gmail.com'
+        }]
+        const result:UserForm[] = [{
+            id: 1,
+            name: 'test',
+            email: 'testing@gmail.com',
+            googleId: '1'
+        }]
+        const updatedRows = await userService.updateUserById(updateForms)
+        const serviceResult = await userService.getUserById([1])
+        expect(updatedRows).toEqual(1)
+        expect(serviceResult).toEqual(result)
+    })
     // ------------------------- END updateUserById -------------------------
 
     // ------------------------ START gatAllUsers ------------------------
@@ -372,5 +390,6 @@ describe('testing User Service', ()=>{
         const serviceResult = await userService.getAllUsers();
         expect(serviceResult).toEqual(result)
     })
+    
     // ------------------------ END gatAllUsers ------------------------
 })

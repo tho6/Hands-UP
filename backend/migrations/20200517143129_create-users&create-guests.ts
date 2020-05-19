@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<any> {
     })
     await knex.schema.createTable('guests', (table)=>{
         table.increments();
-        table.string('name').notNullable();
+        table.text('name').notNullable();
         table.timestamps(false, true);
     })
 }
