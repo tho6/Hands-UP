@@ -18,7 +18,7 @@ const question: IQuestion = {
         id: 1,
     },
     content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
-    likes: 10,
+    likes: [2, 3, 4, 5],
     replies: [],
     isEdit: false,
     files: [],
@@ -118,6 +118,28 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                     questions: newQuestions
                 };
             }
+        case '@@QUESTIONS/ADDED_VOTE':
+            {
+                const newQuestions = { ...oldState.questions };
+                const likesArr = oldState.questions[action.vote.questionId].likes.slice();
+                likesArr.push(action.vote.guestId);
+                newQuestions[action.vote.questionId].likes = likesArr;
+                return {
+                    ...oldState,
+                    questions: newQuestions
+                };
+            }
+        case '@@QUESTIONS/REMOVED_VOTE':
+            {
+                const newQuestions = { ...oldState.questions };
+                const likesArr = oldState.questions[action.vote.questionId].likes.filter(id => id !== action.vote.guestId);
+                newQuestions[action.vote.questionId].likes = likesArr;
+                return {
+                    ...oldState,
+                    questions: newQuestions
+                };
+            }
+
         default:
             return oldState;
     }

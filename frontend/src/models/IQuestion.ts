@@ -2,7 +2,7 @@ export interface IQuestion {
     id: number;
     questioner: questioner
     content: string;
-    likes: number;
+    likes: number[];
     files: file[];
     replies: reply[];
     isEdit: boolean;

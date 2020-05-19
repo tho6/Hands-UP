@@ -1,7 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, loadedUserInRoom, loggedInSuccessInRoom } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
-import { tFetchRoomInformation, tLoginAsGuest, tUserIsNotAHost, tCurrentGuest, tUserToken, tGuestToken } from "../../fakeResponse";
+import { tFetchRoomInformation, tLoginAsGuest, tUserIsNotAHost, tCurrentGuest, tUserToken, tGuestToken, tCurrentHost } from "../../fakeResponse";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
@@ -79,7 +79,7 @@ export function restoreLoginInRoom(meetingId: number, checkIsHost:boolean) {
             //     },
             // });
             // const result = await res.json(); //res.json(status:true, message:user) user-->{userId: 1, name:'Alex', isHost:true/false}
-            const result = tUserIsNotAHost;
+            const result = tCurrentHost;
             if (result.status) {
                 result.message.isHost?dispatch(loadedUserInRoom(result.message)):guestToken!=null?getCurrentGuest(guestToken):dispatch(loginAsGuest(meetingId));
             } else {

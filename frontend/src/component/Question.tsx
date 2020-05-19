@@ -7,6 +7,8 @@ import {
   deleteQuestion,
   editQuestionPlainText,
   addReplyToQuestion,
+  removeVote,
+  addVote,
 } from '../redux/questions/thunk';
 import { useFormState } from 'react-use-form-state';
 import { IUserQ, IGuest } from '../models/IUserQ';
@@ -25,11 +27,14 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const [formState, { textarea }] = useFormState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyTextArea, setShowReplyTextArea] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const { user, question, canUploadFiles, answering } = props;
   const canEdit = user?.guestId === question.questioner.id;
+  const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
+  const questionContentBackUp = question.content;
   return (
     <div className="mb-4 d-flex">
       <div className="question flex-grow-1 p-2 p-lg-4">
@@ -82,29 +87,53 @@ const Question: React.FC<IQuestionProps> = (props) => {
         </div>
         <div className="d-flex justify-content-between util-container mb-2">
           <div className="d-flex p-2">
-            <div className="p-2 mx-sm-4 mx-lg-5">
-              <i className="far fa-thumbs-up"></i> {question.likes}
+            <div
+              className="p-2 mx-sm-4 mx-lg-5"
+              onClick={() => {
+                user?.guestId &&
+                  (isLike
+                    ? dispatch(removeVote(user?.guestId, question.id))
+                    : dispatch(addVote(user?.guestId, question.id)));
+              }}
+            >
+              {isLike ? (
+                <i className="fas fa-thumbs-up"></i>
+              ) : (
+                <i className="far fa-thumbs-up"></i>
+              )}{' '}
+              {question.likes.length}
             </div>
-            <div className="p-2 ml-sm-4 ml-lg-5">
-              <i className="far fa-comment"></i> [
-              {question.replies.length}]
+            <div
+              className="p-2 ml-sm-4 ml-lg-5"
+              onClick={() =>
+                showReplies ? setShowReplies(false) : setShowReplies(true)
+              }
+            >
+              <i className="far fa-comment"></i> [{question.replies.length}]
             </div>
           </div>
           <div className="d-flex p-2">
-            <div className="to-center util-spacing">{question.questioner.name}</div>
+            <div className="to-center util-spacing">
+              {question.questioner.name}
+            </div>
             {isEdit && (
               <>
                 <div
                   className="util-spacing"
                   onClick={() => {
                     if (!formState.values.content.trim()) {
-                      window.alert('Question cannot be empty!');
+                      window.alert('Empty question is no allowed!');
+                      return;
+                    }
+                    if(questionContentBackUp === formState.values.content){
+                      setIsEdit(false);
                       return;
                     }
                     dispatch(
                       editQuestionPlainText(
                         question.id,
                         formState.values.content,
+                        question.questioner.id,
                       ),
                     );
                     setIsEdit(false);
@@ -122,7 +151,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 </div>
                 <div
                   className="util-spacing"
-                  onClick={() => setShowCancelModal(true)}
+                  onClick={() => questionContentBackUp===formState.values.content?setIsEdit(false):setShowCancelModal(true)}
                 >
                   <i className="fas fa-ban"></i>
                 </div>
@@ -166,10 +195,16 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   className="mx-2 p-2"
                   onClick={() => {
                     if (!formState.values.reply.trim()) {
-                      window.alert('Reply cannot be empty!');
+                      window.alert('Empty reply is not allowed!');
                       return;
                     }
-                    dispatch(addReplyToQuestion(question.id, user?.guestId!,formState.values.reply));
+                    dispatch(
+                      addReplyToQuestion(
+                        question.id,
+                        user?.guestId!,
+                        formState.values.reply,
+                      ),
+                    );
                     formState.setField('reply', '');
                     setShowReplyTextArea(false);
                   }}
@@ -188,11 +223,20 @@ const Question: React.FC<IQuestionProps> = (props) => {
             </div>
           </div>
         </Collapse>
-        <div className = 'px-5 mb-2'>
-        {question.replies.map((reply) => {
-          return <Reply key={reply.id} reply={reply} user={user} meetingId={question.meetingId}></Reply>;
-        })}
+        <Collapse in={showReplies}>
+        <div className="px-5 mb-2">
+          {question.replies.map((reply) => {
+            return (
+              <Reply
+                key={reply.id}
+                reply={reply}
+                user={user}
+                meetingId={question.meetingId}
+              ></Reply>
+            );
+          })}
         </div>
+        </Collapse>
       </div>
       <div className="p-2 platform-icon">
         <i className="fab fa-facebook fa-2x"></i>
@@ -202,7 +246,13 @@ const Question: React.FC<IQuestionProps> = (props) => {
           title="Delete Warnings!"
           message="Are you sure you want to delete this question?"
           yes={() => {
-            dispatch(deleteQuestion(question.id, question.meetingId));
+            dispatch(
+              deleteQuestion(
+                question.id,
+                question.meetingId,
+                question.questioner.id,
+              ),
+            );
             setShowDeleteModal(false);
           }}
           no={() => {
@@ -213,7 +263,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
       {showCancelModal && (
         <YesNoModal
           title="Discard Changes"
-          message="Are you sure to discard your changes?"
+          message="Are you sure you want to discard the changes?"
           yes={() => {
             setShowCancelModal(false);
             setIsEdit(false);
@@ -226,7 +276,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
       {showCancelReplyModal && (
         <YesNoModal
           title="Warning!"
-          message="Are you sure to discard your message? "
+          message="Are you sure you want to discard your question? "
           yes={() => {
             setShowCancelReplyModal(false);
             setShowReplyTextArea(false);

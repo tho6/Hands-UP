@@ -40,7 +40,20 @@ export function successfullyDeleteReply(questionId:number, replyId:number, meeti
         reply:{questionId, replyId, meetingId}
     }
 }
+export function successfullyVoteForAQuestion(questionId:number, guestId:number) {
+    return {
+        type: '@@QUESTIONS/ADDED_VOTE' as '@@QUESTIONS/ADDED_VOTE',
+        vote:{questionId, guestId}
+    }
+}
+export function successfullyRemoveVote(questionId:number, guestId:number) {
+    return {
+        type: '@@QUESTIONS/REMOVED_VOTE' as '@@QUESTIONS/REMOVED_VOTE',
+        vote:{questionId, guestId}
+    }
+}
 
 // action types
 export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestionPlainText>|
-ReturnType<typeof addedReplyToQuestion>|ReturnType<typeof successfullyUpdateReply>|ReturnType<typeof successfullyDeleteReply>;
+ReturnType<typeof addedReplyToQuestion>|ReturnType<typeof successfullyUpdateReply>|ReturnType<typeof successfullyDeleteReply>|ReturnType<typeof successfullyVoteForAQuestion>|
+ReturnType<typeof successfullyRemoveVote>;

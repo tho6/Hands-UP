@@ -20,6 +20,10 @@ export const tCurrentGuest = {
     status: true, message: { guestId: 1, name: 'Anonymous' }
 
 }
+export const tCurrentHost = {
+    status: true, message: { userId: 1, name: 'Host', isHost:true }
+
+}
 export const tFetchQuestions = {//load questions at first
     status: true, message: [{
         id: 1,
@@ -28,7 +32,7 @@ export const tFetchQuestions = {//load questions at first
             id: 1,
         },
         content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
-        likes: 10,
+        likes: [2,3,4,5,6,7,8,9],
         replies: [],
         isEdit: false,
         files: [],
@@ -55,6 +59,18 @@ export const tUpdateReply = {//add reply
         questionId: 1,
         replyId: 1,
         content: 'update reply'
+    }
+}
+export const tAddedVote = {//add reply
+    status: true, message: {
+        guestId: 1,
+        questionId: 1,
+    }
+}
+export const tRemovedVote = {//add reply
+    status: true, message: {
+        guestId: 1,
+        questionId: 1,
     }
 }
 export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId:1 } }

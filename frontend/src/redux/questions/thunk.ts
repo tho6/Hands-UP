@@ -1,12 +1,12 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestionPlainText, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply } from "./actions";
-import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionPlainTextSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess } from "../../fakeResponse";
+import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestionPlainText, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote } from "./actions";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionPlainTextSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote } from "../../fakeResponse";
 
 
 // Thunk Action
 export function fetchQuestions(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
-        try{
+        try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions?meetingId=${meetingId}`, {
             //     credentials: "include"
             // }); // GET + 'memos'
@@ -17,17 +17,22 @@ export function fetchQuestions(meetingId: number) {
             } else {
                 window.alert(result.message);
             }
-        }catch(e){
-           window.alert(e.message);
+        } catch (e) {
+            window.alert(e.message);
         }
     }
 }
-export function deleteQuestion(questionId: number, meetingId: number) {
-    return async (dispatch: ThunkDispatch) => {
+export function deleteQuestion(questionId: number, meetingId: number, questionerId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
             //     method: 'DELETE',
-            //     credentials: "include"
+            //     credentials: "include",
+            //     headers:{
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body:JSON.stringify({questionId, meetingId, questionerId})
             // });
             // const result = await res.json();
             const result = tDeleteQuestionSuccess;
@@ -41,16 +46,17 @@ export function deleteQuestion(questionId: number, meetingId: number) {
         }
     }
 }
-export function editQuestionPlainText(questionId: number, content:string) {
-    return async (dispatch: ThunkDispatch) => {
+export function editQuestionPlainText(questionId: number, content: string, questionerId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
             //     method: 'PUT',
             //     credentials: "include",
             //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({content})
+            //       body: JSON.stringify({content, questionId, questionerId})
             // });
             //const result = await res.json();
             const result = tEditQuestionPlainTextSuccess;
@@ -64,39 +70,41 @@ export function editQuestionPlainText(questionId: number, content:string) {
         }
     }
 }
-export function addReplyToQuestion(questionId:number, guestId:number, content:string) {
-    return async (dispatch: ThunkDispatch) => {
-        try{
-        //    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
-        //         method: 'POST',
-        //         credentials: "include",
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //           },
-        //           body: JSON.stringify({content, questionId, guestId})
-        //     });
-        //     const result = await res.json();
+export function addReplyToQuestion(questionId: number, guestId: number, content: string) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            //    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
+            //         method: 'POST',
+            //         credentials: "include",
+            //         headers: {
+            //             'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //             'Content-Type': 'application/json'
+            //           },
+            //           body: JSON.stringify({content, questionId, guestId})
+            //     });
+            //     const result = await res.json();
             const result = tNewReply;
             if (result.status) {
                 dispatch(addedReplyToQuestion(result.message));
             } else {
                 window.alert(result.message);
             }
-        }catch(e){
-           window.alert(e.message);
+        } catch (e) {
+            window.alert(e.message);
         }
     }
 }
-export function editReply(questionId: number, replyId:number, content:string) {
-    return async (dispatch: ThunkDispatch) => {
+export function editReply(questionId: number, replyId: number, content: string, replierId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
             //     method: 'PUT',
             //     credentials: "include",
             //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({questionId, replyId, content})
+            //       body: JSON.stringify({questionId, replyId, content, replierId})
             // });
             //const result = await res.json();
             const result = tUpdateReply;
@@ -110,17 +118,70 @@ export function editReply(questionId: number, replyId:number, content:string) {
         }
     }
 }
-export function deleteReply(questionId: number, meetingId: number, replyId:number) {
-    return async (dispatch: ThunkDispatch) => {
+export function deleteReply(questionId: number, meetingId: number, replyId: number, replierId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/${questionId}`, {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
             //     method: 'DELETE',
-            //     credentials: "include"
+            //     credentials: "include",
+            //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //       },
+            //       body: JSON.stringify({meetingId, questionId, replyId, replierId})
             // });
-            // const result = await res.json();
+            //const result = await res.json();
             const result = tDeleteReplySuccess;
             if (result.status) {
                 dispatch(successfullyDeleteReply(result.message.questionId, result.message.replyId, result.message.meetingId));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function addVote(guestId: number, questionId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/likes`, {
+            //     method: 'POST',
+            //     credentials: "include",
+            //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //       },
+            //       body: JSON.stringify({guestId, questionId})
+            // });
+            //const result = await res.json();
+            const result = tAddedVote;
+            if (result.status) {
+                dispatch(successfullyVoteForAQuestion(result.message.questionId, result.message.guestId));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function removeVote(guestId: number, questionId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/likes`, {
+            //     method: 'DELETE',
+            //     credentials: "include",
+            //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //       },
+            //       body: JSON.stringify({guestId, questionId})
+            // });
+            //const result = await res.json();
+            const result = tAddedVote;
+            if (result.status) {
+                dispatch(successfullyRemoveVote(result.message.questionId, result.message.guestId));
             } else {
                 window.alert(result.message);
             }

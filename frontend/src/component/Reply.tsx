@@ -17,8 +17,10 @@ export function Reply(props: IReplyProps) {
   const [formState, { textarea }] = useFormState();
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCancelModal, setCancelModal] = useState(false);
   const canEdit = reply.guestId === user?.guestId;
   const dispatch = useDispatch();
+  const backupValue = reply.content;
   return (
     <div className="reply mb-3">
       <div className="content pb-2 pt-2">
@@ -42,12 +44,28 @@ export function Reply(props: IReplyProps) {
           </div>
         )}
         {canEdit && isEdit && (
-          <div className='to-center'>
+          <div className="to-center">
             <span
               className="util-spacing"
               onClick={() => {
-                dispatch(editReply(user?.guestId!,reply.id,'formState.values.edit'));
-                setIsEdit(false);
+                if (
+                  backupValue !== formState.values.edit &&
+                  formState.values.edit.trim()
+                ) {
+                  dispatch(
+                    editReply(
+                      user?.guestId!,
+                      reply.id,
+                      formState.values.edit,
+                      reply.guestId,
+                    ),
+                  );
+                  setIsEdit(false);
+                } else if (!formState.values.edit.trim()) {
+                  window.alert('Empty reply is not allowed!');
+                } else {
+                  setIsEdit(false);
+                }
               }}
             >
               <i className="fas fa-cloud-upload-alt"></i>
@@ -55,7 +73,6 @@ export function Reply(props: IReplyProps) {
             <span
               className="util-spacing"
               onClick={() => {
-                dispatch(deleteReply(reply.questionId, meetingId, reply.id ))
                 setShowDeleteModal(true);
               }}
             >
@@ -64,7 +81,7 @@ export function Reply(props: IReplyProps) {
             <span
               className="util-spacing"
               onClick={() => {
-                setIsEdit(false);
+              formState.values.edit === reply.content?setIsEdit(false):setCancelModal(true);
               }}
             >
               <i className="fas fa-ban"></i>
@@ -72,18 +89,36 @@ export function Reply(props: IReplyProps) {
           </div>
         )}
       </div>
-      <YesNoModal
-        title="Delete a reply"
-        message="Are you sure to delete this reply?"
-        yes={() => {
-          setShowDeleteModal(false);
-          setIsEdit(false);
-        }}
-        no={() => {
-          setShowDeleteModal(false);
-          setIsEdit(false);
-        }}
-      ></YesNoModal>
+      {showDeleteModal && (
+        <YesNoModal
+          title="Delete Warnings!"
+          message="Are you sure you want to delete this reply?"
+          yes={() => {
+            dispatch(
+              deleteReply(reply.questionId, meetingId, reply.id, reply.guestId),
+            );
+            setIsEdit(false);
+            setShowDeleteModal(false);
+          }}
+          no={() => {
+            setIsEdit(false);
+            setShowDeleteModal(false);
+          }}
+        />
+      )}
+      {showCancelModal && (
+        <YesNoModal
+          title="Warning!"
+          message="Are you sure you want to discard the changes?"
+          yes={() => {
+            setIsEdit(false);
+            setCancelModal(false);
+          }}
+          no={() => {
+            setCancelModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
