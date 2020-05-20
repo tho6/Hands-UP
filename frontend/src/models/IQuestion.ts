@@ -1,29 +1,32 @@
 export interface IQuestion {
-    id:number;
-    questioner:questioner
+    id: number;
+    questioner: questioner
     content: string;
-    likes: number;
+    likes: number[];
     files: file[];
-    replies:reply[];
+    replies: reply[];
+    isEdit: boolean;
+    meetingId: number;
+    isModerate: boolean;
+    isHide: boolean;
+    isAnswered: boolean;
     updatedAt:Date;
     createdAt:Date;
-    meetingId: number;
-    isModerate:boolean;
-    isHide:boolean;
-    isAnswered: boolean;
 }
 export type reply = {
     id: number;
-    guestId:number;
+    guestId: number;
     guestName: string;
-    content:string;
+    content: string;
+    questionId: number;
+    isEdit: boolean;
+
 }
 export type file = {
     id: number;
-    filename:string;
+    filename: string;
 }
 export type questioner = {
-    id:number;
-    name:string;
-    isHost:boolean;
+    id: number;
+    name: string;
 }

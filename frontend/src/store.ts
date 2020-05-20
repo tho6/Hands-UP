@@ -4,6 +4,8 @@ import { RouterState, connectRouter, routerMiddleware } from 'connected-react-ro
 import thunk, { ThunkDispatch as OldThunkDispatch } from 'redux-thunk';
 import { QuestionsActions } from './redux/questions/actions';
 import { QuestionState, questionsReducer } from './redux/questions/reducers';
+import { roomsReducer, RoomState } from './redux/rooms/reducers';
+import { RoomsActions } from './redux/rooms/actions';
 
 
 declare global {
@@ -13,19 +15,23 @@ declare global {
   }
 }
 
-export type RootAction = QuestionsActions;
+export type RootAction = QuestionsActions|RoomsActions;
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 
 export const history = createBrowserHistory();
 
 export interface RootState {
+  auth:any
   questions: QuestionState
+  roomsInformation: RoomState
   router: RouterState
 }
 
 const reducer = combineReducers<RootState>({
+  auth:()=>null,
   questions: questionsReducer,
+  roomsInformation: roomsReducer,
   router: connectRouter(history)
 })
 
