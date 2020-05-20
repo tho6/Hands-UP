@@ -34,7 +34,7 @@ export function Reply(props: IReplyProps) {
         <div className="to-center util-spacing">{reply.guestName}</div>
         {canEdit && !isEdit && (
           <div
-            className="util-spacing"
+            className="util-spacing will-hover"
             onClick={() => {
               formState.setField('edit', reply.content);
               setIsEdit(true);
@@ -46,7 +46,7 @@ export function Reply(props: IReplyProps) {
         {canEdit && isEdit && (
           <div className="to-center">
             <span
-              className="util-spacing"
+              className="util-spacing will-hover"
               onClick={() => {
                 if (
                   backupValue !== formState.values.edit &&
@@ -66,7 +66,7 @@ export function Reply(props: IReplyProps) {
               <i className="fas fa-cloud-upload-alt"></i>
             </span>
             <span
-              className="util-spacing"
+              className="util-spacing will-hover"
               onClick={() => {
                 setShowDeleteModal(true);
               }}
@@ -74,7 +74,7 @@ export function Reply(props: IReplyProps) {
               <i className="fas fa-trash-alt"></i>
             </span>
             <span
-              className="util-spacing"
+              className="util-spacing will-hover"
               onClick={() => {
                 formState.values.edit === reply.content
                   ? setIsEdit(false)

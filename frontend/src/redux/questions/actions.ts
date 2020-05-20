@@ -1,4 +1,4 @@
-import { IQuestion, reply } from "../../models/IQuestion";
+import { IQuestion, reply, file } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
@@ -15,11 +15,14 @@ export function successfullyDeleteQuestion(questionId:number, meetingId:number) 
         meetingId
     }
 }
-export function successfullyUpdateQuestionPlainText(questionId:number, content:string) {
+export function successfullyUpdateQuestion(questionId:number, content:string, deleteFilesId:number[], files:file[], updatedAt:number) {
     return {
-        type: '@@QUESTIONS/UPDATE_QUESTION_PLAINTEXT' as '@@QUESTIONS/UPDATE_QUESTION_PLAINTEXT',
+        type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
-        content
+        content,
+        deleteFilesId,
+        files,
+        updatedAt
     }
 }
 export function addedReplyToQuestion(reply:reply) {
@@ -28,10 +31,10 @@ export function addedReplyToQuestion(reply:reply) {
         reply
     }
 }
-export function successfullyUpdateReply(questionId:number, replyId:number, content:string) {
+export function successfullyUpdateReply(questionId:number, replyId:number, content:string, updatedAt:number) {
     return {
         type: '@@QUESTIONS/UPDATED_REPLY' as '@@QUESTIONS/UPDATED_REPLY',
-        reply:{questionId, replyId, content}
+        reply:{questionId, replyId, content, updatedAt}
     }
 }
 export function successfullyDeleteReply(questionId:number, replyId:number, meetingId:number) {
@@ -52,8 +55,14 @@ export function successfullyRemoveVote(questionId:number, guestId:number) {
         vote:{questionId, guestId}
     }
 }
+export function addedQuestion(question:IQuestion) {
+    return {
+        type: '@@QUESTIONS/ADDED_QUESTION' as '@@QUESTIONS/ADDED_QUESTION',
+        question
+    }
+}
 
 // action types
-export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestionPlainText>|
+export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestion>|
 ReturnType<typeof addedReplyToQuestion>|ReturnType<typeof successfullyUpdateReply>|ReturnType<typeof successfullyDeleteReply>|ReturnType<typeof successfullyVoteForAQuestion>|
-ReturnType<typeof successfullyRemoveVote>;
+ReturnType<typeof successfullyRemoveVote>|ReturnType<typeof addedQuestion>;

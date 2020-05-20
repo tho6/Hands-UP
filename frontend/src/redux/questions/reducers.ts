@@ -11,30 +11,11 @@ export interface QuestionState {
         [id: string]: number[]
     }
 }
-const question: IQuestion = {
-    id: 1,
-    questioner: {
-        name: 'Anonymous',
-        id: 1,
-    },
-    content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
-    likes: [2, 3, 4, 5],
-    replies: [],
-    isEdit: false,
-    files: [],
-    meetingId: 1,
-    isHide: false,
-    isAnswered: false,
-    isModerate: false,
-    updatedAt: new Date(),
-    createdAt: new Date()
-}
-
 // immutability
 
 const initialState: QuestionState = {
-    questions: { 1: question },
-    questionsByMeetingId: { 1: [1] }
+    questions: {},
+    questionsByMeetingId: {}
 }
 
 export const questionsReducer = /* reducer */ (oldState = initialState, action: QuestionsActions) => {
@@ -70,10 +51,14 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                     questionsByMeetingId: newQuestionsByMeetingId
                 };
             }
-        case '@@QUESTIONS/UPDATE_QUESTION_PLAINTEXT':
+        case '@@QUESTIONS/UPDATE_QUESTION':
             {
                 const newQuestions = { ...oldState.questions };
                 newQuestions[action.questionId].content = action.content;
+                const newFiles = [...oldState.questions[action.questionId].files].filter(file => !action.deleteFilesId.includes(file.id));
+                newFiles.push(...action.files)
+                newQuestions[action.questionId].files = newFiles;
+                newQuestions[action.questionId].updatedAt = action.updatedAt;
                 return {
                     ...oldState,
                     questions: newQuestions,
@@ -97,7 +82,7 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 const replyArr = oldState.questions[action.reply.questionId].replies.slice();
                 const idx = replyArr.findIndex(elem => elem.id === action.reply.replyId);
                 replyArr[idx].content = action.reply.content;
-                replyArr[idx].isEdit = true;
+                replyArr[idx].updatedAt = action.reply.updatedAt;
                 newQuestions[action.reply.questionId].replies = replyArr;
 
                 return {
@@ -137,6 +122,21 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 return {
                     ...oldState,
                     questions: newQuestions
+                };
+            }
+        case '@@QUESTIONS/ADDED_QUESTION':
+            {
+                const newQuestions = { ...oldState.questions };
+                newQuestions[action.question.id]=action.question;
+                const newQuestionsByMeetingId = { ...oldState.questionsByMeetingId };
+                const newArr = [...oldState.questionsByMeetingId[action.question.meetingId]];
+                newArr.push(action.question.id);
+                newQuestionsByMeetingId[action.question.meetingId] = newArr
+
+                return {
+                    ...oldState,
+                    questions: newQuestions,
+                    questionsByMeetingId: newQuestionsByMeetingId
                 };
             }
 
