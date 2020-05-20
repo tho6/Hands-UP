@@ -125,7 +125,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                       window.alert('Empty question is no allowed!');
                       return;
                     }
-                    if(questionContentBackUp === formState.values.content){
+                    if (questionContentBackUp === formState.values.content) {
                       setIsEdit(false);
                       return;
                     }
@@ -133,7 +133,6 @@ const Question: React.FC<IQuestionProps> = (props) => {
                       editQuestionPlainText(
                         question.id,
                         formState.values.content,
-                        question.questioner.id,
                       ),
                     );
                     setIsEdit(false);
@@ -151,7 +150,11 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 </div>
                 <div
                   className="util-spacing"
-                  onClick={() => questionContentBackUp===formState.values.content?setIsEdit(false):setShowCancelModal(true)}
+                  onClick={() =>
+                    questionContentBackUp === formState.values.content
+                      ? setIsEdit(false)
+                      : setShowCancelModal(true)
+                  }
                 >
                   <i className="fas fa-ban"></i>
                 </div>
@@ -224,18 +227,18 @@ const Question: React.FC<IQuestionProps> = (props) => {
           </div>
         </Collapse>
         <Collapse in={showReplies}>
-        <div className="px-5 mb-2">
-          {question.replies.map((reply) => {
-            return (
-              <Reply
-                key={reply.id}
-                reply={reply}
-                user={user}
-                meetingId={question.meetingId}
-              ></Reply>
-            );
-          })}
-        </div>
+          <div className="px-5 mb-2">
+            {question.replies.map((reply) => {
+              return (
+                <Reply
+                  key={reply.id}
+                  reply={reply}
+                  user={user}
+                  meetingId={question.meetingId}
+                ></Reply>
+              );
+            })}
+          </div>
         </Collapse>
       </div>
       <div className="p-2 platform-icon">
@@ -246,13 +249,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
           title="Delete Warnings!"
           message="Are you sure you want to delete this question?"
           yes={() => {
-            dispatch(
-              deleteQuestion(
-                question.id,
-                question.meetingId,
-                question.questioner.id,
-              ),
-            );
+            dispatch(deleteQuestion(question.id, question.meetingId));
             setShowDeleteModal(false);
           }}
           no={() => {

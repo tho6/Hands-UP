@@ -22,7 +22,7 @@ export function fetchQuestions(meetingId: number) {
         }
     }
 }
-export function deleteQuestion(questionId: number, meetingId: number, questionerId: number) {
+export function deleteQuestion(questionId: number, meetingId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
@@ -32,7 +32,7 @@ export function deleteQuestion(questionId: number, meetingId: number, questioner
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //     },
-            //     body:JSON.stringify({questionId, meetingId, questionerId})
+            //     body:JSON.stringify({questionId, meetingId})
             // });
             // const result = await res.json();
             const result = tDeleteQuestionSuccess;
@@ -46,7 +46,7 @@ export function deleteQuestion(questionId: number, meetingId: number, questioner
         }
     }
 }
-export function editQuestionPlainText(questionId: number, content: string, questionerId: number) {
+export function editQuestionPlainText(questionId: number, content: string) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
@@ -56,7 +56,7 @@ export function editQuestionPlainText(questionId: number, content: string, quest
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({content, questionId, questionerId})
+            //       body: JSON.stringify({content, questionId})
             // });
             //const result = await res.json();
             const result = tEditQuestionPlainTextSuccess;
@@ -94,7 +94,7 @@ export function addReplyToQuestion(questionId: number, guestId: number, content:
         }
     }
 }
-export function editReply(questionId: number, replyId: number, content: string, replierId: number) {
+export function editReply(questionId: number, replyId: number, content: string) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
@@ -104,7 +104,7 @@ export function editReply(questionId: number, replyId: number, content: string, 
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({questionId, replyId, content, replierId})
+            //       body: JSON.stringify({questionId, replyId, content})
             // });
             //const result = await res.json();
             const result = tUpdateReply;
@@ -118,7 +118,7 @@ export function editReply(questionId: number, replyId: number, content: string, 
         }
     }
 }
-export function deleteReply(questionId: number, meetingId: number, replyId: number, replierId: number) {
+export function deleteReply(questionId: number, meetingId: number, replyId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
@@ -128,7 +128,7 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({meetingId, questionId, replyId, replierId})
+            //       body: JSON.stringify({meetingId, questionId, replyId})
             // });
             //const result = await res.json();
             const result = tDeleteReplySuccess;

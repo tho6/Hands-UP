@@ -53,12 +53,7 @@ export function Reply(props: IReplyProps) {
                   formState.values.edit.trim()
                 ) {
                   dispatch(
-                    editReply(
-                      user?.guestId!,
-                      reply.id,
-                      formState.values.edit,
-                      reply.guestId,
-                    ),
+                    editReply(user?.guestId!, reply.id, formState.values.edit),
                   );
                   setIsEdit(false);
                 } else if (!formState.values.edit.trim()) {
@@ -81,7 +76,9 @@ export function Reply(props: IReplyProps) {
             <span
               className="util-spacing"
               onClick={() => {
-              formState.values.edit === reply.content?setIsEdit(false):setCancelModal(true);
+                formState.values.edit === reply.content
+                  ? setIsEdit(false)
+                  : setCancelModal(true);
               }}
             >
               <i className="fas fa-ban"></i>
@@ -94,9 +91,7 @@ export function Reply(props: IReplyProps) {
           title="Delete Warnings!"
           message="Are you sure you want to delete this reply?"
           yes={() => {
-            dispatch(
-              deleteReply(reply.questionId, meetingId, reply.id, reply.guestId),
-            );
+            dispatch(deleteReply(reply.questionId, meetingId, reply.id));
             setIsEdit(false);
             setShowDeleteModal(false);
           }}
