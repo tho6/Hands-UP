@@ -32,17 +32,52 @@ export const tFetchQuestions = {//load questions at first
             id: 1,
         },
         content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
-        likes: [2, 3, 4, 5, 6, 7, 8, 9],
+        likes: [1, 2, 3, 7, 8, 9],
         replies: [],
-        isEdit: false,
         files: [{ id: 1, filename: '456.png' }, { id: 2, filename: '123.png' }],
         meetingId: 1,
         isHide: false,
         isAnswered: false,
-        isModerate: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    }]
+        isApproved: true,
+        createdAt: Date.now()-1000,
+        updatedAt: Date.now()-1000
+    }, {
+        id: 2,
+        questioner: {
+            name: 'Anonymous',
+            id: 2,
+        },
+        content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
+        likes: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        replies: [],
+        files: [],
+        meetingId: 1,
+        isHide: false,
+        isAnswered: false,
+        isApproved: true,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+    }
+    ]
+}
+export const tNewQuestion = {//add reply
+    status: true, message: {
+        id: 3,
+        questioner: {
+            name: 'Anonymous',
+            id: 1,
+        },
+        content: "This is a new question",
+        likes: [2, 3, 4, 5, 6, 7, 11, 12],
+        replies: [],
+        files: [],
+        meetingId: 1,
+        isHide: false,
+        isAnswered: false,
+        isApproved: true,
+        createdAt: Date.now() + 2000,
+        updatedAt: Date.now()+ 2000
+    }
 }
 export const tNewReply = {//add reply
     status: true, message: {
@@ -51,14 +86,17 @@ export const tNewReply = {//add reply
         guestName: 'Anonymous',
         content: 'string string',
         questionId: 1,
-        isEdit: false
+        isEdit: false,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
     }
 }
 export const tUpdateReply = {//add reply
     status: true, message: {
         questionId: 1,
         replyId: 1,
-        content: 'update reply'
+        content: 'update reply',
+        updatedAt: Date.now()
     }
 }
 export const tAddedVote = {//add reply
@@ -75,6 +113,6 @@ export const tRemovedVote = {//add reply
 }
 export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId: 1 } }
 export const tDeleteQuestionSuccess = { status: true, message: { meetingId: 1, questionId: 1 } }
-export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }] } }
+export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: Date.now() } }
 export const tUserToken = null;
 export const tGuestToken = null;

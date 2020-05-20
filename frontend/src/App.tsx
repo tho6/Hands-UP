@@ -9,7 +9,7 @@ import { Route } from 'react-router-dom';
 function App() {
   return (
     <div className="App">
-       <Route path="/questions/room/:id" exact>
+       <Route path="/questions/room/:id/:page" exact>
       <QuestionPage />
        </Route>
       <header className="App-header">

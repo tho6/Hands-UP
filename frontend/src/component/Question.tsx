@@ -51,7 +51,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
               props.question.content
             )}
           </div>
-          {answering === true && <span className="mb-2">Answering</span>}
+          {answering === true && <span className="util-spacing"><i className="fas fa-star"></i></span>}
         </div>
         <div className="image-area mb-2 text-left d-flex flex-wrap">
           {question.files
@@ -83,7 +83,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
         <div className="d-flex justify-content-between util-container mb-2">
           <div className="d-flex p-2">
             <div
-              className="p-2 mx-sm-4 mx-lg-5"
+              className="p-2 mx-sm-4 mx-lg-5 will-hover"
               onClick={() => {
                 user?.guestId &&
                   (isLike
@@ -99,7 +99,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
               {question.likes.length}
             </div>
             <div
-              className="p-2 ml-sm-4 ml-lg-5"
+              className="p-2 ml-sm-4 ml-lg-5 will-hover"
               onClick={() =>
                 showReplies ? setShowReplies(false) : setShowReplies(true)
               }
@@ -114,7 +114,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
             {isEdit && (
               <div className="d-flex">
                 <div
-                  className="util-spacing"
+                  className="util-spacing will-hover"
                   onClick={() => {
                     if (!formState.values.content.trim()) {
                       window.alert('Empty question is no allowed!');
@@ -155,7 +155,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   <i className="fas fa-cloud-upload-alt"></i>
                 </div>
                 <div
-                  className="util-spacing"
+                  className="util-spacing will-hover"
                   onClick={() => {
                     setShowDeleteModal(true);
                   }}
@@ -164,7 +164,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 </div>
                 <div>
                   {canUploadFiles && (
-                    <div className="util-spacing">
+                    <div className="util-spacing will-hover">
                       <label htmlFor="img">
                         <i className="fas fa-camera"></i> (max:
                         {3 - question.files.length + deleteFiles.length}
@@ -189,7 +189,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   )}
                 </div>
                 <div
-                  className="util-spacing"
+                  className="util-spacing will-hover"
                   onClick={() =>
                     questionContentBackUp === formState.values.content &&
                     files === null &&
@@ -204,7 +204,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
             )}
             {!isEdit && canEdit && (
               <div
-                className="util-spacing"
+                className="util-spacing will-hover"
                 onClick={() => {
                   formState.setField('content', question.content);
                   setFiles(null);
@@ -217,7 +217,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
             )}
 
             <div
-              className="p-2 ml-sm-3"
+              className="p-2 ml-sm-3 will-hover"
               onClick={() => {
                 showReplyTextArea
                   ? setShowReplyTextArea(false)
@@ -239,7 +239,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
               ></textarea>
               <div className="align-self-end">
                 <span
-                  className="mx-2 p-2"
+                  className="mx-2 p-2 will-hover"
                   onClick={() => {
                     if (!formState.values.reply.trim()) {
                       window.alert('Empty reply is not allowed!');
@@ -259,7 +259,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   <i className="fas fa-paper-plane"></i>
                 </span>
                 <span
-                  className="p-2"
+                  className="p-2 will-hover"
                   onClick={() => {
                     if (formState.values.reply.trim()) {
                       setShowCancelReplyModal(true);

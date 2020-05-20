@@ -1,6 +1,6 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote } from "./actions";
-import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote } from "../../fakeResponse";
+import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote, addedQuestion } from "./actions";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote, tNewQuestion } from "../../fakeResponse";
 
 
 // Thunk Action
@@ -14,6 +14,38 @@ export function fetchQuestions(meetingId: number) {
             const result = tFetchQuestions;
             if (result.status) {
                 dispatch(loadQuestions(meetingId, result.message));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function addQuestion(meetingId: number, content: string, fileList:FileList|null) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            const formData = new FormData();
+            formData.append('meetingId', `${meetingId}`);
+            formData.append('content', content);
+            if (fileList !== null) {
+               for(let i = 0; i<fileList.length; i++){
+                   formData.append('images[]', fileList[i])
+               }
+            }
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
+            //     method: 'POST',
+            //     credentials: "include",
+            //     headers: {
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //       },
+            //       body: formData
+            // });
+            //const result = await res.json();
+            const result = tNewQuestion;
+            if (result.status) {
+                dispatch(addedQuestion(result.message));
             } else {
                 window.alert(result.message);
             }
@@ -70,7 +102,7 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
             //const result = await res.json();
             const result = tEditQuestionSuccess;
             if (result.status) {
-                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content,result.message.deleteFilesId, result.message.files));
+                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content,result.message.deleteFilesId, result.message.files, result.message.updatedAt));
             } else {
                 window.alert(result.message);
             }
@@ -118,7 +150,7 @@ export function editReply(questionId: number, replyId: number, content: string) 
             //const result = await res.json();
             const result = tUpdateReply;
             if (result.status) {
-                dispatch(successfullyUpdateReply(result.message.questionId, result.message.replyId, result.message.content));
+                dispatch(successfullyUpdateReply(result.message.questionId, result.message.replyId, result.message.content, result.message.updatedAt));
             } else {
                 window.alert(result.message);
             }

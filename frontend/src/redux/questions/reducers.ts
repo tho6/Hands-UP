@@ -58,6 +58,7 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 const newFiles = [...oldState.questions[action.questionId].files].filter(file => !action.deleteFilesId.includes(file.id));
                 newFiles.push(...action.files)
                 newQuestions[action.questionId].files = newFiles;
+                newQuestions[action.questionId].updatedAt = action.updatedAt;
                 return {
                     ...oldState,
                     questions: newQuestions,
@@ -81,7 +82,7 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 const replyArr = oldState.questions[action.reply.questionId].replies.slice();
                 const idx = replyArr.findIndex(elem => elem.id === action.reply.replyId);
                 replyArr[idx].content = action.reply.content;
-                replyArr[idx].isEdit = true;
+                replyArr[idx].updatedAt = action.reply.updatedAt;
                 newQuestions[action.reply.questionId].replies = replyArr;
 
                 return {
@@ -121,6 +122,21 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 return {
                     ...oldState,
                     questions: newQuestions
+                };
+            }
+        case '@@QUESTIONS/ADDED_QUESTION':
+            {
+                const newQuestions = { ...oldState.questions };
+                newQuestions[action.question.id]=action.question;
+                const newQuestionsByMeetingId = { ...oldState.questionsByMeetingId };
+                const newArr = [...oldState.questionsByMeetingId[action.question.meetingId]];
+                newArr.push(action.question.id);
+                newQuestionsByMeetingId[action.question.meetingId] = newArr
+
+                return {
+                    ...oldState,
+                    questions: newQuestions,
+                    questionsByMeetingId: newQuestionsByMeetingId
                 };
             }
 

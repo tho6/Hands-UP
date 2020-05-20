@@ -5,13 +5,12 @@ export interface IQuestion {
     likes: number[];
     files: file[];
     replies: reply[];
-    isEdit: boolean;
     meetingId: number;
-    isModerate: boolean;
+    isApproved: boolean;
     isHide: boolean;
     isAnswered: boolean;
-    updatedAt:Date;
-    createdAt:Date;
+    updatedAt:number;
+    createdAt:number;
 }
 export type reply = {
     id: number;
@@ -19,7 +18,8 @@ export type reply = {
     guestName: string;
     content: string;
     questionId: number;
-    isEdit: boolean;
+    createdAt:number;
+    updatedAt:number;
 
 }
 export type file = {
