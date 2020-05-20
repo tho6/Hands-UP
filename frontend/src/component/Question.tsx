@@ -5,10 +5,10 @@ import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
 import {
   deleteQuestion,
-  editQuestionPlainText,
   addReplyToQuestion,
   removeVote,
   addVote,
+  editQuestion
 } from '../redux/questions/thunk';
 import { useFormState } from 'react-use-form-state';
 import { IUserQ, IGuest } from '../models/IUserQ';
@@ -30,6 +30,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const [showReplies, setShowReplies] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
   const { user, question, canUploadFiles, answering } = props;
   const canEdit = user?.guestId === question.questioner.id;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
@@ -52,38 +54,31 @@ const Question: React.FC<IQuestionProps> = (props) => {
           {answering === true && <span className="mb-2">Answering</span>}
         </div>
         <div className="image-area mb-2 text-left d-flex flex-wrap">
-          <div className="p-2 mr-4">
-            <img className="mw-100" src="/456.png" alt="testing" />
-            {isEdit && (
-              <span className="p-2">
-                <i className="fas fa-times"></i>
-              </span>
-            )}
-          </div>
-          <div className="p-2 mr-4">
-            <img className="mw-100" src="/456.png" alt="testing" />
-            {isEdit && (
-              <span className="p-2">
-                <i className="fas fa-times"></i>
-              </span>
-            )}
-          </div>
-          <div className="p-2 mr-4">
-            <img className="mw-100" src="/123.png" alt="testing" />
-            {isEdit && (
-              <span className="p-2">
-                <i className="fas fa-times"></i>
-              </span>
-            )}
-          </div>
-          <div className="p-2 mr-4">
-            <img className="mw-100" src="/456.png" alt="testing" />
-            {isEdit && (
-              <span className="p-2">
-                <i className="fas fa-times"></i>
-              </span>
-            )}
-          </div>
+          {question.files
+            .filter((file) => (isEdit ? !deleteFiles.includes(file.id) : file))
+            .map((file) => {
+              return (
+                <div className="p-2 mr-4">
+                  <img
+                    className="mw-100"
+                    src={`/${file.filename}`}
+                    alt={file.filename}
+                  />
+                  {isEdit && (
+                    <span
+                      className="p-2"
+                      onClick={() => {
+                        const updateDeleteFiles = [...deleteFiles];
+                        updateDeleteFiles.push(file.id);
+                        setDeleteFiles(updateDeleteFiles);
+                      }}
+                    >
+                      <i className="fas fa-times"></i>
+                    </span>
+                  )}
+                </div>
+              );
+            })}
         </div>
         <div className="d-flex justify-content-between util-container mb-2">
           <div className="d-flex p-2">
@@ -112,12 +107,12 @@ const Question: React.FC<IQuestionProps> = (props) => {
               <i className="far fa-comment"></i> [{question.replies.length}]
             </div>
           </div>
-          <div className="d-flex p-2">
+          <div className="d-flex p-2 flex-wrap">
             <div className="to-center util-spacing">
               {question.questioner.name}
             </div>
             {isEdit && (
-              <>
+              <div className="d-flex">
                 <div
                   className="util-spacing"
                   onClick={() => {
@@ -125,15 +120,34 @@ const Question: React.FC<IQuestionProps> = (props) => {
                       window.alert('Empty question is no allowed!');
                       return;
                     }
-                    if (questionContentBackUp === formState.values.content) {
+
+                    if (files !== null) {
+                      const totalImages =
+                        files.length +
+                        question.files.length -
+                        deleteFiles.length;
+                      if (totalImages > 3) {
+                        window.alert(
+                          'Maximum of 3 images are allowed in each question'
+                        );
+                        return;
+                      }
+                    }
+                    if (
+                      questionContentBackUp === formState.values.content &&
+                      files === null &&
+                      deleteFiles.length === 0
+                    ) {
                       setIsEdit(false);
                       return;
                     }
                     dispatch(
-                      editQuestionPlainText(
+                      editQuestion(
                         question.id,
                         formState.values.content,
-                      ),
+                        deleteFiles,
+                        files
+                      )
                     );
                     setIsEdit(false);
                   }}
@@ -148,24 +162,54 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 >
                   <i className="fas fa-trash-alt"></i>
                 </div>
+                <div>
+                  {canUploadFiles && (
+                    <div className="util-spacing">
+                      <label htmlFor="img">
+                        <i className="fas fa-camera"></i> (max:
+                        {3 - question.files.length + deleteFiles.length}
+                        ):
+                      </label>
+                      {files == null
+                        ? 'No files'
+                        : `${files.length} ${
+                            files.length > 1 ? 'files' : 'file'
+                          }`}
+                      <input
+                        className="d-none"
+                        id="img"
+                        type="file"
+                        onChange={(event) =>
+                          setFiles(event.currentTarget.files)
+                        }
+                        multiple
+                        accept="image/*"
+                      />
+                    </div>
+                  )}
+                </div>
                 <div
                   className="util-spacing"
                   onClick={() =>
-                    questionContentBackUp === formState.values.content
+                    questionContentBackUp === formState.values.content &&
+                    files === null &&
+                    deleteFiles.length === 0
                       ? setIsEdit(false)
                       : setShowCancelModal(true)
                   }
                 >
                   <i className="fas fa-ban"></i>
                 </div>
-              </>
+              </div>
             )}
             {!isEdit && canEdit && (
               <div
                 className="util-spacing"
                 onClick={() => {
                   formState.setField('content', question.content);
+                  setFiles(null);
                   setIsEdit(true);
+                  setDeleteFiles([]);
                 }}
               >
                 <i className="fas fa-pencil-alt"></i>
@@ -205,8 +249,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
                       addReplyToQuestion(
                         question.id,
                         user?.guestId!,
-                        formState.values.reply,
-                      ),
+                        formState.values.reply
+                      )
                     );
                     formState.setField('reply', '');
                     setShowReplyTextArea(false);
@@ -217,7 +261,12 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 <span
                   className="p-2"
                   onClick={() => {
-                    setShowCancelReplyModal(true);
+                    if (formState.values.reply.trim()) {
+                      setShowCancelReplyModal(true);
+                    } else {
+                      setShowReplyTextArea(false);
+                      formState.setField('reply', '');
+                    }
                   }}
                 >
                   <i className="fas fa-ban"></i>
@@ -227,7 +276,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
           </div>
         </Collapse>
         <Collapse in={showReplies}>
-          <div className="px-5 mb-2">
+          <div className="px-sm-3 px-md-5 mb-2">
             {question.replies.map((reply) => {
               return (
                 <Reply

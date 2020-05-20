@@ -39,18 +39,18 @@ $replyTextAreaMultiplier: 0.7;
         max-width: 1200px;
         height: 150px;
       }
-      @media only screen and (max-width: 768px) {
-        width: 600px;
+      @media only screen and (max-width: 1024px) {
+        width: 90%;
         height: 150px;
       }
       @media only screen and (max-width: 400px) {
-        width: 315px;
+        width: 90%;
         height: 150px;
       }
     }
   }
   .util-container {
-    @media only screen and (max-width: 576px) {
+    @media only screen and (max-width: 768px) {
       flex-direction: column-reverse;
     }
   }
@@ -86,16 +86,16 @@ $replyTextAreaMultiplier: 0.7;
     textarea {
       @extend %text-area;
       @media only screen and (min-width: 1024px) {
-        width: 90%;
-        max-width: 1200px;
+        width: 85%;
+        max-width: 1000px;
         height: 150px * $replyTextAreaMultiplier;
       }
-      @media only screen and (max-width: 768px) {
-        width: 600px;
+      @media only screen and (max-width: 1024px) {
+        width: 80%;
         height: 150px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 400px) {
-        width: 315px;
+        width: 85%;
         height: 150px * $replyTextAreaMultiplier;
       }
     }
@@ -127,17 +127,18 @@ $replyTextAreaMultiplier: 0.7;
     textarea {
       @extend %text-area;
       @media only screen and (min-width: 1024px) {
-        width: 90%;
-        max-width: 1200px;
+        width: 85%;
+        max-width: 1000px;
         height: 150px * $replyTextAreaMultiplier;
       }
-      @media only screen and (max-width: 768px) {
-        width: 600;
+      @media only screen and (max-width: 1024px) {
+        width: 85%;
         height: 150px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 400px) {
-        width: 315;
+        width: 85%;
         height: 150px * $replyTextAreaMultiplier;
+        min-width:200px;
       }
     }
   }

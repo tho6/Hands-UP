@@ -1,6 +1,6 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestionPlainText, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote } from "./actions";
-import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionPlainTextSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote } from "../../fakeResponse";
+import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote } from "./actions";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote } from "../../fakeResponse";
 
 
 // Thunk Action
@@ -46,9 +46,18 @@ export function deleteQuestion(questionId: number, meetingId: number) {
         }
     }
 }
-export function editQuestionPlainText(questionId: number, content: string) {
+export function editQuestion(questionId: number, content: string, deleteFilesId: number[], fileList:FileList|null) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
+            const formData = new FormData();
+            formData.append('questionId', `${questionId}`);
+            formData.append('content', content);
+            formData.append('deleteFilesId', JSON.stringify(deleteFilesId));
+            if (fileList !== null) {
+               for(let i = 0; i<fileList.length; i++){
+                   formData.append('images[]', fileList[i])
+               }
+            }
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
             //     method: 'PUT',
             //     credentials: "include",
@@ -56,12 +65,12 @@ export function editQuestionPlainText(questionId: number, content: string) {
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({content, questionId})
+            //       body: formData
             // });
             //const result = await res.json();
-            const result = tEditQuestionPlainTextSuccess;
+            const result = tEditQuestionSuccess;
             if (result.status) {
-                dispatch(successfullyUpdateQuestionPlainText(result.message.questionId, result.message.content));
+                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content,result.message.deleteFilesId, result.message.files));
             } else {
                 window.alert(result.message);
             }

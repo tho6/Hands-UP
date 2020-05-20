@@ -8,28 +8,10 @@ export interface RoomState {
     };
     userInformation: GuestInformation;
 }
-//Initial State
-const room: IRoomInformation = {
-    id: 1,
-    owenId: 1,
-    name: 'This is Room 1',
-    code: '#string',
-    is_live: true,
-    canModerate: false,
-    canUploadFiles: false,
-    questionLimit: 10
-}
-
-//Initial State
-const user: (IGuest & IUserQ) | null = {
-    guestId: 1,
-    name: 'anonymous',
-}
-
 
 const initialState: RoomState = {
-    roomsInformation: { 1: room },
-    userInformation: { token: null, user: user }
+    roomsInformation: {},
+    userInformation: { token: null, user: null }
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {

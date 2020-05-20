@@ -5,6 +5,7 @@ import { RootState } from '../store'
 import useReactRouter from 'use-react-router'
 import Question from './Question'
 import { fetchRoomInformation, restoreLoginInRoom } from '../redux/rooms/thunk'
+import { fetchQuestions } from '../redux/questions/thunk'
 
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string }>()
@@ -32,10 +33,13 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(restoreLoginInRoom(parseInt(meetingId), true))
   }, [dispatch])
+  useEffect(() => {
+    dispatch(fetchQuestions(parseInt(meetingId)))
+  }, [dispatch])
 
   return (
     <div>
-      <div>
+      <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5">
         {questions?.map((question, i) => {
           return (
             <Question

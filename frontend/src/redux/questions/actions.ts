@@ -1,4 +1,4 @@
-import { IQuestion, reply } from "../../models/IQuestion";
+import { IQuestion, reply, file } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
@@ -15,11 +15,13 @@ export function successfullyDeleteQuestion(questionId:number, meetingId:number) 
         meetingId
     }
 }
-export function successfullyUpdateQuestionPlainText(questionId:number, content:string) {
+export function successfullyUpdateQuestion(questionId:number, content:string, deleteFilesId:number[], files:file[]) {
     return {
-        type: '@@QUESTIONS/UPDATE_QUESTION_PLAINTEXT' as '@@QUESTIONS/UPDATE_QUESTION_PLAINTEXT',
+        type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
-        content
+        content,
+        deleteFilesId,
+        files
     }
 }
 export function addedReplyToQuestion(reply:reply) {
@@ -54,6 +56,6 @@ export function successfullyRemoveVote(questionId:number, guestId:number) {
 }
 
 // action types
-export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestionPlainText>|
+export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestion>|
 ReturnType<typeof addedReplyToQuestion>|ReturnType<typeof successfullyUpdateReply>|ReturnType<typeof successfullyDeleteReply>|ReturnType<typeof successfullyVoteForAQuestion>|
 ReturnType<typeof successfullyRemoveVote>;
