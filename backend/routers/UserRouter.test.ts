@@ -32,17 +32,20 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               },
               {
                 "id": 2,
                 "name": "peter",
-                "email": "peter@hibye.com"
+                "email": "peter@hibye.com",
+                "picture": 'pic2'
               },
               {
                 "id": 3,
                 "name": "mary",
-                "email": "mary1@hey.com"
+                "email": "mary1@hey.com",
+                "picture": 'pic3'
               }
             ]
           }
@@ -72,7 +75,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -100,12 +104,14 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               },
               {
                 "id": 2,
                 "name": "peter",
-                "email": "peter@hibye.com"
+                "email": "peter@hibye.com",
+                "picture": 'pic2'
               }
             ]
           }
@@ -150,7 +156,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -200,7 +207,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -228,12 +236,14 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               },
               {
                 "id": 2,
                 "name": "peter",
-                "email": "peter@hibye.com"
+                "email": "peter@hibye.com",
+                "picture": 'pic2'
               }
             ]
           }
@@ -278,7 +288,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -309,7 +320,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -337,12 +349,14 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               },
               {
                 "id": 2,
                 "name": "peter",
-                "email": "peter@hibye.com"
+                "email": "peter@hibye.com",
+                "picture": 'pic2'
               }
             ]
           }
@@ -387,7 +401,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -418,7 +433,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -446,12 +462,14 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               },
               {
                 "id": 2,
                 "name": "peter",
-                "email": "peter@hibye.com"
+                "email": "peter@hibye.com",
+                "picture": 'pic2'
               }
             ]
           }
@@ -496,7 +514,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -524,7 +543,8 @@ describe('User Router Testing', ()=>{
               {
                 "id": 1,
                 "name": "ivan",
-                "email": "ivan@gmail.com"
+                "email": "ivan@gmail.com",
+                "picture": 'pic1'
               }
             ]
           }
@@ -547,7 +567,8 @@ describe('User Router Testing', ()=>{
                 updateForms:[{
                     id: 1,
                     name: 'testName',
-                    email: 'testing@test.com'
+                    email: 'testing@test.com',
+                    picture: 'test'
                 }]
             }
         } as any
@@ -556,7 +577,8 @@ describe('User Router Testing', ()=>{
             id: 1,
             name: 'testName',
             email: 'testing@test.com',
-            googleId: '1'
+            googleId: '1',
+            picture: 'test'
         }]
 
         await userRouter.updateUsers(req ,res)
@@ -577,7 +599,8 @@ describe('User Router Testing', ()=>{
                     id: 1,
                     name: 'testName',
                     email: 'testing@test.com',
-                    googleId: '9999992'
+                    googleId: '9999992',
+                    picture: 'test'
                 }]
             }
         } as any
@@ -586,7 +609,8 @@ describe('User Router Testing', ()=>{
             id: 1,
             name: 'testName',
             email: 'testing@test.com',
-            googleId: '9999992'
+            googleId: '9999992',
+            picture: 'test'
         }]
 
         await userRouter.updateUsers(req ,res)
@@ -607,13 +631,15 @@ describe('User Router Testing', ()=>{
                     id: 1,
                     name: 'testName',
                     email: 'testing@test.com',
-                    googleId: '9999992'
+                    googleId: '9999992',
+                    picture: 'test1'
                 },
                 {
                     id: 2,
                     name: 'testName2',
                     email: 'testing2@test.com',
-                    googleId: '9999992222'
+                    googleId: '9999992222',
+                    picture: 'test2'
                 }]
             }
         } as any
@@ -622,13 +648,15 @@ describe('User Router Testing', ()=>{
             id: 1,
             name: 'testName',
             email: 'testing@test.com',
-            googleId: '9999992'
+            googleId: '9999992',
+            picture: 'test1'
         },
         {
             id: 2,
             name: 'testName2',
             email: 'testing2@test.com',
-            googleId: '9999992222'
+            googleId: '9999992222',
+            picture: 'test2'
         }]
 
         await userRouter.updateUsers(req ,res)
@@ -649,13 +677,15 @@ describe('User Router Testing', ()=>{
                     id: 9999,
                     name: 'testName',
                     email: 'testing@test.com',
-                    googleId: '9999992'
+                    googleId: '9999992',
+                    picture: 'test1'
                 },
                 {
                     id: 99999,
                     name: 'testName2',
                     email: 'testing2@test.com',
-                    googleId: '9999992222'
+                    googleId: '9999992222',
+                    picture: 'test2'
                 }]
             }
         } as any

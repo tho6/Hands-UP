@@ -1,5 +1,5 @@
 import Knex from "knex";
-import express from "express";
+import express, { Request, Response } from "express";
 import path from "path";
 // import expressSession from 'express-session'
 import bodyParser from "body-parser";
@@ -11,8 +11,20 @@ import * as routers from './routers';
 import cors from 'cors'
 import { UserService } from "./services/UserService";
 import { UserRouter } from "./routers/UserRouter";
+import { GuestService } from "./services/GuestService";
+import { GuestRouter } from "./routers/GuestRouter";
+import { AuthRouter } from "./routers/AuthRouter";
+import { PersonInfo } from "./models/AuthInterface";
+import { AuthService } from "./services/AuthService";
 
-
+declare global {
+    namespace Express {
+      interface Request {
+        personInfo?: PersonInfo
+      }
+    }
+  }
+  
 
 const app = express();
 
@@ -22,6 +34,7 @@ app.use(cors({
       'http://localhost:3000',
     ]
   }))
+
 /* Database configuration */
 const knexConfig = require("./knexfile");
 //@ts-ignore
@@ -45,11 +58,15 @@ const upload = multer({ storage: storage });
 
 /* Services */
 const userService = new UserService(knex);
+const guestService = new GuestService(knex);
+const authService = new AuthService(knex);
 
 
 
 /* Routers */
 const userRouter = new UserRouter(userService);
+const guestRouter = new GuestRouter(guestService);
+const authRouter = new AuthRouter(userService, guestService,authService);
 
 /* Session */
 // app.use(
@@ -70,7 +87,12 @@ app.use(bodyParser.json());
 /* Routes */
 //@ts-ignore
 const API_VERSION = "/api/v1";
+app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
+app.use('/guest', guestRouter.router())
+app.get('/test/callback', (req:Request, res: Response)=>{
+    return res.status(200).json({message: req.query})
+})
 
 
 /* Listening port */

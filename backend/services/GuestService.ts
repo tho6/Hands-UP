@@ -26,7 +26,7 @@ export class GuestService {
     }
     //get guests
 
-    getAllGuests = async () => {
+    getAllGuests = async ()=> {
         try {
             const result = await this.knex.raw(
                 /*SQL*/`SELECT id, name FROM guests `)

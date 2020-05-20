@@ -24,7 +24,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         }]
         const serviceResult = await userService.getUserById(userId)
         expect(serviceResult).toEqual(result);
@@ -36,13 +37,15 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         },
         {
             id: 2,
             name: 'peter',
             email: 'peter@hibye.com',
-            googleId: "2"
+            googleId: "2",
+            picture: 'pic2'
         }]
         const serviceResult = await userService.getUserById(userId)
         expect(serviceResult).toEqual(result);
@@ -75,7 +78,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         }]
         const serviceResult = await userService.getUserByName(names)
         expect(serviceResult).toEqual(result);
@@ -87,13 +91,15 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         },
         {
             id: 2,
             name: 'peter',
             email: 'peter@hibye.com',
-            googleId: "2"
+            googleId: "2",
+            picture: 'pic2'
         }]
         const serviceResult = await userService.getUserByName(names)
         expect(serviceResult).toEqual(result);
@@ -110,7 +116,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         }]
         const serviceResult = await userService.getUserByName(names)
         expect(serviceResult).toEqual(result);
@@ -126,7 +133,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         }]
         const serviceResult = await userService.getUserByEmail(emails)
         expect(serviceResult).toEqual(result);
@@ -138,13 +146,15 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         },
         {
             id: 2,
             name: 'peter',
             email: 'peter@hibye.com',
-            googleId: "2"
+            googleId: "2",
+            picture: 'pic2'
         }]
         const serviceResult = await userService.getUserByEmail(emails)
         expect(serviceResult).toEqual(result);
@@ -170,7 +180,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         }]
         const serviceResult = await userService.getUserByGoogleId(googleId)
         expect(serviceResult).toEqual(result);
@@ -182,13 +193,15 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         },
         {
             id: 2,
             name: 'peter',
             email: 'peter@hibye.com',
-            googleId: "2"
+            googleId: "2",
+            picture: 'pic2'
         }]
         const serviceResult = await userService.getUserByGoogleId(googleId)
         expect(serviceResult).toEqual(result);
@@ -216,7 +229,8 @@ describe('testing User Service', ()=>{
         const email = 'sam456@gmail.com'
         const id = 4;
         const googleId = "4"
-        const serviceResult = await userService.createUser(name, email, googleId)
+        const picture = 'pic4'
+        const serviceResult = await userService.createUser(name, email, googleId, picture)
         expect(serviceResult).toBe(id)
     })
 
@@ -297,7 +311,8 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'test',
             email: 'testing@gmail.com',
-            googleId: 'testGoogleId'
+            googleId: 'testGoogleId',
+            picture: 'test'
         }]
         await userService.updateUserById(updateForms)
         const serviceResult = await userService.getUserById([1])
@@ -309,13 +324,15 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'test',
             email: 'testing@gmail.com',
-            googleId: 'testGoogleId'
+            googleId: 'testGoogleId',
+            picture: 'test'
         },
         {
             id: 2,
             name: 'test2',
             email: 'testing2@gmail.com',
-            googleId: 'testGoogleId2'
+            googleId: 'testGoogleId2',
+            picture: 'test2'
         }]
         const updateLength = await userService.updateUserById(updateForms)
         const serviceResult = await userService.getUserById([1,2])
@@ -333,7 +350,8 @@ describe('testing User Service', ()=>{
             id: 999,
             name: 'test',
             email: 'testing@gmail.com',
-            googleId: 'testGoogleId'
+            googleId: 'testGoogleId',
+            picture: 'test'
         }]
         const updatedRows = await userService.updateUserById(updateForms)
         // const serviceResult = await userService.getUserById([999])
@@ -344,13 +362,15 @@ describe('testing User Service', ()=>{
         const updateForms:UserForm[] = [{
             id: 1,
             name: 'test',
-            email: 'testing@gmail.com'
+            email: 'testing@gmail.com',
+            picture: 'test'
         }]
         const result:UserForm[] = [{
             id: 1,
             name: 'test',
             email: 'testing@gmail.com',
-            googleId: '1'
+            googleId: '1',
+            picture: 'test'
         }]
         const updatedRows = await userService.updateUserById(updateForms)
         const serviceResult = await userService.getUserById([1])
@@ -365,19 +385,22 @@ describe('testing User Service', ()=>{
             id: 1,
             name: 'ivan',
             email: 'ivan@gmail.com',
-            googleId: "1"
+            googleId: "1",
+            picture: 'pic1'
         },
         {
             id: 2,
             name: 'peter',
             email: 'peter@hibye.com',
-            googleId: "2"
+            googleId: "2",
+            picture: 'pic2'
         },
         {
             id: 3,
             name:'mary',
             email: "mary1@hey.com",
-            googleId: "3"
+            googleId: "3",
+            picture: 'pic3'
         }]
        const serviceResult = await userService.getAllUsers();
        expect(serviceResult).toEqual(result)
