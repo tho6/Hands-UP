@@ -129,6 +129,8 @@ export class AuthRouter {
                 res.status(500).json({ success: false, message: 'internal error' })
         }
     }
+
+    //logout destroy RefreshToken
 }
 
 

@@ -27,5 +27,5 @@ POST {{backend_url}}/auth/loginGoogle
 Content-Type: application/json
 
 {
-    "googleAuthCode":"4/zwGPF6u3aI-FSNObkZ0o31zcyLZKDsP6DbDdMHmV-ONpID3pPEidry9j8dI7cIHJ8kxsnAgfZlQnEWJH3j_wSLU"
+    "googleAuthCode":"4/zwG4bH68CwExtK5ov3DBtEI5VcGqBoUNUKzKBi4rB6M6sihNBDXoDL8CIYyJ7M9fZpCIpx2sPsQANZN9xO1bWBY"
 }
