@@ -1,3 +1,5 @@
+import { IGuest } from "./IUserQ";
+
 export interface IRoomInformation{
     id:number,
     owenId:number,
@@ -6,7 +8,8 @@ export interface IRoomInformation{
     is_live: boolean,
     canModerate: boolean,
     canUploadFiles: boolean,
-    questionLimit: number
+    questionLimit: number,
+    userInformation?: IGuest|null
 }
 export interface IRoomConfiguration{
     canModerate:boolean;

@@ -111,7 +111,7 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
         }
     }
 }
-export function addReplyToQuestion(questionId: number, guestId: number, content: string) {
+export function addReplyToQuestion(questionId: number, content: string) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             //    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/reply`, {
@@ -121,7 +121,7 @@ export function addReplyToQuestion(questionId: number, guestId: number, content:
             //             'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //             'Content-Type': 'application/json'
             //           },
-            //           body: JSON.stringify({content, questionId, guestId})
+            //           body: JSON.stringify({content, questionId})
             //     });
             //     const result = await res.json();
             const result = tNewReply;
@@ -183,7 +183,7 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
         }
     }
 }
-export function addVote(guestId: number, questionId: number) {
+export function addVote(questionId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/likes`, {
@@ -193,7 +193,7 @@ export function addVote(guestId: number, questionId: number) {
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({guestId, questionId})
+            //       body: JSON.stringify({questionId})
             // });
             //const result = await res.json();
             const result = tAddedVote;
@@ -207,7 +207,7 @@ export function addVote(guestId: number, questionId: number) {
         }
     }
 }
-export function removeVote(guestId: number, questionId: number) {
+export function removeVote(questionId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/likes`, {
@@ -217,7 +217,7 @@ export function removeVote(guestId: number, questionId: number) {
             //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
             //         'Content-Type': 'application/json'
             //       },
-            //       body: JSON.stringify({guestId, questionId})
+            //       body: JSON.stringify({questionId})
             // });
             //const result = await res.json();
             const result = tAddedVote;

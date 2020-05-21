@@ -11,13 +11,13 @@ import {
   editQuestion
 } from '../redux/questions/thunk';
 import { useFormState } from 'react-use-form-state';
-import { IUserQ, IGuest } from '../models/IUserQ';
+import { IGuest } from '../models/IUserQ';
 import Collapse from 'react-bootstrap/Collapse';
-import { Reply } from './Reply';
+import Reply from './Reply';
 
 interface IQuestionProps {
   question: IQuestion;
-  user: (IUserQ & IGuest) | null;
+  user: IGuest | null | undefined;
   canUploadFiles: boolean;
   answering: boolean;
 }
@@ -58,7 +58,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
             .filter((file) => (isEdit ? !deleteFiles.includes(file.id) : file))
             .map((file) => {
               return (
-                <div className="p-2 mr-4">
+                <div key={file.id} className="p-2 mr-4">
                   <img
                     className="mw-100"
                     src={`/${file.filename}`}
@@ -87,8 +87,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
               onClick={() => {
                 user?.guestId &&
                   (isLike
-                    ? dispatch(removeVote(user?.guestId, question.id))
-                    : dispatch(addVote(user?.guestId, question.id)));
+                    ? dispatch(removeVote(question.id))
+                    : dispatch(addVote(question.id)));
               }}
             >
               {isLike ? (
@@ -248,7 +248,6 @@ const Question: React.FC<IQuestionProps> = (props) => {
                     dispatch(
                       addReplyToQuestion(
                         question.id,
-                        user?.guestId!,
                         formState.values.reply
                       )
                     );

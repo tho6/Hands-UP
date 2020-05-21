@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { reply } from '../models/IQuestion';
 import { useFormState } from 'react-use-form-state';
-import { IUserQ, IGuest } from '../models/IUserQ';
+import { IGuest } from '../models/IUserQ';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
 import { editReply, deleteReply } from '../redux/questions/thunk';
 
 export interface IReplyProps {
   reply: reply;
-  user: (IUserQ & IGuest) | null;
+  user: IGuest | null | undefined;
   meetingId: number;
 }
 
-export function Reply(props: IReplyProps) {
+const Reply: React.FC<IReplyProps> = (props)=>{
   const { reply, user, meetingId } = props;
   const [formState, { textarea }] = useFormState();
   const [isEdit, setIsEdit] = useState(false);
@@ -25,11 +25,12 @@ export function Reply(props: IReplyProps) {
     <div className="reply mb-3">
       <div className="content pb-2 pt-2">
         {isEdit ? (
-          <textarea className="mb-2 rounded" {...textarea('edit')}></textarea>
+          <textarea data-testid='text-area' className="mb-2 rounded" {...textarea('edit')}></textarea>
         ) : (
           reply.content
         )}
       </div>
+      {!isEdit && reply.createdAt!==reply.updatedAt && <span data-testid='edited-sign'>[Edited]</span>};
       <div className="d-flex justify-content-sm-end justify-content-start">
         <div className="to-center util-spacing">{reply.guestName}</div>
         {canEdit && !isEdit && (
@@ -40,7 +41,7 @@ export function Reply(props: IReplyProps) {
               setIsEdit(true);
             }}
           >
-            <i className="fas fa-pencil-alt"></i>
+            <i className="fas fa-pencil-alt" data-testid="edit-button"></i>
           </div>
         )}
         {canEdit && isEdit && (
@@ -63,7 +64,7 @@ export function Reply(props: IReplyProps) {
                 }
               }}
             >
-              <i className="fas fa-cloud-upload-alt"></i>
+              <i className="fas fa-cloud-upload-alt" data-testid='save-button'></i>
             </span>
             <span
               className="util-spacing will-hover"
@@ -71,7 +72,7 @@ export function Reply(props: IReplyProps) {
                 setShowDeleteModal(true);
               }}
             >
-              <i className="fas fa-trash-alt"></i>
+              <i className="fas fa-trash-alt" data-testid='delete-button'></i>
             </span>
             <span
               className="util-spacing will-hover"
@@ -81,7 +82,7 @@ export function Reply(props: IReplyProps) {
                   : setCancelModal(true);
               }}
             >
-              <i className="fas fa-ban"></i>
+              <i className="fas fa-ban" data-testid='cancel-button'></i>
             </span>
           </div>
         )}
@@ -117,3 +118,4 @@ export function Reply(props: IReplyProps) {
     </div>
   );
 }
+export  default Reply;
