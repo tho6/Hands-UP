@@ -16,7 +16,16 @@ export interface GoogleUser{
     "exp": number
 }
 
-export interface PersonInfo{
+export interface TokenInfo{
     userId?: number
     guestId?: number
+}
+
+export interface PersonInfo{
+    userId?: number
+    guestId: number
+    picture?: string
+    userName?: string
+    guestName: string
+    email?: string
 }

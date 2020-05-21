@@ -1,15 +1,19 @@
- 
+
 import express, { Request, Response } from 'express'
 import { UserService } from "../services/UserService";
 import fetch from 'node-fetch'
 import jwt from 'jsonwebtoken'
-import { GoogleUser, PersonInfo } from '../models/AuthInterface';
+import { GoogleUser, TokenInfo } from '../models/AuthInterface';
 import { GuestService } from '../services/GuestService';
 import { AuthService } from '../services/AuthService';
 
 export class AuthRouter {
     constructor(private userService: UserService, private guestService: GuestService, private authService: AuthService) { }
+    private accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
+    private accessTokenPrivateKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PRIVATE_KEY}"`)
 
+    private refreshTokenPublicKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PUBLIC_KEY}"`)
+    private refreshTokenPrivateKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PRIVATE_KEY}"`)
     router() {
         const router = express.Router()
         router.post('/loginGoogle', this.loginGoogle)
@@ -17,66 +21,62 @@ export class AuthRouter {
         router.post('/token', this.genAccessCodeByRefreshCode)
         return router
     }
-    private generateAccessToken = (role: string, Id: number) => {
-        if (role === 'user') {
-            return jwt.sign({ userId: Id }, process.env.USER_ACCESS_TOKEN_SECRET as string, { expiresIn: '15s' })
-        } else if (role === 'guest') {
-            return jwt.sign({ guestId: Id }, process.env.GUEST_ACCESS_TOKEN_SECRET as string, { expiresIn: '15s' })
-        }
-        return null
+    private generateAccessToken = (payload: TokenInfo) => {
+        return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '15s', algorithm: 'RS256' })
     }
-    private generateRefreshToken = (role: string, Id: number) => {
-        if (role === 'user') {
-            return jwt.sign({ userId: Id }, process.env.USER_REFRESH_TOKEN_SECRET as string, { expiresIn: '30d' })
-        } else if (role === 'guest') {
-            return jwt.sign({ guestId: Id }, process.env.GUEST_REFRESH_TOKEN_SECRET as string, { expiresIn: '30d' })
-        }
-        return null
+    private generateRefreshToken = (payload: TokenInfo) => {
+        return jwt.sign(payload, this.refreshTokenPrivateKey, { expiresIn: '30d', algorithm: 'RS256' })
     }
+
     private loginGoogle = async (req: Request, res: Response) => {
         try {
             if (!req.body.authCode) return res.status(401).json({ success: false, message: 'No authorization Code' })
-            const authCode = req.body.authCode
-            console.log(authCode)
-            //take profile is ok since it includes sub (unique id) NO NEED OpenId
-            const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    code: authCode,
-                    client_id: process.env.GOOGLE_CLIENT_ID,
-                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                    redirect_uri: process.env.GOOGLE_REDIRECT_URL,
-                    grant_type: 'authorization_code'
-                })
-            }
-            )
+            const authHeader = req.headers['authorization']
+            const accessToken = authHeader && authHeader.split(' ')[1]
+            if (!accessToken) return res.status(401).json({ success: false, message: 'No Access Token' })
+            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ['RS256'] }, async (err, info: TokenInfo) => {
+                // if(!userId) return res.status(500).json({success:false, message:"Internal Server Error"})
+                if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
+                const authCode = req.body.authCode
 
-            const result = await fetchRes.json()
-            if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
+                console.log(authCode)
+                //take profile is ok since it includes sub (unique id) NO NEED OpenId
+                const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: authCode,
+                        client_id: process.env.GOOGLE_CLIENT_ID,
+                        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                        redirect_uri: process.env.GOOGLE_REDIRECT_URL,
+                        grant_type: 'authorization_code'
+                    })
+                }
+                )
 
-            const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
-            if (!decodedResult) return res.status(401).json({ success: false, message: 'Access code is not found' })
-            //***check email tecky???? */
-            const user = (await this.userService.getUserByGoogleId([decodedResult.sub]))[0]
+                const result = await fetchRes.json()
+                if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
 
-            // console.log(user[0])
-            let userId: number | null = user?.id
-            if (!user) {
-                console.log('create user')
-                userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
-            }
+                const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
+                if (!decodedResult) return res.status(401).json({ success: false, message: 'Access code is not found' })
+                //***check email tecky???? */
+                const user = (await this.userService.getUserByGoogleId([decodedResult.sub]))[0]
 
-            const userAccessToken = this.generateAccessToken('user', userId)
-            const userRefreshToken = this.generateRefreshToken('user', userId)
-            const storedToken = this.authService.getRefreshToken(userRefreshToken!)
-            if (!storedToken){
-                await this.authService.saveRefreshToken(userRefreshToken!)
-            }
-            
-            return res.status(200).json({ success: true, message: { accessToken: userAccessToken , refreshToken: userRefreshToken} })
+                // console.log(user[0])
+                let userId: number | null = user?.id
+                if (!user) {
+                    console.log('create user')
+                    userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
+                }
+                const userAccessToken = this.generateAccessToken({ guestId: info.guestId, userId: userId })
+                const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
+                const storedRefreshToken = this.authService.saveRefreshTokenAccessToken(userAccessToken!, userRefreshToken!)
+                if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
+                return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
+            })
+            return;
 
         } catch (error) {
             console.log(error)
@@ -89,8 +89,9 @@ export class AuthRouter {
     private loginGuest = async (req: Request, res: Response) => {
         try {
             const guestId = await this.guestService.createGuest()
-            const guestAccessToken = this.generateAccessToken('guest', guestId)
-            return res.status(200).json({ success: true, message: { accessToken: guestAccessToken } })
+            const guestAccessToken = this.generateAccessToken({ guestId: guestId })
+            const guestRefreshToken = this.generateRefreshToken({ guestId: guestId })
+            return res.status(200).json({ success: true, message: { accessToken: guestAccessToken, refreshToken: guestRefreshToken } })
 
         } catch (error) {
             console.log(error)
@@ -102,26 +103,28 @@ export class AuthRouter {
 
     private genAccessCodeByRefreshCode = async (req: Request, res: Response) => {
         try {
-            if (!req.body.token) return res.status(401).json({ success: false, message: 'No Token' })
-            const token = req.body.token
-            if (!token) return res.status(401).json({success:false, message: 'No Token'})
-            const id = await this.authService.getRefreshToken(token)
-            if (!id) return res.status(403).json({success:false, message:"Invalid Token"})
-            const decoded = jwt.decode(token)
-            if (decoded?.hasOwnProperty('guestId')){
-                jwt.verify(token, process.env.GUEST_ACCESS_TOKEN_SECRET as string, (err: jwt.JsonWebTokenError | jwt.NotBeforeError | jwt.TokenExpiredError | null, info: PersonInfo | undefined)=>{
-                    if(err) return res.status(403).json({success:false, message:"Invalid Token"})
-                    const accessToken = this.generateAccessToken('guest',info?.guestId!)
-                    return res.status(200).json({success:true, message: {accessToken: accessToken}})
-                })
-            } else if (decoded?.hasOwnProperty('userId')){
-                jwt.verify(token, process.env.USER_ACCESS_TOKEN_SECRET as string, (err: jwt.JsonWebTokenError | jwt.NotBeforeError | jwt.TokenExpiredError | null, info: PersonInfo | undefined)=>{
-                    if(err) return res.status(403).json({success:false, message:"Invalid Token"})
-                    const accessToken = this.generateAccessToken('user',info?.userId!)
-                    return res.status(200).json({success:true, message: {accessToken: accessToken}})
-                })
-            }
-            return res.status(401).json({success:false, message: 'Failed'})
+            if (!req.body.token) return res.status(401).json({ success: false, message: 'No Refresh Token' })
+            const refreshToken = req.body.refreshToken
+            if (!refreshToken) return res.status(401).json({ success: false, message: 'No Refresh Token' })
+            const accessToken = await this.authService.getAccessTokenByRefreshToken(refreshToken)
+            if (!accessToken) return res.status(403).json({ success: false, message: "Invalid Refresh Token" })
+            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info) => {
+                if (err?.name == 'TokenExpiredError') {
+                    jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
+                        //TokenExpiredError
+                        if (err) return res.status(403).json({ success: false, message: "Invalid Token" })
+                        const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
+                        const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
+                        if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
+                        return res.status(200).json({ success: true, message: { accessToken: accessToken } })
+                    })
+                    return;
+                }else{
+                    await this.authService.deleteRefreshToken(refreshToken)
+                    return res.status(401).json({ success: false, message: "Potential Threat" })
+                }
+            })
+            return;
         } catch (error) {
             console.log(error)
             return error.name == 'RangeError' ?
@@ -131,6 +134,9 @@ export class AuthRouter {
     }
 
     //logout destroy RefreshToken
+    private logoutUser = async (req: Request, res: Response) => {
+
+    }
 }
 
 

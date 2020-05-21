@@ -4,16 +4,19 @@ export async function seed(knex: Knex): Promise<any> {
 
     const trx = await knex.transaction();
     try {
-        await trx.raw(/*sql*/ `TRUNCATE refresh_tokens RESTART IDENTITY`);
+        await trx.raw(/*sql*/ `TRUNCATE tokens RESTART IDENTITY`);
 
-        await trx("refresh_tokens").insert([{
-            token: "token1"    
+        await trx("tokens").insert([{
+            refresh_token: "token1", 
+            access_token: "atoken1"
         },
         {
-            token: "token2"  
+            refresh_token: "token2",
+            access_token: "atoken2"
         },
         {
-            token:"token3"
+            refresh_token:"token3",
+            access_token: "atoken3"
         }])
         await trx.commit();
     } catch (error) {
