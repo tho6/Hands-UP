@@ -18,7 +18,7 @@ const Reply: React.FC<IReplyProps> = (props)=>{
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCancelModal, setCancelModal] = useState(false);
-  const canEdit = reply.guestId === user?.guestId;
+  const canEdit = reply.guestId === user?.guestId || user?.isHost;
   const dispatch = useDispatch();
   const backupValue = reply.content;
   return (
@@ -87,6 +87,11 @@ const Reply: React.FC<IReplyProps> = (props)=>{
           </div>
         )}
       </div>
+      {user?.isHost &&
+      <div className="d-flex">
+      <div data-testid='hide-button' className='util-spacing will-hover'><i className="far fa-eye-slash"></i></div>
+      </div>
+      }
       {showDeleteModal && (
         <YesNoModal
           title="Delete Warnings!"

@@ -15,11 +15,12 @@ import { IGuest } from '../models/IUserQ';
 import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
 
-interface IQuestionProps {
+export interface IQuestionProps {
   question: IQuestion;
   user: IGuest | null | undefined;
   canUploadFiles: boolean;
   answering: boolean;
+  isModerate:boolean;
 }
 
 const Question: React.FC<IQuestionProps> = (props) => {
@@ -32,8 +33,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFiles, answering } = props;
-  const canEdit = user?.guestId === question.questioner.id;
+  const { user, question, canUploadFiles, answering, isModerate } = props;
+  const canEdit = user?.guestId === question.questioner.id || user?.isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
   const questionContentBackUp = question.content;
@@ -51,7 +52,13 @@ const Question: React.FC<IQuestionProps> = (props) => {
               props.question.content
             )}
           </div>
-          {answering === true && <span className="util-spacing"><i className="fas fa-star"></i></span>}
+          <div className="d-flex">
+            {answering === true && (
+              <span className="util-spacing">
+                <i className="fas fa-star" data-testid="answering"></i>
+              </span>
+            )}
+          </div>
         </div>
         <div className="image-area mb-2 text-left d-flex flex-wrap">
           {question.files
@@ -63,6 +70,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                     className="mw-100"
                     src={`/${file.filename}`}
                     alt={file.filename}
+                    data-testid="image"
                   />
                   {isEdit && (
                     <span
@@ -104,7 +112,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
                 showReplies ? setShowReplies(false) : setShowReplies(true)
               }
             >
-              <i className="far fa-comment"></i> [{question.replies.length}]
+              <i className="far fa-comment"></i> [
+              {question.replies.filter((reply) => !reply.isHide).length}]
             </div>
           </div>
           <div className="d-flex p-2 flex-wrap">
@@ -166,7 +175,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   {canUploadFiles && (
                     <div className="util-spacing will-hover">
                       <label htmlFor="img">
-                        <i className="fas fa-camera"></i> (max:
+                        <i className="fas fa-camera" data-testid="camera"></i>{' '}
+                        (max:
                         {3 - question.files.length + deleteFiles.length}
                         ):
                       </label>
@@ -212,7 +222,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                   setDeleteFiles([]);
                 }}
               >
-                <i className="fas fa-pencil-alt"></i>
+                <i className="fas fa-pencil-alt" data-testid="edit-button"></i>
               </div>
             )}
 
@@ -246,10 +256,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
                       return;
                     }
                     dispatch(
-                      addReplyToQuestion(
-                        question.id,
-                        formState.values.reply
-                      )
+                      addReplyToQuestion(question.id, formState.values.reply)
                     );
                     formState.setField('reply', '');
                     setShowReplyTextArea(false);
@@ -276,21 +283,43 @@ const Question: React.FC<IQuestionProps> = (props) => {
         </Collapse>
         <Collapse in={showReplies}>
           <div className="px-sm-3 px-md-5 mb-2">
-            {question.replies.map((reply) => {
-              return (
-                <Reply
-                  key={reply.id}
-                  reply={reply}
-                  user={user}
-                  meetingId={question.meetingId}
-                ></Reply>
-              );
-            })}
+            {question.replies
+              .filter((reply) => reply.isHide === false)
+              .map((reply) => {
+                return (
+                  <Reply
+                    key={reply.id}
+                    reply={reply}
+                    user={user}
+                    meetingId={question.meetingId}
+                  ></Reply>
+                );
+              })}
           </div>
         </Collapse>
       </div>
+      <div className='d-flex flex-column justify-content-between'>
       <div className="p-2 platform-icon">
         <i className="fab fa-facebook fa-2x"></i>
+      </div>
+      <div>
+      {user?.isHost && isModerate && (
+              <div
+                data-testid="hide-button"
+                className="util-spacing will-hover"
+              >
+                <i className="far fa-check-circle fa-2x" data-testid='approve-button'></i>
+              </div>
+            )}
+      {user?.isHost && (
+              <div
+                data-testid="hide-button"
+                className="util-spacing will-hover"
+              >
+                <i className="far fa-eye-slash fa-2x"></i>
+              </div>
+            )}
+      </div>
       </div>
       {showDeleteModal && (
         <YesNoModal
