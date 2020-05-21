@@ -13,7 +13,7 @@ import {
 import { useFormState } from 'react-use-form-state';
 import { IUserQ, IGuest } from '../models/IUserQ';
 import Collapse from 'react-bootstrap/Collapse';
-import { Reply } from './Reply';
+import Reply from './Reply';
 
 interface IQuestionProps {
   question: IQuestion;
