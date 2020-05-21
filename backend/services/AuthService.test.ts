@@ -17,13 +17,15 @@ describe('auth service testing', ()=>{
 
     it('save refreshToken - normal', async ()=>{
         const token = 'test'
-        const id = await authService.saveRefreshToken(token)
+        const aToken = 'test2'
+        const id = await authService.saveRefreshTokenAccessToken(token, aToken)
         expect(id).toEqual(4)
     })
 
     it('save refreshToken - empty token', async ()=>{
         const token = ''
-        await expect(authService.saveRefreshToken(token)).rejects.toThrow('refreshToken is Empty')
+        const aToken = 'test2'
+        await expect(authService.saveRefreshTokenAccessToken(token, aToken)).rejects.toThrow('refreshToken is Empty')
     })
 
     it('delete refresh token - normal', async () => {
@@ -34,7 +36,8 @@ describe('auth service testing', ()=>{
 
     it('delete refresh token - empty token', async () => {
         const token = ''
-        await expect(authService.saveRefreshToken(token)).rejects.toThrow('refreshToken is Empty')
+        const aToken = 'test2'
+        await expect(authService.saveRefreshTokenAccessToken(token, aToken)).rejects.toThrow('refreshToken is Empty')
     })
 
     it('get refresh token - normal', async () => {
@@ -45,13 +48,36 @@ describe('auth service testing', ()=>{
 
     it('get refresh token - empty token', async () => {
         const token = ''
-        await expect(authService.saveRefreshToken(token)).rejects.toThrow('refreshToken is Empty')
+        const aToken = 'test2'
+        await expect(authService.saveRefreshTokenAccessToken(token, aToken)).rejects.toThrow('refreshToken is Empty')
     })
 
     it('get refresh token - not found', async () => {
         const token = 'token100'
         const result = await authService.getRefreshToken(token)
         expect(result).toBeFalsy()
+    })
+
+    it('get access Token', async () => {
+        const token = 'token1'
+        const result = await authService.getAccessTokenByRefreshToken(token)
+        const expectResult = 'atoken1'
+        expect(result).toEqual(expectResult)
+
+    })
+
+    it('update access Token - no refresh Token', async () => {
+        const token = 'token1'
+        await expect(authService.updateAccessToken(token, '')).rejects.toThrow('accessToken/refreshToken is Empty')
+    })
+
+    it('update access Token', async () => {
+        const token = 'test1'
+        const refreshToken = 'token1'
+        const result = await authService.updateAccessToken(refreshToken, token)
+        const getAccessToken = await authService.getAccessTokenByRefreshToken(refreshToken)
+        expect(result).toEqual(1)
+        expect(getAccessToken).toEqual(token)
     })
 
 })
