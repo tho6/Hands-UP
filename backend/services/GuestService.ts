@@ -1,5 +1,5 @@
 import Knex from "knex";
-import { GuestForm } from "./models/GuestInterface";
+import { GuestForm } from "../models/GuestInterface";
 import { hashGuestName } from "../hash";
 
 
@@ -9,28 +9,38 @@ export class GuestService {
 
     //create guests
     createGuest = async () => {
-        const maxIdResult = await this.knex.raw(/*SQL*/`SELECT max(id) FROM guests`)
-        const maxId = maxIdResult.rows[0].max
-        // console.log(maxId)
-        const name = await hashGuestName('guest'+maxId)
-        const result = await this.knex('guests').insert({
-            name
-        }).returning('id')
-        // console.log(name)
-        return result[0]
+        try {
+            const maxIdResult = await this.knex.raw(/*SQL*/`SELECT max(id) FROM guests`)
+            const maxId = maxIdResult.rows[0].max
+            // console.log(maxId)
+            const name = await hashGuestName('guest'+maxId)
+            const result = await this.knex('guests').insert({
+                name
+            }).returning('id')
+            // console.log(name)
+            return result[0]
+        } catch (error) {
+            console.log('[Guest Service Error] ' + 'createGuest')
+            console.log(error)
+        }
     }
     //get guests
 
-    getAllGuests = async () => {
-        const result = await this.knex.raw(
-            /*SQL*/`SELECT id, name FROM guests `)
-        return result.rows
+    getAllGuests = async ()=> {
+        try {
+            const result = await this.knex.raw(
+                /*SQL*/`SELECT id, name FROM guests `)
+            return result.rows
+        } catch (error) {
+            console.log('[Guest Service Error] ' + 'getAllGuests')
+            console.log(error)
+        }
     }
 
     getGuestById = async (ids: number[]) => {
         try {
-            if (ids.length === 0) throw new Error("ID array is empty")
-            if (ids.some(id => id < 1)) throw new Error("ID array contain value smaller than 1");
+            if (ids.length === 0) throw new RangeError("ID array is empty")
+            if (ids.some(id => id < 1)) throw new RangeError("ID array contain value smaller than 1");
             
             const result = await this.knex.raw(
                 /*sql*/ `SELECT id, name
@@ -48,8 +58,8 @@ export class GuestService {
     //delete guest
     deleteGuestById = async (ids: number[]) => {
         try {
-            if (ids.length === 0) throw new Error("ID array is empty")
-            if (ids.some(id => id < 1)) throw new Error("ID array contain value smaller than 1");
+            if (ids.length === 0) throw new RangeError("ID array is empty")
+            if (ids.some(id => id < 1)) throw new RangeError("ID array contain value smaller than 1");
             
             const deletedRows = await this.knex.raw(/*sql*/ `WITH deleted as (DELETE FROM guests 
                                                         WHERE id = ANY(?) RETURNING *) 
@@ -64,13 +74,13 @@ export class GuestService {
     }
 
     //update guest
-    updateUserById = async (updateForms: GuestForm[]) => {
-        if (updateForms.length === 0) throw new Error("Update array is empty")
+    updateGuestById = async (updateForms: GuestForm[]) => {
+        if (updateForms.length === 0) throw new RangeError("Update array is empty")
         const trx = await this.knex.transaction();
         let updated = 0
         try {
             for (const updateForm of updateForms){
-                const updatedRows = await this.knex.raw(/*SQL*/`WITH updated as (UPDATE users SET
+                const updatedRows = await this.knex.raw(/*SQL*/`WITH updated as (UPDATE guests SET
                                 name = ?
                                 WHERE id = ? RETURNING *)
                                 SELECT count(*) FROM updated`,

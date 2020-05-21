@@ -1,6 +1,7 @@
 import Knex from 'knex'
 import { seed } from '../seeds/create-guests'
 import { GuestService } from './GuestService';
+import { GuestForm } from '../models/GuestInterface';
 
 const knexConfig = require('../knexfile');
 const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
@@ -12,8 +13,8 @@ describe('testing Guest Service', () => {
         guestService = new GuestService(knex)
     })
 
-    afterAll(() => {
-        knex.destroy();
+    afterAll(async () => {
+        await knex.destroy();
     })
 
     // ------------------------ START getGuestByID ------------------------
@@ -107,7 +108,7 @@ describe('testing Guest Service', () => {
 
     // ------------------------ END deleteGuestByID ------------------------
 
-    // ------------------------ START gatAllGuests ------------------------
+    // ------------------------ START getAllGuests ------------------------
     it('get all guest - normal', async ()=>{
         const result = [{
             id: 1,
@@ -132,6 +133,48 @@ describe('testing Guest Service', () => {
         const serviceResult = await guestService.getAllGuests();
         expect(serviceResult).toEqual(result)
     })
-    // ------------------------ END gatAllGuests ------------------------
+    // ------------------------ END getAllGuests ------------------------
 
+    // ------------------------ START updateGuest ------------------------
+    it('update guest by ID - one guest', async ()=>{
+        const updateForms:GuestForm[] = [{
+            id: 1,
+            name: 'test'
+        }]
+        await guestService.updateGuestById(updateForms)
+        const serviceResult = await guestService.getGuestById([1])
+        expect(serviceResult).toEqual(updateForms)
+    })
+
+    it('update guest by ID - multiple guest', async ()=>{
+        const updateForms:GuestForm[] = [{
+            id: 1,
+            name: 'test'
+        },
+        {
+            id: 2,
+            name: 'test2'
+        }]
+        const updateLength = await guestService.updateGuestById(updateForms)
+        const serviceResult = await guestService.getGuestById([1,2])
+        expect(serviceResult).toEqual(updateForms)
+        expect(updateLength).toEqual(2)
+    })
+
+    it('update guest by ID - without providing update form', async()=>{
+        const updateForms:GuestForm[] = []
+        await expect(guestService.updateGuestById(updateForms)).rejects.toThrow("Update array is empty")
+    })
+
+    it('update guest by ID - id not exist', async()=>{
+        const updateForms:GuestForm[] = [{
+            id: 999,
+            name: 'test'
+        }]
+        const updatedRows = await guestService.updateGuestById(updateForms)
+        // const serviceResult = await guestService.getGuestById([999])
+        expect(updatedRows).toEqual(0)
+    })
+
+    // ------------------------ END updateGuest ------------------------
 })

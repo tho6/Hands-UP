@@ -1,0 +1,31 @@
+@backend_url = {{$dotenv BACKEND_URL}}
+@google_client_id = {{$dotenv GOOGLE_CLIENT_ID}}
+@google_client_secret = {{$dotenv GOOGLE_CLIENT_SECRET}}
+@google_redirect_url = {{$dotenv GOOGLE_REDIRECT_URL}}
+###
+GET {{backend_url}}/user/1,2,3,4
+
+###
+GET http://localhost:8080/user/1
+
+###
+GET {{backend_url}}/user/1?getBy=id
+
+###
+# get all users
+GET {{backend_url}}/user/all
+
+###
+GET https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id={{google_client_id}}&scope=profile&redirect_uri={{google_redirect_url}}
+
+
+###
+https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=470765243423-876cqfkt6rss43ja20apa0q4bhkkbbd4.apps.googleusercontent.com&scope=profile+email&redirect_uri=http://localhost:8080/test/callback&nonce=ivancheungisgood
+
+###
+POST {{backend_url}}/auth/loginGoogle
+Content-Type: application/json
+
+{
+    "googleAuthCode":"4/zwG4bH68CwExtK5ov3DBtEI5VcGqBoUNUKzKBi4rB6M6sihNBDXoDL8CIYyJ7M9fZpCIpx2sPsQANZN9xO1bWBY"
+}
