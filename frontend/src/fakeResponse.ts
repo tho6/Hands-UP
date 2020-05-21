@@ -5,7 +5,7 @@ export const tFetchRoomInformation = {
         name: 'TestingRoom1',
         code: '#string',
         is_live: true,
-        canModerate: false, canUploadFiles: true, questionLimit: 10
+        canModerate: false, canUploadFiles: true, questionLimit: 10,
     }
 }
 export const tLoginAsGuest = {
@@ -13,15 +13,15 @@ export const tLoginAsGuest = {
 
 }
 export const tUserIsNotAHost = {
-    status: true, message: { userId: 1, isHost: false, name: 'im not a host' }
+    status: true, message: { user:{ guestId: 1, isHost: false, name: 'im not a host' }, meetingId:1 }
 
 }
 export const tCurrentGuest = {
-    status: true, message: { guestId: 1, name: 'Anonymous' }
+    status: true, message: {user:{ guestId: 1, isHost: false, name:'Anonymous'}, meetingId:1}
 
 }
 export const tCurrentHost = {
-    status: true, message: { userId: 1, name: 'Host', isHost: true }
+    status: true, message: {user: { guestId: 1, name: 'Host', isHost: true }, meetingId:1}
 
 }
 export const tFetchQuestions = {//load questions at first
@@ -39,8 +39,8 @@ export const tFetchQuestions = {//load questions at first
         isHide: false,
         isAnswered: false,
         isApproved: true,
-        createdAt: Date.now()-1000,
-        updatedAt: Date.now()-1000
+        createdAt: Date.now() - 1000,
+        updatedAt: Date.now() - 1000
     }, {
         id: 2,
         questioner: {
@@ -76,7 +76,7 @@ export const tNewQuestion = {//add reply
         isAnswered: false,
         isApproved: true,
         createdAt: Date.now() + 2000,
-        updatedAt: Date.now()+ 2000
+        updatedAt: Date.now() + 2000
     }
 }
 export const tNewReply = {//add reply

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { reply } from '../models/IQuestion';
 import { useFormState } from 'react-use-form-state';
-import { IUserQ, IGuest } from '../models/IUserQ';
+import { IGuest } from '../models/IUserQ';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
 import { editReply, deleteReply } from '../redux/questions/thunk';
 
 export interface IReplyProps {
   reply: reply;
-  user: (IUserQ & IGuest) | null;
+  user: IGuest | null | undefined;
   meetingId: number;
 }
 

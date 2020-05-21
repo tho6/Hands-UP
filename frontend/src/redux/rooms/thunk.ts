@@ -55,9 +55,9 @@ export function loginAsGuest(meetingId: number) { //this actually means create a
             // const result = await res.json();
             const result = tLoginAsGuest
             if (result.status) {
-                localStorage.setItem('guestToken', result.message);
+                localStorage.setItem('token', result.message);
                 dispatch(loggedInSuccessInRoom(result.message))
-                dispatch(restoreLoginInRoom(meetingId, false))
+                dispatch(restoreLoginInRoom(meetingId))
             } else {
                 window.alert(result.message);
             }
@@ -66,12 +66,10 @@ export function loginAsGuest(meetingId: number) { //this actually means create a
         }
     }
 }
-export function restoreLoginInRoom(meetingId: number, checkIsHost:boolean) {
+export function restoreLoginInRoom(meetingId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
-        // const userToken = getState().auth.token;
-        const guestToken = getState().roomsInformation.userInformation.token;
-        const userToken = tUserToken;
-        if(userToken && checkIsHost){
+        const userToken = getState().roomsInformation.token;
+        if(userToken){
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${meetingId}/user/current`, {
             //     headers: {
             //         'Content-Type': 'application/json',
@@ -81,34 +79,13 @@ export function restoreLoginInRoom(meetingId: number, checkIsHost:boolean) {
             // const result = await res.json(); //res.json(status:true, message:user) user-->{userId: 1, name:'Alex', isHost:true/false}
             const result = tCurrentHost;
             if (result.status) {
-                result.message.isHost?dispatch(loadedUserInRoom(result.message)):guestToken!=null?getCurrentGuest(guestToken):dispatch(loginAsGuest(meetingId));
+                dispatch(loadedUserInRoom(result.message.user, result.message.meetingId));
             } else {
                 window.alert(result.message);
             }
             return;
         }
-        if (guestToken != null) {
-            const result = await getCurrentGuest(guestToken);
-            if (result.status) {
-                dispatch(loggedInSuccessInRoom(guestToken));
-                dispatch(loadedUserInRoom(result.message));
-            } else {
-                window.alert(result.message);
-            }
-            return;
-        }
+            //if no token
             dispatch(loginAsGuest(meetingId));
     }
-}
-//getCurrentGuest --> res.json({status:true, message: guest}) guest-->{guestId: 1, name: 'Anonymous'}
-async function getCurrentGuest(guestToken: string) {
-    // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/user/current`, {
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${guestToken}`
-    //     },
-    // });
-    //const result = await res.json();
-    const result = tCurrentGuest
-    return result;
 }

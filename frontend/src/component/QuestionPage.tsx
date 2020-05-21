@@ -24,19 +24,16 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
-  const userInformation = useSelector(
-    (rootState: RootState) => rootState.roomsInformation.userInformation
-  );
   const [formState, { textarea }] = useFormState();
   const [files, setFiles] = useState<FileList | null>(null);
   const dispatch = useDispatch();
   let answering:IQuestion;
   useEffect(() => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
-  }, [dispatch, roomInformation, meetingId]);
+  }, [dispatch, meetingId]);
 
   useEffect(() => {
-    dispatch(restoreLoginInRoom(parseInt(meetingId), true));
+    dispatch(restoreLoginInRoom(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
@@ -64,6 +61,7 @@ const QuestionPage: React.FC = () => {
 
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5">
+      
       <div className="question-form text-left mb-4">
         <div className="bottom-border pb-3">NEW QUESTIONS</div>
         <div className="d-flex flex-wrap">
@@ -150,7 +148,7 @@ const QuestionPage: React.FC = () => {
               !question.isAnswered && (
                 <Question
                   key={question.id}
-                  user={userInformation.user}
+                  user={roomInformation.userInformation}
                   canUploadFiles={roomInformation.canUploadFiles}
                   question={question}
                   answering={answering.id === question.id? true : false}
@@ -164,7 +162,7 @@ const QuestionPage: React.FC = () => {
               question.isAnswered && (
                 <Question
                   key={question.id}
-                  user={userInformation.user}
+                  user={roomInformation.userInformation}
                   canUploadFiles={roomInformation.canUploadFiles}
                   question={question}
                   answering={false}

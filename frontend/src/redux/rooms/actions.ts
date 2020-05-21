@@ -1,5 +1,5 @@
 import { IRoomInformation, IRoomConfiguration } from "../../models/IRoomInformation";
-import { IUserQ, IGuest } from "../../models/IUserQ";
+import { IGuest } from "../../models/IUserQ";
 
 export function loadedRoomInformation(room: IRoomInformation) {
     return {
@@ -14,10 +14,11 @@ export function successfullyUpdatedRoomConfiguration(meetingId: number, configur
         configuration
     }
 }
-export function loadedUserInRoom(user: (IUserQ & IGuest)) {
+export function loadedUserInRoom(user: IGuest, meetingId:number) {
     return {
         type: '@@ROOMS/LOADED_USER' as '@@ROOMS/LOADED_USER',
-        user
+        user,
+        meetingId
     }
 }
 export function loggedInSuccessInRoom(token: string) {

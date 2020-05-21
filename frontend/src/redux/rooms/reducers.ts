@@ -1,17 +1,17 @@
 import { RoomsActions } from "./actions"
 import { IRoomInformation } from "../../models/IRoomInformation";
-import { IUserQ, IGuest, GuestInformation } from "../../models/IUserQ";
+import { IGuest } from "../../models/IUserQ";
 
 export interface RoomState {
     roomsInformation: {
         [id: string]: IRoomInformation
     };
-    userInformation: GuestInformation;
+    token: string | null;
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
-    userInformation: { token: null, user: null }
+    token: localStorage.getItem('token'),
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -19,8 +19,7 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
         case '@@ROOMS/LOADED_ROOM_INFORMATION':
             {
                 const newRooms = { ...oldState.roomsInformation };
-
-                newRooms[action.room.id] = action.room;
+                newRooms[action.room.id] = {...oldState.roomsInformation[action.room.id], ...action.room};
 
                 return {
                     ...oldState,
@@ -40,18 +39,18 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
             }
         case '@@ROOMS/LOADED_USER':
             {
-                const newUserInformation = { ...oldState.userInformation, user:action.user };
+                const newRoomInformation = { ...oldState.roomsInformation};
+                newRoomInformation[action.meetingId] = {...oldState.roomsInformation[action.meetingId], userInformation: action.user};
                 return {
                     ...oldState,
-                    userInformation: newUserInformation,
+                    roomsInformation: newRoomInformation,
                 };
             }
         case '@@ROOMS/LOGGED_IN_SUCCESS':
             {
-                const newUserInformation = { ...oldState.userInformation, token:action.token };
                 return {
                     ...oldState,
-                    userInformation: newUserInformation,
+                    token: action.token
                 };
             }
         default:
