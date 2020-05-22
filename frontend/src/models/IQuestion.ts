@@ -20,6 +20,7 @@ export type reply = {
     questionId: number;
     createdAt:number;
     updatedAt:number;
+    isHide: boolean;
 
 }
 export type file = {

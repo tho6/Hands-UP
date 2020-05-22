@@ -3,7 +3,7 @@ import React from 'react';
 import {render, screen, fireEvent, queryByTestId} from '@testing-library/react'
 import Reply, {IReplyProps} from './Reply';
 import { reply } from '../models/IQuestion';
-import { IUserQ, IGuest } from '../models/IUserQ';
+import {  IGuest } from '../models/IUserQ';
 // import { useDispatch } from 'react-redux';
 import * as dependency from 'react-redux';
 
@@ -18,11 +18,12 @@ describe("Reply component",()=>{
       content: 'string string',
       questionId: 1,
       createdAt: Date.now(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      isHide: false
   }
-  const host:IUserQ = {name:'host',userId:1, isHost:true}
-  const guest1:IGuest = {name:'Anonymous',guestId:1}
-  const guest2:IGuest = {name:'Anonymous2',guestId:2}
+  const host:IGuest= {name:'host',guestId:2, isHost:true}
+  const guest1:IGuest = {isHost: false, name:'Anonymous',guestId:1}
+  const guest2:IGuest = {isHost: false, name:'Anonymous2',guestId:2}
   const meetingId = 1;
   
     it("render reply component - you are the replier edit -> cancel",async ()=>{
@@ -59,10 +60,10 @@ describe("Reply component",()=>{
         expect(name).toBeInTheDocument();
         expect(element).toBeFalsy();
     })
-    it("render reply component - userId equals to guestId, should not be able to edit",async ()=>{
+    it("render reply component - guestId not the same, but you are the host",async ()=>{
         render(<Reply reply={reply} user={host} meetingId={1}/>)
         const element = screen.queryByTestId('edit-button');
-        expect(element).toBeFalsy();
+        expect(element).toBeInTheDocument();
     })
     it("render reply component - edited ",async ()=>{
       const editedReply = {...reply, updatedAt:1}
@@ -75,6 +76,14 @@ describe("Reply component",()=>{
     it("render reply component - not edited ",async ()=>{
         render(<Reply reply={reply} user={guest1} meetingId={1}/>)
         expect(screen.queryByTestId('edited-sign')).not.toBeInTheDocument();
+    })
+    it("render reply component - host, hide button occurs ",async ()=>{
+        render(<Reply reply={reply} user={host} meetingId={1}/>)
+        expect(screen.queryByTestId('hide-button')).toBeInTheDocument();
+    })
+    it("render reply component - guest, no hide button ",async ()=>{
+        render(<Reply reply={reply} user={guest1} meetingId={1}/>)
+        expect(screen.queryByTestId('hide-button')).not.toBeInTheDocument();
     })
 });
 

@@ -1,16 +1,16 @@
 $replyTextAreaMultiplier: 0.7;
-%button{
+%button {
   border: none;
-  &:focus{
-      outline: none
+  &:focus {
+    outline: none;
   }
-  background-color:rgba(0, 99, 204, 0.411);
+  background-color: rgba(0, 99, 204, 0.411);
 }
 %text-area {
   resize: none;
   border: 1px solid black;
 }
-%text-area-ninety-percent{
+%text-area-ninety-percent {
   height: 150px;
   @media only screen and (min-width: 1024px) {
     width: 90%;
@@ -23,59 +23,80 @@ $replyTextAreaMultiplier: 0.7;
     width: 90%;
   }
 }
-%i{
-    @media only screen and (max-width: 768px) {
-      font-size: 1.5rem;
-    }
-    @media only screen and (max-width: 576px) {
-      font-size: 1rem;
-    }
-    @media only screen and (min-width: 1024px) {
-      font-size: 1.8em;
-    }
+%i {
+  @media only screen and (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+  @media only screen and (max-width: 576px) {
+    font-size: 1rem;
+  }
+  @media only screen and (min-width: 1024px) {
+    font-size: 1.8em;
+  }
 }
-.question-form{
-  i{
+%is-active {
+  border-bottom: 1px solid black;
+  box-shadow: 2px 2px 4px 5px #ccc;
+  font-weight: bold;
+}
+.question-moderation {
+  &.bottom-border {
+    border-bottom: 1px solid #cccccc;
+  }
+  button {
+    @extend %button;
+    &.is-active {
+      @extend %is-active;
+      border-bottom: none;
+      border-left: 1px solid black;
+    }
+    background-color: transparent;
+  }
+}
+.moderate-container {
+  margin-top:2rem;
+  img {
+    max-height: 150px;
+  }
+}
+.question-form {
+  i {
     @extend %i;
   }
-  .bottom-border{
-    border-bottom:1px solid #CCCCCC;
-  }
-  textarea{
+
+  textarea {
     @extend %text-area;
     width: 100%;
-    height:150px;
+    height: 150px;
     max-width: 1300px;
     min-width: 300px;
-    border:none;
+    border: none;
   }
 }
-.question-page-tab{
+.question-page-tab {
   @extend %button;
-  &.is-active{
-    border-bottom: 1px solid black;
-    box-shadow: 2px 2px 4px 5px #ccc;
-    font-weight: bold;
+  &.is-active {
+    @extend %is-active;
   }
 }
-.will-hover{
+.will-hover {
   transition: transform 0.2s ease-in-out;
-  &:hover{
+  &:hover {
     transform: scale(1.1);
   }
 }
-.util-spacing{
+.util-spacing {
   padding: 0.5rem;
-  margin-left:0.5rem;
-  margin-right:0.5rem;
-  
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+
   @media only screen and (max-width: 576px) {
     margin-left: 0rem;
     margin-right: 0rem;
   }
 }
-.to-center{
-  display:flex;
+.to-center {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -151,10 +172,10 @@ $replyTextAreaMultiplier: 0.7;
     }
   }
   i {
-@extend %i;
+    @extend %i;
   }
-  .reply{
-    border-top: solid rgba(109, 233, 192, 0.788) 1px ;
+  .reply {
+    border-top: solid rgba(109, 233, 192, 0.788) 1px;
     i {
       @media only screen and (max-width: 768px) {
         font-size: 1.5rem * $replyTextAreaMultiplier;
@@ -180,9 +201,8 @@ $replyTextAreaMultiplier: 0.7;
       @media only screen and (max-width: 400px) {
         width: 85%;
         height: 150px * $replyTextAreaMultiplier;
-        min-width:200px;
+        min-width: 200px;
       }
     }
   }
-  }
-
+}

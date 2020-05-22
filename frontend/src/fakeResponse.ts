@@ -5,7 +5,7 @@ export const tFetchRoomInformation = {
         name: 'TestingRoom1',
         code: '#string',
         is_live: true,
-        canModerate: false, canUploadFiles: true, questionLimit: 10,
+        canModerate: true, canUploadFiles: true, questionLimit: 10,
     }
 }
 export const tLoginAsGuest = {
@@ -34,11 +34,11 @@ export const tFetchQuestions = {//load questions at first
         content: "Hi how are you? akjdfk kjsadkj hakjdk jkshdkj kjadskjk akjdhkj kahdskj akdsjhkajsd aksjdhkj sdkjahskd aksjdka sdkjaskd askjd kjss dkjfkdf jdfkjshfahdjfahdljfk hwif sjdhf kajhsdfklhdfkjahsdkjfha kdfhakjshdf sjhdfkjasd fkjahsd kfha ksjdfh kashdjf lakjshdfkahskdjfhak dfhlaks fkah dfk",
         likes: [1, 2, 3, 7, 8, 9],
         replies: [],
-        files: [{ id: 1, filename: '456.png' }, { id: 2, filename: '123.png' }],
+        files: [{ id: 1, filename: '1234.png' }, { id: 2, filename: '123.png' }],
         meetingId: 1,
         isHide: false,
         isAnswered: false,
-        isApproved: true,
+        isApproved: false,
         createdAt: Date.now() - 1000,
         updatedAt: Date.now() - 1000
     }, {
@@ -88,7 +88,8 @@ export const tNewReply = {//add reply
         questionId: 1,
         isEdit: false,
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
+        isHide: false
     }
 }
 export const tUpdateReply = {//add reply
