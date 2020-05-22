@@ -337,7 +337,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
             )}
       {user?.isHost && question.isHide && (
               <div
-                data-testid="hide-button"
+                data-testid="display-button"
                 className="util-spacing will-hover"
                 onClick={()=>{
                   dispatch(approveOrHideQuestion(question.id, false));
