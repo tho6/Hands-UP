@@ -129,7 +129,8 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 const newQuestions = { ...oldState.questions };
                 newQuestions[action.question.id]=action.question;
                 const newQuestionsByMeetingId = { ...oldState.questionsByMeetingId };
-                const newArr = [...oldState.questionsByMeetingId[action.question.meetingId]];
+              // const newArr =  oldState.questionsByMeetingId[action.question.meetingId]?[...oldState.questionsByMeetingId[action.question.meetingId]]:[];
+                const newArr =  oldState.questionsByMeetingId[action.question.meetingId]||[];
                 newArr.push(action.question.id);
                 newQuestionsByMeetingId[action.question.meetingId] = newArr
 
