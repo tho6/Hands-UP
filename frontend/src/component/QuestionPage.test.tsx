@@ -11,15 +11,10 @@ import useReactRouter from 'use-react-router';
 import { mockComponent } from 'react-dom/test-utils';
 import { IRoomInformation } from '../models/IRoomInformation';
 import { push } from 'connected-react-router';
-
-jest.mock('react-redux');
-jest.mock('use-react-router');
-jest.mock('connected-react-router');
-(push as jest.Mock).mockImplementation(jest.fn());
 import QuestionPage from './QuestionPage';
-jest.mock('./Question');
+import { debuglog } from 'util';
 
-describe('QuestionPage component', () => {
+jest.mock('react-redux', () => {
   const mockQuestions = [
     {
       id: 1,
@@ -38,7 +33,7 @@ describe('QuestionPage component', () => {
       meetingId: 1,
       isHide: false,
       isAnswered: false,
-      isApproved: false,
+      isApproved: true,
       createdAt: Date.now() - 1000,
       updatedAt: Date.now() - 1000
     },
@@ -64,10 +59,11 @@ describe('QuestionPage component', () => {
   const tCurrentGuest = {
     user: { guestId: 1, isHost: false, name: 'Anonymous' }
   };
-
+  
   const tCurrentHost = {
     user: { guestId: 1, name: 'Host', isHost: true }
   };
+  
   const roomInformation: IRoomInformation = {
     id: 1,
     owenId: 1,
@@ -79,17 +75,28 @@ describe('QuestionPage component', () => {
     questionLimit: 10,
     userInformation: { ...tCurrentGuest.user }
   };
+  return {
+    connect: (mapStateToProps:any, mapDispatchToProps:any) => (ReactComponent:any) => ({
+      mapStateToProps,
+      mapDispatchToProps,
+      ReactComponent
+    }),
+    useSelector:jest.fn().mockReturnValueOnce([1,2])
+    .mockReturnValueOnce(mockQuestions)
+    .mockReturnValueOnce(roomInformation),
+    //@ts-ignore
+    Provider: ({ children }) => children,
+    useDispatch:jest.fn(()=>{return ()=>{}})
+  }
+})
+jest.mock('use-react-router');
+jest.mock('connected-react-router');
+jest.mock('./Question');
 
+describe('QuestionPage component', () => {
   beforeEach(() => {
-    ((Question as any) as jest.Mock).mockReturnValue(
-      <div>QuestionComponent</div>
-    );
-    (dependency.useSelector as jest.Mock)
-      .mockReturnValueOnce('0')
-      .mockReturnValueOnce(mockQuestions)
-      .mockReturnValueOnce(roomInformation);
-    (useReactRouter as jest.Mock).mockReturnValue({ id: 1, page: 'main' });
-    (dependency.useDispatch as jest.Mock).mockImplementation(jest.fn());
+    (Question as any as  jest.Mock).mockReturnValue(<div>QuestionComponent</div>);
+    (useReactRouter as jest.Mock).mockReturnValue({match:{params:{ id: 1, page: 'main' }}});
   });
   const reply: reply = {
     id: 1,
@@ -125,7 +132,8 @@ describe('QuestionPage component', () => {
   //const props:IQuestionProps = {question, user: guest1, canUploadFiles:false, answering:false}
   describe('guest', () => {
     it('render QuestionPage component - contains textarea for new question, 2 question components', async () => {
-      render(<QuestionPage />);
+      const{debug} = render(<QuestionPage />);
+     debug();
   
       expect(screen.queryByTestId('textarea-new-question')).toBeInTheDocument();
       expect(screen.queryAllByText(/QuestionComponent/).length).toBe(2);

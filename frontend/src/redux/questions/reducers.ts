@@ -139,7 +139,43 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                     questionsByMeetingId: newQuestionsByMeetingId
                 };
             }
-
+            case '@@QUESTIONS/HIDE_OR_DISPLAY_REPLY':
+                {
+                    const newQuestions = { ...oldState.questions };
+                    const replyArr = oldState.questions[action.questionId].replies.slice();
+                    const idx = replyArr.findIndex(elem => elem.id === action.replyId);
+                    replyArr[idx].isHide = action.isHide;
+                    newQuestions[action.questionId].replies = replyArr;
+    
+                    return {
+                        ...oldState,
+                        questions: newQuestions,
+                    };
+                }
+                case '@@QUESTIONS/APPROVE_HIDE_QUESTION':
+                    {
+                        const newQuestions = { ...oldState.questions };
+                        if(action.isHide === true){
+                            newQuestions[action.questionId].isHide = true;
+                            newQuestions[action.questionId].isApproved = false;
+                        }else{
+                            newQuestions[action.questionId].isHide = false;
+                            newQuestions[action.questionId].isApproved = true;
+                        }
+                        return {
+                            ...oldState,
+                            questions: newQuestions,
+                        };
+                    }
+                    case '@@QUESTIONS/ANSWERED_QUESTION':
+                        {
+                            const newQuestions = { ...oldState.questions };
+                            newQuestions[action.questionId].isAnswered = true;
+                            return {
+                                ...oldState,
+                                questions: newQuestions,
+                            };
+                        }
         default:
             return oldState;
     }

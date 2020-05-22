@@ -4,7 +4,11 @@ import { useFormState } from 'react-use-form-state';
 import { IGuest } from '../models/IUserQ';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
-import { editReply, deleteReply } from '../redux/questions/thunk';
+import {
+  editReply,
+  deleteReply,
+  hideOrDisplayReply
+} from '../redux/questions/thunk';
 
 export interface IReplyProps {
   reply: reply;
@@ -12,7 +16,7 @@ export interface IReplyProps {
   meetingId: number;
 }
 
-const Reply: React.FC<IReplyProps> = (props)=>{
+const Reply: React.FC<IReplyProps> = (props) => {
   const { reply, user, meetingId } = props;
   const [formState, { textarea }] = useFormState();
   const [isEdit, setIsEdit] = useState(false);
@@ -25,12 +29,18 @@ const Reply: React.FC<IReplyProps> = (props)=>{
     <div className="reply mb-3">
       <div className="content pb-2 pt-2">
         {isEdit ? (
-          <textarea data-testid='text-area' className="mb-2 rounded" {...textarea('edit')}></textarea>
+          <textarea
+            data-testid="text-area"
+            className="mb-2 rounded"
+            {...textarea('edit')}
+          ></textarea>
         ) : (
           reply.content
         )}
       </div>
-      {!isEdit && reply.createdAt!==reply.updatedAt && <span data-testid='edited-sign'>[Edited]</span>};
+      {!isEdit && reply.createdAt !== reply.updatedAt && (
+        <span data-testid="edited-sign">[Edited]</span>
+      )}
       <div className="d-flex justify-content-sm-end justify-content-start">
         <div className="to-center util-spacing">{reply.guestName}</div>
         {canEdit && !isEdit && (
@@ -54,7 +64,7 @@ const Reply: React.FC<IReplyProps> = (props)=>{
                   formState.values.edit.trim()
                 ) {
                   dispatch(
-                    editReply(user?.guestId!, reply.id, formState.values.edit),
+                    editReply(user?.guestId!, reply.id, formState.values.edit)
                   );
                   setIsEdit(false);
                 } else if (!formState.values.edit.trim()) {
@@ -64,7 +74,10 @@ const Reply: React.FC<IReplyProps> = (props)=>{
                 }
               }}
             >
-              <i className="fas fa-cloud-upload-alt" data-testid='save-button'></i>
+              <i
+                className="fas fa-cloud-upload-alt"
+                data-testid="save-button"
+              ></i>
             </span>
             <span
               className="util-spacing will-hover"
@@ -72,7 +85,7 @@ const Reply: React.FC<IReplyProps> = (props)=>{
                 setShowDeleteModal(true);
               }}
             >
-              <i className="fas fa-trash-alt" data-testid='delete-button'></i>
+              <i className="fas fa-trash-alt" data-testid="delete-button"></i>
             </span>
             <span
               className="util-spacing will-hover"
@@ -82,16 +95,33 @@ const Reply: React.FC<IReplyProps> = (props)=>{
                   : setCancelModal(true);
               }}
             >
-              <i className="fas fa-ban" data-testid='cancel-button'></i>
+              <i className="fas fa-ban" data-testid="cancel-button"></i>
             </span>
           </div>
         )}
+        {user?.isHost && !reply.isHide && (
+          <div
+            data-testid="hide-button"
+            className="util-spacing will-hover"
+            onClick={() => {
+              dispatch(hideOrDisplayReply(reply.id, true));
+            }}
+          >
+            <i className="far fa-eye-slash"></i>
+          </div>
+        )}
+        {user?.isHost && reply.isHide && (
+          <div
+            data-testid="display-button"
+            className="util-spacing will-hover"
+            onClick={() => {
+              dispatch(hideOrDisplayReply(reply.id, false));
+            }}
+          >
+            <i className="far fa-eye"></i>
+          </div>
+        )}
       </div>
-      {user?.isHost &&
-      <div className="d-flex">
-      <div data-testid='hide-button' className='util-spacing will-hover'><i className="far fa-eye-slash"></i></div>
-      </div>
-      }
       {showDeleteModal && (
         <YesNoModal
           title="Delete Warnings!"
@@ -122,5 +152,5 @@ const Reply: React.FC<IReplyProps> = (props)=>{
       )}
     </div>
   );
-}
-export  default Reply;
+};
+export default Reply;

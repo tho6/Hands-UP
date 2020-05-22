@@ -1,6 +1,6 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote, addedQuestion } from "./actions";
-import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote, tNewQuestion } from "../../fakeResponse";
+import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote, addedQuestion, successfullyHideOrDisplayAReply, successfullyApprovedOrHideAQuestion, successfullyAnsweredQuestion } from "./actions";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote, tNewQuestion, tHideReplySuccess, tHideQuestion, tAnsweredQuestion} from "../../fakeResponse";
 
 
 // Thunk Action
@@ -223,6 +223,78 @@ export function removeVote(questionId: number) {
             const result = tAddedVote;
             if (result.status) {
                 dispatch(successfullyRemoveVote(result.message.questionId, result.message.guestId));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function hideOrDisplayReply(replyId: number, isHide:boolean) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/replies/status`, {
+            //     method: 'PUT',
+            //     credentials: "include",
+            //     headers:{
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body:JSON.stringify({replyId, isHide:true})
+            // });
+            // const result = await res.json();
+            const result = tHideReplySuccess;
+            if (result.status) {
+                dispatch(successfullyHideOrDisplayAReply(result.message.replyId, result.message.questionId, result.message.isHide));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function approveOrHideQuestion(questionId: number, isHide:boolean) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/status`, {
+            //     method: 'PUT',
+            //     credentials: "include",
+            //     headers:{
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body:JSON.stringify({questionId, isHide:true})
+            // });
+            // const result = await res.json();
+            const result = tHideQuestion;
+            if (result.status) {
+                dispatch(successfullyApprovedOrHideAQuestion(result.message.questionId, result.message.isHide));
+            } else {
+                window.alert(result.message);
+            }
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function answeredQuestion(questionId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/status`, {
+            //     method: 'PUT',
+            //     credentials: "include",
+            //     headers:{
+            //         'Authorization': `Bearer ${getState().roomsInformation.userInformation.token}`,
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body:JSON.stringify({questionId, isHide:true})
+            // });
+            // const result = await res.json();
+            const result = tAnsweredQuestion;
+            if (result.status) {
+                dispatch(successfullyAnsweredQuestion(result.message.questionId));
             } else {
                 window.alert(result.message);
             }

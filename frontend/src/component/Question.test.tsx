@@ -107,11 +107,12 @@ describe("Question component",()=>{
             render(<Question question={question} user={host} canUploadFiles={false} answering={false} isModerate={false}/>);
             expect(screen.queryByTestId('edit-button')).toBeInTheDocument();
             expect(screen.queryByTestId('hide-button')).toBeInTheDocument();
+            expect(screen.queryByTestId('approve-button')).not.toBeInTheDocument();
         })
         it("render reply component - when question is at moderation",async ()=>{
             render(<Question question={question} user={host} canUploadFiles={false} answering={false} isModerate={true}/>);
             expect(screen.queryByTestId('approve-button')).toBeInTheDocument();
-            expect(screen.queryAllByTestId('hide-button').length).toBe(2);
+            expect(screen.queryAllByTestId('hide-button').length).toBe(1);
         })
     });
 
