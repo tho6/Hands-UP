@@ -12,6 +12,9 @@ GET http://localhost:8080/user/1
 GET {{backend_url}}/user/1?getBy=id
 
 ###
+GET {{backend_url}}/user/1,2?getBy=id
+
+###
 # get all users
 GET {{backend_url}}/user/all
 
@@ -28,4 +31,27 @@ Content-Type: application/json
 
 {
     "googleAuthCode":"4/zwG4bH68CwExtK5ov3DBtEI5VcGqBoUNUKzKBi4rB6M6sihNBDXoDL8CIYyJ7M9fZpCIpx2sPsQANZN9xO1bWBY"
+}
+
+#####   -- AuthRouter Test --
+###
+POST {{backend_url}}/auth/loginGuest
+
+###
+POST {{backend_url}}/auth/token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJndWVzdElkIjoxMSwiaWF0IjoxNTkwMTMzMjg1LCJleHAiOjE1OTI3MjUyODV9.OTMwDEE2_Fpss2_vaKbgGiBjfnkeJtBQVG3hljBIcY1tefOJs6NjKLvJk05cNUhEbKkqfVDJ9xSA10QHC3av9ybN320gb3-WtluYBj1zfrrY3qbJCNxLIDK0tsXxScdQQnhW_pVsZ5ct33L4RyTAcCqqdUQ6OawSwFHzABXq1zc"
+}
+
+###
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJndWVzdElkIjo5LCJpYXQiOjE1OTAxMzI2NjgsImV4cCI6MTU5MjcyNDY2OH0.OI7cuijZLSETr_C9fkHqgwUXc1C4mNrNNesSBWSfNs9c9y_gwkKjP0PJuy7DK0qZQK2kxShVIr0FsW7L02BAqenIU8Vw1Rz6QlInPmJeo2Mzal4FUQ_BKE2MIHr0K3SlH1gbe0FolThNh8m_VF18eFcqyEXN210tH0ECsbEJWto
+
+###
+POST {{backend_url}}/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJndWVzdElkIjoxMSwiaWF0IjoxNTkwMTMzMjg1LCJleHAiOjE1OTI3MjUyODV9.OTMwDEE2_Fpss2_vaKbgGiBjfnkeJtBQVG3hljBIcY1tefOJs6NjKLvJk05cNUhEbKkqfVDJ9xSA10QHC3av9ybN320gb3-WtluYBj1zfrrY3qbJCNxLIDK0tsXxScdQQnhW_pVsZ5ct33L4RyTAcCqqdUQ6OawSwFHzABXq1zc"
 }

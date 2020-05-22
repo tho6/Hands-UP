@@ -16,7 +16,6 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
-import { authenticateUserToken } from "./routers/guard";
 
 declare global {
     namespace Express {
