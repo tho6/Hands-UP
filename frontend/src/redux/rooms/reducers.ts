@@ -1,6 +1,5 @@
 import { RoomsActions } from "./actions"
 import { IRoomInformation } from "../../models/IRoomInformation";
-import { IGuest } from "../../models/IUserQ";
 
 export interface RoomState {
     roomsInformation: {
