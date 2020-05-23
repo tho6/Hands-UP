@@ -27,5 +27,12 @@ export function loggedInSuccessInRoom(token: string) {
         token
     }
 }
+export function setQuestionLimitState(meetingId:number, isChecking: boolean) {
+    return {
+        type: '@@ROOMS/SET_STATUS_OF_QUESTION_LIMIT' as '@@ROOMS/SET_STATUS_OF_QUESTION_LIMIT',
+        isChecking,
+        meetingId
+    }
+}
 // action types
-export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loadedUserInRoom> | ReturnType<typeof loggedInSuccessInRoom>;
+export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loadedUserInRoom> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>;

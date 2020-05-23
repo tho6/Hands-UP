@@ -8,14 +8,14 @@ export function loadQuestions(meetingId: number, questions: IQuestion[]) {
         meetingId
     }
 }
-export function successfullyDeleteQuestion(questionId:number, meetingId:number) {
+export function successfullyDeleteQuestion(questionId: number, meetingId: number) {
     return {
         type: '@@QUESTIONS/DELETE_QUESTION' as '@@QUESTIONS/DELETE_QUESTION',
         questionId,
         meetingId
     }
 }
-export function successfullyUpdateQuestion(questionId:number, content:string, deleteFilesId:number[], files:file[], updatedAt:number) {
+export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: number) {
     return {
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
@@ -25,44 +25,68 @@ export function successfullyUpdateQuestion(questionId:number, content:string, de
         updatedAt
     }
 }
-export function addedReplyToQuestion(reply:reply) {
+export function addedReplyToQuestion(reply: reply) {
     return {
         type: '@@QUESTIONS/ADDED_REPLY_TO_QUESTION' as '@@QUESTIONS/ADDED_REPLY_TO_QUESTION',
         reply
     }
 }
-export function successfullyUpdateReply(questionId:number, replyId:number, content:string, updatedAt:number) {
+export function successfullyUpdateReply(questionId: number, replyId: number, content: string, updatedAt: number) {
     return {
         type: '@@QUESTIONS/UPDATED_REPLY' as '@@QUESTIONS/UPDATED_REPLY',
-        reply:{questionId, replyId, content, updatedAt}
+        reply: { questionId, replyId, content, updatedAt }
     }
 }
-export function successfullyDeleteReply(questionId:number, replyId:number, meetingId:number) {
+export function successfullyDeleteReply(questionId: number, replyId: number, meetingId: number) {
     return {
         type: '@@QUESTIONS/DELETED_REPLY' as '@@QUESTIONS/DELETED_REPLY',
-        reply:{questionId, replyId, meetingId}
+        reply: { questionId, replyId, meetingId }
     }
 }
-export function successfullyVoteForAQuestion(questionId:number, guestId:number) {
+export function successfullyVoteForAQuestion(questionId: number, guestId: number) {
     return {
         type: '@@QUESTIONS/ADDED_VOTE' as '@@QUESTIONS/ADDED_VOTE',
-        vote:{questionId, guestId}
+        vote: { questionId, guestId }
     }
 }
-export function successfullyRemoveVote(questionId:number, guestId:number) {
+export function successfullyRemoveVote(questionId: number, guestId: number) {
     return {
         type: '@@QUESTIONS/REMOVED_VOTE' as '@@QUESTIONS/REMOVED_VOTE',
-        vote:{questionId, guestId}
+        vote: { questionId, guestId }
     }
 }
-export function addedQuestion(question:IQuestion) {
+export function addedQuestion(question: IQuestion) {
     return {
         type: '@@QUESTIONS/ADDED_QUESTION' as '@@QUESTIONS/ADDED_QUESTION',
         question
     }
 }
+export function successfullyHideOrDisplayAReply(replyId: number, questionId: number, isHide:boolean) {
+    return {
+        type: '@@QUESTIONS/HIDE_OR_DISPLAY_REPLY' as '@@QUESTIONS/HIDE_OR_DISPLAY_REPLY',
+        questionId,
+        replyId,
+        isHide
+    }
+}
+export function successfullyApprovedOrHideAQuestion(questionId: number, isHide:boolean) {
+    return {
+        type: '@@QUESTIONS/APPROVE_HIDE_QUESTION' as '@@QUESTIONS/APPROVE_HIDE_QUESTION',
+        questionId,
+        isHide
+    }
+}
+export function successfullyAnsweredQuestion(questionId: number) {
+    return {
+        type: '@@QUESTIONS/ANSWERED_QUESTION' as '@@QUESTIONS/ANSWERED_QUESTION',
+        questionId,
+    }
+}
+
+
 
 // action types
-export type QuestionsActions = ReturnType<typeof loadQuestions>|ReturnType<typeof successfullyDeleteQuestion>|ReturnType<typeof successfullyUpdateQuestion>|
-ReturnType<typeof addedReplyToQuestion>|ReturnType<typeof successfullyUpdateReply>|ReturnType<typeof successfullyDeleteReply>|ReturnType<typeof successfullyVoteForAQuestion>|
-ReturnType<typeof successfullyRemoveVote>|ReturnType<typeof addedQuestion>;
+export type QuestionsActions = ReturnType<typeof loadQuestions> | ReturnType<typeof successfullyDeleteQuestion> | ReturnType<typeof successfullyUpdateQuestion> |
+    ReturnType<typeof addedReplyToQuestion> | ReturnType<typeof successfullyUpdateReply> | ReturnType<typeof successfullyDeleteReply> | ReturnType<typeof successfullyVoteForAQuestion> |
+    ReturnType<typeof successfullyRemoveVote> | ReturnType<typeof addedQuestion> | ReturnType<typeof successfullyApprovedOrHideAQuestion> |
+    ReturnType<typeof successfullyHideOrDisplayAReply>|ReturnType<typeof successfullyAnsweredQuestion>;

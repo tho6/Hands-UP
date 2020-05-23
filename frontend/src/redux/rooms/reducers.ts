@@ -1,17 +1,18 @@
 import { RoomsActions } from "./actions"
 import { IRoomInformation } from "../../models/IRoomInformation";
-import { IGuest } from "../../models/IUserQ";
 
 export interface RoomState {
     roomsInformation: {
         [id: string]: IRoomInformation
     };
     token: string | null;
+    questionLimitStatus: { [id: string]: {isChecking:boolean, count:number} }
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
     token: localStorage.getItem('token'),
+    questionLimitStatus:{}
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -19,7 +20,7 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
         case '@@ROOMS/LOADED_ROOM_INFORMATION':
             {
                 const newRooms = { ...oldState.roomsInformation };
-                newRooms[action.room.id] = {...oldState.roomsInformation[action.room.id], ...action.room};
+                newRooms[action.room.id] = { ...oldState.roomsInformation[action.room.id], ...action.room };
 
                 return {
                     ...oldState,
@@ -39,8 +40,8 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
             }
         case '@@ROOMS/LOADED_USER':
             {
-                const newRoomInformation = { ...oldState.roomsInformation};
-                newRoomInformation[action.meetingId] = {...oldState.roomsInformation[action.meetingId], userInformation: action.user};
+                const newRoomInformation = { ...oldState.roomsInformation };
+                newRoomInformation[action.meetingId] = { ...oldState.roomsInformation[action.meetingId], userInformation: action.user };
                 return {
                     ...oldState,
                     roomsInformation: newRoomInformation,
@@ -51,6 +52,23 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
                 return {
                     ...oldState,
                     token: action.token
+                };
+            }
+        case '@@ROOMS/SET_STATUS_OF_QUESTION_LIMIT':
+            {
+                const newQuestionLimitStatus = {...oldState.questionLimitStatus}
+                const newStatus = {...oldState.questionLimitStatus[action.meetingId], isChecking:action.isChecking}
+                if(action.isChecking){
+                    const c = newStatus.count||0;
+                    newStatus.count = c + 1;
+                }else{
+                    newStatus.count = 0;
+                }
+                newQuestionLimitStatus[action.meetingId] = newStatus;
+        
+                return {
+                    ...oldState,
+                    questionLimitStatus: newQuestionLimitStatus
                 };
             }
         default:

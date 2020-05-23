@@ -5,7 +5,7 @@ export const tFetchRoomInformation = {
         name: 'TestingRoom1',
         code: '#string',
         is_live: true,
-        canModerate: true, canUploadFiles: true, questionLimit: 10,
+        canModerate: true, canUploadFiles: false, questionLimit: 3,
     }
 }
 export const tLoginAsGuest = {
@@ -38,9 +38,10 @@ export const tFetchQuestions = {//load questions at first
         meetingId: 1,
         isHide: false,
         isAnswered: false,
-        isApproved: false,
+        isApproved: true,
         createdAt: Date.now() - 1000,
-        updatedAt: Date.now() - 1000
+        updatedAt: Date.now() - 1000,
+        platform: {id:2, name:'facebook'},
     }, {
         id: 2,
         questioner: {
@@ -56,7 +57,8 @@ export const tFetchQuestions = {//load questions at first
         isAnswered: false,
         isApproved: true,
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
+        platform: {id:2, name:'facebook'},
     }
     ]
 }
@@ -72,11 +74,12 @@ export const tNewQuestion = {//add reply
         replies: [],
         files: [],
         meetingId: 1,
-        isHide: false,
+        platform: {id:2, name:'facebook'},
+        isHide: true,
         isAnswered: false,
-        isApproved: true,
+        isApproved: false,
         createdAt: Date.now() + 2000,
-        updatedAt: Date.now() + 2000
+        updatedAt: Date.now() + 2000,
     }
 }
 export const tNewReply = {//add reply
@@ -86,10 +89,10 @@ export const tNewReply = {//add reply
         guestName: 'Anonymous',
         content: 'string string',
         questionId: 1,
-        isEdit: false,
+        isEdit: false,//maybe dont need this
         createdAt: Date.now(),
         updatedAt: Date.now(),
-        isHide: false
+        isHide: true
     }
 }
 export const tUpdateReply = {//add reply
@@ -97,7 +100,7 @@ export const tUpdateReply = {//add reply
         questionId: 1,
         replyId: 1,
         content: 'update reply',
-        updatedAt: Date.now()
+        updatedAt: Date.now()+100
     }
 }
 export const tAddedVote = {//add reply
@@ -114,6 +117,9 @@ export const tRemovedVote = {//add reply
 }
 export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId: 1 } }
 export const tDeleteQuestionSuccess = { status: true, message: { meetingId: 1, questionId: 1 } }
-export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: Date.now() } }
+export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: Date.now()+1 } }
 export const tUserToken = null;
 export const tGuestToken = null;
+export const tHideReplySuccess = {status:true, message:{replyId:1, questionId:1, isHide: false}}
+export const tHideQuestion = {status:true, message:{questionId:3, isHide: false}}
+export const tAnsweredQuestion = {status:true, message:{questionId:1, isAnswered: true}}

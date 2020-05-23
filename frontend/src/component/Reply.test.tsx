@@ -85,5 +85,11 @@ describe("Reply component",()=>{
         render(<Reply reply={reply} user={guest1} meetingId={1}/>)
         expect(screen.queryByTestId('hide-button')).not.toBeInTheDocument();
     })
+    it("render reply component - host, inappropriate reply",async ()=>{
+        const newReply={...reply, isHide:true}
+        render(<Reply reply={newReply} user={host} meetingId={1}/>)
+        expect(screen.queryByTestId('display-button')).toBeInTheDocument();
+        expect(screen.queryByTestId('hide-button')).not.toBeInTheDocument();
+    })
 });
 
