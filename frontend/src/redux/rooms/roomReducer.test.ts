@@ -20,6 +20,8 @@ describe('Question Reducer', () => {
         initialState = {
             roomsInformation: {},
             token: null,
+            questionLimitStatus:{}
+
         };
 
     })

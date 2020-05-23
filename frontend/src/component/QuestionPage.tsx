@@ -25,6 +25,10 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
+  const questionLimitStatus = useSelector(
+    (rootState: RootState) =>
+      rootState.roomsInformation.questionLimitStatus[meetingId]
+  );
   const [formState, { textarea }] = useFormState();
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
@@ -93,7 +97,7 @@ const QuestionPage: React.FC = () => {
           <div className="d-flex align-items-end">
             {
               <>
-                <div
+                {!(questionLimitStatus?.count >= roomInformation?.questionLimit) && <div
                   className="util-spacing will-hover"
                   onClick={() => {
                     if (!formState.values.question.trim()) {
@@ -119,7 +123,7 @@ const QuestionPage: React.FC = () => {
                   }}
                 >
                   <i className="fas fa-paper-plane"></i>
-                </div>
+                </div>}
                 {roomInformation?.canUploadFiles && (
                   <div className="util-spacing will-hover">
                     <label htmlFor="q-img" className="mb-0">
@@ -338,9 +342,10 @@ const QuestionPage: React.FC = () => {
                 <div
                   className="moderate-container"
                   data-testid="moderate-questions"
+                  key={question.id}
                 >
                   <Question
-                    key={`${question.id}`}
+                    //key={`${question.id}`}
                     user={roomInformation.userInformation}
                     canUploadFiles={roomInformation.canUploadFiles}
                     question={question}

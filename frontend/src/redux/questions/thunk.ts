@@ -1,6 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadQuestions, successfullyDeleteQuestion, successfullyUpdateQuestion, addedReplyToQuestion, successfullyUpdateReply, successfullyDeleteReply, successfullyVoteForAQuestion, successfullyRemoveVote, addedQuestion, successfullyHideOrDisplayAReply, successfullyApprovedOrHideAQuestion, successfullyAnsweredQuestion } from "./actions";
-import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote, tNewQuestion, tHideReplySuccess, tHideQuestion, tAnsweredQuestion} from "../../fakeResponse";
+import { tFetchQuestions, tDeleteQuestionSuccess, tEditQuestionSuccess, tNewReply, tUpdateReply, tDeleteReplySuccess, tAddedVote, tNewQuestion, tHideReplySuccess, tHideQuestion, tAnsweredQuestion } from "../../fakeResponse";
+import { setQuestionLimitState } from "../rooms/actions";
 
 
 // Thunk Action
@@ -22,16 +23,20 @@ export function fetchQuestions(meetingId: number) {
         }
     }
 }
-export function addQuestion(meetingId: number, content: string, fileList:FileList|null) {
+export function addQuestion(meetingId: number, content: string, fileList: FileList | null) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        if ((getState().roomsInformation.questionLimitStatus[meetingId]?.count) >= getState().roomsInformation.roomsInformation[meetingId].questionLimit) {
+            window.alert('You cannot ask too many questions within a period');
+            return;
+        }
         try {
             const formData = new FormData();
             formData.append('meetingId', `${meetingId}`);
             formData.append('content', content);
             if (fileList !== null) {
-               for(let i = 0; i<fileList.length; i++){
-                   formData.append('images[]', fileList[i])
-               }
+                for (let i = 0; i < fileList.length; i++) {
+                    formData.append('images[]', fileList[i])
+                }
             }
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
             //     method: 'POST',
@@ -49,6 +54,14 @@ export function addQuestion(meetingId: number, content: string, fileList:FileLis
             } else {
                 window.alert(result.message);
             }
+            if (!getState().roomsInformation.questionLimitStatus[meetingId]?.isChecking) {
+                setTimeout(() => {
+                    dispatch(setQuestionLimitState(meetingId, false))
+                },10000);
+            }
+            dispatch(setQuestionLimitState(meetingId, true));
+
+
         } catch (e) {
             window.alert(e.message);
         }
@@ -78,7 +91,7 @@ export function deleteQuestion(questionId: number, meetingId: number) {
         }
     }
 }
-export function editQuestion(questionId: number, content: string, deleteFilesId: number[], fileList:FileList|null) {
+export function editQuestion(questionId: number, content: string, deleteFilesId: number[], fileList: FileList | null) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             const formData = new FormData();
@@ -86,9 +99,9 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
             formData.append('content', content);
             formData.append('deleteFilesId', JSON.stringify(deleteFilesId));
             if (fileList !== null) {
-               for(let i = 0; i<fileList.length; i++){
-                   formData.append('images[]', fileList[i])
-               }
+                for (let i = 0; i < fileList.length; i++) {
+                    formData.append('images[]', fileList[i])
+                }
             }
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions`, {
             //     method: 'PUT',
@@ -102,7 +115,7 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
             //const result = await res.json();
             const result = tEditQuestionSuccess;
             if (result.status) {
-                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content,result.message.deleteFilesId, result.message.files, result.message.updatedAt));
+                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content, result.message.deleteFilesId, result.message.files, result.message.updatedAt));
             } else {
                 window.alert(result.message);
             }
@@ -231,7 +244,7 @@ export function removeVote(questionId: number) {
         }
     }
 }
-export function hideOrDisplayReply(replyId: number, isHide:boolean) {
+export function hideOrDisplayReply(replyId: number, isHide: boolean) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/replies/status`, {
@@ -255,7 +268,7 @@ export function hideOrDisplayReply(replyId: number, isHide:boolean) {
         }
     }
 }
-export function approveOrHideQuestion(questionId: number, isHide:boolean) {
+export function approveOrHideQuestion(questionId: number, isHide: boolean) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/questions/status`, {
