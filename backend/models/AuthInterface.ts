@@ -19,6 +19,8 @@ export interface GoogleUser{
 export interface TokenInfo{
     userId?: number
     guestId?: number
+    iat?: number
+    exp?: number
 }
 
 export interface PersonInfo{

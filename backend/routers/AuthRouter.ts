@@ -17,14 +17,15 @@ export class AuthRouter {
         this.accessTokenPrivateKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PRIVATE_KEY}"`)
         this.refreshTokenPublicKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PUBLIC_KEY}"`)
         this.refreshTokenPrivateKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PRIVATE_KEY}"`)
-     }
-     
+    }
+
     router() {
         const router = express.Router()
         router.post('/loginGoogle', this.loginGoogle)
         router.post('/loginGuest', this.loginGuest)
         router.post('/token', this.genAccessCodeByRefreshCode)
         router.delete('/logout', this.logoutUser)
+        router.post('/current', this.currentPerson)
         return router
     }
     private generateAccessToken = (payload: TokenInfo) => {
@@ -115,8 +116,9 @@ export class AuthRouter {
             const refreshToken = req.body.refreshToken
             const accessToken = await this.authService.getAccessTokenByRefreshToken(refreshToken)
             if (!accessToken) return res.status(401).json({ success: false, message: "Invalid Refresh Token" })
-            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info) => {
-                if (err?.name == 'TokenExpiredError') {
+            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
+                const expiryTimeLeft = (info?.exp! * 1000 - new Date().getTime()) < (30 * 1000)
+                if (err?.name == 'TokenExpiredError' || expiryTimeLeft) {
                     jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
                         //TokenExpiredError
                         if (err) return res.status(401).json({ success: false, message: "Invalid Token" })
@@ -146,17 +148,41 @@ export class AuthRouter {
             if (!req.body.refreshToken) return res.status(401).json({ success: false, message: 'No Refresh Token' })
             const refreshToken = req.body.refreshToken
             const deletedRows = await this.authService.deleteRefreshToken(refreshToken)
-            if (deletedRows > 0){
+            if (deletedRows > 0) {
                 return res.status(200).json({ success: true, message: "Logout Successful" })
-            }else{
+            } else {
                 return res.status(403).json({ success: false, message: "Logout Failed" })
             }
-            
+
         } catch (error) {
             console.log(error)
             return error.name == 'RangeError' ?
                 res.status(400).json({ success: false, message: error.message }) :
                 res.status(500).json({ success: false, message: 'internal error' })
+        }
+    }
+
+    private currentPerson = async (req: Request, res: Response) => {
+        try {
+            const authHeader = req.headers['authorization']
+            const accessToken = authHeader && authHeader.split(' ')[1]
+            if (!accessToken) return res.status(401).json({ success: false, message: 'No Access Token' })
+            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ['RS256'] }, async (err, info: TokenInfo) => {
+                if (err) return res.status(403).json({ success: false, message: 'Permission Denied' })
+                if (info.hasOwnProperty('userId')) {
+                    const result = (await this.userService.getUserById([info.userId!]))[0]
+                    const { googleId, ...personInfo } = result
+                    return res.status(200).json({ success: true, message: { personInfo: personInfo } })
+
+                } else {
+                    const personInfo = (await this.guestService.getGuestById([info.guestId!]))[0]
+                    return res.status(200).json({ success: true, message: { personInfo: personInfo } })
+                }
+            })
+            return;
+        } catch (error) {
+            console.log(error)
+            return res.status(403).json({ success: false, message: 'Permission Denied' })
         }
     }
 }
