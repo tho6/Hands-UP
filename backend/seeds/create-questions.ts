@@ -140,6 +140,20 @@ export async function seed(knex: Knex): Promise<any> {
             name: '123.png'
         }
         ])
+        /* Insert likes */
+        await trx("guests_questions_likes").insert([{
+            question_id: 1,
+            guest_id:1
+        },
+        {
+            question_id: 1,
+            guest_id:2
+        },
+        {
+            question_id: 2,
+            guest_id:3
+        }
+        ])
         await trx.commit();
     } catch (e) {
         console.error(e);

@@ -40,7 +40,8 @@ export const tFetchQuestions = {//load questions at first
         isAnswered: false,
         isApproved: true,
         createdAt: Date.now() - 1000,
-        updatedAt: Date.now() - 1000
+        updatedAt: Date.now() - 1000,
+        platform: {id:2, name:'facebook'},
     }, {
         id: 2,
         questioner: {
@@ -56,7 +57,8 @@ export const tFetchQuestions = {//load questions at first
         isAnswered: false,
         isApproved: true,
         createdAt: Date.now(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
+        platform: {id:2, name:'facebook'},
     }
     ]
 }
@@ -72,11 +74,12 @@ export const tNewQuestion = {//add reply
         replies: [],
         files: [],
         meetingId: 1,
+        platform: {id:2, name:'facebook'},
         isHide: true,
         isAnswered: false,
         isApproved: false,
         createdAt: Date.now() + 2000,
-        updatedAt: Date.now() + 2000
+        updatedAt: Date.now() + 2000,
     }
 }
 export const tNewReply = {//add reply
@@ -86,7 +89,7 @@ export const tNewReply = {//add reply
         guestName: 'Anonymous',
         content: 'string string',
         questionId: 1,
-        isEdit: false,
+        isEdit: false,//maybe dont need this
         createdAt: Date.now(),
         updatedAt: Date.now(),
         isHide: true

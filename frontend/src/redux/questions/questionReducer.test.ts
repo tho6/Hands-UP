@@ -25,6 +25,7 @@ describe('Question Reducer', () => {
             isApproved: true,
             createdAt: 123,
             updatedAt: 456,
+            platform:{id:2, name:'facebook'}
         };
         initialState = {
             questions: {},
@@ -83,7 +84,8 @@ describe('Question Reducer', () => {
             isAnswered: false,
             isApproved: true,
             createdAt: 123,
-            updatedAt: 12345
+            updatedAt: 12345,
+            platform:{id: 2, name:'facebook'}
         }
         const obj = { questions: { 1: expectedObj }, questionsByMeetingId: { 2: [1] } };
         const finalState = questionsReducer(initialState, action.successfullyUpdateQuestion(1, 'update', [2], [{ id: 3, filename: '3.png' }], 12345));

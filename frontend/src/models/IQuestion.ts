@@ -11,6 +11,7 @@ export interface IQuestion {
     isAnswered: boolean;
     updatedAt:number;
     createdAt:number;
+    platform: platform
 }
 export type reply = {
     id: number;
@@ -30,4 +31,8 @@ export type file = {
 export type questioner = {
     id: number;
     name: string;
+}
+export type platform={
+    id:number;
+    name:string
 }

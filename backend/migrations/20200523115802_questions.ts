@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<any> {
         table.boolean('can_upload_file');
         table.integer('question_limit');
         table.timestamp('date_time',true);
-        table.timestamps();
+        table.timestamps(false, true);
 
     });
     await knex.schema.createTable("platforms", (table) => {
@@ -33,7 +33,7 @@ export async function up(knex: Knex): Promise<any> {
         table.foreign('guest_id').references('guests.id');
         table.foreign('platform_id').references('platforms.id');
         table.foreign('meeting_id').references('meetings.id');
-        table.timestamps();
+        table.timestamps(false, true);
     });
     await knex.schema.createTable("guests_questions_likes", (table) => {
         table.increments(); 
@@ -58,7 +58,7 @@ export async function up(knex: Knex): Promise<any> {
         table.boolean('is_hide').notNullable();
         table.foreign('question_id').references('questions.id').onDelete("cascade");
         table.foreign('guest_id').references('guests.id');
-        table.timestamps();
+        table.timestamps(false, true);
     });
 }
 
