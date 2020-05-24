@@ -185,6 +185,63 @@ export class AuthRouter {
             return res.status(403).json({ success: false, message: 'Permission Denied' })
         }
     }
+
+    // private loginFacebook = async (req: Request, res: Response) => {
+    //     if (!req.body.authCode) return res.status(401).json({ success: false, message: 'No authorization Code' })
+    //         const authHeader = req.headers['authorization']
+    //         const accessToken = authHeader && authHeader.split(' ')[1]
+    //         if (!accessToken) return res.status(401).json({ success: false, message: 'No Access Token' })
+    //         jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ['RS256'] }, async (err, info: TokenInfo) => {
+    //             // if(!userId) return res.status(500).json({success:false, message:"Internal Server Error"})
+    //             if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
+    //             const authCode = req.body.authCode
+
+    //             console.log(authCode)
+    //             //take profile is ok since it includes sub (unique id) NO NEED OpenId
+    //             const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
+    //                 method: "POST",
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 body: JSON.stringify({
+    //                     code: authCode,
+    //                     client_id: process.env.GOOGLE_CLIENT_ID,
+    //                     client_secret: process.env.GOOGLE_CLIENT_SECRET,
+    //                     redirect_uri: process.env.GOOGLE_REDIRECT_URL,
+    //                     grant_type: 'authorization_code'
+    //                 })
+    //             }
+    //             )
+
+    //             const result = await fetchRes.json()
+    //             if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
+
+    //             const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
+    //             if (!decodedResult) return res.status(401).json({ success: false, message: 'Access code is not found' })
+    //             //***check email tecky???? */
+    //             const user = (await this.userService.getUserByGoogleId([decodedResult.sub]))[0]
+
+    //             // console.log(user[0])
+    //             let userId: number | null = user?.id
+    //             if (!user) {
+    //                 console.log('create user')
+    //                 userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
+    //             }
+    //             const userAccessToken = this.generateAccessToken({ guestId: info.guestId, userId: userId })
+    //             const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
+    //             const storedRefreshToken = await this.authService.saveRefreshTokenAccessToken(userRefreshToken, userAccessToken)
+    //             if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
+    //             return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
+    //         })
+    //         return;
+
+    //     } catch (error) {
+    //         console.log(error)
+    //         return error.name == 'RangeError' ?
+    //             res.status(400).json({ success: false, message: error.message }) :
+    //             res.status(500).json({ success: false, message: 'internal error' })
+    //     }
+    // }
 }
 
 
