@@ -1,7 +1,7 @@
 export type questionDB = {
-    questionId: number,
-    guestId: number,
-    guestName: string,
+    id: number,
+    guestId: number|null,
+    guestName: string|null,
     content: string,
     meetingId: number,
     platformId: number,
@@ -12,18 +12,7 @@ export type questionDB = {
     createdAt: Date,
     updatedAt: Date
 }
-export type replyDB = {
-    id: number,
-    guestId: number,
-    guestName: string,
-    content: string,
-    questionId: number,
-    createdAt: Date,
-    updatedAt: Date,
-    isHide: boolean
-}
-
-export type customFileDB = { fileId: number, filename: string, questionId:number }
+export type customFileDB = { id: number, filename: string}
 
 export type questionLiteDB = {
     content: string,

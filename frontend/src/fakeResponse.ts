@@ -13,15 +13,15 @@ export const tLoginAsGuest = {
 
 }
 export const tUserIsNotAHost = {
-    status: true, message: { user:{ guestId: 1, isHost: false, name: 'im not a host' }, meetingId:1 }
+    status: true, message: { user: { guestId: 1, isHost: false, name: 'im not a host' }, meetingId: 1 }
 
 }
 export const tCurrentGuest = {
-    status: true, message: {user:{ guestId: 1, isHost: false, name:'Anonymous'}, meetingId:1}
+    status: true, message: { user: { guestId: 1, isHost: false, name: 'Anonymous' }, meetingId: 1 }
 
 }
 export const tCurrentHost = {
-    status: true, message: {user: { guestId: 1, name: 'Host', isHost: true }, meetingId:1}
+    status: true, message: { user: { guestId: 1, name: 'Host', isHost: true }, meetingId: 1 }
 
 }
 export const tFetchQuestions = {//load questions at first
@@ -39,9 +39,9 @@ export const tFetchQuestions = {//load questions at first
         isHide: false,
         isAnswered: false,
         isApproved: true,
-        createdAt: Date.now() - 1000,
-        updatedAt: Date.now() - 1000,
-        platform: {id:2, name:'facebook'},
+        createdAt: new Date(Date.now() - 1000),
+        updatedAt: new Date(Date.now() - 1000),
+        platform: { id: 2, name: 'facebook' },
     }, {
         id: 2,
         questioner: {
@@ -56,9 +56,9 @@ export const tFetchQuestions = {//load questions at first
         isHide: false,
         isAnswered: false,
         isApproved: true,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        platform: {id:2, name:'facebook'},
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+        platform: { id: 2, name: 'facebook' },
     }
     ]
 }
@@ -74,12 +74,12 @@ export const tNewQuestion = {//add reply
         replies: [],
         files: [],
         meetingId: 1,
-        platform: {id:2, name:'facebook'},
+        platform: { id: 2, name: 'facebook' },
         isHide: true,
         isAnswered: false,
         isApproved: false,
-        createdAt: Date.now() + 2000,
-        updatedAt: Date.now() + 2000,
+        createdAt: new Date(Date.now() + 2000),
+        updatedAt: new Date(Date.now() + 2000),
     }
 }
 export const tNewReply = {//add reply
@@ -90,8 +90,8 @@ export const tNewReply = {//add reply
         content: 'string string',
         questionId: 1,
         isEdit: false,//maybe dont need this
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
         isHide: true
     }
 }
@@ -100,7 +100,7 @@ export const tUpdateReply = {//add reply
         questionId: 1,
         replyId: 1,
         content: 'update reply',
-        updatedAt: Date.now()+100
+        updatedAt: new Date(Date.now() + 100)
     }
 }
 export const tAddedVote = {//add reply
@@ -117,9 +117,11 @@ export const tRemovedVote = {//add reply
 }
 export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId: 1 } }
 export const tDeleteQuestionSuccess = { status: true, message: { meetingId: 1, questionId: 1 } }
-export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: Date.now()+1 } }
+export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: new Date(Date.now() + 1 )} }
 export const tUserToken = null;
 export const tGuestToken = null;
-export const tHideReplySuccess = {status:true, message:{replyId:1, questionId:1, isHide: false}}
-export const tHideQuestion = {status:true, message:{questionId:3, isHide: false}}
-export const tAnsweredQuestion = {status:true, message:{questionId:1, isAnswered: true}}
+export const tHideReplySuccess = { status: true, message: { replyId: 1, questionId: 1, isHide: false } }
+export const tHideQuestion = { status: true, message: { questionId: 3, isHide: false } }
+export const tAnsweredQuestion = { status: true, message: { questionId: 1, isAnswered: true } }
+
+//update question may need to return need approve or not 
