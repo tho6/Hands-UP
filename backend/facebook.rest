@@ -1,5 +1,10 @@
 
-@accessToken = EAAg3wXWlMIMBAOUX6LnRwyYspdVaMp5OnL9u9KZCYU9jJtiVLm7bPiW7RcZBZA1ZCoF4QdGzx3L94S2GZCIsOVU5rwAl2D9lx56JnzZAybqZA1Lc01LE7ZBkkkF1zuHOH1Vv6qawUPifjm41VrwerysQF7dZBdyG35NOZAROlZCbdFIA8Bxg9cVqkx5MkVCJCP1vz9l7kSbuaRNCwZDZD
+@accessToken = EAAg3wXWlMIMBACCbszcjoKQPguZCPlAZBgGblWIVCE2gh4nk0HQPBfRZA63dbnDBRHk8QIJZACqPPN4FW4ZBHBhG9LwUY6Ty0YI9svUlCeipLuUgpunSQQ6y1GKZAuno1JxScCXdZBMz4ZCyqSBdOcORZADRf5EZBnwdJSlAt18qGHbCmueZCroa5tA
+@exchangePageToken = EAAg3wXWlMIMBAFZCKhZAH2XT3FJ0EUXE9vGmDRqpF2ZCzLaakHYb7NR9YBUHUeCNug2373R0avavo1BHYsdpY1OIWRh8ikVpgIsfgjF2hpNkbl1WuzMbxHJA5T69VpwfZA6WMSMKMZA3jXxFViJIpV07UGpRoQ12f7bDj9GdG5SNSkOuDeL1ZB
+@facebookClientID = {{$dotenv FACEBOOK_CLIENT_ID}}
+@facebookClientSecret = {{$dotenv FACEBOOK_CLIENT_SECRET}}
+@facebookRedirectURL = {{$dotenv FACEBOOK_REDIRECT_URL}}
+@backendURL = {{$dotenv BACKEND_URL}}
 ---- USER -----
 me/live_videos
 
@@ -109,19 +114,271 @@ https://graph.facebook.com/v7.0/611147449750751/comments?access_token=EAAQoOCRZA
 
 
 ###apge need page_id
-https://graph.facebook.com/v7.0/114610546929408/live_videos?access_token={{accessToken}}
+https://graph.facebook.com/v7.0/105835181148834/live_videos?access_token={{accessToken}}
 ###
-https://graph.facebook.com/v7.0/114751403581989/comments?access_token={{accessToken}}
+{
+  "data": [
+    {
+      "status": "LIVE",
+      "embed_html": "\u003Ciframe src=\"https:\/\/www.facebook.com\/plugins\/video.php?href=https\u00253A\u00252F\u00252Fwww.facebook.com\u00252F105835181148834\u00252Fvideos\u00252F242460563850512\u00252F&width=640\" width=\"640\" height=\"360\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\" allowFullScreen=\"true\">\u003C\/iframe>",
+      "id": "106766954388990"
+    },
+    {
+      "status": "VOD",
+      "embed_html": "\u003Ciframe src=\"https:\/\/www.facebook.com\/plugins\/video.php?href=https\u00253A\u00252F\u00252Fwww.facebook.com\u00252F105835181148834\u00252Fvideos\u00252F257827088897500\u00252F&width=654\" width=\"654\" height=\"368\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\" allowFullScreen=\"true\">\u003C\/iframe>",
+      "id": "106704051061947"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUkFtRExfTjdUOEMyTVhobERFYUNRTUhiSktHZAVNDLTVUb0pWdXV6dVoxV1dFY2NqQTI3M192dWk4bkRwSFdsZA2tvNDRSNXNaeU5IQkZA0VEF2b2RGd1Jn",
+      "after": "QVFIUnFBdS1qb2lnNWJ4RXAxM0E3VWZARbXVZAdjJEMENrVDV0V2czR3BKdUNLYm1vMzEyOTFJUUNlaFlXeHZAIdVN0WjBEdGxqLUJCME5EbUZAlS1BFUGtTMzVn"
+    }
+  }
+}
+###
+https://graph.facebook.com/v7.0/613106072889614/comments?access_token={{accessToken}}
+
+###{
+  "data": [
+    {
+      "created_time": "2020-05-25T13:03:54+0000",
+      "from": {
+        "name": "Testing",
+        "id": "105835181148834"
+      },
+      "message": "first",
+      "id": "242460563850512_242461617183740"
+    },
+    {
+      "created_time": "2020-05-25T13:06:59+0000",
+      "from": {
+        "name": "Testing",
+        "id": "105835181148834"
+      },
+      "message": "ddddd",
+      "id": "242460563850512_242463723850196"
+    },
+    {
+      "created_time": "2020-05-25T13:07:05+0000",
+      "message": "ddfsdssg",
+      "id": "242460563850512_242463777183524"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUlFRTm9XVDk5UlJVWG1yX1JySnVuZA2hmY2xWWEQ4dDQxNy1kUFlualp2MmNXRGFwSlpQS1lFbmcyVEZAhLWRfR2hmQ1RwcXZAPRHJJYmppWnU5UU5GbWRR",
+      "after": "QVFIUkFCeHZATaWo3a0lId3ZA5am9feTk5Y0NHMzdXRHJCdkhJZAkRsdVRBNTlvSDNsT3ZAEUkdvSFBPTjBMNEtZAUGItTmVaTW5penhnQk5rQjRBaVU5ZAXR1LUxn"
+    }
+  }
+}
+
+###live comments
+GET https://streaming-graph.facebook.com/106766954388990/live_comments?access_token={{accessToken}}
 
 
 
 
 
 ####build manully
-https://www.facebook.com/v7.0/dialog/oauth?client_id=2313103855661187&redirect_uri=https://localhost:8080/test/callback&state=ststate123abc&scope=email
+https://www.facebook.com/v7.0/dialog/oauth?client_id=2313103855661187&redirect_uri=https://localhost:8080/test/callback&state=ststate123abc&scope=user_videos
 
 ###
 AQCv0nHVHrlA3ApeTAeFcauyoZMxEXG6_ByVgdmxwT0VeSIjAVAvo7KH6hcWGkmch-8RbFKF8M_tYLGDwUSzIeFpR6e_zSa6hiffv9_hwKYrR9Dmm-3WFdzWx2trNTuMiPu5H54EviUTOmI_wMBBlWdysm6MuAVvjBvLz-u1_9wvEl_gNARPOiAe8nUOJ1_UyIEKbpBtTgS3YzVum1jkl0bJuhtfx5oA3i1DsLMZUBD1xEVNshgSFjuIx8x67Ye9T_NrYRnV0pl-hDjw6cYO8mGipkSpA7IsiqjJe1LW9xaiKPDk7iBAq7v-C8Ns8PfBiuGi4DBTEtUh6TxmxTKYQVu0
 
 ###
-https://graph.facebook.com/v7.0/oauth/access_token?client_id=2313103855661187&redirect_uri=https://localhost:8080/test/callback&client_secret=080e65a0e6afa4bad770dd5dccaac2f9&code=AQAc4-C3GqyDTKmphQ89QCtJZQpFY7nRoO-6SdXNpPOPuVhOEYngKyZaAyAYWhP0Ky53B0lcMN1G4d9Zz1n6khgX8bU8C3tdldID08fX5lWYZp0RNBjs4k_4D7GcbIwaHkXQlha653WEcvws4Yq7h-gSe5SdA-5cYL15G8v6s5rxII_yEHwH-Crzi5kWbvGfeILjRVFJ1Fj1B9Vm9idKCQtS6GCukx9Z4Pmn2U1M0WLKcPJ7h5W5SrCEzIsPFocMtkuyJiYm9Emb3GtZt7p4TZYYEZprv_0IwM854adBqrvNIeFmPDzC6cHlxDMvIv8IDVNBw6yVgtk0pRkVfyT0A2PX
+https://graph.facebook.com/v7.0/oauth/access_token?client_id=2313103855661187&redirect_uri=https://localhost:8080/test/callback&client_secret=XXXXXX&code=AQAc4-C3GqyDTKmphQ89QCtJZQpFY7nRoO-6SdXNpPOPuVhOEYngKyZaAyAYWhP0Ky53B0lcMN1G4d9Zz1n6khgX8bU8C3tdldID08fX5lWYZp0RNBjs4k_4D7GcbIwaHkXQlha653WEcvws4Yq7h-gSe5SdA-5cYL15G8v6s5rxII_yEHwH-Crzi5kWbvGfeILjRVFJ1Fj1B9Vm9idKCQtS6GCukx9Z4Pmn2U1M0WLKcPJ7h5W5SrCEzIsPFocMtkuyJiYm9Emb3GtZt7p4TZYYEZprv_0IwM854adBqrvNIeFmPDzC6cHlxDMvIv8IDVNBw6yVgtk0pRkVfyT0A2PX
+
+
+###user accesstoken exchange for page accesstoken <-- noneed do this>
+https://graph.facebook.com/v7.0/114610546929408?fields=name,access_token&access_token={{exchangePageToken}}
+
+
+
+
+### get long lived uesr token with short lived token
+https://graph.facebook.com/v7.0/oauth/access_token?grant_type=fb_exchange_token&client_id={{facebookClientID}}&client_secret={{facebookClientSecret}}&fb_exchange_token={{exchangePageToken}}
+###
+{
+  "access_token": "EAAg3wXWlMIMBAHHyh4TDZCl1Okhi2ZAZA2R6NdblRHqN9H5299KDyh1ayaEhWXVZCfLVXlsW8XZCuk2jgrVPzX695RW0hDZChmW6wffgB4TKAGWJv9khxpLoAI5VYwnOY8VPt5krHiGouAHe0uZBzAqOgZAFTTCXA4PojUyasSfZAdQZDZD",
+  "token_type": "bearer",
+  "expires_in": 5148275
+}
+###
+
+### exchange long lived page token with my long lived user token
+https://graph.facebook.com/v7.0/611091626423000/accounts?access_token=EAAg3wXWlMIMBAHHyh4TDZCl1Okhi2ZAZA2R6NdblRHqN9H5299KDyh1ayaEhWXVZCfLVXlsW8XZCuk2jgrVPzX695RW0hDZChmW6wffgB4TKAGWJv9khxpLoAI5VYwnOY8VPt5krHiGouAHe0uZBzAqOgZAFTTCXA4PojUyasSfZAdQZDZD
+###
+{
+  "data": [
+    {
+      "access_token": "EAAg3wXWlMIMBAORacVWlFEPpsFv7kcOuZCiZAjboZAE2ajG7ifQ3s4iD3OQIcRJFbhoC8ifq8nc6mcptiJKsBD2e9ZAQbBJZBqlUPf3wZADFLOfAoiMNZAd6XR8ZAmMx1rtaoG0Ndig2ZCqP3uC6ZC0e4v1Vsn91GfxnZBXwGBfbWFr4wZDZD",
+      "category": "\u7522\u54c1\uff0f\u670d\u52d9",
+      "category_list": [
+        {
+          "id": "2201",
+          "name": "\u7522\u54c1\uff0f\u670d\u52d9"
+        }
+      ],
+      "name": "Testing",
+      "id": "114610546929408",
+      "tasks": [
+        "ANALYZE",
+        "ADVERTISE",
+        "MODERATE",
+        "CREATE_CONTENT",
+        "MANAGE"
+      ]
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "MTE0NjEwNTQ2OTI5NDA4",
+      "after": "MTE0NjEwNTQ2OTI5NDA4"
+    }
+  }
+}
+####
+
+NEED Following permission:
+user_videos
+pages_show_list
+pages_read_engagement
+pages_read_user_content
+public_profile
+
+#### Final - FB Page Version with
+/{page-id}/live_videos
+
+{
+  "data": [
+    {
+      "status": "LIVE",
+      "embed_html": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F105835181148834%2Fvideos%2F257827088897500%2F&width=640\" width=\"640\" height=\"360\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\" allowFullScreen=\"true\"></iframe>",
+      "id": "106704051061947"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUnFBdS1qb2lnNWJ4RXAxM0E3VWZARbXVZAdjJEMENrVDV0V2czR3BKdUNLYm1vMzEyOTFJUUNlaFlXeHZAIdVN0WjBEdGxqLUJCME5EbUZAlS1BFUGtTMzVn",
+      "after": "QVFIUnFBdS1qb2lnNWJ4RXAxM0E3VWZARbXVZAdjJEMENrVDV0V2czR3BKdUNLYm1vMzEyOTFJUUNlaFlXeHZAIdVN0WjBEdGxqLUJCME5EbUZAlS1BFUGtTMzVn"
+    }
+  }
+}
+
+###
+/[live-id]/comments
+
+{
+  "data": [
+    {
+      "created_time": "2020-05-25T11:51:44+0000",
+      "from": {
+        "name": "Testing",
+        "id": "105835181148834"
+      },
+      "message": "123123",
+      "id": "257827088897500_257828188897390"
+    },
+    {
+      "created_time": "2020-05-25T11:55:08+0000",
+      "from": {
+        "name": "Testing",
+        "id": "105835181148834"
+      },
+      "message": "🙂🙂",
+      "id": "257827088897500_257830465563829"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUnJGYVFtQ0Q0X1ozOVJ5dG9JR3Q1WnFxMzlsMEtET3NlSEJJNWFOY013Q1VlNVc4aEt1ekFESGhNUDJQZAWpRWUZARQ3JxRkUyaktfN1ZARaC1WaWhXazdB",
+      "after": "QVFIUldRaEdLUTFUTmppdmdKSF9mZAFBXVVdNVkxEbTN1NjdGeE9zVjJJUGE3UUh1U0V5Q1Q5Rm1VU19yR2gxWU9JbkFRWEFhd1liSktSa3dTOFkxR3FBVEtR"
+    }
+  }
+}
+
+### FB user live
+/me/live_videos
+{
+  "data": [
+    {
+      "status": "LIVE",
+      "embed_html": "<iframe src=\"https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fcharlie.cheung.374%2Fvideos%2F613069879559900%2F&width=654\" width=\"654\" height=\"368\" style=\"border:none;overflow:hidden\" scrolling=\"no\" frameborder=\"0\" allowTransparency=\"true\" allowFullScreen=\"true\"></iframe>",
+      "id": "613069886226566"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUkNsRUZAGVVJOU09hWFBIT1QwcDZAHa0hVeFlQN290dzR2WlEybC1HdjdVUUV5OEl2ZADhoTUo5NjBqMTZAGRHluclFwWEg1UmJjanJNQXNmZAHVHOEdIYVpR",
+      "after": "QVFIUkNsRUZAGVVJOU09hWFBIT1QwcDZAHa0hVeFlQN290dzR2WlEybC1HdjdVUUV5OEl2ZADhoTUo5NjBqMTZAGRHluclFwWEg1UmJjanJNQXNmZAHVHOEdIYVpR"
+    }
+  }
+}
+
+/[live-id]/comments
+
+{
+  "data": [
+    {
+      "created_time": "2020-05-25T11:57:21+0000",
+      "from": {
+        "name": "Charlie Cheung",
+        "id": "613043969562491"
+      },
+      "message": "test",
+      "id": "613069879559900_613070272893194"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIUklpZAnNJR3VISy1qalVnVGlGWkltTDBaaldJR2NRVGZAtamlabndpbGxydHlmSUZAZASmdITmVjYk80QVNPc0NkTGxIRzhHNlctX0djSFBRQUthcjBjemtn",
+      "after": "QVFIUklpZAnNJR3VISy1qalVnVGlGWkltTDBaaldJR2NRVGZAtamlabndpbGxydHlmSUZAZASmdITmVjYk80QVNPc0NkTGxIRzhHNlctX0djSFBRQUthcjBjemtn"
+    }
+  }
+}
+
+
+###backend test
+
+GET https://graph.facebook.com/v7.0/oauth/access_token?client_id={{facebookClientID}}&redirect_uri={{facebookRedirectURL}}&client_secret={{facebookClientSecret}}&code=AQDxpzts5MM7toj_a8ol-FAuySIPPnVwDsBEJAkhGRzIMQix2DptSOJAp-8mBBOD6xVPwYlpJwr8U8Dv2yRCZzi07TudNJ6SxBJhtyPdXSj-jVJ1krnQfC8HRPqOR4ZL6bspd-I4Q2sc0DClGUfbJZJYbkN3mGsoCo0yuTX-w5AXAo5Bx6M6LdhkeMrPHWX6HdsLAYiC46SBRnsaRF8ULvV0en3sgzJjHWTmqqMcadRaLewXHykhSgPjk4KDTJpo05v4Qva_u-pu1WG648QTdobnHu8uHWJ_Oqhm0a4xbGWOv7dD0G08xZxCjHhxu_TD3qvTxa3SQEqGSU_HcIdHBXZa
+
+####backend testing ROuter
+POST {{backendURL}}/video/fb/comments
+Content-Type: application/json
+
+{
+  "liveLoc": "user"
+}
+
+###
+{
+  "success": true,
+  "message": {
+    "data": [
+      {
+        "created_time": "2020-05-25T15:17:51+0000",
+        "from": {
+          "name": "Charlie Cheung",
+          "id": "613043969562491"
+        },
+        "message": "3122",
+        "id": "613170189549869_613170956216459"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "QVFIUlJQNnBXMmpUeFBIYm55SjRvZA21lYnQyMG8zRTBPSjJOdDdXNENEcDlkbG1abVQ3UjUtcWlBQVgtc1NpTGE4S0lhU0xQZAHB1bTZAoR3pLX282bmN1ZADlR",
+        "after": "QVFIUlJQNnBXMmpUeFBIYm55SjRvZA21lYnQyMG8zRTBPSjJOdDdXNENEcDlkbG1abVQ3UjUtcWlBQVgtc1NpTGE4S0lhU0xQZAHB1bTZAoR3pLX282bmN1ZADlR"
+      }
+    }
+  }
+}
+###
+POST {{backendURL}}/video/fb/comments
+Content-Type: application/json
+
+{
+  "liveLoc": "page",
+  "pageId": "105835181148834"
+}
