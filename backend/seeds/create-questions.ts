@@ -89,6 +89,32 @@ export async function seed(knex: Knex): Promise<any> {
             created_at: createdAt,
             updated_at: createdAt
         },
+        {
+            owner_id: 1,
+            name: 'Meeting Room 3',
+            code: '#MeetingRoom3',
+            url: 'urlmeetingroom3',
+            is_live: true,
+            can_moderate: false,
+            can_upload_file: true,
+            question_limit: 10,
+            date_time: scheduledTime,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            owner_id: 1,
+            name: 'Meeting Room 4',
+            code: '#MeetingRoom4',
+            url: 'urlmeetingroom4',
+            is_live: true,
+            can_moderate: true,
+            can_upload_file: false,
+            question_limit: 10,
+            date_time: scheduledTime,
+            created_at: createdAt,
+            updated_at: createdAt
+        }
         ])
         /* Insert Platform */
         await trx("platforms").insert([{

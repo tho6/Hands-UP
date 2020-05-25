@@ -15,37 +15,38 @@ describe('QuestionDAO', () => {
     afterAll(async () => {
         await knex.destroy();
     })
+    const defaultQuestion = [
+        {
+            id: 1,
+            guestId: 1,
+            guestName: 'guest1',
+            content: 'question 1',
+            createdAt: new Date("2020-05-23T12:00:00.000z"),
+            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+            isHide: false,
+            meetingId: 1,
+            platformId: 1,
+            platformName: 'project3',
+            isAnswered: false,
+            isApproved: false
+        },
+        {
+            id: 2,
+            guestId: 2,
+            guestName: 'guest2',
+            content: 'question 2',
+            createdAt: new Date("2020-05-23T12:00:00.000z"),
+            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+            isHide: true,
+            meetingId: 1,
+            platformId: 1,
+            platformName: 'project3',
+            isAnswered: true,
+            isApproved: true
+        }
+    ]
     it('getQuestionsByRoomId - normal', async () => {
-        const expectedResult: questionDB[] = [
-            {
-                id: 1,
-                guestId: 1,
-                guestName: 'guest1',
-                content: 'question 1',
-                createdAt: new Date("2020-05-23T12:00:00.000z"),
-                updatedAt: new Date("2020-05-23T12:00:00.000z"),
-                isHide: false,
-                meetingId: 1,
-                platformId: 1,
-                platformName: 'project3',
-                isAnswered: false,
-                isApproved: false
-            },
-            {
-                id: 2,
-                guestId: 2,
-                guestName: 'guest2',
-                content: 'question 2',
-                createdAt: new Date("2020-05-23T12:00:00.000z"),
-                updatedAt: new Date("2020-05-23T12:00:00.000z"),
-                isHide: true,
-                meetingId: 1,
-                platformId: 1,
-                platformName: 'project3',
-                isAnswered: true,
-                isApproved: true
-            }
-        ]
+        const expectedResult: questionDB[] = defaultQuestion;
         const questions: questionDB[] = await questionDAO.getQuestionsByRoomId(1);
         expect(questions).toEqual(expectedResult);
     });
@@ -61,7 +62,7 @@ describe('QuestionDAO', () => {
         expect(likes).toEqual(expectedResult);
     });
     it('getQuestionFiles - normal', async () => {
-        const expectedResult: customFileDB[] = [{ id: 1, filename: '123.png'}]
+        const expectedResult: customFileDB[] = [{ id: 1, filename: '123.png' }]
         const filesDB: customFileDB[] = await questionDAO.getQuestionFiles(1);
         expect(filesDB).toEqual(expectedResult);
     });
@@ -69,6 +70,49 @@ describe('QuestionDAO', () => {
         const expectedResult: customFileDB[] = [];
         const filesDB: customFileDB[] = await questionDAO.getQuestionFiles(10);
         expect(filesDB).toEqual(expectedResult);
+    });
+    it('updateQuestion - no files', async () => {
+        const isUpdate: boolean = await questionDAO.updateQuestion(1, 'update string', [], [], true);
+        expect(isUpdate).toBe(true);
+        const result = await questionDAO.getQuestionsByRoomId(1);
+        const expectedResult: questionDB[] = [defaultQuestion[1],
+            { ...defaultQuestion[0], 
+            updatedAt: result[1].updatedAt,
+            content:'update string',
+            isApproved:true,
+         }];
+        expect(result).toEqual(expectedResult);
+        const files = await questionDAO.getQuestionFiles(1);
+        expect(files).toEqual([{ id: 1, filename: '123.png' }])
+    });
+    it('updateQuestion - delete 1 files - normal', async () => {
+        const isUpdate: boolean = await questionDAO.updateQuestion(1, 'question 1', [1], [], false);
+        expect(isUpdate).toBe(true);
+        const result = await questionDAO.getQuestionsByRoomId(1);
+        const expectedResult: questionDB[] = [defaultQuestion[1],
+            { ...defaultQuestion[0], 
+            updatedAt: result[1].updatedAt,
+         }];
+        expect(result).toEqual(expectedResult);
+        const files = await questionDAO.getQuestionFiles(1);
+        expect(files).toEqual([]);
+    });
+    it('updateQuestion - delete 1 files - with no such file in the question', async () => {
+        await expect(questionDAO.updateQuestion(1, 'question 1', [5], [], false)).rejects.toThrowError('Fail to update question - delete files');
+        const result = await questionDAO.getQuestionsByRoomId(1);
+        expect(result).toEqual(defaultQuestion);
+    });
+    it('updateQuestion - upload 1 file', async () => {
+        const isUpdate: boolean = await questionDAO.updateQuestion(1, 'question 1', [1], ['456.png'], false);
+        expect(isUpdate).toBe(true);
+        const result = await questionDAO.getQuestionsByRoomId(1);
+        const expectedResult: questionDB[] = [defaultQuestion[1],
+            { ...defaultQuestion[0], 
+            updatedAt: result[1].updatedAt,
+         }];
+        expect(result).toEqual(expectedResult);
+        const files = await questionDAO.getQuestionFiles(1);
+        expect(files).toEqual([{id:2,filename:'456.png'}])
     });
     it('createQuestion - no files', async () => {
         const insertId: number = await questionDAO.createQuestion(2, 'create question 3', [], false, 1, 1);
@@ -111,7 +155,7 @@ describe('QuestionDAO', () => {
                 isApproved: true
             }]
         expect(result).toEqual(expectedResult);
-        const expectFilesResult = [{ id: 2, filename: 'file2 in 2'}, { id: 3, filename: 'file3 in 2'}]
+        const expectFilesResult = [{ id: 2, filename: 'file2 in 2' }, { id: 3, filename: 'file3 in 2' }]
         const filesResult = await questionDAO.getQuestionFiles(3);
         expect(filesResult).toEqual(expectFilesResult);
     });
@@ -278,7 +322,7 @@ describe('QuestionDAO', () => {
     });
     it('getMeetingConfiguration - normal', async () => {
         const result = await questionDAO.getMeetingConfiguration(1);
-        const expectedResult = {isLive:false, canModerate:false, canUploadFile:false, questionLimit:3};
+        const expectedResult = { isLive: false, canModerate: false, canUploadFile: false, questionLimit: 3 };
         expect(result).toEqual(expectedResult);
     });
     it('getMeetingIdByQuestionId - normal', async () => {

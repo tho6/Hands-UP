@@ -12,7 +12,8 @@ export class QuestionService implements IQuestionService {
     constructor(private questionDAO: IQuestionDAO, private replyDAO: IReplyDAO) { }
     async getQuestionsByRoomId(meetingId: number): Promise<question[]> {
         const questionFromDB: questionDB[] = await this.questionDAO.getQuestionsByRoomId(meetingId);
-        return this.buildQuestion(questionFromDB);
+        const questions = await this.buildQuestion(questionFromDB);
+        return questions;
     }
     async updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[]): Promise<{ files: customFileDB[]; needApproved: boolean; }> {
         const meetingId = await this.questionDAO.getMeetingIdByQuestion(id);
@@ -41,7 +42,7 @@ export class QuestionService implements IQuestionService {
         const isApproved = roomConfig.canModerate && filesName.length > 0 ? false : true;
         const insertId = await this.questionDAO.createQuestion(meetingId, content, filesName, isApproved, platformId, guestId);
         const question = await this.questionDAO.getQuestionById(insertId);
-        const result = this.buildQuestion([question]);
+        const result = await this.buildQuestion([question]);
         return result[0];
     }
     async deleteQuestion(id: number): Promise<boolean> {
@@ -56,22 +57,22 @@ export class QuestionService implements IQuestionService {
     }
     async removeVote(questionId: number, guestId: number): Promise<boolean> {
         const isRemoved = await this.removeVote(questionId, guestId);
-        if(!isRemoved) throw new Error('Fail to remove vote - unknown error!');
+        if (!isRemoved) throw new Error('Fail to remove vote - unknown error!');
         return isRemoved;
     }
     async answeredQuestion(questionId: number): Promise<boolean> {
         const isAnsweredQuestion = await this.answeredQuestion(questionId);
-        if(!isAnsweredQuestion) throw new Error('Fail to answer question - unknown error!');
+        if (!isAnsweredQuestion) throw new Error('Fail to answer question - unknown error!');
         return isAnsweredQuestion;
     }
-    async hideOrApprovedQuestion(questionId: number, isHide:boolean): Promise<boolean> {
-        if(isHide){
+    async hideOrApprovedQuestion(questionId: number, isHide: boolean): Promise<boolean> {
+        if (isHide) {
             const hided = await this.questionDAO.hideQuestion(questionId);
-            if(!hided) throw new Error('Fail to hide question - unknown error');
+            if (!hided) throw new Error('Fail to hide question - unknown error');
             return hided;
-        }else{
+        } else {
             const approved = await this.questionDAO.approvedQuestion(questionId);
-            if(!approved) throw new Error('Fail to approve question - unknown error');
+            if (!approved) throw new Error('Fail to approve question - unknown error');
             return approved;
         }
     }
@@ -85,21 +86,21 @@ export class QuestionService implements IQuestionService {
     }
     async updateReply(id: number, content: string): Promise<boolean> {
         const isUpdated = await this.replyDAO.updateReply(id, content);
-        if(!isUpdated) throw new Error('Fail to update reply - unknown error!');
+        if (!isUpdated) throw new Error('Fail to update reply - unknown error!');
         return isUpdated;
     }
     async createReply(questionId: number, content: string, guestId: number): Promise<number> {
-        const insertId = await this.replyDAO.createReply(questionId,content,guestId);
+        const insertId = await this.replyDAO.createReply(questionId, content, guestId);
         return insertId;
     }
     async deleteReply(id: number): Promise<boolean> {
         const isDeleted = await this.replyDAO.deleteReply(id);
-        if(!isDeleted) throw new Error('Fail to delete reply - unknown error!');
+        if (!isDeleted) throw new Error('Fail to delete reply - unknown error!');
         return isDeleted;
     }
     async hideReply(replyId: number, isHide: boolean): Promise<boolean> {
         const isOk = await this.replyDAO.hideReply(replyId, isHide);
-        if(!isOk) throw new Error('Fail to hide/display reply - unknown error!');
+        if (!isOk) throw new Error('Fail to hide/display reply - unknown error!');
         return isOk;
     }
     async buildQuestion(arr: questionDB[]): Promise<question[]> {

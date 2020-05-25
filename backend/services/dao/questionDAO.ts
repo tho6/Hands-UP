@@ -29,18 +29,18 @@ export class QuestionDAO implements IQuestionDAO {
         const trx = await this.knex.transaction();
         try {
             const updateResult = await trx.raw(updateContent, [content, isApproved, id]);
-            if (updateResult.rows.length !== 1) {
+            if (updateResult.rowCount !== 1) {
                 throw new Error('Fail to update question - content');
             }
             for (const file of files) {
                 const insertFileResult = await trx.raw(insertFiles, [id, file]);
-                if (insertFileResult.rows.length !== 1) {
+                if (insertFileResult.rowCount !== 1) {
                     throw new Error('Fail to update question - insert files');
                 }
             }
             for (const deleteId of deleteFilesId) {
                 const deleteFileResult = await trx.raw(deleteFiles, [deleteId]);
-                if (deleteFileResult.rows.length !== 1) {
+                if (deleteFileResult.rowCount !== 1) {
                     throw new Error('Fail to update question - delete files');
                 }
             }
