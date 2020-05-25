@@ -12,7 +12,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState } from './store';
 import { checkToken, restoreLogin } from './redux/auth/thunk';
 import FacebookLogin from './component/FacebookLogin'
-import FacebookLoginCallBack from './component/FacbookLoginCallBack';
+import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 
 function App() {
   const dispatch = useDispatch()
