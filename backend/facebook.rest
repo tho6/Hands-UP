@@ -344,7 +344,7 @@ public_profile
 GET https://graph.facebook.com/v7.0/oauth/access_token?client_id={{facebookClientID}}&redirect_uri={{facebookRedirectURL}}&client_secret={{facebookClientSecret}}&code=AQDxpzts5MM7toj_a8ol-FAuySIPPnVwDsBEJAkhGRzIMQix2DptSOJAp-8mBBOD6xVPwYlpJwr8U8Dv2yRCZzi07TudNJ6SxBJhtyPdXSj-jVJ1krnQfC8HRPqOR4ZL6bspd-I4Q2sc0DClGUfbJZJYbkN3mGsoCo0yuTX-w5AXAo5Bx6M6LdhkeMrPHWX6HdsLAYiC46SBRnsaRF8ULvV0en3sgzJjHWTmqqMcadRaLewXHykhSgPjk4KDTJpo05v4Qva_u-pu1WG648QTdobnHu8uHWJ_Oqhm0a4xbGWOv7dD0G08xZxCjHhxu_TD3qvTxa3SQEqGSU_HcIdHBXZa
 
 ####backend testing ROuter
-POST {{backendURL}}/video/fb/comments
+POST {{backendURL}}/live/fb/comments
 Content-Type: application/json
 
 {
@@ -375,10 +375,42 @@ Content-Type: application/json
   }
 }
 ###
-POST {{backendURL}}/video/fb/comments
+POST {{backendURL}}/live/fb/comments
 Content-Type: application/json
 
 {
   "liveLoc": "page",
   "pageId": "105835181148834"
+}
+###
+{
+  "success": true,
+  "message": {
+    "data": [
+      {
+        "created_time": "2020-05-25T15:20:22+0000",
+        "from": {
+          "name": "Testing",
+          "id": "105835181148834"
+        },
+        "message": "wowow",
+        "id": "1138560419842148_1138561523175371"
+      },
+      {
+        "created_time": "2020-05-25T15:20:29+0000",
+        "from": {
+          "name": "Testing",
+          "id": "105835181148834"
+        },
+        "message": "😀",
+        "id": "1138560419842148_1138561686508688"
+      }
+    ],
+    "paging": {
+      "cursors": {
+        "before": "QVFIUm84dFhEcmhoVTN3S2FPRjRfVG1WSGl3VTVtaVFRdVNhQ0VXN1ctZAVA0M0JKbzJ3LU4wb0hzQWZAuR3V6bUZAIRUlUUmctOV85Y1YtN0EwTjNWNDZA5RlJ3",
+        "after": "QVFIUkZAncHJVNG9sdlIwbU1BYktCSjBDTlFfdnVMdUxfc2hkWXhDZAnYxcVVCeFEtNUNoR29Wd2xNR1N5c1dBckJBRG5qZAm5mZADU0YnQ3WGJkdWJiOTRoR2pR"
+      }
+    }
+  }
 }

@@ -18,7 +18,7 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
-import { VideoRouter } from "./routers/VideoRouter";
+import { LiveRouter } from "./routers/LiveRouter";
 
 declare global {
   namespace Express {
@@ -74,7 +74,7 @@ const authService = new AuthService(knex);
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService,authService);
-const videoRouter = new VideoRouter();
+const liveRouter = new LiveRouter();
 
 /* Session */
 // app.use(
@@ -98,7 +98,7 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
-app.use('/video', videoRouter.router())
+app.use('/video', liveRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })

@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
+import EventSource from 'eventsource'
 
-export class VideoRouter{
+export class LiveRouter{
 
     constructor() {
     }
@@ -28,6 +29,7 @@ export class VideoRouter{
             const resultLongLivedToken = await fetchResLongLivedToken.json()
             if (!resultLongLivedToken) return res.status(401).json({ success: false, message: "Exchange Long Lived User Code Error" })
             console.log(resultLongLivedToken)
+            //****save token */
             return res.status(200).json({ success: true, message:"Get Access Code Successful"})
         } catch (error) {
             console.log(error)
@@ -42,6 +44,7 @@ export class VideoRouter{
     fetchComments = async (req: Request, res: Response) => {
         //egt access token
         //whcih live?? user ? page?
+        //***get token from database */
         const accessToken = 'EAAg3wXWlMIMBAKT6ZAcK9G2XnzHjeRHb8ZAg7htaUQA4D8kV9rZCom0D2WodSCZBNupn0uQu5RzirdJHxk1oMqbN6XhmhBk5ZAdqzcxdhS6bF1jlqkhlTUWE8GZCYZAPEfKu98j20CUDYq5ZBNjDuYYje53o8yl39Uki6JmEkURnKSzVAbGRYaim'
         const liveLoc = req.body.liveLoc
         // const liveLoc = 'user'
@@ -67,18 +70,16 @@ export class VideoRouter{
         }
         liveVideoId = liveVideos[0].id
         console.log('liveVideoId: ' + liveVideoId)
-        const fetchCommentsRes = await fetch (`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`)
-        
+        const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
+        fetchCommentsRes.onmessage = function(event) {
+            console.log(event.data)
+            //***io.emit here?
+          }
         // const fetchCommentsRes = await fetch (`https://graph.facebook.com/v7.0/${liveVideoId}/comments?access_token=${accessToken}&fields=created_time,from{name},message`)
-        const comments = (await fetchCommentsRes.json()).data
-        console.log(comments)
-        return res.status(200).json({success:true, message:comments})
-
+        // const comments = (await fetchCommentsRes.json()).data
+        // console.log(comments)
+        // return res.status(200).json({success:true, message:comments})
+          return res.status(200).json({success:true, message:"Connected to Facebook Comments Successfully"})
     }
 
-
-    // get token service 
-    
-    //  用token睇下有冇直播
-    //  用token get comments
 }
