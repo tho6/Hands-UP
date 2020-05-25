@@ -19,7 +19,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/permit": "^0.2.1",
     "@types/pg": "^7.14.3",
-    "@types/socket.io": "^2.1.5",
+    "@types/socket.io": "^2.1.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",

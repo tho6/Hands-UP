@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
@@ -12,6 +13,18 @@ import { checkToken, restoreLogin } from './redux/auth/thunk';
 import FacebookLogin from './component/FacebookLogin'
 import FacebookLoginCallBack from './component/FacbookLoginCallBack';
 
+=======
+import React from 'react';
+import './App.css';
+import QuestionPage from './component/QuestionPage';
+import Question from './component/Question';
+import { Route } from 'react-router-dom';
+// import { Meetings } from './component/Meetings';
+// import { MeetingRoom } from './component/MeetingRoom';
+import { MeetingLive } from './component/MeetingLive';
+import { MeetingPast } from './component/MeetingPast';
+import { Nav } from './component/Nav';
+>>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
 
 function App() {
   const dispatch = useDispatch()
@@ -23,6 +36,7 @@ function App() {
   }, [dispatch, accessToken])
   return (
     <div className="App">
+<<<<<<< HEAD
       <Provider store={store}>
         
       <Switch>
@@ -49,6 +63,16 @@ function App() {
           Learn React
         </a>
       </header>
+=======
+      {/* <Nav /> */}
+      <Route path="/questions/room/:id/:page" exact>
+        <QuestionPage />
+      </Route>
+      {/* <Route path="/" exact><Meetings /></Route>
+      <Route path="/meetings/:id"><MeetingRoom /></Route> */}
+      <MeetingLive />
+      <div className="MeetingPast"><MeetingPast /></div>
+>>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
     </div>
   );
 }
