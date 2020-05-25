@@ -7,12 +7,12 @@ import { Route } from 'react-router-dom';
 // import { MeetingRoom } from './component/MeetingRoom';
 import { MeetingLive } from './component/MeetingLive';
 import { MeetingPast } from './component/MeetingPast';
-import { Nav } from './component/Nav';
+// import { Navbar } from './component/Navbar';
 
 function App() {
   return (
     <div className="App">
-      {/* <Nav /> */}
+      {/* <Navbar /> */}
       <Route path="/questions/room/:id/:page" exact>
         <QuestionPage />
       </Route>

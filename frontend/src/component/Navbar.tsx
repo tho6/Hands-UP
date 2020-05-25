@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Nav() {
+export function Navbar() {
     return (
         <div>
             <h2>Nav bar</h2>

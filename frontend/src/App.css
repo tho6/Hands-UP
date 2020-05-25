@@ -1,6 +1,6 @@
 .App {
   display: flex;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .App > div {
@@ -9,4 +9,5 @@
 
 .MeetingPast {
   background-color: #F8F8F8;
+  opacity: 0.6;
 }
