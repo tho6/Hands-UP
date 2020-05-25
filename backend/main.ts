@@ -18,6 +18,7 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
+import { VideoRouter } from "./routers/VideoRouter";
 
 declare global {
   namespace Express {
@@ -35,10 +36,11 @@ const io = SocketIO(server);
 
 /* Enable cors */
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-  ]
-}))
+    origin: [
+      'http://localhost:3000',
+      'https://localhost:3000'
+    ]
+  }))
 
 /* Database configuration */
 const knexConfig = require("./knexfile");
@@ -71,7 +73,8 @@ const authService = new AuthService(knex);
 /* Routers */
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
-const authRouter = new AuthRouter(userService, guestService, authService);
+const authRouter = new AuthRouter(userService, guestService,authService);
+const videoRouter = new VideoRouter();
 
 /* Session */
 // app.use(
@@ -95,8 +98,9 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
-app.get('/test/callback', (req: Request, res: Response) => {
-  return res.status(200).json({ message: req.query })
+app.use('/video', videoRouter.router())
+app.get('/test/callback', (req:Request, res: Response)=>{
+    return res.status(200).json({message: req.query})
 })
 
 io.on('connection', socket => {

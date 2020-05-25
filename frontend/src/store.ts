@@ -6,6 +6,8 @@ import { QuestionsActions } from './redux/questions/actions';
 import { QuestionState, questionsReducer } from './redux/questions/reducers';
 import { roomsReducer, RoomState } from './redux/rooms/reducers';
 import { RoomsActions } from './redux/rooms/actions';
+import { AuthState, authReducer } from './redux/auth/reducers';
+import { AuthActions } from './redux/auth/actions';
 import { MeetingPastActions } from './redux/meetingpast/action';
 import { MeetingPastState, MeetingPastReducer } from './redux/meetingpast/reducers';
 import { MeetingLiveState, MeetingLiveReducer } from './redux/meetinglive/reducers';
@@ -17,15 +19,16 @@ declare global {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
   }
 }
+// export type RootAction = QuestionsActions|RoomsActions|AuthActions;
 
-export type RootAction = QuestionsActions | RoomsActions | MeetingPastActions;
+export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions;
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 
 export const history = createBrowserHistory();
 
 export interface RootState {
-  auth: any
+  auth: AuthState
   questions: QuestionState
   roomsInformation: RoomState
   router: RouterState
@@ -34,7 +37,8 @@ export interface RootState {
 }
 
 const reducer = combineReducers<RootState>({
-  auth: () => null,
+  auth: authReducer,
+  // auth: () => null,
   questions: questionsReducer,
   roomsInformation: roomsReducer,
   router: connectRouter(history),
