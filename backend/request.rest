@@ -2,6 +2,8 @@
 @google_client_id = {{$dotenv GOOGLE_CLIENT_ID}}
 @google_client_secret = {{$dotenv GOOGLE_CLIENT_SECRET}}
 @google_redirect_url = {{$dotenv GOOGLE_REDIRECT_URL}}
+@facebook_client_id = {{$dotenv FACEBOOK_CLIENT_ID}}
+@facebook_redirect_url = {{$dotenv FACEBOOK_REDIRECT_URL}}
 ###
 GET {{backend_url}}/user/1,2,3,4
 
@@ -55,3 +57,11 @@ Content-Type: application/json
 {
     "refreshToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJndWVzdElkIjoxMywiaWF0IjoxNTkwMTMzMjkwLCJleHAiOjE1OTI3MjUyOTB9.d-LjSuB36U152lnbOy2QMqpXNYZ3nrdqcek52N6Z9jeKfc6eG9dtcXEU8VJqKSwpCUZzArT8B3fqbxnAyVySJh6L6Y5hTQcggw2CwC4q1p1Uza0SGLduV6k_0Nhng3jJCrFVp_K-IvE5a7Cca8nqY0PvNAFbOGz2ejnhb69BOKY"
 }
+
+### Facebook
+https://www.facebook.com/v7.0/dialog/oauth?client_id={{facebook_client_id}}&redirect_uri=http://localhost:8080/callback&state=stststst
+
+###
+https://www.facebook.com/v7.0/dialog/oauth?client_id=2313103855661187&redirect_uri=http://localhost:8080/test/callback&state=stststst&response_type=token&scope=user_videos
+
+curl -i -X GET "https://graph.facebook.com/611099456422217/comments?access_token=EAAg3wXWlMIMBAMTb8eJuBLxmlVbkZAV3SWEc8qXGOw2plZANFqwXIkeSzQK12XZBlYyiFaZCikXXecvdARXPveh0R2Iqs0KbTL5b0YZCZBOPOdGWiCGPEz1hLke7AZALqtH3dqCrqX4pcatWCW8bZBzAu4ZAtMaOf2nLHIHhGZAXY1OAz9p6KO9AZB0QPt4XYEjXZAQZD"

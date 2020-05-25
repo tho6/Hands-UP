@@ -18,15 +18,15 @@ import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
 import SocketIO from "socket.io";
 import http from 'http';
+import { VideoRouter } from "./routers/VideoRouter";
 
 declare global {
-    namespace Express {
-      interface Request {
-        personInfo?: PersonInfo
-      }
+  namespace Express {
+    interface Request {
+      personInfo?: PersonInfo
     }
   }
-  
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -36,6 +36,7 @@ const io = SocketIO(server)
 app.use(cors({
     origin: [
       'http://localhost:3000',
+      'https://localhost:3000'
     ]
   }))
 
@@ -46,15 +47,15 @@ const knex = Knex(knexConfig[process.env.NODE_ENV || "development"]);
 
 /* Multer configuration */
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, "uploads"));
-    },
-    filename: function (req, file, cb) {
-        cb(
-            null,
-            `${req.body.projectID}-${Date.now()}.${file.mimetype.split("/")[1]}`
-        ); // category and dish refer to html form name tag
-    },
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      `${req.body.projectID}-${Date.now()}.${file.mimetype.split("/")[1]}`
+    ); // category and dish refer to html form name tag
+  },
 });
 //@ts-ignore
 const upload = multer({ storage: storage });
@@ -71,6 +72,7 @@ const authService = new AuthService(knex);
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService,authService);
+const videoRouter = new VideoRouter();
 
 /* Session */
 // app.use(
@@ -94,22 +96,28 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
+app.use('/video', videoRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })
 
 /* Socket Io */
 io.on('connection', socket => {
-  socket.on('join_meeting', (meetingId: number) => {
-    socket.join('meeting:' + meetingId)
+  socket.on('join_event', (meetingId: number) => {
+    socket.join('event:' + meetingId)
   })
 
+  socket.on('leave_event', (meetingId: number) => {
+    socket.leave('event:' + meetingId)
+  })
   socket.on('leave_meeting', (meetingId: number) => {
     socket.leave('meeting:' + meetingId)
   })
 });
+
 /* Listening port */
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`listening to ${PORT}`);
+// app.listen(PORT, () => {
+server.listen(PORT, () => {
+  console.log(`listening to ${PORT}`);
 });

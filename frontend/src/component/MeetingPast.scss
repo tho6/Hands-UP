@@ -1,0 +1,39 @@
+.meetingPastContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.headline {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    padding: 20px;
+}
+
+.meetingPastCard{
+    background-color: #F8F8F8;
+    border-radius: 40px;
+    // box-shadow: 0 8px 6px -3px #e5e3e3;
+    padding: 20px;
+    margin: 50px 20px 5px;
+    width: 250px;
+    height: 200px;
+}
+
+.viewButton {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.viewButtonBlue{
+    background-color: #0275B1;
+    border-radius: 20px;
+}
+
+.calendarIcon{
+    width: 80px;
+}
+
+.fa-calendar-alt{
+    color: #000000;
+}
