@@ -1,0 +1,24 @@
+.meetingCard{
+    border-radius: 40px;
+    box-shadow: 0 8px 6px -3px #e5e3e3;
+    padding: 20px;
+    margin: 50px;
+}
+
+.joinButton {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.joinButtonGreen{
+    background-color: #1B8C6F;
+    border-radius: 40px;
+}
+
+.liveIcon{
+    width: 100px;
+}
+
+.fa-video{
+    color: #0D3A83;
+}

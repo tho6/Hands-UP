@@ -1,31 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import QuestionPage from './component/QuestionPage';
 import Question from './component/Question';
 import { Route } from 'react-router-dom';
-
+// import { Meetings } from './component/Meetings';
+// import { MeetingRoom } from './component/MeetingRoom';
+import { MeetingLive } from './component/MeetingLive';
+import { MeetingPast } from './component/MeetingPast';
+import { Nav } from './component/Nav';
 
 function App() {
   return (
     <div className="App">
-       <Route path="/questions/room/:id/:page" exact>
-      <QuestionPage />
-       </Route>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <Nav /> */}
+      <Route path="/questions/room/:id/:page" exact>
+        <QuestionPage />
+      </Route>
+      {/* <Route path="/" exact><Meetings /></Route>
+      <Route path="/meetings/:id"><MeetingRoom /></Route> */}
+      <MeetingLive />
+      <div className="MeetingPast"><MeetingPast /></div>
     </div>
   );
 }
