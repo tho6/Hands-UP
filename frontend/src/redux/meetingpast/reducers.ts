@@ -10,12 +10,12 @@ export interface IMeetingPast {
 }
 
 export interface MeetingPastState {
+    meetingsPast: IMeetingPast[]
     // meetingsById: {
     //     [meetingId: string]: MeetingPast
     // }
     // meetings: number[],
     // meetingDate: Date
-    meetingsPast: IMeetingPast[]
 }
 
 // export interface MeetingPastState {
@@ -27,7 +27,10 @@ export interface MeetingPastState {
 // }
 
 const initialState: MeetingPastState = {
-    meetingsPast: [{ id: 1, name: "PastMeeting1", date: new Date(), code: "NEW1", host: "Host1" }],
+    meetingsPast: [
+        { id: 1, name: "PastMeeting1", date: new Date(), code: "PAST1", host: "Host1" },
+        { id: 2, name: "PastMeeting2", date: new Date(), code: "PAST2", host: "Host2" },
+        { id: 3, name: "PastMeeting3", date: new Date(), code: "PAST3", host: "Host3" }],
     // meetingsById: {},
     // meetings: [],
     // meetingDate: new Date()

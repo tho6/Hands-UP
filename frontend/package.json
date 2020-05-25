@@ -22,20 +22,14 @@
     "@types/socket.io-client": "^1.4.33",
     "bootstrap": "^4.5.0",
     "connected-react-router": "^6.8.0",
-<<<<<<< HEAD
     "jsonwebtoken": "^8.5.1",
-=======
     "immer": "^6.0.8",
->>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
-<<<<<<< HEAD
     "react-facebook-login": "^4.1.1",
-=======
     "react-moment": "^0.9.7",
->>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",

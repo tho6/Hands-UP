@@ -14,7 +14,9 @@ export interface MeetingLiveState {
 }
 
 const initialState: MeetingLiveState = {
-    meetingsLive: [{ id: 1, name: "LiveMeeting1", date: new Date(), code: "NEW1", host: "Host1" },{ id: 2, name: "LiveMeeting2", date: new Date(), code: "NEW2", host: "Host2" }],
+    meetingsLive: [
+        { id: 1, name: "LiveMeeting1", date: new Date(), code: "NEW1", host: "Host1" },
+        { id: 2, name: "LiveMeeting2", date: new Date(), code: "NEW2", host: "Host2" }],
 }
 
 export function MeetingLiveReducer(state: MeetingLiveState = initialState, action: MeetingLiveActions): MeetingLiveState {
