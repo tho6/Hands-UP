@@ -1,5 +1,6 @@
 import { question } from "../type/question";
 import { customFileDB } from "../type/questionFromDB";
+import { replyDB } from "../type/replyFromDB";
 
 
 export interface IQuestionService {
@@ -13,12 +14,16 @@ export interface IQuestionService {
     answeredQuestion(questionId: number): Promise<boolean>;
     hideOrApprovedQuestion(questionId: number, isHide:boolean): Promise<boolean>;
     /* Auth */
-    getRoomHost(roomId: number): Promise<number>;
+    getRoomHost(questionId: number): Promise<number>;
+    getRoomIdByQuestionId(questionId: number): Promise<number>;
+    getRoomIdByReplyId(replyId: number): Promise<number>;
+    getRoomHostByMeetingId(meetingId: number): Promise<number>;
     getQuestionOwner(questionId: number): Promise<number>;
     /* reply */
     updateReply(id: number, content: string): Promise<boolean>;
-    createReply(questionId: number, content: string, guestId: number): Promise<number>;
+    createReply(questionId: number, content: string, guestId: number): Promise<replyDB>;
     deleteReply(id: number): Promise<boolean>;
     hideReply(replyId: number, isHide: boolean): Promise<boolean>;
-
+    getReplyOwner(replyId: number): Promise<number>;
+    getQuestionIdByReplyId(replyId: number): Promise<number>
 }

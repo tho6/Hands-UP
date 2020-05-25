@@ -148,4 +148,11 @@ describe('replyDAO', () => {
     it('getReplyOwner - reply owner is not found', async () => {
         await expect(replyDAO.getReplyOwner(100)).rejects.toThrowError('Fail to get reply owner - reply is not found');   
     });
+    it('getRoomIdByReplyId - normal', async () => {
+        const id = await replyDAO.getRoomIdByReplyId(1);
+        expect(id).toBe(1);
+    });
+    it('getRoomIdByReplyId - reply is not found', async () => {
+        await expect(replyDAO.getRoomIdByReplyId(20)).rejects.toThrowError('Fail to get room id - reply is not found!');   
+    });
 });

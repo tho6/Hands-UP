@@ -115,7 +115,7 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
             //const result = await res.json();
             const result = tEditQuestionSuccess;
             if (result.status) {
-                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content, result.message.deleteFilesId, result.message.files, result.message.updatedAt));
+                dispatch(successfullyUpdateQuestion(result.message.questionId, result.message.content, result.message.deleteFilesId, result.message.files, result.message.updatedAt, result.message.isApproved));
             } else {
                 window.alert(result.message);
             }
@@ -187,7 +187,7 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
             //const result = await res.json();
             const result = tDeleteReplySuccess;
             if (result.status) {
-                dispatch(successfullyDeleteReply(result.message.questionId, result.message.replyId, result.message.meetingId));
+                dispatch(successfullyDeleteReply(result.message.questionId, result.message.replyId));
             } else {
                 window.alert(result.message);
             }

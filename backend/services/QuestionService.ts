@@ -76,12 +76,21 @@ export class QuestionService implements IQuestionService {
             return approved;
         }
     }
-    async getRoomHost(roomId: number): Promise<number> {
-        const id = this.questionDAO.getRoomHost(roomId);
-        return id;
+    async getRoomHost(questionId: number): Promise<number> {
+        const roomId = await this.questionDAO.getMeetingIdByQuestion(questionId);
+        const hostId = await this.questionDAO.getRoomHost(roomId);
+        return hostId;
+    }
+    async getRoomHostByMeetingId(meetingId: number): Promise<number> {
+        const hostId = await this.questionDAO.getRoomHost(meetingId);
+        return hostId;
     }
     async getQuestionOwner(questionId: number): Promise<number> {
         const id = await this.questionDAO.getQuestionOwner(questionId);
+        return id;
+    }
+    async getReplyOwner(replyId: number): Promise<number> {
+        const id = await this.replyDAO.getReplyOwner(replyId);
         return id;
     }
     async updateReply(id: number, content: string): Promise<boolean> {
@@ -89,9 +98,10 @@ export class QuestionService implements IQuestionService {
         if (!isUpdated) throw new Error('Fail to update reply - unknown error!');
         return isUpdated;
     }
-    async createReply(questionId: number, content: string, guestId: number): Promise<number> {
+    async createReply(questionId: number, content: string, guestId: number): Promise<replyDB> {
         const insertId = await this.replyDAO.createReply(questionId, content, guestId);
-        return insertId;
+        const reply = await this.replyDAO.getReplyById(insertId);
+        return reply;
     }
     async deleteReply(id: number): Promise<boolean> {
         const isDeleted = await this.replyDAO.deleteReply(id);
@@ -102,6 +112,18 @@ export class QuestionService implements IQuestionService {
         const isOk = await this.replyDAO.hideReply(replyId, isHide);
         if (!isOk) throw new Error('Fail to hide/display reply - unknown error!');
         return isOk;
+    }
+    async getRoomIdByQuestionId(questionId:number): Promise<number> {
+        const question = await this.questionDAO.getQuestionById(questionId);
+        return question.meetingId;
+    }
+    async getRoomIdByReplyId(replyId: number): Promise<number> {
+        const roomId = await this.replyDAO.getRoomIdByReplyId(replyId);
+        return roomId;
+    }
+    async getQuestionIdByReplyId(replyId: number): Promise<number> {
+        const reply = await this.replyDAO.getReplyById(replyId);
+        return reply.questionId;
     }
     async buildQuestion(arr: questionDB[]): Promise<question[]> {
         const questionArr: question[] = [];

@@ -16,6 +16,8 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
+import SocketIO from "socket.io";
+import http from 'http';
 
 declare global {
     namespace Express {
@@ -27,6 +29,8 @@ declare global {
   
 
 const app = express();
+const server = http.createServer(app);
+const io = SocketIO(server)
 
 /* Enable cors */
 app.use(cors({
@@ -94,7 +98,16 @@ app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })
 
+/* Socket Io */
+io.on('connection', socket => {
+  socket.on('join_meeting', (meetingId: number) => {
+    socket.join('meeting:' + meetingId)
+  })
 
+  socket.on('leave_meeting', (meetingId: number) => {
+    socket.leave('meeting:' + meetingId)
+  })
+});
 /* Listening port */
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

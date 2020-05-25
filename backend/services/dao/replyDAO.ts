@@ -9,6 +9,11 @@ export class ReplyDAO implements IReplyDAO {
         const result = await this.knex.raw(sql, [questionId]);
         return result.rows;
     }
+    async getReplyById(replyId: number): Promise<replyDB> {
+        const sql = `SELECT replies.id, replies.guest_id as "guestId", guests.name as "guestName", content, question_id as "questionId", replies.created_at as "createdAt", replies.updated_at as "updatedAt", is_hide as "isHide" FROM replies INNER JOIN guests ON replies.guest_id = guests.id WHERE replies.id = ?;`;
+        const result = await this.knex.raw(sql, [replyId]);
+        return result.rows[0];
+    }
     async updateReply(id: number, content: string): Promise<boolean> {
         const sql = `UPDATE replies SET (content, updated_at) = (?, NOW()) where id = ?;`;
         const result = await this.knex.raw(sql,[content, id]);
@@ -45,6 +50,14 @@ export class ReplyDAO implements IReplyDAO {
             throw new Error('Fail to get reply owner - reply is not found');
         }
         return result.rows[0].guestId;
+    }
+    async getRoomIdByReplyId(replyId: number): Promise<number> {
+        const sql = `SELECT questions.meeting_id as "meetingId" FROM replies INNER JOIN questions ON replies.question_id = questions.id WHERE replies.id = ?;`;
+        const result = await this.knex.raw(sql, [replyId]);
+        if(result.rowCount !== 1){
+            throw new Error('Fail to get room id - reply is not found!');
+        }
+        return result.rows[0].meetingId;
     }
 
 }
