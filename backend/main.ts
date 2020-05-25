@@ -36,18 +36,11 @@ const io = SocketIO(server);
 
 /* Enable cors */
 app.use(cors({
-<<<<<<< HEAD
     origin: [
       'http://localhost:3000',
       'https://localhost:3000'
     ]
   }))
-=======
-  origin: [
-    'http://localhost:3000',
-  ]
-}))
->>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
 
 /* Database configuration */
 const knexConfig = require("./knexfile");
@@ -80,12 +73,8 @@ const authService = new AuthService(knex);
 /* Routers */
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
-<<<<<<< HEAD
 const authRouter = new AuthRouter(userService, guestService,authService);
 const videoRouter = new VideoRouter();
-=======
-const authRouter = new AuthRouter(userService, guestService, authService);
->>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
 
 /* Session */
 // app.use(
@@ -109,14 +98,9 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
-<<<<<<< HEAD
 app.use('/video', videoRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
-=======
-app.get('/test/callback', (req: Request, res: Response) => {
-  return res.status(200).json({ message: req.query })
->>>>>>> 9627f370cfabb69e8666393bf62c04939abca631
 })
 
 io.on('connection', socket => {
