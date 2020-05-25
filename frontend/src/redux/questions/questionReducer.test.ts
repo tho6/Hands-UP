@@ -23,8 +23,8 @@ describe('Question Reducer', () => {
             isHide: false,
             isAnswered: false,
             isApproved: true,
-            createdAt: 123,
-            updatedAt: 456,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+456),
             platform:{id:2, name:'facebook'}
         };
         initialState = {
@@ -83,12 +83,12 @@ describe('Question Reducer', () => {
             isHide: false,
             isAnswered: false,
             isApproved: true,
-            createdAt: 123,
-            updatedAt: 12345,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+12345),
             platform:{id: 2, name:'facebook'}
         }
         const obj = { questions: { 1: expectedObj }, questionsByMeetingId: { 2: [1] } };
-        const finalState = questionsReducer(initialState, action.successfullyUpdateQuestion(1, 'update', [2], [{ id: 3, filename: '3.png' }], 12345));
+        const finalState = questionsReducer(initialState, action.successfullyUpdateQuestion(1, 'update', [2], [{ id: 3, filename: '3.png' }], new Date(Date.now()+12345)));
         expect(finalState).toEqual(obj)
     });
     it("new reply to a question", () => {
@@ -102,8 +102,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: false
         }
 
@@ -119,8 +119,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: false
         }
         const initialState = {
@@ -128,7 +128,7 @@ describe('Question Reducer', () => {
         }
 
         const obj = { questions: { 2: {...question, id:2, replies:[{...reply, updatedAt:999, content:'update reply'}]} }, questionsByMeetingId: { 2: [2] } };
-        const finalState = questionsReducer(initialState, action.successfullyUpdateReply(2,1,'update reply',999));
+        const finalState = questionsReducer(initialState, action.successfullyUpdateReply(2,1,'update reply',new Date(Date.now()+999)));
         expect(finalState).toEqual(obj)
     });
     it("delete reply", () => {
@@ -139,8 +139,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: false
         }
         const initialState = {
@@ -175,8 +175,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: false
         }
         const initialState = {
@@ -195,8 +195,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: true
         }
         const initialState = {
@@ -215,8 +215,8 @@ describe('Question Reducer', () => {
             content: 'this is a reply',
             questionId: 1,
             isEdit: false,
-            createdAt: 123,
-            updatedAt: 123,
+            createdAt: new Date(Date.now()+123),
+            updatedAt: new Date(Date.now()+123),
             isHide: true
         }
         const initialState = {

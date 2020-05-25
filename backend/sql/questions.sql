@@ -31,20 +31,6 @@ SELECT
 FROM question_attachments
 where
   question_id = 1;
-  /* getQuestionReplies */
-SELECT
-  replies.id,
-  replies.guest_id as "guestId",
-  guests.name as "guestName",
-  content,
-  question_id as "questionId",
-  replies.created_at as "createdAt",
-  replies.updated_at as "updatedAt",
-  is_hide as "isHide"
-FROM replies
-INNER JOIN guests ON replies.guest_id = guests.id
-WHERE
-  question_id = 1;
   /* Update quesiton *//* trx */
 UPDATE questions SET (content, updated_at, is_approved) = ('string', NOW()) WHERE id = 1;
 INSERT INTO question_attachments (question_id, name) VALUES (1, 'test.png');

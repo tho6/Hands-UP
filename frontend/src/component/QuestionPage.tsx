@@ -61,13 +61,13 @@ const QuestionPage: React.FC = () => {
     .sort((a, b) => b.likes.length - a.likes.length);
   const latestQuestions = mostPopularQuestions
     ?.slice()
-    .sort((a, b) => b.updatedAt - a.updatedAt);
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   const answeredQuestions = questions?.filter(
     (question) => question.isAnswered && !question.isHide && question.isApproved
   );
   const questionsNeedToBeApproved = questions
     ?.filter((question) => !question.isApproved && !question.isHide)
-    .sort((a, b) => a.updatedAt - b.updatedAt);
+    .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime());
   const questionsInAppropriate = questions?.filter(
     (question) => question.isHide
   );

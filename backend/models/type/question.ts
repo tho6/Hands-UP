@@ -6,29 +6,37 @@ export type question = {
     replies: reply[],
     files: customFile[],
     meetingId: number,
-    platformId: number,
+    platform: platform,
     isHide: boolean,
     isAnswered: boolean,
     isApproved: boolean,
-    createdAt: number,
-    updatedAt: number
+    createdAt: Date,
+    updatedAt: Date
 }
 
 type questioner = {
-    name: string,
-    id: number
+    name: string | null,
+    id: number | null
 }
-
+export type meetingConfig = {
+    isLive: boolean,
+    canModerate: boolean,
+    canUploadFile: boolean,
+    questionLimit: number
+}
 export type reply = {
     id: number,
     guestId: number,
     guestName: string,
     content: string,
     questionId: number,
-    isEdit: boolean,
-    createdAt: number,
-    updatedAt: number,
+    createdAt: Date,
+    updatedAt: Date,
     isHide: boolean
+}
+export type platform = {
+    id: number;
+    name: string
 }
 
 export type customFile = { id: number, filename: string }

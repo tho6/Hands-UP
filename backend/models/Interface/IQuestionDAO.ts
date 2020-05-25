@@ -1,10 +1,11 @@
-import { questionDB, customFileDB, replyDB } from "../type/questionFromDB";
+import { questionDB, customFileDB } from "../type/questionFromDB";
+import { meetingConfig } from "../type/question";
 
 export interface IQuestionDAO {
     getQuestionsByRoomId(meetingId: number): Promise<questionDB[]>;
-    getQuestionLikes(questionId: number): Promise<{guestId:number}[]>;
-    getQuestionReplies(questionId: number): Promise<replyDB[]>;
+    getQuestionLikes(questionId: number): Promise<number[]>;
     getQuestionFiles(questionId: number): Promise<customFileDB[]>;
+    getQuestionById(questionId: number): Promise<questionDB>
 
     updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[], isApproved:boolean): Promise<boolean>;
     createQuestion(meetingId: number, content: string, filesName: string[], isApproved: boolean, platformId:number, guestId:null|number): Promise<number>;
@@ -18,4 +19,7 @@ export interface IQuestionDAO {
     /* Auth */
     getRoomHost(roomId:number): Promise<number>;
     getQuestionOwner(questionId: number): Promise<number>;
+    /* get room config */
+    getMeetingConfiguration(meetingId: number): Promise<meetingConfig>;
+    getMeetingIdByQuestion(questionId: number): Promise<number>;
 }

@@ -1,22 +1,24 @@
-import { questionDB, customFileDB } from "../type/questionFromDB";
+import { question } from "../type/question";
+import { customFileDB } from "../type/questionFromDB";
 
-export interface IQuestionDAO {
-    getQuestionsByRoomId(meetingId: number): Promise<questionDB[]>;
-    getQuestionLikes(meetingId: number): Promise<{guestId:number}[]>;
-    getQuestionReplies(meetingId: number): Promise<questionDB[]>;
-    getQuestionFiles(meetingId: number): Promise<customFileDB[]>;
-    
-    updateQuestion(id: number, content: string, deleteFilesId: number[], files: customFileDB[]): Promise<boolean>;
-    createQuestion(questionerId: number, content: string, filesName: string[], isApproved: boolean): Promise<number>;
+
+export interface IQuestionService {
+    getQuestionsByRoomId(meetingId: number): Promise<question[]>;
+    updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[]): Promise<{ files: customFileDB[], needApproved: boolean }>;
+    createQuestion(meetingId: number, content: string, filesName: string[], platformId: number, guestId: null | number): Promise<question>;
     deleteQuestion(id: number): Promise<boolean>;
-    
-    addVote(questionId: number): Promise<boolean>;
-    removeVote(questionId: number): Promise<boolean>;
+    addVote(questionId: number, guestId: number): Promise<boolean>;
+    removeVote(questionId: number, guestId: number): Promise<boolean>;
     /* host */
     answeredQuestion(questionId: number): Promise<boolean>;
-    hideQuestion(questionId: number): Promise<boolean>;
-    approvedQuestion(questionId: number): Promise<boolean>;
+    hideOrApprovedQuestion(questionId: number, isHide:boolean): Promise<boolean>;
     /* Auth */
-    checkIsHost(userId: number, meetingId: number): Promise<boolean>;
-    checkIsOwner(guestId: number, questionId: number): Promise<boolean>;
+    getRoomHost(roomId: number): Promise<number>;
+    getQuestionOwner(questionId: number): Promise<number>;
+    /* reply */
+    updateReply(id: number, content: string): Promise<boolean>;
+    createReply(questionId: number, content: string, guestId: number): Promise<number>;
+    deleteReply(id: number): Promise<boolean>;
+    hideReply(replyId: number, isHide: boolean): Promise<boolean>;
+
 }

@@ -9,8 +9,8 @@ export interface IQuestion {
     isApproved: boolean;
     isHide: boolean;
     isAnswered: boolean;
-    updatedAt:number;
-    createdAt:number;
+    updatedAt:Date;
+    createdAt:Date;
     platform: platform
 }
 export type reply = {
@@ -19,8 +19,8 @@ export type reply = {
     guestName: string;
     content: string;
     questionId: number;
-    createdAt:number;
-    updatedAt:number;
+    createdAt:Date;
+    updatedAt:Date;
     isHide: boolean;
 
 }

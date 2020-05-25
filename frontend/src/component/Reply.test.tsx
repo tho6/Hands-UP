@@ -17,8 +17,8 @@ describe("Reply component",()=>{
       guestName: 'Anonymous',
       content: 'string string',
       questionId: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
       isHide: false
   }
   const host:IGuest= {name:'host',guestId:2, isHost:true}
@@ -66,7 +66,7 @@ describe("Reply component",()=>{
         expect(element).toBeInTheDocument();
     })
     it("render reply component - edited ",async ()=>{
-      const editedReply = {...reply, updatedAt:1}
+      const editedReply = {...reply, updatedAt:new Date(Date.now()+1)}
         render(<Reply reply={editedReply} user={guest1} meetingId={1}/>)
         const element = screen.getByText(/\[Edited\]/);
         const element2 = screen.getByText('[Edited]');

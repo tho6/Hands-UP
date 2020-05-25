@@ -15,7 +15,7 @@ export function successfullyDeleteQuestion(questionId: number, meetingId: number
         meetingId
     }
 }
-export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: number) {
+export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: Date) {
     return {
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
@@ -31,7 +31,7 @@ export function addedReplyToQuestion(reply: reply) {
         reply
     }
 }
-export function successfullyUpdateReply(questionId: number, replyId: number, content: string, updatedAt: number) {
+export function successfullyUpdateReply(questionId: number, replyId: number, content: string, updatedAt: Date) {
     return {
         type: '@@QUESTIONS/UPDATED_REPLY' as '@@QUESTIONS/UPDATED_REPLY',
         reply: { questionId, replyId, content, updatedAt }
