@@ -60,11 +60,15 @@ const storage = multer.diskStorage({
 //@ts-ignore
 const upload = multer({ storage: storage });
 
+/* DAO */
+const questionDAO = new services.QuestionDAO(Knex(knexConfig["testing"]));
+const replyDAO = new services.ReplyDAO(Knex(knexConfig["testing"]));
 
 /* Services */
 const userService = new UserService(knex);
 const guestService = new GuestService(knex);
 const authService = new AuthService(knex);
+const questionService = new services.QuestionService(questionDAO, replyDAO);
 
 
 
@@ -73,6 +77,7 @@ const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService,authService);
 const videoRouter = new VideoRouter();
+const questionRouter = new routers.QuestionRouter(questionService, upload,io);
 
 /* Session */
 // app.use(
@@ -100,18 +105,15 @@ app.use('/video', videoRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })
+app.use('/rooms', questionRouter.router());
 
 /* Socket Io */
 io.on('connection', socket => {
   socket.on('join_event', (meetingId: number) => {
     socket.join('event:' + meetingId)
   })
-
   socket.on('leave_event', (meetingId: number) => {
     socket.leave('event:' + meetingId)
-  })
-  socket.on('leave_meeting', (meetingId: number) => {
-    socket.leave('meeting:' + meetingId)
   })
 });
 

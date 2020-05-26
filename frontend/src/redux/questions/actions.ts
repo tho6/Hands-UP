@@ -1,4 +1,4 @@
-import { IQuestion, reply, file } from "../../models/IQuestion";
+import { IQuestion, reply, file, updateQuestion } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
@@ -15,8 +15,10 @@ export function successfullyDeleteQuestion(questionId: number, meetingId: number
         meetingId
     }
 }
-export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: Date, isApproved:boolean) {
+export function successfullyUpdateQuestion(question: updateQuestion) {
+    const {questionId, content, deleteFilesId, files, updatedAt, isApproved} = question
     return {
+
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
         content,
@@ -24,7 +26,7 @@ export function successfullyUpdateQuestion(questionId: number, content: string, 
         files,
         updatedAt,
         isApproved
-    }
+}
 }
 export function addedReplyToQuestion(reply: reply) {
     return {
@@ -41,7 +43,7 @@ export function successfullyUpdateReply(questionId: number, replyId: number, con
 export function successfullyDeleteReply(questionId: number, replyId: number) {
     return {
         type: '@@QUESTIONS/DELETED_REPLY' as '@@QUESTIONS/DELETED_REPLY',
-        reply: { questionId, replyId}
+        reply: { questionId, replyId }
     }
 }
 export function successfullyVoteForAQuestion(questionId: number, guestId: number) {
@@ -62,7 +64,7 @@ export function addedQuestion(question: IQuestion) {
         question
     }
 }
-export function successfullyHideOrDisplayAReply(replyId: number, questionId: number, isHide:boolean) {
+export function successfullyHideOrDisplayAReply(replyId: number, questionId: number, isHide: boolean) {
     return {
         type: '@@QUESTIONS/HIDE_OR_DISPLAY_REPLY' as '@@QUESTIONS/HIDE_OR_DISPLAY_REPLY',
         questionId,
@@ -70,7 +72,7 @@ export function successfullyHideOrDisplayAReply(replyId: number, questionId: num
         isHide
     }
 }
-export function successfullyApprovedOrHideAQuestion(questionId: number, isHide:boolean) {
+export function successfullyApprovedOrHideAQuestion(questionId: number, isHide: boolean) {
     return {
         type: '@@QUESTIONS/APPROVE_HIDE_QUESTION' as '@@QUESTIONS/APPROVE_HIDE_QUESTION',
         questionId,
@@ -90,4 +92,4 @@ export function successfullyAnsweredQuestion(questionId: number) {
 export type QuestionsActions = ReturnType<typeof loadQuestions> | ReturnType<typeof successfullyDeleteQuestion> | ReturnType<typeof successfullyUpdateQuestion> |
     ReturnType<typeof addedReplyToQuestion> | ReturnType<typeof successfullyUpdateReply> | ReturnType<typeof successfullyDeleteReply> | ReturnType<typeof successfullyVoteForAQuestion> |
     ReturnType<typeof successfullyRemoveVote> | ReturnType<typeof addedQuestion> | ReturnType<typeof successfullyApprovedOrHideAQuestion> |
-    ReturnType<typeof successfullyHideOrDisplayAReply>|ReturnType<typeof successfullyAnsweredQuestion>;
+    ReturnType<typeof successfullyHideOrDisplayAReply> | ReturnType<typeof successfullyAnsweredQuestion>;

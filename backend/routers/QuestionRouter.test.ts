@@ -452,7 +452,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('add-vote', { "meetingId": 3, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('add-vote', { "guestId": 3, "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('delete question - same person vote for the same question again', async () => {
@@ -498,7 +498,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('remove-vote', { "meetingId": 1, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('remove-vote', { "guestId": 1, "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('remove vote - remove vote from a questions that never voted for it', async () => {
@@ -544,7 +544,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('answered-question', { "isAnswered": true, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('answered-question', { "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('answered question - not host', async () => {
