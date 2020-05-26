@@ -16,13 +16,9 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
-<<<<<<< HEAD
-import { LiveRouter } from "./routers/LiveRouter";
-=======
 import SocketIO from "socket.io";
 import http from 'http';
-import { VideoRouter } from "./routers/VideoRouter";
->>>>>>> 533c1e39ae9a10005dba1026f398a71a0e4d4883
+import { LiveRouter } from "./routers/LiveRouter";
 
 declare global {
   namespace Express {
