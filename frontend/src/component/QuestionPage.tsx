@@ -162,7 +162,7 @@ const QuestionPage: React.FC = () => {
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className='meeting-information d-flex justify-content-between flex-wrap mb-4'>
   <div>{roomInformation?.name}</div>
-  {roomInformation?.userInformation?.isHost === false && roomInformation.canModerate && <div>Moderation: {questionsNeedToBeApproved.length}</div>}
+  {roomInformation?.userInformation?.isHost === false && roomInformation.canModerate && (<div>Moderation: {questionsNeedToBeApproved?.length}</div>)}
       </div>
       <div className="question-form text-left mb-4">
         <div className="d-flex text-area-container rounded shadow flex-wrap">

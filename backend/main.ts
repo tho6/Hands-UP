@@ -17,10 +17,11 @@ import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
 import { LiveRouter } from "./routers/LiveRouter";
-import { MeetingService } from "./services/MeetingService";
-import { MeetingRouter } from "./routers/MeetingRouter";
+// import { MeetingService } from "./services/MeetingService";
+// import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
 import http from 'http';
+import { authenticateGuestToken } from "./guard";
 
 declare global {
   namespace Express {
@@ -71,7 +72,7 @@ const userService = new UserService(knex);
 const guestService = new GuestService(knex);
 const authService = new AuthService(knex);
 const questionService = new services.QuestionService(questionDAO, replyDAO);
-const meetingService = new MeetingService(knex);
+//const meetingService = new MeetingService(knex);
 
 /* Routers */
 const userRouter = new UserRouter(userService);
@@ -79,7 +80,7 @@ const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService,authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload,io);
 const liveRouter = new LiveRouter();
-const meetingRouter = new MeetingRouter(meetingService);
+//const meetingRouter = new MeetingRouter(meetingService);
 
 /* Session */
 // app.use(
@@ -107,8 +108,8 @@ app.use('/video', liveRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })
-app.use('/rooms', questionRouter.router());
-app.get('/meetings', meetingRouter.router())
+app.use('/rooms',authenticateGuestToken, questionRouter.router());
+//app.get('/meetings', meetingRouter.router())
 
 /* Socket Io */
 io.on('connection', socket => {
