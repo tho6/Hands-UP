@@ -16,9 +16,9 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
+import { LiveRouter } from "./routers/LiveRouter";
 import SocketIO from "socket.io";
 import http from 'http';
-import { VideoRouter } from "./routers/VideoRouter";
 
 declare global {
   namespace Express {
@@ -76,8 +76,8 @@ const questionService = new services.QuestionService(questionDAO, replyDAO);
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService,authService);
-const videoRouter = new VideoRouter();
 const questionRouter = new routers.QuestionRouter(questionService, upload,io);
+const liveRouter = new LiveRouter();
 
 /* Session */
 // app.use(
@@ -101,7 +101,7 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
-app.use('/video', videoRouter.router())
+app.use('/video', liveRouter.router())
 app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })

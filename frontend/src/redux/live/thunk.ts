@@ -1,6 +1,6 @@
 import { RootState, ThunkDispatch } from "../../store"
 
-export function loginFacebook(authCode: string){
+export function sendFacebookCode(authCode: string){
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/loginFacebook`, {
             method: 'POST',
