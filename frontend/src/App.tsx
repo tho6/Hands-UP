@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import QuestionPage from './component/QuestionPage';
 import Question from './component/Question';
