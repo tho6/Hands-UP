@@ -7,9 +7,7 @@ import { setQuestionLimitState } from "../rooms/actions";
 export function fetchQuestions(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${meetingId}/questions`, {
-                credentials: "include"
-            }); // GET + 'memos'
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${meetingId}/questions`); // GET + 'memos'
             const result = await res.json();
             if (result.status) {
                 dispatch(loadQuestions(meetingId, result.message));
@@ -37,7 +35,6 @@ export function addQuestion(meetingId: number, content: string, fileList: FileLi
             }
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${meetingId}/questions`, {
                 method: 'POST',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -64,7 +61,6 @@ export function deleteQuestion(questionId: number, meetingId: number) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}`, {
                 method: 'DELETE',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -92,7 +88,6 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
             }
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -113,7 +108,6 @@ export function addReplyToQuestion(questionId: number, content: string) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/reply`, {
                 method: 'POST',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -134,7 +128,6 @@ export function editReply(questionId: number, replyId: number, content: string) 
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/reply/${replyId}`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -155,7 +148,6 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/reply/${replyId}`, {
                 method: 'DELETE',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -172,10 +164,10 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
 }
 export function addVote(questionId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        console.log('add');
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/vote`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -195,7 +187,6 @@ export function removeVote(questionId: number) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/votef`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -215,7 +206,6 @@ export function hideOrDisplayReply(replyId: number, isHide: boolean) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/reply/${replyId}/hide`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -236,7 +226,6 @@ export function approveOrHideQuestion(questionId: number, isHide: boolean) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/hide`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'
@@ -257,7 +246,6 @@ export function answeredQuestion(questionId: number) {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/answered`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Authorization': `Bearer ${getState().roomsInformation.token}`,
                     'Content-Type': 'application/json'

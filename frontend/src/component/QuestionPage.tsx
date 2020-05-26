@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import useReactRouter from 'use-react-router';
 import Question from './Question';
-import { fetchRoomInformation, restoreLoginInRoom } from '../redux/rooms/thunk';
+import { fetchRoomInformation } from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
 import { useFormState } from 'react-use-form-state';
@@ -131,7 +131,7 @@ const QuestionPage: React.FC = () => {
       socket.off('delete-reply', deleteReplyListener);
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
 
-      socket.emit('leave_meeting', meetingId);
+      socket.emit('leave_event', meetingId);
     }
   }, [dispatch, meetingId]);
 
@@ -143,7 +143,7 @@ const QuestionPage: React.FC = () => {
     .sort((a, b) => b.likes.length - a.likes.length);
   const latestQuestions = mostPopularQuestions
     ?.slice()
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
   const answeredQuestions = questions?.filter(
     (question) => question.isAnswered && !question.isHide && question.isApproved
   );
@@ -158,7 +158,6 @@ const QuestionPage: React.FC = () => {
     .reduce((a, b) => {
       return a.concat(b);
     }).filter(reply=>reply.isHide);
-
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className='meeting-information d-flex justify-content-between flex-wrap mb-4'>

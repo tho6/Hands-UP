@@ -314,6 +314,11 @@ const Question: React.FC<IQuestionProps> = (props) => {
            <i className="fab fa-youtube fa-2x"></i>
           </div>
         )}
+        {question.platform.name === 'project3' && (
+          <div className="p-2 platform-icon">
+           <i className="far fa-hand-paper fa-2x"></i>
+          </div>
+        )}
         <div>
           {user?.isHost && isModerate && (
             <div

@@ -61,8 +61,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 /* DAO */
-const questionDAO = new services.QuestionDAO(Knex(knexConfig["testing"]));
-const replyDAO = new services.ReplyDAO(Knex(knexConfig["testing"]));
+const questionDAO = new services.QuestionDAO(knex);
+const replyDAO = new services.ReplyDAO(knex);
 
 /* Services */
 const userService = new UserService(knex);
