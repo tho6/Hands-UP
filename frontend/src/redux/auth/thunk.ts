@@ -85,7 +85,7 @@ export function restoreLogin() {
         }
         console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
-        dispatch(loginSuccess(accessToken, refreshToken))
+        // dispatch(loginSuccess(accessToken, refreshToken))
         console.log('got personInfo/n' + result.message.personInfo)
         return
     }

@@ -21,7 +21,7 @@ import { LiveRouter } from "./routers/LiveRouter";
 // import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
 import http from 'http';
-import { authenticateGuestToken } from "./guard";
+import { authenticateGuestToken, authenticateUserToken } from "./guard";
 
 declare global {
   namespace Express {
@@ -82,6 +82,9 @@ const questionRouter = new routers.QuestionRouter(questionService, upload,io);
 const liveRouter = new LiveRouter();
 //const meetingRouter = new MeetingRouter(meetingService);
 
+//guard
+const isGuest = authenticateGuestToken(guestService)
+const isUser = authenticateUserToken(userService,guestService)
 /* Session */
 // app.use(
 //     expressSession({
@@ -105,7 +108,8 @@ app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
 app.use('/video', liveRouter.router())
-app.get('/test/callback', (req:Request, res: Response)=>{
+app.get('/test/callback',haveToken, (req:Request, res: Response)=>{
+    console.log('guard is working')
     return res.status(200).json({message: req.query})
 })
 app.use('/rooms',authenticateGuestToken, questionRouter.router());
