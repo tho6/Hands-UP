@@ -17,6 +17,7 @@ export function loginGuest() {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
+            dispatch(restoreLogin())
             // dispatch(push('/'))
         } else {
             dispatch(loginFailed('Failed to login'))
@@ -49,6 +50,8 @@ export function loginGoogle(authCode: string) {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
+            dispatch(restoreLogin())
+
             dispatch(push('/'))
         } else {
             window.alert(result.message)
@@ -61,7 +64,7 @@ export function restoreLogin() {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const accessToken = getState().auth.accessToken
         const refreshToken = getState().auth.refreshToken
-
+        console.log('restore')
         if (!accessToken || !refreshToken) {
             dispatch(logout())
             dispatch(loginGuest())
@@ -80,6 +83,7 @@ export function restoreLogin() {
             dispatch(logout())
             return
         }
+        console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
         dispatch(loginSuccess(accessToken, refreshToken))
         console.log('got personInfo/n' + result.message.personInfo)
@@ -91,9 +95,10 @@ export function checkToken() {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const accessToken = getState().auth.accessToken
         const refreshToken = getState().auth.refreshToken
+        
         if (!accessToken || !refreshToken) {
             dispatch(logout())
-            dispatch(restoreLogin())
+            dispatch(loginGuest())
             console.log('checktoken logout')
             return
         }
