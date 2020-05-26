@@ -8,7 +8,6 @@ export function fetchRoomInformation(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try {
             // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
-            //     credentials: "include"
             // }); // GET + 'memos'
             // const result = await res.json();
             const result = tFetchRoomInformation;
@@ -28,7 +27,6 @@ export function updateRoom(meetingId: number, roomConfiguration: IRoomConfigurat
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
                 method: 'PUT',
-                credentials: "include",
                 headers: {
                     'Content-Type': 'application/json'
                 },
