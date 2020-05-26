@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IQuestion, reply } from '../models/IQuestion';
+import { IQuestion, reply, updateQuestion, updateReply } from '../models/IQuestion';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import useReactRouter from 'use-react-router';
@@ -9,6 +9,9 @@ import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
 import { useFormState } from 'react-use-form-state';
 import Reply from './Reply';
+import { socket } from '../socket';
+import { addedQuestion, successfullyUpdateQuestion, successfullyDeleteQuestion, successfullyVoteForAQuestion, successfullyRemoveVote, successfullyAnsweredQuestion, successfullyApprovedOrHideAQuestion, successfullyUpdateReply, addedReplyToQuestion, successfullyDeleteReply, successfullyHideOrDisplayAReply } from '../redux/questions/actions';
+import { loadedUserInRoom } from '../redux/rooms/actions';
 
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
@@ -17,6 +20,10 @@ const QuestionPage: React.FC = () => {
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
+  );
+  const personInfo = useSelector(
+    (rootState: RootState) =>
+      rootState.auth.personInfo
   );
   const questions = useSelector((rootState: RootState) =>
     questionIds?.map((id) => rootState.questions.questions[`${id}`])
@@ -47,10 +54,85 @@ const QuestionPage: React.FC = () => {
   }, [dispatch, meetingId]);
 
   useEffect(() => {
-    dispatch(restoreLoginInRoom(parseInt(meetingId)));
-  }, [dispatch, meetingId]);
+    if(personInfo){
+      const {guestId, guestName } = personInfo
+      const userInRoom = {guestId, name:guestName, isHost: personInfo.userId === roomInformation.owenId?true:false}
+      dispatch(loadedUserInRoom(userInRoom,roomInformation.id))
+    }
+  }, [dispatch, meetingId, personInfo]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
+  }, [dispatch, meetingId]);
+  useEffect(() => {
+    socket.emit('join_event', meetingId);
+
+    const newQuestionListener = (question: IQuestion) => {
+      dispatch(addedQuestion(question));
+    };
+    const updateQuestionListener = (update: updateQuestion) => {
+      dispatch(successfullyUpdateQuestion(update));
+    };
+    const deleteQuestionListener = (res:{meetingId:number, questionId:number}) => {
+      const {meetingId, questionId} = res;
+      dispatch(successfullyDeleteQuestion(questionId, meetingId));
+    };
+    const addVoteListener = (res:{guestId:number, questionId:number}) => {
+      const {guestId, questionId} = res;
+      dispatch(successfullyVoteForAQuestion(questionId, guestId));
+    };
+    const removeVoteListener = (res:{guestId:number, questionId:number}) => {
+      const {guestId, questionId} = res;
+      dispatch(successfullyRemoveVote(questionId, guestId));
+    };
+    const answeredQuestionListener = (questionId:number) => {
+      dispatch(successfullyAnsweredQuestion(questionId));
+    };
+    const hideOrApprovedQuestionListener = (res:{questionId:number, isHide:boolean}) => {
+      const {isHide, questionId} = res;
+      dispatch(successfullyApprovedOrHideAQuestion(questionId, isHide));
+    };
+    const updateReplyListener = (res:updateReply) => {
+      const {replyId, questionId, content, updatedAt} = res;
+      dispatch(successfullyUpdateReply(questionId, replyId, content, updatedAt));
+    };
+    const createReplyListener = (res:reply) => {
+      dispatch(addedReplyToQuestion(res));
+    };
+    const deleteReplyListener = (res:{questionId:number, replyId:number}) => {
+      const {questionId, replyId} = res
+      dispatch(successfullyDeleteReply(questionId, replyId));
+    };
+    const hideOrNotReplyListener = (res:{replyId:number, questionId: number, isHide:boolean})=>{
+      const {replyId, questionId, isHide} = res
+      dispatch(successfullyHideOrDisplayAReply(replyId,questionId,isHide));
+    };
+    socket.on('create-question', newQuestionListener);
+    socket.on('update-question', updateQuestionListener);
+    socket.on('delete-question', deleteQuestionListener);
+    socket.on('add-vote', addVoteListener);
+    socket.on('remove-vote', removeVoteListener);
+    socket.on('answered-question', answeredQuestionListener);
+    socket.on('hideOrApproved-question', hideOrApprovedQuestionListener);
+    socket.on('update-reply', updateReplyListener);
+    socket.on('create-reply', createReplyListener);
+    socket.on('delete-reply', deleteReplyListener);
+    socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
+
+    return () => {
+      socket.off('create-question', newQuestionListener);
+      socket.off('update-question', updateQuestionListener);
+      socket.off('delete-question', deleteQuestionListener);
+      socket.off('add-vote', addVoteListener);
+      socket.off('remove-vote', removeVoteListener);
+      socket.off('answered-question', answeredQuestionListener);
+      socket.off('hideOrApproved-question', hideOrApprovedQuestionListener);
+      socket.off('update-reply', updateReplyListener);
+      socket.off('create-reply', createReplyListener);
+      socket.off('delete-reply', deleteReplyListener);
+      socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
+
+      socket.emit('leave_meeting', meetingId);
+    }
   }, [dispatch, meetingId]);
 
   const mostPopularQuestions = questions

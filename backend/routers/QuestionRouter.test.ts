@@ -134,6 +134,33 @@ describe('Question Router', () => {
         expect(res.json).toBeCalledWith({ status: true, message: question[2] });
         expect(res.status).toBeCalledWith(200);
     });
+    it('createQuestion - normal spam', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'This is a new question'
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3 },
+            files: []
+        } as any;
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(3);
+        expect(res.json).toBeCalledTimes(4);
+        const question = await questionService.getQuestionsByRoomId(1);
+        expect(io.emit).toHaveBeenNthCalledWith(1,'create-question', question[2]);
+        expect(io.emit).toHaveBeenNthCalledWith(2,'create-question', question[3]);
+        expect(io.emit).toHaveBeenNthCalledWith(3,'create-question', question[4]);
+        expect(res.json).toHaveBeenNthCalledWith(4, {status:false, message:'Exceed question limits!'});
+    });
     it('createQuestion - with files should get error (room1)', async () => {
         let res = {
             json: jest.fn(),
@@ -452,7 +479,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('add-vote', { "meetingId": 3, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('add-vote', { "guestId": 3, "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('delete question - same person vote for the same question again', async () => {
@@ -498,7 +525,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('remove-vote', { "meetingId": 1, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('remove-vote', { "guestId": 1, "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('remove vote - remove vote from a questions that never voted for it', async () => {
@@ -544,7 +571,7 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('meeting:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
-        expect(io.emit).toBeCalledWith('answered-question', { "isAnswered": true, "questionId": 1 });
+        expect(io.emit).toBeCalledWith('answered-question', { "questionId": 1 });
         expect(res.status).toBeCalledWith(200);
     });
     it('answered question - not host', async () => {
