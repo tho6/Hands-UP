@@ -1,5 +1,10 @@
 import { PersonInfo } from "./reducers"
-
+export interface UserForm{
+        id: number,
+        name: string,
+        email?: string,
+        picture?: string
+}
 export function loginSuccess(accessToken: string, refreshToken: string) {
     return {
         type: '@@AUTH/LOGIN_SUCCESS' as '@@AUTH/LOGIN_SUCCESS',
@@ -27,7 +32,7 @@ export function resetLoginMessage(message: string) {
     }
 }
 
-export function getPersonInfo(personInfo: PersonInfo) {
+export function getPersonInfo(personInfo: UserForm) {
     return {
         type: '@@AUTH/GET_PERSON_INFO' as '@@AUTH/GET_PERSON_INFO',
         personInfo
