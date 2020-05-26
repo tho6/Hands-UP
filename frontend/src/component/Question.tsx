@@ -22,7 +22,7 @@ export interface IQuestionProps {
   user: IGuest | null | undefined;
   canUploadFiles: boolean;
   answering: boolean;
-  isModerate:boolean;
+  isModerate: boolean;
 }
 
 const Question: React.FC<IQuestionProps> = (props) => {
@@ -45,14 +45,16 @@ const Question: React.FC<IQuestionProps> = (props) => {
       <div className="question flex-grow-1 p-2 p-lg-4">
         <div className="d-flex question-content-area">
           <div className="content text-wrap mb-2">
-          {!isEdit && question.updatedAt !== question.createdAt && <span>[Edited]</span>}
+            {!isEdit && question.updatedAt !== question.createdAt && (
+              <span>[Edited]</span>
+            )}
             {isEdit ? (
               <textarea
                 className="mb-2 rounded"
                 {...textarea('content')}
               ></textarea>
             ) : (
-              question.content 
+              question.content
             )}
           </div>
           <div className="d-flex">
@@ -301,52 +303,66 @@ const Question: React.FC<IQuestionProps> = (props) => {
           </div>
         </Collapse>
       </div>
-      <div className='d-flex flex-column justify-content-between'>
-      <div className="p-2 platform-icon">
-        <i className="fab fa-facebook fa-2x"></i>
-      </div>
-      <div>
-      {user?.isHost && isModerate && (
-              <div
-                data-testid="approve-button"
-                className="util-spacing will-hover"
-                onClick={()=>{dispatch(approveOrHideQuestion(question.id, false))}}
-              >
-                <i className="far fa-check-circle fa-2x"></i>
-              </div>
-            )}
-      {user?.isHost && question.isApproved && !question.isAnswered && !question.isHide && (
+      <div className="d-flex flex-column justify-content-between">
+        {question.platform.name === 'facebook' && (
+          <div className="p-2 platform-icon">
+            <i className="fab fa-facebook fa-2x"></i>
+          </div>
+        )}
+        {question.platform.name === 'youtube' && (
+          <div className="p-2 platform-icon">
+           <i className="fab fa-youtube fa-2x"></i>
+          </div>
+        )}
+        <div>
+          {user?.isHost && isModerate && (
+            <div
+              data-testid="approve-button"
+              className="util-spacing will-hover"
+              onClick={() => {
+                dispatch(approveOrHideQuestion(question.id, false));
+              }}
+            >
+              <i className="far fa-check-circle fa-2x"></i>
+            </div>
+          )}
+          {user?.isHost &&
+            question.isApproved &&
+            !question.isAnswered &&
+            !question.isHide && (
               <div
                 data-testid="answer-button"
                 className="util-spacing will-hover"
-                onClick={()=>{dispatch(answeredQuestion(question.id))}}
+                onClick={() => {
+                  dispatch(answeredQuestion(question.id));
+                }}
               >
                 <i className="fab fa-angellist fa-2x"></i>
               </div>
             )}
-      {user?.isHost && !question.isHide && (
-              <div
-                data-testid="hide-button"
-                className="util-spacing will-hover"
-                onClick={()=>{
-                  dispatch(approveOrHideQuestion(question.id, true));
-                }}
-              >
-                <i className="far fa-eye-slash fa-2x"></i>
-              </div>
-            )}
-      {user?.isHost && question.isHide && (
-              <div
-                data-testid="display-button"
-                className="util-spacing will-hover"
-                onClick={()=>{
-                  dispatch(approveOrHideQuestion(question.id, false));
-                }}
-              >
-                <i className="far fa-eye fa-2x"></i>
-              </div>
-            )}
-      </div>
+          {user?.isHost && !question.isHide && (
+            <div
+              data-testid="hide-button"
+              className="util-spacing will-hover"
+              onClick={() => {
+                dispatch(approveOrHideQuestion(question.id, true));
+              }}
+            >
+              <i className="far fa-eye-slash fa-2x"></i>
+            </div>
+          )}
+          {user?.isHost && question.isHide && (
+            <div
+              data-testid="display-button"
+              className="util-spacing will-hover"
+              onClick={() => {
+                dispatch(approveOrHideQuestion(question.id, false));
+              }}
+            >
+              <i className="far fa-eye fa-2x"></i>
+            </div>
+          )}
+        </div>
       </div>
       {showDeleteModal && (
         <YesNoModal
