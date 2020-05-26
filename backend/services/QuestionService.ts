@@ -56,12 +56,12 @@ export class QuestionService implements IQuestionService {
         return isAdded;
     }
     async removeVote(questionId: number, guestId: number): Promise<boolean> {
-        const isRemoved = await this.removeVote(questionId, guestId);
+        const isRemoved = await this.questionDAO.removeVote(questionId, guestId);
         if (!isRemoved) throw new Error('Fail to remove vote - unknown error!');
         return isRemoved;
     }
     async answeredQuestion(questionId: number): Promise<boolean> {
-        const isAnsweredQuestion = await this.answeredQuestion(questionId);
+        const isAnsweredQuestion = await this.questionDAO.answeredQuestion(questionId);
         if (!isAnsweredQuestion) throw new Error('Fail to answer question - unknown error!');
         return isAnsweredQuestion;
     }

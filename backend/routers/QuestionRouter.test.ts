@@ -220,6 +220,28 @@ describe('Question Router', () => {
         expect(io.emit).toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [], "files": [{ "filename": "123.png", "id": 1 }], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
         expect(res.status).toBeCalledWith(200);
     });
+    it('update question - delete files missing', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'sth',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+            files: []
+        } as any;
+        await questionRouter.updateQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalledTimes(1);
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({ status: false, message: 'Property deleteFilesId is missing!' });
+        expect(io.emit).not.toBeCalledTimes(1);
+        expect(res.status).toBeCalledWith(400);
+    });
     it('update question - content empty', async () => {
         let res = {
             json: jest.fn(),
@@ -313,8 +335,8 @@ describe('Question Router', () => {
         expect(res.json).toBeCalledWith({ status: false, message: 'You are not allowed to update the question!' });
         expect(io.emit).not.toBeCalled();
         expect(res.status).toBeCalledWith(400);
-    })
-    it.only('update question - is host, not owner', async () => {
+    });
+    it('update question - is host, not owner', async () => {
         let res = {
             json: jest.fn(),
             status: jest.fn(() => res)
@@ -337,6 +359,572 @@ describe('Question Router', () => {
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [], "files": [{ "filename": "123.png", "id": 1 }], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
         expect(res.status).toBeCalledWith(200);
-    })
+    });
+    it('delete question - owner', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+            files: []
+        } as any;
+        await questionRouter.deleteQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('delete-question', { "meetingId": 1, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete question - host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 10,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 10, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.deleteQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('delete-question', { "meetingId": 1, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete question - not owner/host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 2,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 2, userId: 2 },
+            files: []
+        } as any;
+        await questionRouter.deleteQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+    });
+    it('vote - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.addVote(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('add-vote', { "meetingId": 3, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete question - same person vote for the same question again', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.addVote(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).not.toBeCalled();
+        expect(res.json).toBeCalledWith({ status: false, message: expect.anything() });
+    });
+    it('remove vote - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.removeVote(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('remove-vote', { "meetingId": 1, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('remove vote - remove vote from a questions that never voted for it', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.removeVote(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).not.toBeCalled();
+        expect(res.json).toBeCalledWith({ status: false, message: expect.anything() });
+    });
+    it('answered question - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.answeredQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('answered-question', { "isAnswered": true, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('answered question - not host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 2 },
+            files: []
+        } as any;
+        await questionRouter.answeredQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).not.toBeCalled();
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+    });
+    it('answered question - not a user', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'update',
+                deleteFilesId: []
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3 },
+            files: []
+        } as any;
+        await questionRouter.answeredQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).not.toBeCalled();
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+    });
+    it('hide question - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide: true
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.hideOrApprovedQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('hideOrApproved-question', { "isHide": true, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('approved question - isHide not a boolean', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide: 1
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.hideOrApprovedQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({ status: false, message: `isHide should be a boolean!` });
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
+    it('approved question - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide: false
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId: 1 },
+            files: []
+        } as any;
+        await questionRouter.hideOrApprovedQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('hideOrApproved-question', { "isHide": false, "questionId": 1 });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('approved question - not host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                isHide: true
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+            files: []
+        } as any;
+        await questionRouter.hideOrApprovedQuestion(req, res);
+        //assert
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
+    it('update reply - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 2,
+                content: 'update reply',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 2 },
+        } as any;
+        await questionRouter.updateReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('update-reply', { "content": "update reply", "questionId": 1, "replyId": 1, "updatedAt": expect.anything() });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('update reply - host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'update reply',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1, userId: 1 },
+        } as any;
+        await questionRouter.updateReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('update-reply', { "content": "update reply", "questionId": 1, "replyId": 1, "updatedAt": expect.anything() });
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('update reply - empty reply', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 2,
+                content: ' ',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 2 },
+        } as any;
+        await questionRouter.updateReply(req, res);
+        //assert    
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({ status: false, message: 'Reply cannot be empty!' });
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
+    it('update reply -not owner', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'sth',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+        } as any;
+        await questionRouter.updateReply(req, res);
+        //assert    
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({ status: false, message: 'You are not allowed to update this reply!' });
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
+    it('create reply - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+                content: 'new reply',
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+        } as any;
+        const expectedReply = {
+            id: 2,
+            guestId: 1,
+            guestName: 'guest1',
+            content: 'new reply',
+            questionId: 1,
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
+            isHide: false
+        }
+        await questionRouter.createReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('create-reply', expectedReply);
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete reply - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 2,
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 2 },
+        } as any;
+        await questionRouter.deleteReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('delete-reply', {questionId:1, replyId:1});
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete reply - host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1, userId:1 },
+        } as any;
+        await questionRouter.deleteReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('delete-reply', {questionId:1, replyId:1});
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('delete reply - not owner', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 1,
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 1 },
+        } as any;
+        await questionRouter.deleteReply(req, res);
+        //assert    
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({status:false, message: 'You are not allowed to delete this reply!'});
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
+    it('hide reply - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide:true
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId:1 },
+        } as any;
+        await questionRouter.hideOrNotHideReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('hideOrNotHide-reply', {replyId:1, questionId:1, isHide:true});
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('display reply - normal', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide:false
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId:1 },
+        } as any;
+        await questionRouter.hideOrNotHideReply(req, res);
+        //assert    
+        expect(io.in).toBeCalledTimes(1);
+        expect(io.in).toBeCalledWith('meeting:1');
+        expect(res.json).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledTimes(1);
+        expect(io.emit).toBeCalledWith('hideOrNotHide-reply', {replyId:1, questionId:1, isHide:false});
+        expect(res.status).toBeCalledWith(200);
+    });
+    it('hide/display reply - not host', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                isHide:false
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3, userId:2 },
+        } as any;
+        await questionRouter.hideOrNotHideReply(req, res);
+        //assert    
+        expect(io.in).not.toBeCalled();
+        expect(res.json).toBeCalledTimes(1);
+        expect(res.json).toBeCalledWith({status:false, message:'You are not allowed to hide/display this reply!'});
+        expect(io.emit).not.toBeCalled();
+        expect(res.status).toBeCalledWith(400);
+    });
 
 })

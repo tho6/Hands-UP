@@ -71,11 +71,11 @@ export class QuestionRouter {
                 const { guestId, content, deleteFilesId } = req.body;
                 if (!Number.isInteger(guestId) || guestId < 0) throw new Error('Invalid guestId!');
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
-                if(deleteFilesId){
+                if(!deleteFilesId) throw new Error('Property deleteFilesId is missing!');
                     for (const id of deleteFilesId) {
                         if (!Number.isInteger(id) || id < 0) throw new Error('Invalid deleFilesId!')
                     }
-                }
+                
                 const questionId = parseInt(req.params.id);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, guestId))) throw new Error('You are not allowed to update the question!');
                 /* Action */
@@ -109,13 +109,13 @@ export class QuestionRouter {
                 const { guestId} = req.body;
                 if (!Number.isInteger(guestId) || guestId < 0) throw new Error('Invalid guestId!');
                 const questionId = parseInt(req.params.id);
-                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, guestId))) throw new Error('You are not allowed to delete the question!')
+                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, guestId))) throw new Error('You are not allowed to delete the question!');
                 /* Action */
                 try {
-                    await this.questionService.deleteQuestion(questionId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('delete-question', {meetingId: parseInt(req.params.roomId), questionId});
-                    res.status(200).json({ status: true, message: {meetingId: parseInt(req.params.roomId), questionId}});
+                    await this.questionService.deleteQuestion(questionId);
+                    this.io.in(`meeting:${meetingId}`).emit('delete-question', {meetingId: meetingId, questionId});
+                    res.status(200).json({ status: true, message: {meetingId: meetingId, questionId}});
                     return;
                 } catch (e) {
                     console.error(e);
@@ -315,16 +315,15 @@ export class QuestionRouter {
         if (req.personInfo) {
             try {
                 /* Validation */
-                const { guestId, content} = req.body;
+                const { guestId} = req.body;
                 if (!Number.isInteger(guestId) || guestId < 0) throw new Error('Invalid guestId!');
-                if (content.trim().length === 0) throw new Error('Reply cannot be empty!');
                 const replyId = parseInt(req.params.id);
                 const questionId = await this.questionService.getQuestionIdByReplyId(replyId);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkReplyOwner(replyId, guestId))) throw new Error('You are not allowed to delete this reply!');
                 /* Action */
                 try {
-                    await this.questionService.deleteReply(replyId);
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
+                    await this.questionService.deleteReply(replyId);
                     this.io.in(`meeting:${meetingId}`).emit('delete-reply', {questionId, replyId});
                     res.status(200).json({ status: true, message: {questionId, replyId}});
                     return;
