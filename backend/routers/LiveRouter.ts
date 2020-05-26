@@ -11,6 +11,7 @@ export class LiveRouter {
         const router = express.Router()
         router.post('/fb/token', this.fetchAccessCode)
         router.post('/fb/comments', this.fetchComments)
+        router.post('/fb/views', this.fetchComments)
         return router
 
     }
