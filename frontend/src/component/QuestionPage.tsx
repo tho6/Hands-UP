@@ -11,6 +11,7 @@ import { useFormState } from 'react-use-form-state';
 import Reply from './Reply';
 import { socket } from '../socket';
 import { addedQuestion, successfullyUpdateQuestion, successfullyDeleteQuestion, successfullyVoteForAQuestion, successfullyRemoveVote, successfullyAnsweredQuestion, successfullyApprovedOrHideAQuestion, successfullyUpdateReply, addedReplyToQuestion, successfullyDeleteReply, successfullyHideOrDisplayAReply } from '../redux/questions/actions';
+import { loadedUserInRoom } from '../redux/rooms/actions';
 
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
@@ -19,6 +20,10 @@ const QuestionPage: React.FC = () => {
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
+  );
+  const personInfo = useSelector(
+    (rootState: RootState) =>
+      rootState.auth.personInfo
   );
   const questions = useSelector((rootState: RootState) =>
     questionIds?.map((id) => rootState.questions.questions[`${id}`])
@@ -49,8 +54,12 @@ const QuestionPage: React.FC = () => {
   }, [dispatch, meetingId]);
 
   useEffect(() => {
-    dispatch(restoreLoginInRoom(parseInt(meetingId)));
-  }, [dispatch, meetingId]);
+    if(personInfo){
+      const {guestId, guestName } = personInfo
+      const userInRoom = {guestId, name:guestName, isHost: personInfo.userId === roomInformation.owenId?true:false}
+      dispatch(loadedUserInRoom(userInRoom,roomInformation.id))
+    }
+  }, [dispatch, meetingId, personInfo]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
