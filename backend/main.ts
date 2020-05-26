@@ -108,7 +108,7 @@ app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
 app.use('/video', liveRouter.router())
-app.get('/test/callback',haveToken, (req:Request, res: Response)=>{
+app.get('/test/callback',isGuest, (req:Request, res: Response)=>{
     console.log('guard is working')
     return res.status(200).json({message: req.query})
 })
