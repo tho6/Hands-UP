@@ -134,6 +134,33 @@ describe('Question Router', () => {
         expect(res.json).toBeCalledWith({ status: true, message: question[2] });
         expect(res.status).toBeCalledWith(200);
     });
+    it('createQuestion - normal spam', async () => {
+        let res = {
+            json: jest.fn(),
+            status: jest.fn(() => res)
+        } as any;
+        let req = {
+            body: {
+                guestId: 3,
+                content: 'This is a new question'
+            },
+            params: { id: 1 },
+            personInfo: { guestId: 3 },
+            files: []
+        } as any;
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        await questionRouter.createQuestion(req, res);
+        //assert
+        expect(io.in).toBeCalledTimes(3);
+        expect(res.json).toBeCalledTimes(4);
+        const question = await questionService.getQuestionsByRoomId(1);
+        expect(io.emit).toHaveBeenNthCalledWith(1,'create-question', question[2]);
+        expect(io.emit).toHaveBeenNthCalledWith(2,'create-question', question[3]);
+        expect(io.emit).toHaveBeenNthCalledWith(3,'create-question', question[4]);
+        expect(res.json).toHaveBeenNthCalledWith(4, {status:false, message:'Exceed question limits!'});
+    });
     it('createQuestion - with files should get error (room1)', async () => {
         let res = {
             json: jest.fn(),

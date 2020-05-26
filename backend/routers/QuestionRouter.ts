@@ -6,7 +6,8 @@ import { customFileDB } from "../models/type/questionFromDB";
 import socketIO from 'socket.io';
 
 export class QuestionRouter {
-    constructor(private questionService: IQuestionService, private upload: any, private io:socketIO.Server) { }
+    private counter: { [id: string]: { counting: boolean, count: number } } = {};
+    constructor(private questionService: IQuestionService, private upload: any, private io: socketIO.Server) { }
 
     router() {
         const router = express.Router();
@@ -25,21 +26,40 @@ export class QuestionRouter {
         return router;
     }
     getQuestionsByRoomId = async (req: Request, res: Response) => {
-            try {
-                const questions: question[] = await this.questionService.getQuestionsByRoomId(parseInt(req.params.id));
-                res.status(200).json({ status: true, message: questions });
-                return;
-            } catch (e) {
-                console.error(e);
-                res.status(500).json({ status: false, message: e.message });
-                return;
-            }
+        try {
+            const questions: question[] = await this.questionService.getQuestionsByRoomId(parseInt(req.params.id));
+            res.status(200).json({ status: true, message: questions });
+            return;
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
+            return;
+        }
     }
     createQuestion = async (req: Request, res: Response) => {
         if (req.personInfo) {
             try {
+              // console.log(this.counter[`${req.personInfo.guestId}`]);
+                const idx = `${req.personInfo.guestId}`;
+                if (this.counter[`${req.personInfo.guestId}`]) {
+                    if (this.counter[idx].count >= 3) throw new Error('Exceed question limits!');
+                    if (this.counter[idx].counting === false) {
+                        this.counter[idx].counting = true;
+                        setTimeout(() => {
+                            this.counter[idx] = {counting: false, count:0};
+                        }, 10000)
+                    }
+                    this.counter[idx].count += 1;
+                    console.log( this.counter[idx].count);
+                }else{
+                    console.log('initiate')
+                    this.counter[idx] = {counting: true, count:1};
+                        setTimeout(() => {
+                        this.counter[idx] = {counting: false, count:0};
+                        }, 10000)
+                }
                 /* Validation */
-                const {content } = req.body;
+                const { content } = req.body;
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
                 /* Action */
                 try {
@@ -69,11 +89,11 @@ export class QuestionRouter {
                 /* Validation */
                 const { content, deleteFilesId } = req.body;
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
-                if(!deleteFilesId) throw new Error('Property deleteFilesId is missing!');
-                    for (const id of deleteFilesId) {
-                        if (!Number.isInteger(id) || id < 0) throw new Error('Invalid deleFilesId!')
-                    }
-                
+                if (!deleteFilesId) throw new Error('Property deleteFilesId is missing!');
+                for (const id of deleteFilesId) {
+                    if (!Number.isInteger(id) || id < 0) throw new Error('Invalid deleFilesId!')
+                }
+
                 const questionId = parseInt(req.params.id);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, req.personInfo.guestId))) throw new Error('You are not allowed to update the question!');
                 /* Action */
@@ -110,8 +130,8 @@ export class QuestionRouter {
                 try {
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
                     await this.questionService.deleteQuestion(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('delete-question', {meetingId: meetingId, questionId});
-                    res.status(200).json({ status: true, message: {meetingId: meetingId, questionId}});
+                    this.io.in(`meeting:${meetingId}`).emit('delete-question', { meetingId: meetingId, questionId });
+                    res.status(200).json({ status: true, message: { meetingId: meetingId, questionId } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -137,8 +157,8 @@ export class QuestionRouter {
                 try {
                     await this.questionService.addVote(questionId, req.personInfo.guestId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('add-vote', {guestId:  req.personInfo.guestId, questionId});
-                    res.status(200).json({ status: true, message: {guestId: req.personInfo.guestId, questionId}});
+                    this.io.in(`meeting:${meetingId}`).emit('add-vote', { guestId: req.personInfo.guestId, questionId });
+                    res.status(200).json({ status: true, message: { guestId: req.personInfo.guestId, questionId } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -164,8 +184,8 @@ export class QuestionRouter {
                 try {
                     await this.questionService.removeVote(questionId, req.personInfo.guestId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('remove-vote', {guestId: req.personInfo.guestId, questionId});
-                    res.status(200).json({ status: true, message: {guestId: req.personInfo.guestId, questionId}});
+                    this.io.in(`meeting:${meetingId}`).emit('remove-vote', { guestId: req.personInfo.guestId, questionId });
+                    res.status(200).json({ status: true, message: { guestId: req.personInfo.guestId, questionId } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -192,8 +212,8 @@ export class QuestionRouter {
                 try {
                     await this.questionService.answeredQuestion(questionId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('answered-question', {questionId});
-                    res.status(200).json({ status: true, message: {questionId}});
+                    this.io.in(`meeting:${meetingId}`).emit('answered-question', { questionId });
+                    res.status(200).json({ status: true, message: { questionId } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -214,16 +234,16 @@ export class QuestionRouter {
         if (req.personInfo) {
             try {
                 /* Validation */
-                const {isHide} = req.body;
-                if(!(typeof isHide === 'boolean')) throw new Error('isHide should be a boolean!')
+                const { isHide } = req.body;
+                if (!(typeof isHide === 'boolean')) throw new Error('isHide should be a boolean!')
                 const questionId = parseInt(req.params.id);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to delete the question!')
                 /* Action */
                 try {
                     await this.questionService.hideOrApprovedQuestion(questionId, isHide);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('hideOrApproved-question', {questionId, isHide});
-                    res.status(200).json({ status: true, message: {questionId, isHide}});
+                    this.io.in(`meeting:${meetingId}`).emit('hideOrApproved-question', { questionId, isHide });
+                    res.status(200).json({ status: true, message: { questionId, isHide } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -252,7 +272,7 @@ export class QuestionRouter {
                 /* Action */
                 try {
                     await this.questionService.updateReply(replyId, content);
-                    const data = {questionId, replyId, content,updatedAt:new Date(Date.now())};
+                    const data = { questionId, replyId, content, updatedAt: new Date(Date.now()) };
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
                     this.io.in(`meeting:${meetingId}`).emit('update-reply', data);
                     res.status(200).json({ status: true, message: data });
@@ -312,8 +332,8 @@ export class QuestionRouter {
                 try {
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
                     await this.questionService.deleteReply(replyId);
-                    this.io.in(`meeting:${meetingId}`).emit('delete-reply', {questionId, replyId});
-                    res.status(200).json({ status: true, message: {questionId, replyId}});
+                    this.io.in(`meeting:${meetingId}`).emit('delete-reply', { questionId, replyId });
+                    res.status(200).json({ status: true, message: { questionId, replyId } });
                     return;
                 } catch (e) {
                     console.error(e);
@@ -334,16 +354,16 @@ export class QuestionRouter {
         if (req.personInfo) {
             try {
                 /* Validation */
-                const {isHide} = req.body;
+                const { isHide } = req.body;
                 const replyId = parseInt(req.params.id);
                 const questionId = await this.questionService.getQuestionIdByReplyId(replyId);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to hide/display this reply!');
                 /* Action */
                 try {
-                    await this.questionService.hideReply(replyId,isHide);
+                    await this.questionService.hideReply(replyId, isHide);
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
-                    this.io.in(`meeting:${meetingId}`).emit('hideOrNotHide-reply', {replyId, questionId, isHide});
-                    res.status(200).json({ status: true, message: {replyId, questionId, isHide}});
+                    this.io.in(`meeting:${meetingId}`).emit('hideOrNotHide-reply', { replyId, questionId, isHide });
+                    res.status(200).json({ status: true, message: { replyId, questionId, isHide } });
                     return;
                 } catch (e) {
                     console.error(e);
