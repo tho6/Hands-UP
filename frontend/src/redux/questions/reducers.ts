@@ -59,6 +59,7 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
                 newFiles.push(...action.files)
                 newQuestions[action.questionId].files = newFiles;
                 newQuestions[action.questionId].updatedAt = action.updatedAt;
+                newQuestions[action.questionId].isApproved = action.isApproved;
                 return {
                     ...oldState,
                     questions: newQuestions,

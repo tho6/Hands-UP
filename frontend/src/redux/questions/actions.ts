@@ -15,14 +15,15 @@ export function successfullyDeleteQuestion(questionId: number, meetingId: number
         meetingId
     }
 }
-export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: Date) {
+export function successfullyUpdateQuestion(questionId: number, content: string, deleteFilesId: number[], files: file[], updatedAt: Date, isApproved:boolean) {
     return {
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
         content,
         deleteFilesId,
         files,
-        updatedAt
+        updatedAt,
+        isApproved
     }
 }
 export function addedReplyToQuestion(reply: reply) {
@@ -37,10 +38,10 @@ export function successfullyUpdateReply(questionId: number, replyId: number, con
         reply: { questionId, replyId, content, updatedAt }
     }
 }
-export function successfullyDeleteReply(questionId: number, replyId: number, meetingId: number) {
+export function successfullyDeleteReply(questionId: number, replyId: number) {
     return {
         type: '@@QUESTIONS/DELETED_REPLY' as '@@QUESTIONS/DELETED_REPLY',
-        reply: { questionId, replyId, meetingId }
+        reply: { questionId, replyId}
     }
 }
 export function successfullyVoteForAQuestion(questionId: number, guestId: number) {

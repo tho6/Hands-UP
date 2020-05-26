@@ -165,7 +165,7 @@ export class QuestionDAO implements IQuestionDAO {
         const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE questions.id = ?;`;
         const result = await this.knex.raw(sql, [questionId]);
         if(result.rows.length !== 1){
-            throw new Error('Fail to get meeting Id by question - question is not found!')
+            throw new Error('Fail to get question by questionId - question is not found!')
     }
         return result.rows[0];
     }

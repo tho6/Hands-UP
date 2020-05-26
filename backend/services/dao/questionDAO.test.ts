@@ -329,5 +329,9 @@ describe('QuestionDAO', () => {
         const result = await questionDAO.getMeetingIdByQuestion(1);
         expect(result).toBe(1);
     });
+    it('getQuestionById - normal', async () => {
+        const result = await questionDAO.getQuestionById(1);
+        expect(result).toEqual(defaultQuestion[0]);
+    });
 
 });

@@ -115,9 +115,9 @@ export const tRemovedVote = {//add reply
         questionId: 1,
     }
 }
-export const tDeleteReplySuccess = { status: true, message: { meetingId: 1, questionId: 1, replyId: 1 } }
+export const tDeleteReplySuccess = { status: true, message: {questionId: 1, replyId: 1 } }
 export const tDeleteQuestionSuccess = { status: true, message: { meetingId: 1, questionId: 1 } }
-export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: new Date(Date.now() + 1 )} }
+export const tEditQuestionSuccess = { status: true, message: { content: 'Delete 2 images and add 1 back', questionId: 1, deleteFilesId: [1, 2], files: [{ id: 3, filename: '789.png' }], updatedAt: new Date(Date.now() + 1 ), isApproved:true} }
 export const tUserToken = null;
 export const tGuestToken = null;
 export const tHideReplySuccess = { status: true, message: { replyId: 1, questionId: 1, isHide: false } }

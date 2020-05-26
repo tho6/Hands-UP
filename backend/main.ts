@@ -1,8 +1,6 @@
 import Knex from "knex";
 import express, { Request, Response } from "express";
 import path from "path";
-import http from 'http';
-import SocketIO from 'socket.io';
 // import expressSession from 'express-session'
 import bodyParser from "body-parser";
 import multer from "multer"; // auto change the photo filename and put photo file to upload folder
@@ -18,7 +16,13 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
+<<<<<<< HEAD
 import { LiveRouter } from "./routers/LiveRouter";
+=======
+import SocketIO from "socket.io";
+import http from 'http';
+import { VideoRouter } from "./routers/VideoRouter";
+>>>>>>> 533c1e39ae9a10005dba1026f398a71a0e4d4883
 
 declare global {
   namespace Express {
@@ -29,10 +33,8 @@ declare global {
 }
 
 const app = express();
-
-// SocketIO
 const server = http.createServer(app);
-const io = SocketIO(server);
+const io = SocketIO(server)
 
 /* Enable cors */
 app.use(cors({
@@ -103,6 +105,7 @@ app.get('/test/callback', (req:Request, res: Response)=>{
     return res.status(200).json({message: req.query})
 })
 
+/* Socket Io */
 io.on('connection', socket => {
   socket.on('join_event', (meetingId: number) => {
     socket.join('event:' + meetingId)
@@ -110,6 +113,9 @@ io.on('connection', socket => {
 
   socket.on('leave_event', (meetingId: number) => {
     socket.leave('event:' + meetingId)
+  })
+  socket.on('leave_meeting', (meetingId: number) => {
+    socket.leave('meeting:' + meetingId)
   })
 });
 
