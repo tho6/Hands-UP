@@ -14,7 +14,7 @@ export async function seed(knex: Knex): Promise<any> {
 
     const trx = await knex.transaction();
     try {
-        await trx.raw(/*sql*/ `TRUNCATE guests RESTART IDENTITY`);
+        await trx.raw(/*sql*/ `TRUNCATE guests RESTART IDENTITY CASCADE`);
 
         await trx("guests").insert([{
             name: "guest1"    

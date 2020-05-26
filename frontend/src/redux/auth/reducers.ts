@@ -1,6 +1,5 @@
-import { AuthActions } from "./actions";
-
-export interface AuthState{
+import { AuthActions, getPersonInfo } from "./actions";
+export interface AuthState {
     accessToken: string | null | undefined
     refreshToken: string | null | undefined
     personInfo: PersonInfo | null
@@ -8,13 +7,13 @@ export interface AuthState{
     message: string | null
 }
 
-export interface PersonInfo{
-    userId?: number
+export interface PersonInfo {
+    userId?: number | null
     guestId: number
-    picture?: string
-    userName?: string
+    picture?: string | null
+    userName?: string | null
     guestName: string
-    email?: string
+    email?: string | null
 }
 
 const initialState: AuthState = {
@@ -25,7 +24,7 @@ const initialState: AuthState = {
     message: null
 }
 
-export const authReducer = (state:AuthState = initialState, action: AuthActions): AuthState => {
+export const authReducer = (state: AuthState = initialState, action: AuthActions): AuthState => {
     switch (action.type) {
         case '@@AUTH/LOGIN_SUCCESS':
             return {
@@ -43,7 +42,7 @@ export const authReducer = (state:AuthState = initialState, action: AuthActions)
                 personInfo: null
             }
         case '@@AUTH/LOGIN_FAILED':
-            return{
+            return {
                 ...state,
                 accessToken: null,
                 refreshToken: null,
@@ -52,14 +51,29 @@ export const authReducer = (state:AuthState = initialState, action: AuthActions)
                 message: action.message
             }
         case '@@AUTH/RESET_LOGIN_MESSAGE':
-            return{
+            return {
                 ...state,
                 message: null
             }
         case '@@AUTH/GET_PERSON_INFO':
-            return{
+            const newPeronInfo: PersonInfo = { ...state.personInfo } as PersonInfo
+            if (action.personInfo.hasOwnProperty('email')) {
+                newPeronInfo['userId'] = action.personInfo.id
+                newPeronInfo['email'] = action.personInfo.email
+                newPeronInfo['picture'] = action.personInfo.picture
+                newPeronInfo['userName'] = action.personInfo.name
+
+            } else {
+                newPeronInfo['userId'] = null
+                newPeronInfo['email'] = null
+                newPeronInfo['picture'] = null
+                newPeronInfo['userName'] = null
+                newPeronInfo['guestId'] = action.personInfo.id
+                newPeronInfo['userName'] = action.personInfo.name
+            }
+            return {
                 ...state,
-                personInfo: action.personInfo
+                personInfo: newPeronInfo
             }
         default:
             return state

@@ -22,6 +22,11 @@ function App() {
     // dispatch(restoreLogin())
     console.log('app dispatch')
   }, [dispatch, accessToken])
+  useEffect(() => {
+    dispatch(restoreLogin())
+    // dispatch(restoreLogin())
+    console.log('restore login in APP')
+  }, [dispatch])
   return (
     <div className="App">
       <Provider store={store}>
