@@ -75,7 +75,7 @@ describe("Reply component",()=>{
     })
     it("render reply component - not edited ",async ()=>{
         render(<Reply reply={reply} user={guest1} meetingId={1}/>)
-        expect(screen.queryByTestId('edited-sign')).not.toBeInTheDocument();
+        expect(screen.queryByText('[Edited]')).not.toBeInTheDocument();
     })
     it("render reply component - host, hide button occurs ",async ()=>{
         render(<Reply reply={reply} user={host} meetingId={1}/>)

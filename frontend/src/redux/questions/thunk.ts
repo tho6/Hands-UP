@@ -7,11 +7,13 @@ import { setQuestionLimitState } from "../rooms/actions";
 export function fetchQuestions(meetingId: number) {
     return async (dispatch: ThunkDispatch, getState:()=>RootState) => {
         try {
+            console.log('hi');
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/${meetingId}/questions`,{
             headers: {
                 'Authorization': `Bearer ${getState().auth.accessToken}`,
             }}); // GET + 'memos'
             const result = await res.json();
+            console.log(result);
             if (result.status) {
                 dispatch(loadQuestions(meetingId, result.message));
             } else {

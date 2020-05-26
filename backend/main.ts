@@ -37,11 +37,11 @@ const io = SocketIO(server)
 
 /* Enable cors */
 app.use(cors({
-    origin: [
-      'http://localhost:3000',
-      'https://localhost:3000'
-    ]
-  }))
+  origin: [
+    'http://localhost:3000',
+    'https://localhost:3000'
+  ]
+}))
 
 /* Database configuration */
 const knexConfig = require("./knexfile");
@@ -77,14 +77,14 @@ const questionService = new services.QuestionService(questionDAO, replyDAO);
 /* Routers */
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
-const authRouter = new AuthRouter(userService, guestService,authService);
-const questionRouter = new routers.QuestionRouter(questionService, upload,io);
+const authRouter = new AuthRouter(userService, guestService, authService);
+const questionRouter = new routers.QuestionRouter(questionService, upload, io);
 const liveRouter = new LiveRouter();
 //const meetingRouter = new MeetingRouter(meetingService);
 
 //guard
 const isGuest = authenticateGuestToken(guestService)
-const isUser = authenticateUserToken(userService,guestService)
+const isUser = authenticateUserToken(userService, guestService)
 /* Session */
 // app.use(
 //     expressSession({
@@ -108,21 +108,51 @@ app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
 app.use('/video', liveRouter.router())
-app.get('/test/callback',isGuest, (req:Request, res: Response)=>{
-    console.log('guard is working')
-    return res.status(200).json({message: req.query})
+app.get('/test/callback', isGuest, (req: Request, res: Response) => {
+  console.log('guard is working')
+  return res.status(200).json({ message: req.query })
 })
-app.use('/rooms',authenticateGuestToken, questionRouter.router());
+app.use('/rooms', isGuest, questionRouter.router());
 //app.get('/meetings', meetingRouter.router())
 
 /* Socket Io */
+let counter: { [id: string]: { count: number, counting: boolean } } = {}
 io.on('connection', socket => {
   socket.on('join_event', (meetingId: number) => {
-    socket.join('event:' + meetingId)
-  })
+    console.log('join room:'+meetingId);
+    const idx = 'event:' + meetingId;
+    socket.join(idx)
+    if (counter[idx]) {
+      counter[idx].count += 1;
+      if (!counter[idx].counting) {
+        counter[idx].counting = true;
+        setTimeout(() => {
+          counter[idx].counting = false;
+          io.in(idx).emit('update-count', counter[idx].count);
+        }, 3000)
+      }
+    } else {
+      counter[idx] = { count: 1, counting: true };
+      setTimeout(() => {
+        counter[idx].counting = false;
+        io.in(idx).emit('update-count', counter[idx].count);
+      }, 3000)
+    }
+  });
   socket.on('leave_event', (meetingId: number) => {
-    socket.leave('event:' + meetingId)
-  })
+    console.log('leave room:'+meetingId);
+    const idx = 'event:' + meetingId;
+    socket.leave(idx);
+    if(!counter[idx]) return;
+    counter[idx].count -= 1;
+    if (!counter[idx].counting) {``
+      counter[idx].counting = true;
+      setTimeout(() => {
+        counter[idx].counting = false;
+        io.in(idx).emit('update-count', counter[idx].count);
+      }, 3000)
+    }
+  });
 });
 
 /* Listening port */

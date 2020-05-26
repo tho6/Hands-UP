@@ -21,8 +21,8 @@ describe("Question component",()=>{
         guestName: 'Anonymous',
         content: 'string string',
         questionId: 1,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
         isHide: false
     }
     const question = {
@@ -39,8 +39,9 @@ describe("Question component",()=>{
         isHide: false,
         isAnswered: false,
         isApproved: true,
-        createdAt: Date.now() + 2000,
-        updatedAt: Date.now() + 2000
+        createdAt: new Date(Date.now()+2000),
+        updatedAt: new Date(Date.now()+2000),
+        platform:{id:1, name:'project3'}
     }
     const host:IGuest= {name:'host',guestId:10, isHost:true}
     const guest1:IGuest = {isHost: false, name:'Anonymous',guestId:1}
