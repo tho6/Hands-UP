@@ -38,7 +38,7 @@ function App() {
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" component={Meetings} exact />
-          {(isAuthenticated != null && <MeetingLive />)}
+          {(isAuthenticated != null && <Meetings />)}
           <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
           </Route>
