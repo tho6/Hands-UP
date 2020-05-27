@@ -127,7 +127,7 @@ describe('Question Router', () => {
         await questionRouter.createQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         const question = await questionService.getQuestionsByRoomId(1);
         expect(io.emit).toBeCalledWith('create-question', question[2]);
@@ -241,7 +241,7 @@ describe('Question Router', () => {
         await questionRouter.updateQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [], "files": [{ "filename": "123.png", "id": 1 }], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
@@ -287,7 +287,7 @@ describe('Question Router', () => {
         await questionRouter.updateQuestion(req, res);
         //assert
         expect(io.in).not.toBeCalledTimes(1);
-        expect(io.in).not.toBeCalledWith('meeting:1');
+        expect(io.in).not.toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).not.toBeCalledTimes(1);
         expect(io.emit).not.toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [], "files": [{ "filename": "123.png", "id": 1 }], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
@@ -311,7 +311,7 @@ describe('Question Router', () => {
         await questionRouter.updateQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [1], "files": [], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
@@ -381,7 +381,7 @@ describe('Question Router', () => {
         await questionRouter.updateQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-question', { "content": "update", "deleteFilesId": [], "files": [{ "filename": "123.png", "id": 1 }], "isApproved": true, "questionId": 1, "updatedAt": expect.anything() });
@@ -405,7 +405,7 @@ describe('Question Router', () => {
         await questionRouter.deleteQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('delete-question', { "meetingId": 1, "questionId": 1 });
@@ -429,7 +429,7 @@ describe('Question Router', () => {
         await questionRouter.deleteQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('delete-question', { "meetingId": 1, "questionId": 1 });
@@ -476,7 +476,7 @@ describe('Question Router', () => {
         await questionRouter.addVote(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('add-vote', { "guestId": 3, "questionId": 1 });
@@ -522,7 +522,7 @@ describe('Question Router', () => {
         await questionRouter.removeVote(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('remove-vote', { "guestId": 1, "questionId": 1 });
@@ -568,7 +568,7 @@ describe('Question Router', () => {
         await questionRouter.answeredQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('answered-question', { "questionId": 1 });
@@ -635,7 +635,7 @@ describe('Question Router', () => {
         await questionRouter.hideOrApprovedQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('hideOrApproved-question', { "isHide": true, "questionId": 1 });
@@ -680,7 +680,7 @@ describe('Question Router', () => {
         await questionRouter.hideOrApprovedQuestion(req, res);
         //assert
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('hideOrApproved-question', { "isHide": false, "questionId": 1 });
@@ -724,7 +724,7 @@ describe('Question Router', () => {
         await questionRouter.updateReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-reply', { "content": "update reply", "questionId": 1, "replyId": 1, "updatedAt": expect.anything() });
@@ -746,7 +746,7 @@ describe('Question Router', () => {
         await questionRouter.updateReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('update-reply', { "content": "update reply", "questionId": 1, "replyId": 1, "updatedAt": expect.anything() });
@@ -820,7 +820,7 @@ describe('Question Router', () => {
         await questionRouter.createReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('create-reply', expectedReply);
@@ -841,7 +841,7 @@ describe('Question Router', () => {
         await questionRouter.deleteReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('delete-reply', {questionId:1, replyId:1});
@@ -862,7 +862,7 @@ describe('Question Router', () => {
         await questionRouter.deleteReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('delete-reply', {questionId:1, replyId:1});
@@ -904,7 +904,7 @@ describe('Question Router', () => {
         await questionRouter.hideOrNotHideReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('hideOrNotHide-reply', {replyId:1, questionId:1, isHide:true});
@@ -926,7 +926,7 @@ describe('Question Router', () => {
         await questionRouter.hideOrNotHideReply(req, res);
         //assert    
         expect(io.in).toBeCalledTimes(1);
-        expect(io.in).toBeCalledWith('meeting:1');
+        expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).toBeCalledTimes(1);
         expect(io.emit).toBeCalledWith('hideOrNotHide-reply', {replyId:1, questionId:1, isHide:false});

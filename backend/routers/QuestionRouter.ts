@@ -65,7 +65,7 @@ export class QuestionRouter {
                 try {
                     const files = req.files.length === 0 ? [] : (req.files as Express.Multer.File[]).map((file) => file.filename);
                     const resQuestion: question = await this.questionService.createQuestion(parseInt(req.params.id), content, files, 1, req.personInfo.guestId);
-                    this.io.in(`meeting:${resQuestion.meetingId}`).emit('create-question', resQuestion);
+                    this.io.in(`event:${resQuestion.meetingId}`).emit('create-question', resQuestion);
                     res.status(200).json({ status: true, message: resQuestion });
                     return;
                 } catch (e) {
@@ -102,7 +102,7 @@ export class QuestionRouter {
                     const result: { files: customFileDB[], needApproved: boolean } = await this.questionService.updateQuestion(questionId, content, deleteFilesId, files);
                     const data = { content, questionId, deleteFilesId, files: result.files, updatedAt: new Date(Date.now()), isApproved: result.needApproved ? false : true };
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('update-question', data);
+                    this.io.in(`event:${meetingId}`).emit('update-question', data);
                     res.status(200).json({ status: true, message: data });
                     return;
                 } catch (e) {
@@ -130,7 +130,7 @@ export class QuestionRouter {
                 try {
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
                     await this.questionService.deleteQuestion(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('delete-question', { meetingId: meetingId, questionId });
+                    this.io.in(`event:${meetingId}`).emit('delete-question', { meetingId: meetingId, questionId });
                     res.status(200).json({ status: true, message: { meetingId: meetingId, questionId } });
                     return;
                 } catch (e) {
@@ -157,7 +157,7 @@ export class QuestionRouter {
                 try {
                     await this.questionService.addVote(questionId, req.personInfo.guestId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('add-vote', { guestId: req.personInfo.guestId, questionId });
+                    this.io.in(`event:${meetingId}`).emit('add-vote', { guestId: req.personInfo.guestId, questionId });
                     res.status(200).json({ status: true, message: { guestId: req.personInfo.guestId, questionId } });
                     return;
                 } catch (e) {
@@ -184,7 +184,7 @@ export class QuestionRouter {
                 try {
                     await this.questionService.removeVote(questionId, req.personInfo.guestId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('remove-vote', { guestId: req.personInfo.guestId, questionId });
+                    this.io.in(`event:${meetingId}`).emit('remove-vote', { guestId: req.personInfo.guestId, questionId });
                     res.status(200).json({ status: true, message: { guestId: req.personInfo.guestId, questionId } });
                     return;
                 } catch (e) {
@@ -212,7 +212,7 @@ export class QuestionRouter {
                 try {
                     await this.questionService.answeredQuestion(questionId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('answered-question', { questionId });
+                    this.io.in(`event:${meetingId}`).emit('answered-question', { questionId });
                     res.status(200).json({ status: true, message: { questionId } });
                     return;
                 } catch (e) {
@@ -242,7 +242,7 @@ export class QuestionRouter {
                 try {
                     await this.questionService.hideOrApprovedQuestion(questionId, isHide);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('hideOrApproved-question', { questionId, isHide });
+                    this.io.in(`event:${meetingId}`).emit('hideOrApproved-question', { questionId, isHide });
                     res.status(200).json({ status: true, message: { questionId, isHide } });
                     return;
                 } catch (e) {
@@ -274,7 +274,7 @@ export class QuestionRouter {
                     await this.questionService.updateReply(replyId, content);
                     const data = { questionId, replyId, content, updatedAt: new Date(Date.now()) };
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
-                    this.io.in(`meeting:${meetingId}`).emit('update-reply', data);
+                    this.io.in(`event:${meetingId}`).emit('update-reply', data);
                     res.status(200).json({ status: true, message: data });
                     return;
                 } catch (e) {
@@ -303,7 +303,7 @@ export class QuestionRouter {
                 try {
                     const reply = await this.questionService.createReply(questionId, content, req.personInfo.guestId);
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
-                    this.io.in(`meeting:${meetingId}`).emit('create-reply', reply);
+                    this.io.in(`event:${meetingId}`).emit('create-reply', reply);
                     res.status(200).json({ status: true, message: reply });
                     return;
                 } catch (e) {
@@ -332,7 +332,7 @@ export class QuestionRouter {
                 try {
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
                     await this.questionService.deleteReply(replyId);
-                    this.io.in(`meeting:${meetingId}`).emit('delete-reply', { questionId, replyId });
+                    this.io.in(`event:${meetingId}`).emit('delete-reply', { questionId, replyId });
                     res.status(200).json({ status: true, message: { questionId, replyId } });
                     return;
                 } catch (e) {
@@ -362,7 +362,7 @@ export class QuestionRouter {
                 try {
                     await this.questionService.hideReply(replyId, isHide);
                     const meetingId = await this.questionService.getRoomIdByReplyId(replyId);
-                    this.io.in(`meeting:${meetingId}`).emit('hideOrNotHide-reply', { replyId, questionId, isHide });
+                    this.io.in(`event:${meetingId}`).emit('hideOrNotHide-reply', { replyId, questionId, isHide });
                     res.status(200).json({ status: true, message: { replyId, questionId, isHide } });
                     return;
                 } catch (e) {

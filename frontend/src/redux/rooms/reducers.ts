@@ -5,13 +5,11 @@ export interface RoomState {
     roomsInformation: {
         [id: string]: IRoomInformation
     };
-    token: string | null;
     questionLimitStatus: { [id: string]: {isChecking:boolean, count:number} }
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
-    token: localStorage.getItem('token'),
     questionLimitStatus:{}
 }
 

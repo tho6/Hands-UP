@@ -38,7 +38,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
           reply.content
         )}
       </div>
-      {!isEdit && reply.createdAt !== reply.updatedAt && (
+      {(!isEdit) && (new Date(reply.createdAt).getTime() !== new Date(reply.updatedAt).getTime()) && (
         <span data-testid="edited-sign">[Edited]</span>
       )}
       <div className="d-flex justify-content-sm-end justify-content-start">

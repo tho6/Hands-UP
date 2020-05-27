@@ -44,44 +44,51 @@ export class AuthRouter {
             jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ['RS256'] }, async (err, info: TokenInfo) => {
                 // if(!userId) return res.status(500).json({success:false, message:"Internal Server Error"})
                 if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
-                const authCode = req.body.authCode
+                try {
+                    const authCode = req.body.authCode
 
-                console.log(authCode)
-                //take profile is ok since it includes sub (unique id) NO NEED OpenId
-                const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        code: authCode,
-                        client_id: process.env.GOOGLE_CLIENT_ID,
-                        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                        redirect_uri: process.env.GOOGLE_REDIRECT_URL,
-                        grant_type: 'authorization_code'
-                    })
+                    console.log(authCode)
+                    //take profile is ok since it includes sub (unique id) NO NEED OpenId
+                    const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            code: authCode,
+                            client_id: process.env.GOOGLE_CLIENT_ID,
+                            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                            redirect_uri: process.env.GOOGLE_REDIRECT_URL,
+                            grant_type: 'authorization_code'
+                        })
+                    }
+                    )
+
+                    const result = await fetchRes.json()
+                    if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
+
+                    const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
+                    if (!decodedResult) return res.status(401).json({ success: false, message: 'Access code is not found' })
+                    //***check email tecky???? */
+                    const user = (await this.userService.getUserByGoogleId([decodedResult.sub]))[0]
+
+                    // console.log(user[0])
+                    let userId: number | null = user?.id
+                    if (!user) {
+                        console.log('create user')
+                        userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
+                    }
+                    const userAccessToken = this.generateAccessToken({ guestId: info.guestId, userId: userId })
+                    const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
+                    const storedRefreshToken = await this.authService.saveRefreshTokenAccessToken(userRefreshToken, userAccessToken)
+                    if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
+                    return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
+                } catch (error) {
+                    console.log(error)
+                    return error.name == 'RangeError' ?
+                        res.status(400).json({ success: false, message: error.message }) :
+                        res.status(500).json({ success: false, message: 'internal error' })
                 }
-                )
-
-                const result = await fetchRes.json()
-                if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
-
-                const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
-                if (!decodedResult) return res.status(401).json({ success: false, message: 'Access code is not found' })
-                //***check email tecky???? */
-                const user = (await this.userService.getUserByGoogleId([decodedResult.sub]))[0]
-
-                // console.log(user[0])
-                let userId: number | null = user?.id
-                if (!user) {
-                    console.log('create user')
-                    userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
-                }
-                const userAccessToken = this.generateAccessToken({ guestId: info.guestId, userId: userId })
-                const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
-                const storedRefreshToken = await this.authService.saveRefreshTokenAccessToken(userRefreshToken, userAccessToken)
-                if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
-                return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
             })
             return;
 
@@ -122,16 +129,25 @@ export class AuthRouter {
                     jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
                         //TokenExpiredError
                         if (err) return res.status(401).json({ success: false, message: "Invalid Token" })
-                        const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
-                        const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
-                        if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
-                        return res.status(200).json({ success: true, message: { accessToken: accessToken } })
+                        try {
+                            const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
+                            const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
+                            if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
+                            return res.status(200).json({ success: true, message: { accessToken: accessToken } })
+                        } catch (error) {
+                            console.log(error)
+                            return error.name == 'RangeError' ?
+                                res.status(400).json({ success: false, message: error.message }) :
+                                res.status(500).json({ success: false, message: 'internal error' })
+                        }
                     })
                     return;
+
                 } else {
                     await this.authService.deleteRefreshToken(refreshToken)
                     return res.status(401).json({ success: false, message: "Potential Threat" })
                 }
+
             })
             return;
         } catch (error) {
@@ -169,14 +185,21 @@ export class AuthRouter {
             if (!accessToken) return res.status(401).json({ success: false, message: 'No Access Token' })
             jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ['RS256'] }, async (err, info: TokenInfo) => {
                 if (err) return res.status(403).json({ success: false, message: 'Permission Denied' })
-                if (info.hasOwnProperty('userId')) {
-                    const result = (await this.userService.getUserById([info.userId!]))[0]
-                    const { googleId, ...personInfo } = result
-                    return res.status(200).json({ success: true, message: { personInfo: personInfo } })
+                try {
+                    if (info.hasOwnProperty('userId')) {
+                        const result = (await this.userService.getUserById([info.userId!]))[0]
+                        const { googleId, ...personInfo } = result
+                        return res.status(200).json({ success: true, message: { personInfo: personInfo } })
 
-                } else {
-                    const personInfo = (await this.guestService.getGuestById([info.guestId!]))[0]
-                    return res.status(200).json({ success: true, message: { personInfo: personInfo } })
+                    } else {
+                        const personInfo = (await this.guestService.getGuestById([info.guestId!]))[0]
+                        return res.status(200).json({ success: true, message: { personInfo: personInfo } })
+                    }
+                } catch (error) {
+                    console.log(error)
+                    return error.name == 'RangeError' ?
+                        res.status(400).json({ success: false, message: error.message }) :
+                        res.status(500).json({ success: false, message: 'internal error' })
                 }
             })
             return;

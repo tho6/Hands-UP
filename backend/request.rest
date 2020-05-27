@@ -4,6 +4,11 @@
 @google_redirect_url = {{$dotenv GOOGLE_REDIRECT_URL}}
 @facebook_client_id = {{$dotenv FACEBOOK_CLIENT_ID}}
 @facebook_redirect_url = {{$dotenv FACEBOOK_REDIRECT_URL}}
+
+###test Guard
+GET {{backend_url}}/test/callback
+authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJndWVzdElkIjo5NzcsImlhdCI6MTU5MDQ5NTczNywiZXhwIjoxNTkwNDk1NzUyfQ.eEQ1wOP957y_obkBSXlK8fHn4mm8yztaX9sC_xBua1lw1X0ilpKiZ-9KZ1jyk7e-S58uM_hj_IDfzXeT3iF_tayAyehpDfCYjJoRQyp2eyE-x4IwN3fXj8m4hASFhb-WOr54eqm4QfQDMXtLfcJhfb0O9iZXDYOicFPtbkzMC7A
+
 ###
 GET {{backend_url}}/user/1,2,3,4
 

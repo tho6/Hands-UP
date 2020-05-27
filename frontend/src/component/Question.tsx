@@ -45,7 +45,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
       <div className="question flex-grow-1 p-2 p-lg-4">
         <div className="d-flex question-content-area">
           <div className="content text-wrap mb-2">
-            {!isEdit && question.updatedAt !== question.createdAt && (
+            {!isEdit && new Date(question.updatedAt).getTime() !== new Date(question.createdAt).getTime() && (
               <span>[Edited]</span>
             )}
             {isEdit ? (
