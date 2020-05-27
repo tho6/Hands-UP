@@ -27,22 +27,33 @@ function App() {
     // dispatch(restoreLogin())
     console.log('restore login in APP')
   }, [dispatch])
+  const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   return (
     <div className="App">
+
       <Provider store={store}>
 
         <Switch>
           <Route path="/questions/room/:id/:page" exact>
-            <QuestionPage />
+          {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" component={Meetings} exact />
-          <Route path="/meetings/create" exact><CreateMeeting /></Route>
-          <Route path="/googleLogin" exact><GoogleLogin /></Route>
-          <Route path="/googleLogin/callback"><GoogleLoginCallBack /></Route>
-          <Route path="/facebookLogin/callback"><FacebookLoginCallBack /></Route>
+          {(isAuthenticated != null && <MeetingLive />)}
+          <Route path="/meetings/create" exact>
+          {(isAuthenticated != null && <CreateMeeting />)}
+          </Route>
+          <Route path="/googleLogin" exact>
+          {(isAuthenticated != null &&<GoogleLogin />)}
+          </Route>
+          <Route path="/googleLogin/callback">
+          {(isAuthenticated != null &&<GoogleLoginCallBack />)}
+          </Route>
+          <Route path="/facebookLogin/callback">
+          {(isAuthenticated != null &&<FacebookLoginCallBack />)}</Route>
         </Switch>
       </Provider>
       <FacebookLogin />
+      
     </div>
   );
 }

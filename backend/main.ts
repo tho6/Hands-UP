@@ -22,6 +22,9 @@ import { LiveRouter } from "./routers/LiveRouter";
 import SocketIO from "socket.io";
 import http from 'http';
 import { authenticateGuestToken, authenticateUserToken } from "./guard";
+// import redis from 'redis';
+// const client = redis.createClient();
+
 
 declare global {
   namespace Express {
@@ -84,6 +87,7 @@ const liveRouter = new LiveRouter();
 
 //guard
 const isGuest = authenticateGuestToken(guestService)
+//@ts-ignore
 const isUser = authenticateUserToken(userService, guestService)
 /* Session */
 // app.use(
@@ -107,7 +111,7 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
-app.use('/video', liveRouter.router())
+app.use('/live', liveRouter.router())
 app.get('/test/callback', isGuest, (req: Request, res: Response) => {
   console.log('guard is working')
   return res.status(200).json({ message: req.query })
