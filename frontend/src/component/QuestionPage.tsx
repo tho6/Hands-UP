@@ -29,6 +29,7 @@ import {
   successfullyHideOrDisplayAReply
 } from '../redux/questions/actions';
 import { loadedUserInRoom } from '../redux/rooms/actions';
+import FlipMove from 'react-flip-move';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -400,7 +401,8 @@ const QuestionPage: React.FC = () => {
             </div>
             <div>
               {page === 'main' &&
-                mostPopularQuestions?.map((question) => {
+              <FlipMove>
+                {mostPopularQuestions?.map((question) => {
                   return (
                     <Question
                     key={question.id}
@@ -416,6 +418,9 @@ const QuestionPage: React.FC = () => {
                     />
                     );
                   })}
+                  </FlipMove>
+                  }
+                  
               {page === 'latest' &&
                 latestQuestions?.map((question) => {
                   return (

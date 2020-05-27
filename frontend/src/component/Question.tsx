@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { IQuestion } from '../models/IQuestion';
 import './question.scss';
 import YesNoModal from './YesNoModal';
@@ -25,7 +25,7 @@ export interface IQuestionProps {
   isModerate: boolean;
 }
 
-const Question: React.FC<IQuestionProps> = (props) => {
+const Question: React.FC<IQuestionProps> = forwardRef((props,ref:any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [formState, { textarea }] = useFormState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,6 +41,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
   const dispatch = useDispatch();
   const questionContentBackUp = question.content;
   return (
+    <div ref={ref}>
     <div className="mb-4 d-flex">
       <div className="question flex-grow-1 p-2 p-lg-4">
         <div className="d-flex question-content-area">
@@ -410,7 +411,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
         />
       )}
     </div>
+    </div>
   );
-};
+});
 
 export default Question;
