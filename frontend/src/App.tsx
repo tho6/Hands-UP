@@ -37,8 +37,9 @@ function App() {
           <Route path="/questions/room/:id/:page" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
-          <Route path="/meetings" component={Meetings} exact />
+          <Route path="/meetings" exact>
           {(isAuthenticated != null && <Meetings />)}
+          </Route>
           <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
           </Route>
