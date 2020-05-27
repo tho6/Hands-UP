@@ -5,6 +5,9 @@ const knex = Knex(knexConfig["testing"]);
 import { QuestionService } from "./QuestionService";
 import { QuestionDAO } from "./dao/questionDAO";
 import { ReplyDAO } from "./dao/replyDAO";
+//@ts-ignore
+import redis from 'redis';
+
 
 
 describe
@@ -17,8 +20,10 @@ describe
         })
         const createdAt = new Date("2020-05-23T12:00:00.000z");
         const questionDao = new QuestionDAO(knex);
-        const replyDao = new ReplyDAO(knex);
+        const replyDao = new ReplyDAO(knex);    
+        //const client = redis.createClient();
         const questionService = new QuestionService(questionDao, replyDao);
+        //const questionService = new QuestionService(questionDao, replyDao,client);
         const defaultReply = {
             id: 1,
             guestId: 2,
@@ -258,6 +263,10 @@ describe
                 }
             ];
             expect(question).toEqual(expectedResult);
+        });
+        it('getRoomIdByQuestionId', async () => {
+            const roomId = await questionService.getRoomIdByQuestionId(1);
+            expect(roomId).toBe(1);
         });
 
     })

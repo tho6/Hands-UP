@@ -22,6 +22,9 @@ import { LiveRouter } from "./routers/LiveRouter";
 import SocketIO from "socket.io";
 import http from 'http';
 import { authenticateGuestToken, authenticateUserToken } from "./guard";
+// import redis from 'redis';
+// const client = redis.createClient();
+
 
 declare global {
   namespace Express {
