@@ -29,8 +29,6 @@ import {
   successfullyHideOrDisplayAReply
 } from '../redux/questions/actions';
 import { loadedUserInRoom } from '../redux/rooms/actions';
-import { cleanup } from '@testing-library/react';
-
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -79,9 +77,9 @@ const QuestionPage: React.FC = () => {
         name: guestName,
         isHost: personInfo.userId === roomInformation?.owenId ? true : false
       };
-      dispatch(loadedUserInRoom(userInRoom, roomInformation?.id));
+      if(roomInformation) dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
     }
-  }, [dispatch, meetingId, personInfo]);
+  }, [dispatch, meetingId, personInfo, roomInformation?.id]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
@@ -405,19 +403,19 @@ const QuestionPage: React.FC = () => {
                 mostPopularQuestions?.map((question) => {
                   return (
                     <Question
-                      key={question.id}
-                      user={roomInformation.userInformation}
-                      canUploadFiles={roomInformation.canUploadFiles}
-                      question={question}
-                      answering={
-                        mostPopularQuestions[0].id === question.id
-                          ? true
-                          : false
-                      }
-                      isModerate={false}
+                    key={question.id}
+                    user={roomInformation.userInformation}
+                    canUploadFiles={roomInformation.canUploadFiles}
+                    question={question}
+                    answering={
+                      mostPopularQuestions[0].id === question.id
+                      ? true
+                      : false
+                    }
+                    isModerate={false}
                     />
-                  );
-                })}
+                    );
+                  })}
               {page === 'latest' &&
                 latestQuestions?.map((question) => {
                   return (
