@@ -79,7 +79,7 @@ export function restoreLogin() {
         })
         const result = await res.json()
         if (!result.success) {
-            window.alert(result.message)
+            // window.alert(result.message)
             dispatch(logout())
             return
         }
@@ -118,7 +118,7 @@ export function checkToken() {
             })
             const result = await res.json()
             if (!result.success) {
-                window.alert(result.message)
+                // window.alert(result.message)
                 dispatch(logout())
             }
             localStorage.setItem('accessToken', result.message.accessToken)
