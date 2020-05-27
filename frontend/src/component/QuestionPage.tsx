@@ -77,9 +77,9 @@ const QuestionPage: React.FC = () => {
       const userInRoom = {
         guestId,
         name: guestName,
-        isHost: personInfo.userId === roomInformation.owenId ? true : false
+        isHost: personInfo.userId === roomInformation?.owenId ? true : false
       };
-      dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
+      dispatch(loadedUserInRoom(userInRoom, roomInformation?.id));
     }
   }, [dispatch, meetingId, personInfo]);
   useEffect(() => {
