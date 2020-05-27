@@ -3,8 +3,8 @@ import './App.css';
 import QuestionPage from './component/QuestionPage';
 import Question from './component/Question';
 import { Route, Switch } from 'react-router-dom';
-import { MeetingLive } from './component/MeetingLive';
-import { MeetingPast } from './component/MeetingPast';
+import Meetings from './component/Meetings';
+import CreateMeeting from './component/MeetingCreate';
 // import { Navbar } from './component/Navbar';
 import GoogleLogin from './component/GoogleLogin';
 import GoogleLoginCallBack from './component/GoogleLoginCallBack';
@@ -35,12 +35,8 @@ function App() {
           <Route path="/questions/room/:id/:page" exact>
             <QuestionPage />
           </Route>
-          <Route path="/meetings/live" exact>
-            <MeetingLive />
-          </Route>
-          <Route path="/meetings/past" exact>
-            <MeetingPast />
-          </Route>
+          <Route path="/meetings" component={Meetings} exact />
+          <Route path="/meetings/create" exact><CreateMeeting /></Route>
           <Route path="/googleLogin" exact><GoogleLogin /></Route>
           <Route path="/googleLogin/callback"><GoogleLoginCallBack /></Route>
           <Route path="/facebookLogin/callback"><FacebookLoginCallBack /></Route>

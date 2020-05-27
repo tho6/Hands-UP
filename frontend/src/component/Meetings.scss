@@ -1,0 +1,13 @@
+.meetingPage {
+    display: flex;
+    // height: 100vh;
+}
+  
+.meetingPage > div {
+    flex: 1;
+}
+  
+.meetingPast {
+    background-color: #F8F8F8;
+    flex-direction: row;
+}
