@@ -5,7 +5,6 @@ import Question from './component/Question';
 import { Route, Switch } from 'react-router-dom';
 import Meetings from './component/Meetings';
 import CreateMeeting from './component/MeetingCreate';
-// import { Navbar } from './component/Navbar';
 import GoogleLogin from './component/GoogleLogin';
 import GoogleLoginCallBack from './component/GoogleLoginCallBack';
 import { Provider, useDispatch, useSelector } from 'react-redux';
