@@ -34,7 +34,7 @@ a:hover{
             &:hover{
                 border-bottom: $SecondaryTextColor;
                 border-width: 50rem;
-                color: black;
+                color: $SecondaryTextColor;;
             }
         }
         img {

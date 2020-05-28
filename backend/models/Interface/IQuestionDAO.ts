@@ -8,6 +8,7 @@ export interface IQuestionDAO {
     getQuestionById(questionId: number): Promise<questionDB>
     updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[], isApproved: boolean): Promise<boolean>;
     createQuestion(meetingId: number, content: string, filesName: string[], isApproved: boolean, platformId: number, guestId: null | number): Promise<number>;
+    createQuestionFromPlatform(meetingId:number, content:string, platformId:number, platformUsername:string ): Promise<number>
     deleteQuestion(id: number): Promise<boolean>;
     addVote(questionId: number, guestId: number): Promise<boolean>;
     removeVote(questionId: number, guestId: number): Promise<boolean>;

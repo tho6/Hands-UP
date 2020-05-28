@@ -49,7 +49,7 @@ export function authenticateGuestToken(guestService: GuestService) {
         if (!token) return res.status(401).json({ success: false, message: 'No Token' })
         jwt.verify(token, accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
             try {
-                if (info.guestId == undefined || info.guestId == null || !info || err) {
+                if (info?.guestId == undefined || info?.guestId == null || !info || err) {
                     return res.status(401).json({ success: false, message: "Invalid Token" })
                 }
                 const guestResult = await guestService.getGuestById([info?.guestId])
