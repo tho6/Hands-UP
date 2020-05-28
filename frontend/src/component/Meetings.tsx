@@ -5,8 +5,9 @@ import { MeetingPast } from './MeetingPast';
 
 function Meetings() {
     return (
-        <div className="meetingPage">
-            <MeetingLive />
+        <div className="Container">
+            <div className="meetingPage">
+                <MeetingLive /></div>
             <div className="meetingPast"><MeetingPast /></div>
         </div>
     );

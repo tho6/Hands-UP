@@ -9,8 +9,8 @@ export default function Home() {
             <Container id='Home'>
                 <Row>
                     <Col md={4} className='headings'>
-                        <h2>Hands UP</h2>
-                        <h4>Help You Grab Comments from Facebook Youtube in your LIVE !!!</h4>
+                        <h2>Help you grab comments from Facebook Youtube in your LIVE !!!</h2>
+                        <h4>Hands UP</h4>
                         <h6>Join NOW!!</h6>
                         <textarea placeholder="Enter Room Code"></textarea>
                     </Col>
