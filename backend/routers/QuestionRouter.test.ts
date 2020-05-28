@@ -232,7 +232,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 1,
                 content: 'update',
-                deleteFilesId: []
+                deleteFilesId: JSON.stringify([])
             },
             params: { id: 1 },
             personInfo: { guestId: 1 },
@@ -278,7 +278,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 1,
                 content: '',
-                deleteFilesId: []
+                deleteFilesId: JSON.stringify([])
             },
             params: { id: 1 },
             personInfo: { guestId: 1 },
@@ -302,7 +302,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 1,
                 content: 'update',
-                deleteFilesId: [1]
+                deleteFilesId: JSON.stringify([1])
             },
             params: { id: 1 },
             personInfo: { guestId: 1 },
@@ -326,7 +326,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 1,
                 content: 'update',
-                deleteFilesId: [-1]
+                deleteFilesId: JSON.stringify([-1])
             },
             params: { id: 1 },
             personInfo: { guestId: 1 },
@@ -349,7 +349,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 2,
                 content: 'update',
-                deleteFilesId: []
+                deleteFilesId: JSON.stringify([])
             },
             params: { id: 1 },
             personInfo: { guestId: 2 },
@@ -372,7 +372,7 @@ describe('Question Router', () => {
             body: {
                 guestId: 2,
                 content: 'update',
-                deleteFilesId: []
+                deleteFilesId: JSON.stringify([])
             },
             params: { id: 1 },
             personInfo: { guestId: 2, userId: 1 },

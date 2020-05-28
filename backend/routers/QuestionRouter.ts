@@ -12,8 +12,8 @@ export class QuestionRouter {
     router() {
         const router = express.Router();
         router.get("/:id([0-9]+)/questions", this.getQuestionsByRoomId);//ticketId
-        router.post("/:id([0-9]+)/questions", this.upload.array('images', 3), this.createQuestion);
-        router.put("/questions/:id([0-9]+)", this.upload.array('images', 3), this.updateQuestion);
+        router.post("/:id([0-9]+)/questions", this.upload.array('images[]', 3), this.createQuestion);
+        router.put("/questions/:id([0-9]+)", this.upload.array('images[]', 3), this.updateQuestion);
         router.delete("/questions/:id([0-9]+)", this.deleteQuestion);
         router.put("/questions/:id([0-9]+)/vote", this.addVote);
         router.put("/questions/:id([0-9]+)/votef", this.removeVote);
@@ -52,7 +52,6 @@ export class QuestionRouter {
                     this.counter[idx].count += 1;
                     console.log( this.counter[idx].count);
                 }else{
-                    console.log('initiate')
                     this.counter[idx] = {counting: true, count:1};
                         setTimeout(() => {
                         this.counter[idx] = {counting: false, count:0};
@@ -90,17 +89,17 @@ export class QuestionRouter {
                 const { content, deleteFilesId } = req.body;
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
                 if (!deleteFilesId) throw new Error('Property deleteFilesId is missing!');
-                for (const id of deleteFilesId) {
-                    if (!Number.isInteger(id) || id < 0) throw new Error('Invalid deleFilesId!')
-                }
-
+                const deleteFilesIdArr = JSON.parse(deleteFilesId);
+                    for (const id of deleteFilesIdArr) {
+                        if (!Number.isInteger(id) || id < 0) throw new Error('Invalid deleFilesId!')
+                    }
                 const questionId = parseInt(req.params.id);
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, req.personInfo.guestId))) throw new Error('You are not allowed to update the question!');
                 /* Action */
                 try {
                     const files = req.files.length === 0 ? [] : (req.files as Express.Multer.File[]).map((file) => file.filename);
-                    const result: { files: customFileDB[], needApproved: boolean } = await this.questionService.updateQuestion(questionId, content, deleteFilesId, files);
-                    const data = { content, questionId, deleteFilesId, files: result.files, updatedAt: new Date(Date.now()), isApproved: result.needApproved ? false : true };
+                    const result: { files: customFileDB[], needApproved: boolean } = await this.questionService.updateQuestion(questionId, content, deleteFilesIdArr, files);
+                    const data = { content, questionId, deleteFilesId:deleteFilesIdArr, files: result.files, updatedAt: new Date(Date.now()), isApproved: result.needApproved ? false : true };
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);
                     this.io.in(`event:${meetingId}`).emit('update-question', data);
                     res.status(200).json({ status: true, message: data });
