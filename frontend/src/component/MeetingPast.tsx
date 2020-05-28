@@ -13,28 +13,30 @@ import Col from 'react-bootstrap/Col'
 
 const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
     return (<>
-        <div className="meetingPastContainer">
-            {/* <Container> */}
-                <Col md={8}>
-                    <Card className="meetingPastCard">
-                        <Card.Body>
-                            <Row>
-                                <Col md={9}>
-                                    <div><b>{props.meeting.name}</b></div>
-                                    <div>Meeting code: {props.meeting.code}</div>
-                                    {/* <div>{props.meeting.date}</div> */}
-                                    <div>Host by: {props.meeting.host}</div>
-                                    <div className="viewButton"><Button variant="primary" className="viewButtonBlue"><b>VIEW</b></Button>{' '}</div>
-                                </Col>
-                                <Col md={3}>
-                                    <div className="calendarIcon"><i className="far fa-calendar-alt fa-3x"></i></div>
-                                </Col>
+        {/* <Container className="meetingPastContainer"> */}
+        <Card className="meetingPastCard">
+            <Card.Body>
+                <Row>
+                    <Col md={9}>
+                        <div><b>{props.meeting.name}</b></div>
+                        <div>Meeting code: {props.meeting.code}</div>
+                        {/* <div>{props.meeting.date}</div> */}
+                        <div>Host by: {props.meeting.host}</div>
+                    </Col>
+                    {/* <div className="calendarIconDiv"> */}
+                        <Col md={3}>
+                            <Row className="past-icon">
+                                <i className="far fa-calendar-alt fa-3x"></i>
                             </Row>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            {/* </Container> */}
-        </div>
+                            <Row className="past-icon">
+                                <Button variant="primary" className="viewButtonBlue"><b>VIEW</b></Button>{' '}
+                            </Row>
+                        </Col>
+                    {/* </div> */}
+                </Row>
+            </Card.Body>
+        </Card>
+        {/* </Container> */}
     </>);
 }
 
