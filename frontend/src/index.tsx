@@ -8,11 +8,13 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import { store, history } from './store';
 import { ConnectedRouter } from 'connected-react-router';
+import Navbar from './component/Navbar';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
     <ConnectedRouter history={history}>
+      <Navbar />
         <App />
       </ConnectedRouter>
     </Provider>

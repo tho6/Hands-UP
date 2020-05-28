@@ -85,7 +85,7 @@ export function restoreLogin() {
         }
         console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
-        // dispatch(loginSuccess(accessToken, refreshToken))
+        dispatch(loginSuccess(accessToken, refreshToken))
         console.log('got personInfo/n' + result.message.personInfo)
         return
     }
@@ -120,8 +120,10 @@ export function checkToken() {
             if (!result.success) {
                 // window.alert(result.message)
                 dispatch(logout())
+                dispatch(loginGuest())
             }
             localStorage.setItem('accessToken', result.message.accessToken)
+            
             dispatch(loginSuccess(result.message.accessToken, refreshToken))
             console.log('gened code')
         }

@@ -66,7 +66,7 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
             } else {
                 newPeronInfo['userId'] = null
                 newPeronInfo['email'] = null
-                newPeronInfo['picture'] = null
+                newPeronInfo['picture'] = '/icon/1.jpg'
                 newPeronInfo['userName'] = null
                 newPeronInfo['guestId'] = action.personInfo.id
                 newPeronInfo['userName'] = action.personInfo.name

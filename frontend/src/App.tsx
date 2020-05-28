@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import './App.css';
+import './App.scss';
 import QuestionPage from './component/QuestionPage';
 import Question from './component/Question';
 import { Route, Switch } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { store, RootState } from './store';
 import { checkToken, restoreLogin } from './redux/auth/thunk';
 import FacebookLogin from './component/FacebookLogin'
 import FacebookLoginCallBack from './component/FacebookLoginCallBack';
+import Home from './component/Home';
+import Navbar from './component/Navbar';
 
 function App() {
   const dispatch = useDispatch()
@@ -30,10 +32,10 @@ function App() {
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   return (
     <div className="App">
-
-      <Provider store={store}>
-
         <Switch>
+          <Route path="/" exact>
+          <Home />
+          </Route>
           <Route path="/questions/room/:id/:page" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
@@ -46,14 +48,15 @@ function App() {
           <Route path="/googleLogin" exact>
           {(isAuthenticated != null &&<GoogleLogin />)}
           </Route>
-          <Route path="/googleLogin/callback">
+          <Route path="/googleLogin/callback" exact>
           {(isAuthenticated != null &&<GoogleLoginCallBack />)}
           </Route>
-          <Route path="/facebookLogin/callback">
-          {(isAuthenticated != null &&<FacebookLoginCallBack />)}</Route>
+          <Route path="/facebookLogin/callback" exact>
+          {(isAuthenticated != null &&<FacebookLoginCallBack />)}
+          </Route>
         </Switch>
-      </Provider>
-      <FacebookLogin />
+
+      {/* <FacebookLogin /> */}
       
     </div>
   );
