@@ -5,7 +5,8 @@ import { questionDB, customFileDB } from "../../models/type/questionFromDB";
 
 
 const knexConfig = require("../../knexfile");
-const knex = Knex(knexConfig["testing"]);
+const knex = Knex(knexConfig["development"]);
+// const knex = Knex(knexConfig["testing"]);
 // console.log(knex);
 describe('QuestionDAO', () => {
     const questionDAO = new QuestionDAO(knex)
@@ -21,28 +22,30 @@ describe('QuestionDAO', () => {
             guestId: 1,
             guestName: 'guest1',
             content: 'question 1',
-            createdAt: new Date("2020-05-23T12:00:00.000z"),
-            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
             isHide: false,
             meetingId: 1,
             platformId: 1,
             platformName: 'project3',
             isAnswered: false,
-            isApproved: false
+            isApproved: false,
+            platformUsername: null
         },
         {
             id: 2,
             guestId: 2,
             guestName: 'guest2',
             content: 'question 2',
-            createdAt: new Date("2020-05-23T12:00:00.000z"),
-            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
             isHide: true,
             meetingId: 1,
             platformId: 1,
             platformName: 'project3',
             isAnswered: true,
-            isApproved: true
+            isApproved: true,
+            platformUsername: null
         }
     ]
     it('getQuestionsByRoomId - normal', async () => {
@@ -75,12 +78,12 @@ describe('QuestionDAO', () => {
         const isUpdate: boolean = await questionDAO.updateQuestion(1, 'update string', [], [], true);
         expect(isUpdate).toBe(true);
         const result = await questionDAO.getQuestionsByRoomId(1);
-        const expectedResult: questionDB[] = [defaultQuestion[1],
-            { ...defaultQuestion[0], 
-            updatedAt: result[1].updatedAt,
-            content:'update string',
-            isApproved:true,
-         }];
+        const expectedResult: questionDB[] = [{
+            ...defaultQuestion[0],
+            content: 'update string',
+            isApproved: true,
+        }, defaultQuestion[1]
+        ];
         expect(result).toEqual(expectedResult);
         const files = await questionDAO.getQuestionFiles(1);
         expect(files).toEqual([{ id: 1, filename: '123.png' }])
@@ -89,10 +92,7 @@ describe('QuestionDAO', () => {
         const isUpdate: boolean = await questionDAO.updateQuestion(1, 'question 1', [1], [], false);
         expect(isUpdate).toBe(true);
         const result = await questionDAO.getQuestionsByRoomId(1);
-        const expectedResult: questionDB[] = [defaultQuestion[1],
-            { ...defaultQuestion[0], 
-            updatedAt: result[1].updatedAt,
-         }];
+        const expectedResult: questionDB[] = [defaultQuestion[0], defaultQuestion[1]];
         expect(result).toEqual(expectedResult);
         const files = await questionDAO.getQuestionFiles(1);
         expect(files).toEqual([]);
@@ -106,13 +106,10 @@ describe('QuestionDAO', () => {
         const isUpdate: boolean = await questionDAO.updateQuestion(1, 'question 1', [1], ['456.png'], false);
         expect(isUpdate).toBe(true);
         const result = await questionDAO.getQuestionsByRoomId(1);
-        const expectedResult: questionDB[] = [defaultQuestion[1],
-            { ...defaultQuestion[0], 
-            updatedAt: result[1].updatedAt,
-         }];
+        const expectedResult: questionDB[] = [defaultQuestion[0], defaultQuestion[1]];
         expect(result).toEqual(expectedResult);
         const files = await questionDAO.getQuestionFiles(1);
-        expect(files).toEqual([{id:2,filename:'456.png'}])
+        expect(files).toEqual([{ id: 2, filename: '456.png' }])
     });
     it('createQuestion - no files', async () => {
         const insertId: number = await questionDAO.createQuestion(2, 'create question 3', [], false, 1, 1);
@@ -131,7 +128,8 @@ describe('QuestionDAO', () => {
                 platformId: 1,
                 platformName: 'project3',
                 isAnswered: false,
-                isApproved: false
+                isApproved: false,
+                platformUsername: null
             }]
         expect(result).toEqual(expectedResult);
     });
@@ -152,7 +150,8 @@ describe('QuestionDAO', () => {
                 platformId: 2,
                 platformName: 'facebook',
                 isAnswered: false,
-                isApproved: true
+                isApproved: true,
+                platformUsername: null
             }]
         expect(result).toEqual(expectedResult);
         const expectFilesResult = [{ id: 2, filename: 'file2 in 2' }, { id: 3, filename: 'file3 in 2' }]
@@ -176,7 +175,8 @@ describe('QuestionDAO', () => {
                 platformId: 2,
                 platformName: 'facebook',
                 isAnswered: false,
-                isApproved: false
+                isApproved: false,
+                platformUsername: null
             }]
         expect(result).toEqual(expectedResult);
     });
@@ -199,7 +199,8 @@ describe('QuestionDAO', () => {
                 platformId: 1,
                 platformName: 'project3',
                 isAnswered: false,
-                isApproved: false
+                isApproved: false,
+                platformUsername: null
             }]
         const result = await questionDAO.getQuestionsByRoomId(1);
         expect(result).toEqual(expectedResult);
@@ -228,20 +229,6 @@ describe('QuestionDAO', () => {
     it('answered question - normal', async () => {
         const expectedResult: questionDB[] = [
             {
-                id: 2,
-                guestId: 2,
-                guestName: 'guest2',
-                content: 'question 2',
-                createdAt: new Date("2020-05-23T12:00:00.000z"),
-                updatedAt: new Date("2020-05-23T12:00:00.000z"),
-                isHide: true,
-                meetingId: 1,
-                platformId: 1,
-                platformName: 'project3',
-                isAnswered: true,
-                isApproved: true
-            },
-            {
                 id: 1,
                 guestId: 1,
                 guestName: 'guest1',
@@ -253,8 +240,23 @@ describe('QuestionDAO', () => {
                 platformId: 1,
                 platformName: 'project3',
                 isAnswered: true,
-                isApproved: false
-            }
+                isApproved: false,
+                platformUsername: null
+            }, {
+                id: 2,
+                guestId: 2,
+                guestName: 'guest2',
+                content: 'question 2',
+                createdAt: new Date("2020-05-23T12:00:00.000z"),
+                updatedAt: new Date("2020-05-23T12:00:00.000z"),
+                isHide: true,
+                meetingId: 1,
+                platformId: 1,
+                platformName: 'project3',
+                isAnswered: true,
+                isApproved: true,
+                platformUsername: null
+            },
         ]
         const isAnswered = await questionDAO.answeredQuestion(1);
         expect(isAnswered).toBe(true);
@@ -278,7 +280,8 @@ describe('QuestionDAO', () => {
                 platformId: 1,
                 platformName: 'project3',
                 isAnswered: false,
-                isApproved: false
+                isApproved: false,
+                platformUsername: null
             },
             {
                 id: 2,
@@ -292,7 +295,8 @@ describe('QuestionDAO', () => {
                 platformId: 1,
                 platformName: 'project3',
                 isAnswered: true,
-                isApproved: true
+                isApproved: true,
+                platformUsername: null
             }
         ]
         const isHide = await questionDAO.hideQuestion(1);

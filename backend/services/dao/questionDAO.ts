@@ -7,7 +7,7 @@ export class QuestionDAO implements IQuestionDAO {
     //private dataset: Comment;
     constructor(private knex: Knex) { }
     async getQuestionsByRoomId(meetingId: number): Promise<questionDB[]> {
-        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE meeting_id = ?;`;
+        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName", platform_username as "platformUsername" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE meeting_id = ?;`;
         const result = await this.knex.raw(sql, [meetingId]);
         return result.rows;
     }

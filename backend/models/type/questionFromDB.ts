@@ -11,7 +11,7 @@ export type questionDB = {
     isApproved: boolean,
     createdAt: Date,
     updatedAt: Date,
-    platformUsername:string
+    platformUsername:string|null
 }
 export type customFileDB = { id: number, filename: string}
 
