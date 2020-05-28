@@ -1,6 +1,8 @@
 .meetingPastContainer{
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 .headline {
@@ -13,7 +15,6 @@
 .meetingPastCard{
     background-color: #F8F8F8;
     border-radius: 40px;
-    // box-shadow: 0 8px 6px -3px #e5e3e3;
     padding: 20px;
     margin: 50px 20px 5px;
     width: 250px;

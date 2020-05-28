@@ -1,7 +1,7 @@
 import { questionsReducer } from './reducers';
 import { QuestionState } from './reducers';
 import * as action from './actions';
-import { IQuestion } from '../../models/IQuestion';
+import { IQuestion, updateQuestion } from '../../models/IQuestion';
 
 
 describe('Question Reducer', () => {
@@ -88,7 +88,15 @@ describe('Question Reducer', () => {
             platform:{id: 2, name:'facebook'}
         }
         const obj = { questions: { 1: expectedObj }, questionsByMeetingId: { 2: [1] } };
-        const finalState = questionsReducer(initialState, action.successfullyUpdateQuestion(1, 'update', [2], [{ id: 3, filename: '3.png' }], new Date(Date.now()+12345)));
+        const updateSuccess:updateQuestion={
+            questionId: 1,
+            content: 'update',
+            deleteFilesId:[2],
+            files:[{ id: 3, filename: '3.png' }],
+            updatedAt: new Date(Date.now()+12345),
+            isApproved:true
+        }
+        const finalState = questionsReducer(initialState, action.successfullyUpdateQuestion(updateSuccess));
         expect(finalState).toEqual(obj)
     });
     it("new reply to a question", () => {
@@ -103,7 +111,7 @@ describe('Question Reducer', () => {
             questionId: 1,
             isEdit: false,
             createdAt: new Date(Date.now()+123),
-            updatedAt: new Date(Date.now()+123),
+            updatedAt: new Date('2020-05-27T12:36:17.000Z'),
             isHide: false
         }
 
@@ -120,14 +128,14 @@ describe('Question Reducer', () => {
             questionId: 1,
             isEdit: false,
             createdAt: new Date(Date.now()+123),
-            updatedAt: new Date(Date.now()+123),
+            updatedAt: expect.anything(),
             isHide: false
         }
         const initialState = {
             questions: { 2: {...question, id:2, replies:[reply]} }, questionsByMeetingId: { 2: [2] }
         }
 
-        const obj = { questions: { 2: {...question, id:2, replies:[{...reply, updatedAt:999, content:'update reply'}]} }, questionsByMeetingId: { 2: [2] } };
+        const obj = { questions: { 2: {...question, id:2, replies:[{...reply, updatedAt:expect.anything(), content:'update reply'}]} }, questionsByMeetingId: { 2: [2] } };
         const finalState = questionsReducer(initialState, action.successfullyUpdateReply(2,1,'update reply',new Date(Date.now()+999)));
         expect(finalState).toEqual(obj)
     });
@@ -148,7 +156,7 @@ describe('Question Reducer', () => {
         }
 
         const obj = { questions: { 1: {...question,replies:[]} }, questionsByMeetingId: { 2: [1] } };
-        const finalState = questionsReducer(initialState, action.successfullyDeleteReply(1,1,2));
+        const finalState = questionsReducer(initialState, action.successfullyDeleteReply(1,2));
         expect(finalState).toEqual(obj)
     });
     it("add vote to a question", () => {

@@ -6,10 +6,18 @@ import { IReplyDAO } from "../models/Interface/IReplyDAO";
 import { question } from '../models/type/question';
 import { customFileDB, questionDB } from '../models/type/questionFromDB';
 import { replyDB } from '../models/type/replyFromDB';
+//@ts-ignore
+import redis from 'redis';
+//@ts-ignore
+import util from 'util';
 
 export class QuestionService implements IQuestionService {
     //private dataset: Comment;
+    //@ts-ignore
     constructor(private questionDAO: IQuestionDAO, private replyDAO: IReplyDAO) { }
+    //constructor(private questionDAO: IQuestionDAO, private replyDAO: IReplyDAO, private client: redis.RedisClient) { }
+
+
     async getQuestionsByRoomId(meetingId: number): Promise<question[]> {
         const questionFromDB: questionDB[] = await this.questionDAO.getQuestionsByRoomId(meetingId);
         const questions = await this.buildQuestion(questionFromDB);
@@ -113,10 +121,26 @@ export class QuestionService implements IQuestionService {
         if (!isOk) throw new Error('Fail to hide/display reply - unknown error!');
         return isOk;
     }
-    async getRoomIdByQuestionId(questionId:number): Promise<number> {
-        const question = await this.questionDAO.getQuestionById(questionId);
-        return question.meetingId;
+    async getRoomIdByQuestionId(questionId: number): Promise<number> {
+            const question = await this.questionDAO.getQuestionById(questionId);
+            return question.meetingId;
     }
+    // async getRoomIdByQuestionId(questionId: number): Promise<number> {
+    //     const redisGet = util.promisify(this.client.get).bind(this.client);
+
+    //     let meetingId = await redisGet(`question${questionId}:meetingId`).then((data: any) => {
+    //         console.log('get redis');
+    //         return parseInt(data)
+    //     }).catch((err: any) => console.log(err))
+    //     if (!meetingId) {
+    //         const question = await this.questionDAO.getQuestionById(questionId);
+    //         this.client.set(`question${questionId}:meetingId`, `${question.meetingId}`, 'EX', 3600);
+    //         console.log('set redis');
+    //         meetingId = question.meetingId;
+    //     }
+    //     this.client.quit();
+    //     return meetingId;
+    // } with redis
     async getRoomIdByReplyId(replyId: number): Promise<number> {
         const roomId = await this.replyDAO.getRoomIdByReplyId(replyId);
         return roomId;
