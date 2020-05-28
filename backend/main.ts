@@ -59,7 +59,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(
       null,
-      `${req.body.projectID}-${Date.now()}.${file.mimetype.split("/")[1]}`
+      `${req.params.id}-${Date.now()}.${file.mimetype.split("/")[1]}`
     ); // category and dish refer to html form name tag
   },
 });

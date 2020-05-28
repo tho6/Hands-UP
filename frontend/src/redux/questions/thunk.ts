@@ -42,7 +42,6 @@ export function addQuestion(meetingId: number, content: string, fileList: FileLi
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${getState().auth.accessToken}`,
-                    'Content-Type': 'application/json'
                 },
                 body: formData
             });
@@ -95,7 +94,6 @@ export function editQuestion(questionId: number, content: string, deleteFilesId:
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${getState().auth.accessToken}`,
-                    'Content-Type': 'application/json'
                 },
                 body: formData
             });

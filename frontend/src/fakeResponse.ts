@@ -5,7 +5,7 @@ export const tFetchRoomInformation = {
         name: 'TestingRoom1',
         code: '#string',
         is_live: true,
-        canModerate: true, canUploadFiles: false, questionLimit: 3,
+        canModerate: false, canUploadFiles: true, questionLimit: 3,
     }
 }
 export const tLoginAsGuest = {
