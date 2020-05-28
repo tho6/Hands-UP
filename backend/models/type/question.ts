@@ -11,7 +11,7 @@ export type question = {
     isAnswered: boolean,
     isApproved: boolean,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
 }
 
 type questioner = {

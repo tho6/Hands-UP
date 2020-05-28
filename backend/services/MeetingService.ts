@@ -1,8 +1,48 @@
 import Knex from "knex";
-import { IMeeting } from "../models/MeetingInterface";
+
+interface IMeeting {
+    id: number;
+    owner_id: number;
+    name: string;
+    code: string;
+    url: string;
+    is_live: boolean;
+    created_at: Date,
+    updated_at: Date
+    date_time: Date;
+    can_moderate: boolean;
+    can_upload_file: boolean;
+    question_limit: number;
+}
 
 export class MeetingService {
     constructor(private knex: Knex) { }
+
+    async getMeeting(){
+        let result = await this.knex.raw(/*SQL*/`SELECT * FROM meetings`)
+        return result;
+    }
+
+    async getMeetingByMeetingName(name: string) {
+        return (
+            await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`,
+                [name]
+            )
+        ).rows[0] as IMeeting;
+    }
+
+    async createMeeting(name: string, date_time: Date, code: string, url: string) {
+        let result = await this.knex.raw(/*SQL*/`INSERT INTO meeting ("name", "date_time", "code", "url") VALUES (?,?,?,?) RETURNING id`,
+            [
+                name,
+                date_time,
+                code,
+                url,
+            ]
+        );
+        console.log(result);
+        return result;
+    }
 }
 
 // getAllMeeting = async ():Promise<IMeeting[]> => {
@@ -16,4 +56,3 @@ export class MeetingService {
 //         throw error;
 //     }
 // }
-

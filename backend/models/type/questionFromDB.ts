@@ -10,7 +10,8 @@ export type questionDB = {
     isAnswered: boolean,
     isApproved: boolean,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    platformUsername:string
 }
 export type customFileDB = { id: number, filename: string}
 

@@ -34,6 +34,7 @@ export async function up(knex: Knex): Promise<any> {
         table.foreign('platform_id').references('platforms.id');
         table.foreign('meeting_id').references('meetings.id');
         table.timestamps(false, true);
+        table.string('platform_username');
     });
     await knex.schema.createTable("guests_questions_likes", (table) => {
         table.increments(); 

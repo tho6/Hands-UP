@@ -7,6 +7,7 @@ export interface IQuestionService {
     getQuestionsByRoomId(meetingId: number): Promise<question[]>;
     updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[]): Promise<{ files: customFileDB[], needApproved: boolean }>;
     createQuestion(meetingId: number, content: string, filesName: string[], platformId: number, guestId: null | number): Promise<question>;
+    createQuestionFromPlatform(meetingId: number, content: string, platformId: number, platformName:string): Promise<question>
     deleteQuestion(id: number): Promise<boolean>;
     addVote(questionId: number, guestId: number): Promise<boolean>;
     removeVote(questionId: number, guestId: number): Promise<boolean>;
