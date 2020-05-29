@@ -43,18 +43,12 @@ export class QuestionRouter {
                 const idx = `${req.personInfo.guestId}`;
                 if (this.counter[`${req.personInfo.guestId}`]) {
                     if (this.counter[idx].count >= 3) throw new Error('Exceed question limits!');
-                    if (this.counter[idx].counting === false) {
-                        this.counter[idx].counting = true;
-                        setTimeout(() => {
-                            this.counter[idx] = {counting: false, count:0};
-                        }, 10000)
-                    }
                     this.counter[idx].count += 1;
                     console.log( this.counter[idx].count);
                 }else{
                     this.counter[idx] = {counting: true, count:1};
                         setTimeout(() => {
-                        this.counter[idx] = {counting: false, count:0};
+                        delete this.counter[idx];
                         }, 10000)
                 }
                 /* Validation */
