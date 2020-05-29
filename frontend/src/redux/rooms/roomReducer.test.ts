@@ -19,7 +19,8 @@ describe('Question Reducer', () => {
         }
         initialState = {
             roomsInformation: {},
-            questionLimitStatus: {}
+            questionLimitStatus: {},
+            liveStatus:{}
 
         };
 
@@ -28,32 +29,32 @@ describe('Question Reducer', () => {
     it("fetch room information", () => {
         const finalState = roomsReducer(initialState, action.loadedRoomInformation(roomInformation));
         expect(finalState).toEqual({
-            roomsInformation: { 1: roomInformation }, questionLimitStatus: {}
+            roomsInformation: { 1: roomInformation }, questionLimitStatus: {}, liveStatus:{}
         });
     });
     it("set questionLimit status is checking to true", () => {
         const finalState = roomsReducer(initialState, action.setQuestionLimitState(1, true));
         expect(finalState).toEqual({
-            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: true, count: 1 }}
+            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: true, count: 1 }}, liveStatus:{}
         });
     });
     it("set questionLimit status is checking to true", () => {
         const finalState = roomsReducer({ ...initialState, questionLimitStatus: {1:{ isChecking: true, count: 100 }} }, action.setQuestionLimitState(1, true));
         expect(finalState).toEqual({
-            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: true, count: 101 }}
+            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: true, count: 101 }}, liveStatus:{}
         });
     });
     it("set questionLimit status is checking to false", () => {
         const newInitialState = { ...initialState, questionLimitStatus:  {1:{ isChecking: true, count: 100 }} }
         const finalState = roomsReducer(newInitialState, action.setQuestionLimitState(1, false));
         expect(finalState).toEqual({
-            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: false, count: 0 }}
+            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: false, count: 0 }}, liveStatus:{}
         });
     });
     it("set questionLimit status is checking to false is questionLimitStatus was undefined at first", () => {
         const finalState = roomsReducer(initialState, action.setQuestionLimitState(1, false));
         expect(finalState).toEqual({
-            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: false, count: 0 }}
+            roomsInformation: {}, questionLimitStatus:  {1:{ isChecking: false, count: 0 }}, liveStatus:{}
         });
     });
     // it("update room information", () => {

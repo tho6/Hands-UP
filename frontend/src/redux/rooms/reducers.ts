@@ -5,12 +5,15 @@ export interface RoomState {
     roomsInformation: {
         [id: string]: IRoomInformation
     };
-    questionLimitStatus: { [id: string]: {isChecking:boolean, count:number} }
+    questionLimitStatus: { [id: string]: {isChecking:boolean, count:number} };
+    liveStatus: {[id: string]:{facebook:boolean, youtube:boolean}}
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
-    questionLimitStatus:{}
+    questionLimitStatus:{},
+    liveStatus:{}
+
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -67,6 +70,17 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
                 return {
                     ...oldState,
                     questionLimitStatus: newQuestionLimitStatus
+                };
+            }
+        case '@@ROOMS/TOGGLE_YOUTUBE_LIVE_STATUS':
+            {
+                const newLiveStatus = {...oldState.liveStatus}
+                const newStatus = {...oldState.liveStatus[action.meetingId], youtube:action.isFetch}
+                newLiveStatus[action.meetingId] = newStatus;
+        
+                return {
+                    ...oldState,
+                    liveStatus: newLiveStatus
                 };
             }
         default:

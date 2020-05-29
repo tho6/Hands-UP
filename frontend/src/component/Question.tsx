@@ -61,7 +61,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
             <div className="d-flex">
               {answering === true && (
                 <span className="util-spacing">
-                  <i className="fas fa-star" data-testid="answering"></i>
+                  <i className="fas fa-microphone" data-testid="answering"></i>
                 </span>
               )}
             </div>

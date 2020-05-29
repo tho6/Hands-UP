@@ -34,5 +34,13 @@ export function setQuestionLimitState(meetingId:number, isChecking: boolean) {
         meetingId
     }
 }
+export function successfullyToggleYoutubeLiveStatus(meetingId:number, isFetch: boolean) {
+    return {
+        type: '@@ROOMS/TOGGLE_YOUTUBE_LIVE_STATUS' as '@@ROOMS/TOGGLE_YOUTUBE_LIVE_STATUS',
+        isFetch,
+        meetingId
+    }
+}
 // action types
-export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loadedUserInRoom> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>;
+export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loadedUserInRoom> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>
+|ReturnType<typeof successfullyToggleYoutubeLiveStatus>;
