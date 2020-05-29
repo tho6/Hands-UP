@@ -226,8 +226,8 @@ export class LiveRouter {
             //do we need to notice the user here??
         }
     }
-    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string) => {
-        let pageTokenString = '';
+    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, pageTokenStr:string='') => {
+        let pageTokenString = pageTokenStr;
         const fetchYTTimer = setInterval(async () => {
             try {
                 console.log('fetch comments from Youtube');
@@ -242,8 +242,15 @@ export class LiveRouter {
                 const result = await fetchLiveChat.json();
                 console.log(result);
                 //check liveChat existence
-      /*           if(result.error.code === 401) {
-                    refresh token
+                /*           if(result.error.code === 401) {
+                    this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
+                    refresh token exchange for access token
+                    if(!result.access_token){
+                        //notify user
+                        return;
+                    }
+                    fetchYTComments(liveChatId, meetingId,  newAccessToken, pageTokenString)
+                    return;
                 } */
                 if (result.offlineAt) {
                     console.log('Youtube Live Chat ends')
@@ -251,6 +258,7 @@ export class LiveRouter {
                     return;
                 }
                 pageTokenString = `pageToken=${result.nextPageToken}&`;
+                if(!this.eventSourceExistence[`${meetingId}`].youtube) return;
                 for (const item of result.items) {
                     if (!item.snippet.displayMessage) continue;
                     await this.createQuestion(meetingId, item.snippet.displayMessage, 3, item.authorDetails.displayName || 'Anonymous');
