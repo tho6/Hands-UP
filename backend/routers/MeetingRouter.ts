@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
+import { Request, Response } from 'express'
 import { MeetingService } from '../services/MeetingService';
 
 export class MeetingRouter {
@@ -8,9 +9,8 @@ export class MeetingRouter {
         const router = express.Router();
         router.get('/', this.getMeeting);
         router.post('/', this.createMeeting);
-        // router.get('/all', this.getAllMeeting);
-        // router.put('/', this.editMeeting)
-        // router.delete('/', this.deleteMeeting);
+        router.put('/:id', this.editMeeting);
+        router.delete('/:id', this.deleteMeeting);
         return router;
     }
 
@@ -21,43 +21,44 @@ export class MeetingRouter {
             // return;
         } catch (err) {
             console.log(err.message);
-            res.status(500).json({ message: "Meeting Router getMeeting error"});
+            res.status(500).json({ message: "Meeting Router getMeeting error" });
         }
     }
 
-    // getAllMeeting = async (req: Request, res: Response) => {
-    //     try {
-    //         const result = await this.meetingService.getAllMeeting();
-    //         console.log(result);
-    //         res.json({ result });
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.json({ message: "Get all meeting error" });
-    //     };
-    // }
-
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date_time, code } = req.body;
+            const { name, date_time, code, url } = req.body;
             const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
             if (checkMeeting) {
                 res.status(400).json({ message: "Meeting name existed" });
                 return;
             }
-            const meetingId = await this.meetingService.createMeeting("name", date_time, code, "url");
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url);
             res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);
             res.json({ message: "Cannot create meeting" });
         }
     }
+
+    editMeeting = async (req: Request, res: Response) => {
+        const { name, date_time, code, url } = req.body;
+        const meetingId = parseInt(req.params.id);
+        if (isNaN(meetingId)) {
+            res.status(400).json({ message: "Id is not a number" })
+            return;
+        }
+        const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url);
+        res.json({ result });
+    }
+
+    deleteMeeting = async (req: Request, res: Response) => {
+        let meetingId = parseInt(req.params.id);
+        if (isNaN(meetingId)) {
+            res.status(400).json({ message: "Id is not a number" })
+            return;
+        }
+        const result = await this.meetingService.deleteMeeting(meetingId);
+        res.json({ result });
+    }
 }
-
-    // editMeeting = async (req: Request, res: Response) => {
-
-        // }
-
-        // deleteMeeting = async (req: Request, res: Response) => {
-
-    // }
-// }

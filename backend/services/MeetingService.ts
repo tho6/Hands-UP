@@ -1,26 +1,12 @@
 import Knex from "knex";
-
-interface IMeeting {
-    id: number;
-    owner_id: number;
-    name: string;
-    code: string;
-    url: string;
-    is_live: boolean;
-    created_at: Date,
-    updated_at: Date
-    date_time: Date;
-    can_moderate: boolean;
-    can_upload_file: boolean;
-    question_limit: number;
-}
+import { IMeeting } from "../models/Interface/IMeeting";
 
 export class MeetingService {
     constructor(private knex: Knex) { }
 
-    async getMeeting(){
+    async getMeeting() {
         let result = await this.knex.raw(/*SQL*/`SELECT * FROM meetings`)
-        return result;
+        return result.rows as IMeeting[];
     }
 
     async getMeetingByMeetingName(name: string) {
@@ -32,7 +18,14 @@ export class MeetingService {
     }
 
     async createMeeting(name: string, date_time: Date, code: string, url: string) {
-        let result = await this.knex.raw(/*SQL*/`INSERT INTO meeting ("name", "date_time", "code", "url") VALUES (?,?,?,?) RETURNING id`,
+        {
+            let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`, [name]);
+            console.log(check.rowCount);
+            if (check.rows.length > 0) {
+                throw new Error("Duplicate meeting name");
+            }
+        }
+        let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url) VALUES (?,?,?,?) RETURNING id`,
             [
                 name,
                 date_time,
@@ -41,18 +34,21 @@ export class MeetingService {
             ]
         );
         console.log(result);
-        return result;
+        return result.rows[0].id;
+    }
+
+    async editMeeting(id: number, name: string, date_time: Date, code: string, url: string) { // or use name??
+        return this.knex.raw(/*SQL*/`UPDATE meetings SET
+            name = ?,
+            date_time = ?,
+            code = ?,
+            url = ?
+            WHERE id = ?
+        `, [name, date_time, code, url, id]);
+
+    }
+
+    async deleteMeeting(id: number) {
+        return this.knex.raw(/*SQL*/`DELETE FROM meetings where id = ?`, [id]);
     }
 }
-
-// getAllMeeting = async ():Promise<IMeeting[]> => {
-//     try {
-//         const result = await this.knex.raw(
-//             /*SQL*/`SELECT "id", "owner_id", "name", "code", "url", "is_live", "date_time", "can_moderate", "can_upload_file", "question_limit" FROM users`
-//         )
-//         return result.rows;
-//     } catch (error) {
-//         console.log("[MeetingService] getAllMeeting error")
-//         throw error;
-//     }
-// }
