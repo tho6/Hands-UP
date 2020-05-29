@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useFormState } from 'react-use-form-state';
-// import { IMeetingLive } from '../redux/meetinglive/reducers';
 
 const CreateMeeting = () => {
     const [formState, { text, date }] = useFormState();
@@ -18,6 +17,10 @@ const CreateMeeting = () => {
             <div>Meeting code:
                 <input {...text('code')} />
                 {formState.touched.name && formState.values.name == '' && <div>Please fill in the meeting code</div>}
+            </div>
+            <div>Meeting url:
+                <input {...text('code')} />
+                {formState.values.name == ''}
             </div>
             <button onClick={() => {
                 alert(JSON.stringify(formState, null, 2))

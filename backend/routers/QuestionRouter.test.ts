@@ -9,7 +9,8 @@ import { QuestionDAO } from "../services/dao/questionDAO";
 import { ReplyDAO } from "../services/dao/replyDAO";
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig["testing"]);
+// const knex = Knex(knexConfig["testing"]);
+const knex = Knex(knexConfig["development"]);
 
 describe('Question Router', () => {
     let questionDAO: IQuestionDAO = new QuestionDAO(knex);
@@ -30,15 +31,14 @@ describe('Question Router', () => {
     afterAll(async () => {
         await knex.destroy();
     })
-    const createdAt = new Date("2020-05-23T12:00:00.000z");
     const defaultReply = {
         id: 1,
         guestId: 2,
         guestName: 'guest2',
         content: 'reply 1',
         questionId: 1,
-        createdAt: createdAt,
-        updatedAt: createdAt,
+        createdAt: expect.anything(),
+        updatedAt: expect.anything(),
         isHide: false
     };
     const defaultQuestions = [{
@@ -56,8 +56,8 @@ describe('Question Router', () => {
         isHide: false,
         isAnswered: false,
         isApproved: false,
-        createdAt: createdAt,
-        updatedAt: createdAt,
+        createdAt: expect.anything(),
+        updatedAt: expect.anything(),
     },
     {
         id: 2,
@@ -74,8 +74,8 @@ describe('Question Router', () => {
         isHide: true,
         isAnswered: true,
         isApproved: true,
-        createdAt: createdAt,
-        updatedAt: createdAt,
+        createdAt: expect.anything(),
+        updatedAt: expect.anything(),
     },
     ];
     it('getQuestionsByRoomId', async () => {
@@ -130,8 +130,8 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         const question = await questionService.getQuestionsByRoomId(1);
-        expect(io.emit).toBeCalledWith('create-question', question[2]);
-        expect(res.json).toBeCalledWith({ status: true, message: question[2] });
+        expect(io.emit).toBeCalledWith('create-question', question[1]);
+        expect(res.json).toBeCalledWith({ status: true, message: question[1] });
         expect(res.status).toBeCalledWith(200);
     });
     it('createQuestion - normal spam', async () => {
