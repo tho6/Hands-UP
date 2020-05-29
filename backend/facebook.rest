@@ -137,6 +137,8 @@ https://graph.facebook.com/v7.0/105835181148834/live_videos?access_token={{acces
   }
 }
 ###
+https://graph.facebook.com/v7.0/114655583594899?fields=status&access_token={{accessToken}}
+###
 https://graph.facebook.com/v7.0/613106072889614/comments?access_token={{accessToken}}
 
 ###{
@@ -324,7 +326,7 @@ public_profile
       "created_time": "2020-05-25T11:57:21+0000",
       "from": {
         "name": "Charlie Cheung",
-        "id": "613043969562491"
+        "id": " "
       },
       "message": "test",
       "id": "613069879559900_613070272893194"
@@ -380,7 +382,8 @@ Content-Type: application/json
 
 {
   "liveLoc": "page",
-  "pageId": "105835181148834"
+  "pageId": "111628760564248",
+  "meetingId": 1
 }
 ###
 {

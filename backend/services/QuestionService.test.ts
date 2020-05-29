@@ -1,7 +1,8 @@
 import { seed } from "../seeds/create-questions";
 import Knex from 'knex';
 const knexConfig = require("../knexfile");
-const knex = Knex(knexConfig["testing"]);
+// const knex = Knex(knexConfig["testing"]);
+const knex = Knex(knexConfig["development"]);
 import { QuestionService } from "./QuestionService";
 import { QuestionDAO } from "./dao/questionDAO";
 import { ReplyDAO } from "./dao/replyDAO";
@@ -18,9 +19,8 @@ describe
         afterAll(async () => {
             await knex.destroy();
         })
-        const createdAt = new Date("2020-05-23T12:00:00.000z");
         const questionDao = new QuestionDAO(knex);
-        const replyDao = new ReplyDAO(knex);    
+        const replyDao = new ReplyDAO(knex);
         //const client = redis.createClient();
         const questionService = new QuestionService(questionDao, replyDao);
         //const questionService = new QuestionService(questionDao, replyDao,client);
@@ -30,8 +30,8 @@ describe
             guestName: 'guest2',
             content: 'reply 1',
             questionId: 1,
-            createdAt: createdAt,
-            updatedAt: createdAt,
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
             isHide: false
         };
         const defaultQuestions = [{
@@ -49,8 +49,8 @@ describe
             isHide: false,
             isAnswered: false,
             isApproved: false,
-            createdAt: createdAt,
-            updatedAt: createdAt,
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
         },
         {
             id: 2,
@@ -67,8 +67,8 @@ describe
             isHide: true,
             isAnswered: true,
             isApproved: true,
-            createdAt: createdAt,
-            updatedAt: createdAt,
+            createdAt: expect.anything(),
+            updatedAt:expect.anything(),
         },
         ];
         const defaultCreateQuestionInRoom1 = {
@@ -86,8 +86,8 @@ describe
             isHide: false,
             isAnswered: false,
             isApproved: true,
-            createdAt: new Date(Date.now() + 2000),
-            updatedAt: new Date(Date.now() + 2000),
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
         }
 
         it('getQuestionsByRoomId - normal', async () => {
@@ -104,12 +104,12 @@ describe
         });
         it('createQuestion - room1 with no guests(from other platform)(upload:false, moderate:false)', async () => {
             const questions = await questionService.createQuestion(1, 'This is a new question', [], 1, null);
-            const expectedResult = { ...defaultCreateQuestionInRoom1, questioner: { id: null, name: null }, createdAt: questions.createdAt, updatedAt: questions.updatedAt }
+            const expectedResult = { ...defaultCreateQuestionInRoom1, questioner: { id: null, name: null }}
             expect(questions).toEqual(expectedResult);
         });
         it('createQuestion - room1 with no files(upload:false, moderate:false)', async () => {
             const questions = await questionService.createQuestion(1, 'This is a new question', [], 1, 1);
-            const expectedResult = { ...defaultCreateQuestionInRoom1, createdAt: questions.createdAt, updatedAt: questions.updatedAt }
+            const expectedResult = { ...defaultCreateQuestionInRoom1}
             expect(questions).toEqual(expectedResult);
         });
         it('createQuestion - room1 with files(upload:false, moderate:false)', async () => {
@@ -117,7 +117,7 @@ describe
         });
         it('createQuestion - room1 with files, 1 file only(upload:true, moderate:false)', async () => {
             const questions = await questionService.createQuestion(3, 'This is a new question', ['new.png'], 1, 1);
-            const expectedResult = { ...defaultCreateQuestionInRoom1, meetingId: 3, files: [{ id: 2, filename: 'new.png' }], createdAt: questions.createdAt, updatedAt: questions.updatedAt }
+            const expectedResult = { ...defaultCreateQuestionInRoom1, meetingId: 3, files: [{ id: 2, filename: 'new.png' }]}
             expect(questions).toEqual(expectedResult);
         });
         it('createQuestion - room1 with files, > 3 file(upload:true, moderate:false)', async () => {
@@ -125,28 +125,26 @@ describe
         });
         it('createQuestion - room2 with no files (upload:true, moderate:true)', async () => {
             const questions = await questionService.createQuestion(2, 'This is a new question', [], 1, 1);
-            const expectedResult = { ...defaultCreateQuestionInRoom1, meetingId: 2, createdAt: questions.createdAt, updatedAt: questions.updatedAt }
+            const expectedResult = { ...defaultCreateQuestionInRoom1, meetingId: 2}
             expect(questions).toEqual(expectedResult);
         });
         it('createQuestion - room2 with files (upload:true, moderate:true)', async () => {
             const questions = await questionService.createQuestion(2, 'This is a new question', ['new1.png', 'new2.png'], 1, 1);
-            const expectedResult = { ...defaultCreateQuestionInRoom1, isApproved: false, meetingId: 2, files: [{ id: 2, filename: 'new1.png' }, { id: 3, filename: 'new2.png' }], createdAt: questions.createdAt, updatedAt: questions.updatedAt }
+            const expectedResult = { ...defaultCreateQuestionInRoom1, isApproved: false, meetingId: 2, files: [{ id: 2, filename: 'new1.png' }, { id: 3, filename: 'new2.png' }]}
             expect(questions).toEqual(expectedResult);
         });
         it('updateQuestion - room1 with no files uploaded (upload:false, moderate:false)', async () => {
             const isUpdate = await questionService.updateQuestion(1, 'update question', [], []);
             expect(isUpdate).toEqual({ files: [{ id: 1, filename: '123.png' }], needApproved: false });
             const question = await questionService.getQuestionsByRoomId(1);
-            const expectedResult = [defaultQuestions[1],
-            { ...defaultQuestions[0], content: 'update question', isApproved: true, updatedAt: question[1].updatedAt }];
+            const expectedResult = [{ ...defaultQuestions[0], content: 'update question', isApproved: true}, defaultQuestions[1]];
             expect(question).toEqual(expectedResult);
         });
         it('updateQuestion - room1 delete one file (upload:false, moderate:false)', async () => {
             const isUpdate = await questionService.updateQuestion(1, 'update question', [1], []);
             expect(isUpdate).toEqual({ files: [], needApproved: false });
             const question = await questionService.getQuestionsByRoomId(1);
-            const expectedResult = [defaultQuestions[1],
-            { ...defaultQuestions[0], files: [], content: 'update question', isApproved: true, updatedAt: question[1].updatedAt }];
+            const expectedResult = [ { ...defaultQuestions[0], files: [], content: 'update question', isApproved: true},defaultQuestions[1]];
             expect(question).toEqual(expectedResult);
         });
         it('updateQuestion - room1 upload files (upload:false, moderate:false)', async () => {
@@ -178,13 +176,13 @@ describe
         it('updateQuestion - room2 with no files uploaded (upload:true, moderate:true)', async () => {
             await questionService.createQuestion(2, 'abc', ['testing.png'], 1, 1)
             const isUpdate = await questionService.updateQuestion(3, 'update question', [], ['testing2.png']);
-            expect(isUpdate).toEqual({ files: [{ id: 2, filename: 'testing.png' },{ id: 3, filename: 'testing2.png' }], needApproved: true });
+            expect(isUpdate).toEqual({ files: [{ id: 2, filename: 'testing.png' }, { id: 3, filename: 'testing2.png' }], needApproved: true });
             const question = await questionService.getQuestionsByRoomId(2);
             const expectedResult = [
                 {
                     ...defaultCreateQuestionInRoom1,
                     meetingId: 2,
-                    files: [{ id: 2, filename: 'testing.png' },{ id: 3, filename: 'testing2.png' }],
+                    files: [{ id: 2, filename: 'testing.png' }, { id: 3, filename: 'testing2.png' }],
                     content: 'update question',
                     isApproved: false,
                     createdAt: question[0].createdAt,
@@ -213,14 +211,14 @@ describe
         });
         it('updateQuestion - room2 question = 3 images (upload:true, moderate:true)', async () => {
             await questionService.createQuestion(2, 'abc', ['testing.png', 'testing2.png'], 1, 1)
-            const isUpdate = await questionService.updateQuestion(3, 'update question', [2], ['testing3.png','testing4.png']);
-            expect(isUpdate).toEqual({ files: [{id:3, filename:'testing2.png'}, {id:4, filename:'testing3.png'}, {id:5, filename:'testing4.png'}], needApproved: true });
+            const isUpdate = await questionService.updateQuestion(3, 'update question', [2], ['testing3.png', 'testing4.png']);
+            expect(isUpdate).toEqual({ files: [{ id: 3, filename: 'testing2.png' }, { id: 4, filename: 'testing3.png' }, { id: 5, filename: 'testing4.png' }], needApproved: true });
             const question = await questionService.getQuestionsByRoomId(2);
             const expectedResult = [
                 {
                     ...defaultCreateQuestionInRoom1,
                     meetingId: 2,
-                    files: [{id:3, filename:'testing2.png'}, {id:4, filename:'testing3.png'}, {id:5, filename:'testing4.png'}],
+                    files: [{ id: 3, filename: 'testing2.png' }, { id: 4, filename: 'testing3.png' }, { id: 5, filename: 'testing4.png' }],
                     content: 'update question',
                     isApproved: false,
                     createdAt: question[0].createdAt,
@@ -231,13 +229,13 @@ describe
         });
         it('updateQuestion - room2 question > 3 images (upload:true, moderate:true)', async () => {
             await questionService.createQuestion(2, 'abc', ['testing.png', 'testing2.png'], 1, 1)
-            await expect(questionService.updateQuestion(3, 'update question', [2], ['testing3.png','testing4.png','testing5.png'])).rejects.toThrowError(`No more than 3 images for each question!`);
+            await expect(questionService.updateQuestion(3, 'update question', [2], ['testing3.png', 'testing4.png', 'testing5.png'])).rejects.toThrowError(`No more than 3 images for each question!`);
             const question = await questionService.getQuestionsByRoomId(2);
             const expectedResult = [
                 {
                     ...defaultCreateQuestionInRoom1,
                     meetingId: 2,
-                    files: [{id:2, filename:'testing.png'}, {id:3, filename:'testing2.png'}],
+                    files: [{ id: 2, filename: 'testing.png' }, { id: 3, filename: 'testing2.png' }],
                     content: 'abc',
                     isApproved: false,
                     createdAt: question[0].createdAt,
@@ -248,14 +246,14 @@ describe
         });
         it('updateQuestion - room3 updated with images but do not need to be approve (upload:true, moderate:false)', async () => {
             await questionService.createQuestion(3, 'abc', ['testing.png', 'testing2.png'], 1, 1)
-            const isUpdate = await questionService.updateQuestion(3, 'update question', [2], ['testing3.png','testing4.png']);
-            expect(isUpdate).toEqual({ files: [{id:3, filename:'testing2.png'}, {id:4, filename:'testing3.png'}, {id:5, filename:'testing4.png'}], needApproved: false });
+            const isUpdate = await questionService.updateQuestion(3, 'update question', [2], ['testing3.png', 'testing4.png']);
+            expect(isUpdate).toEqual({ files: [{ id: 3, filename: 'testing2.png' }, { id: 4, filename: 'testing3.png' }, { id: 5, filename: 'testing4.png' }], needApproved: false });
             const question = await questionService.getQuestionsByRoomId(3);
             const expectedResult = [
                 {
                     ...defaultCreateQuestionInRoom1,
                     meetingId: 3,
-                    files: [{id:3, filename:'testing2.png'}, {id:4, filename:'testing3.png'}, {id:5, filename:'testing4.png'}],
+                    files: [{ id: 3, filename: 'testing2.png' }, { id: 4, filename: 'testing3.png' }, { id: 5, filename: 'testing4.png' }],
                     content: 'update question',
                     isApproved: true,
                     createdAt: question[0].createdAt,

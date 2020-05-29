@@ -21,6 +21,7 @@ export default function Navbar() {
                         HANDS UP
                         </span>
                     </a>
+                    {userId && (<>
                     <Nav.Item>
                         <Nav.Link eventKey='Event'>Event</Nav.Link>
                     </Nav.Item>
@@ -33,7 +34,9 @@ export default function Navbar() {
                         Logout
                         </Nav.Link>
                     </Nav.Item>
+                    </>)}
                     </Nav>
+
             {/* <ul className='navbar-nav'>  
             
                 <div className="spacer"></div>

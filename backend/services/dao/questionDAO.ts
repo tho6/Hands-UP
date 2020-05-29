@@ -7,7 +7,7 @@ export class QuestionDAO implements IQuestionDAO {
     //private dataset: Comment;
     constructor(private knex: Knex) { }
     async getQuestionsByRoomId(meetingId: number): Promise<questionDB[]> {
-        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE meeting_id = ?;`;
+        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName", platform_username as "platformUsername" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE meeting_id = ?;`;
         const result = await this.knex.raw(sql, [meetingId]);
         return result.rows;
     }
@@ -73,6 +73,23 @@ export class QuestionDAO implements IQuestionDAO {
                 if(result.rowCount!==1){
                     throw new Error('Fail to create question - insert files fail');
                 }
+            }
+            await trx.commit();
+            return insertId;
+         } catch (e) {
+            await trx.rollback();
+            throw e;
+        }
+    }
+    async createQuestionFromPlatform(meetingId: number, content: string, platformId: number, platformUsername:string): Promise<number> {
+        const trx = await this.knex.transaction();
+        let insertId:number = 0;
+        try {
+                const sql = `INSERT INTO questions (content, is_answered, is_approved, is_hide, meeting_id, platform_id, platform_username) VALUES ( ?, ?, ?, ?, ?, ?, ?) RETURNING id;`;
+                const result = await trx.raw(sql, [content, false, true, false, meetingId, platformId, platformUsername]);
+                insertId = parseInt(result.rows[0].id);
+            if(!insertId) {
+                throw new Error('Fail to create question - insert question fail');
             }
             await trx.commit();
             return insertId;
@@ -162,7 +179,7 @@ export class QuestionDAO implements IQuestionDAO {
         return result.rows[0].meetingId;
     }
     async getQuestionById(questionId: number): Promise<questionDB> {
-        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE questions.id = ?;`;
+        const sql = `SELECT questions.id as "id",guest_id as "guestId",guests.name as "guestName", content, meeting_id as "meetingId", is_hide as "isHide", is_answered as "isAnswered", is_approved as "isApproved", questions.created_at as "createdAt", questions.updated_at as "updatedAt", platform_id as "platformId", platforms.name as "platformName", platform_username as "platformUsername" FROM questions LEFT JOIN guests ON questions.guest_id = guests.id INNER JOIN platforms ON questions.platform_id = platforms.id WHERE questions.id = ?;`;
         const result = await this.knex.raw(sql, [questionId]);
         if(result.rows.length !== 1){
             throw new Error('Fail to get question by questionId - question is not found!')

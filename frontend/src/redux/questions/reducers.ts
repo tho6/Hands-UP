@@ -55,8 +55,8 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
             {
                 const newQuestions = { ...oldState.questions };
                 newQuestions[action.questionId].content = action.content;
-                const newFiles = [...oldState.questions[action.questionId].files].filter(file => !action.deleteFilesId.includes(file.id));
-                newFiles.push(...action.files)
+                //const newFiles = [...oldState.questions[action.questionId].files].filter(file => !action.deleteFilesId.includes(file.id));
+                const newFiles = action.files
                 newQuestions[action.questionId].files = newFiles;
                 newQuestions[action.questionId].updatedAt = action.updatedAt;
                 newQuestions[action.questionId].isApproved = action.isApproved;

@@ -53,6 +53,12 @@ export class QuestionService implements IQuestionService {
         const result = await this.buildQuestion([question]);
         return result[0];
     }
+    async createQuestionFromPlatform(meetingId: number, content: string, platformId: number, platformUsername:string): Promise<question> {
+        const insertId = await this.questionDAO.createQuestionFromPlatform(meetingId, content, platformId, platformUsername );
+        const question = await this.questionDAO.getQuestionById(insertId);
+        const result = await this.buildQuestion([question]);
+        return result[0];
+    }
     async deleteQuestion(id: number): Promise<boolean> {
         const isDeleted = await this.questionDAO.deleteQuestion(id);
         if (!isDeleted) throw new Error('Fail to delete question - unknown error!');
@@ -155,11 +161,13 @@ export class QuestionService implements IQuestionService {
             const likes = await this.questionDAO.getQuestionLikes(question.id);
             const replies: replyDB[] = await this.replyDAO.getQuestionReplies(question.id);
             const files = await this.questionDAO.getQuestionFiles(question.id);
-            const { guestId, guestName, platformId, platformName, createdAt, updatedAt, ...obj } = question
+            const { platformUsername, guestId, guestName, platformId, platformName, createdAt, updatedAt, ...obj } = question
             const questioner = { id: guestId, name: guestName };
             const platform = { id: platformId, name: platformName };
+            if(platformUsername)  questioner.name = platformUsername;
             questionArr.push({ ...obj, questioner, likes, replies, files, platform, createdAt, updatedAt });
         }
         return questionArr;
+
     }
 }
