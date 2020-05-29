@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { Nav } from 'react-bootstrap';
 import { logoutAccount } from '../redux/auth/thunk';
+
 export default function Navbar() {
     const pic = useSelector((state:RootState)=>state.auth.personInfo?.picture)
     const userId = useSelector((state:RootState)=>state.auth.personInfo?.userId)
@@ -16,6 +17,7 @@ export default function Navbar() {
                     <Nav defaultActiveKey="/">
                     <a href="/">
                         <span className="link-text" id='logo-text'>
+                        <img src={'/hand-logo.png'} alt="HANDS UP logo" />
                         HANDS UP
                         </span>
                     </a>
