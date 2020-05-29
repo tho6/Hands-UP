@@ -17,8 +17,8 @@ import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
 import { LiveRouter } from "./routers/LiveRouter";
-// import { MeetingService } from "./services/MeetingService";
-// import { MeetingRouter } from "./routers/MeetingRouter";
+import { MeetingService } from "./services/MeetingService";
+import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
 import http from 'http';
 import { authenticateGuestToken, authenticateUserToken } from "./guard";
@@ -75,7 +75,7 @@ const userService = new UserService(knex);
 const guestService = new GuestService(knex);
 const authService = new AuthService(knex);
 const questionService = new services.QuestionService(questionDAO, replyDAO);
-//const meetingService = new MeetingService(knex);
+const meetingService = new MeetingService(knex);
 
 /* Routers */
 const userRouter = new UserRouter(userService);
@@ -83,7 +83,7 @@ const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
 const liveRouter = new LiveRouter(questionService, io);
-//const meetingRouter = new MeetingRouter(meetingService);
+const meetingRouter = new MeetingRouter(meetingService);
 
 //guard
 const isGuest = authenticateGuestToken(guestService)
@@ -117,13 +117,13 @@ app.get('/test/callback', isGuest, (req: Request, res: Response) => {
   return res.status(200).json({ message: req.query })
 })
 app.use('/rooms', isGuest, questionRouter.router());
-//app.get('/meetings', meetingRouter.router())
+app.use(`${API_VERSION}/meetings`, meetingRouter.router())
 
 /* Socket Io */
 let counter: { [id: string]: { count: number, counting: boolean } } = {}
 io.on('connection', socket => {
   socket.on('join_event', (meetingId: number) => {
-    console.log('join room:'+meetingId);
+    console.log('join room:' + meetingId);
     const idx = 'event:' + meetingId;
     socket.join(idx)
     if (counter[idx]) {
@@ -144,12 +144,13 @@ io.on('connection', socket => {
     }
   });
   socket.on('leave_event', (meetingId: number) => {
-    console.log('leave room:'+meetingId);
+    console.log('leave room:' + meetingId);
     const idx = 'event:' + meetingId;
     socket.leave(idx);
-    if(!counter[idx]) return;
+    if (!counter[idx]) return;
     counter[idx].count -= 1;
-    if (!counter[idx].counting) {``
+    if (!counter[idx].counting) {
+      ``
       counter[idx].counting = true;
       setTimeout(() => {
         counter[idx].counting = false;
