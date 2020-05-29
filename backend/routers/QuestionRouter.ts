@@ -230,7 +230,7 @@ export class QuestionRouter {
                 const { isHide } = req.body;
                 if (!(typeof isHide === 'boolean')) throw new Error('isHide should be a boolean!')
                 const questionId = parseInt(req.params.id);
-                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to delete the question!')
+                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to hide/approve the question!')
                 /* Action */
                 try {
                     await this.questionService.hideOrApprovedQuestion(questionId, isHide);
