@@ -27,13 +27,13 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date_time, code, url } = req.body;
+            const { name, date_time, code, url, owner_id } = req.body;
             const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
             if (checkMeeting) {
                 res.status(400).json({ message: "Meeting name existed" });
                 return;
             }
-            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url);
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, owner_id);
             res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);
@@ -42,13 +42,13 @@ export class MeetingRouter {
     }
 
     editMeeting = async (req: Request, res: Response) => {
-        const { name, date_time, code, url } = req.body;
+        const { name, date_time, code, url, owner_id } = req.body;
         const meetingId = parseInt(req.params.id);
         if (isNaN(meetingId)) {
             res.status(400).json({ message: "Id is not a number" })
             return;
         }
-        const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url);
+        const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url, owner_id);
         res.json({ result });
     }
 
