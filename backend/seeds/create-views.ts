@@ -23,9 +23,9 @@ export async function seed(knex: Knex): Promise<any> {
         /* Insert users */
         await trx("users").insert([{
             name: "ivan",
-            email: "ivan@gmail.com",
-            google_id: 1,
-            picture: 'pic1'
+            email: "ivancheung3838@gmail.com",
+            google_id: '110870491670380383057',
+            picture: 'https://lh4.googleusercontent.com/-FSfCxmiwmew/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuck-5vtxd-XEFTx-XWNDo-htdW0Pzw/s96-c/photo.jpg'
         },
         {
             name: "peter",

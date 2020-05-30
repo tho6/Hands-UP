@@ -13,7 +13,7 @@ export default function FacebookLogin() {
         console.log(userInfo.userID)
         return null;
       }
-    
+
     return (
         <>
             {/* <ReactFacebookLogin
@@ -25,9 +25,10 @@ export default function FacebookLogin() {
             callback={fBCallback}
            /> */}
 
-           <a href={`https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=ststate123abc&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`}>
-           <Button variant="light" >Facebook Token</Button>
+           <a href={`https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=ststate123abc&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`}>
+            <Button variant="light" >Facebook Token</Button>
              </a>
+
 
 
         </>

@@ -22,6 +22,8 @@ import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
 import http from 'http';
 import { authenticateGuestToken, authenticateUserToken } from "./guard";
+import { ReportRouter } from "./routers/ReportRouter";
+import { ReportService } from "./services/ReportService";
 // import redis from 'redis';
 // const client = redis.createClient();
 
@@ -77,6 +79,7 @@ const guestService = new GuestService(knex);
 const authService = new AuthService(knex);
 const questionService = new services.QuestionService(questionDAO, replyDAO);
 const meetingService = new MeetingService(knex);
+const reportService = new ReportService(knex)
 
 /* Routers */
 const userRouter = new UserRouter(userService);
@@ -85,6 +88,7 @@ const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
 const liveRouter = new LiveRouter(questionService, io);
 const meetingRouter = new MeetingRouter(meetingService);
+const reportRouter = new ReportRouter(reportService);
 
 //guard
 const isGuest = authenticateGuestToken(guestService)
@@ -113,6 +117,7 @@ app.use('/auth', authRouter.router())
 app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
 app.use('/live', liveRouter.router())
+app.use('/report', isUser, reportRouter.router())
 app.get('/test/callback', isGuest, (req: Request, res: Response) => {
   console.log('guard is working')
   return res.status(200).json({ message: req.query })

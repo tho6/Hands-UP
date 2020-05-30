@@ -14,7 +14,7 @@ export default function Navbar() {
         <>
         {/* <nav className='navbar'> */}
                     
-                    <Nav defaultActiveKey="/">
+                    <Nav defaultActiveKey="/" className='main-nav'>
                     <a href="/">
                         <span className="link-text" id='logo-text'>
                         <img src={'/hand-logo.png'} alt="HANDS UP logo" />
@@ -22,14 +22,14 @@ export default function Navbar() {
                         </span>
                     </a>
                     {userId && (<>
-                    <Nav.Item>
-                        <Nav.Link eventKey='Event'>Event</Nav.Link>
+                    <Nav.Item className = 'main-nav-item'>
+                        <Nav.Link className = 'main-nav-link' eventKey='Event'>Event</Nav.Link>
                     </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link eventKey="report">Report</Nav.Link>
+                    <Nav.Item className = 'main-nav-item'>
+                        <Nav.Link className = 'main-nav-link' href="/report">Report</Nav.Link>
                     </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link eventKey="logout" onClick={()=>dispatch(logoutAccount())}>
+                    <Nav.Item className = 'main-nav-item'>
+                        <Nav.Link className = 'main-nav-link' eventKey="logout" onClick={()=>dispatch(logoutAccount())}>
                         {pic != null && <img src={pic}/>}
                         Logout
                         </Nav.Link>
