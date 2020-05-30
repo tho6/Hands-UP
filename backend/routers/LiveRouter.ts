@@ -15,7 +15,8 @@ export class LiveRouter {
         router.post('/fb/comments', this.fetchComments)
         router.post('/fb/views', this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
-        router.post('/yt/comments', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
+        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
+        router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.post('/yt/views', this.fetchViews)
         router.get('/status/:meetingId', this.checkStatus)
         return router
@@ -174,9 +175,14 @@ export class LiveRouter {
         if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' })
         try {
             //check instance
-            if (this.eventSourceExistence[`${req.body.meetingId}`] && this.eventSourceExistence[`${req.body.meetingId}`].youtube) {
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
                 console.log('Fetch Youtube comment is already running, fail to create another instance!');
                 res.status(400).json({ status: false, message: 'Fetch Youtube comment is already running, fail to create another instance!' });
+                return;
+            }
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && !this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
+                this.eventSourceExistence[`${req.params.meetingId}`].youtube = true;
+                res.status(200).json({ status: true, message: 'Continue fetching comments from Youtube' });
                 return;
             }
             //get access token check refresh token, may put this in guard
@@ -196,8 +202,8 @@ export class LiveRouter {
             if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
-            //fetch comments from youtube 
-            this.fetchYTComments(liveChatId, req.body.meetingId, accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
+            /* fetch comments from youtube  */
+            this.fetchYTComments(liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
@@ -300,6 +306,18 @@ export class LiveRouter {
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
             const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];
             return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false } });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
+            return;
+        }
+    }
+    stopGettingYoutubeComments = async (req: Request, res: Response) => {
+        try {
+            const meetingId = req.params.meetingId;
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message:'Timer not found, make sure the meetingId is correct!' });
+            this.eventSourceExistence[`${meetingId}`].youtube = false;
+            return res.status(200).json({ status: true, message:'Successfully stop fetching comments from youtube'});
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });

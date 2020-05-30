@@ -47,38 +47,25 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
     return async (dispatch: ThunkDispatch) => {
         try {
             if (isFetch) {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ meetingId })
-                });
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`);
                 const result = await res.json();
                 if (result.status) {
                     dispatch(successfullyToggleYoutubeLiveStatus(meetingId, true));
                 } else {
                     window.alert(result.message);
-                    if(res.status === 401){
-                       const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
+                    if (res.status === 401) {
+                        const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
                         window.location.replace(loginLocation)
-                    }else if(res.status === 403){
-                        const loginLocationWithPrompt= `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
+                    } else if (res.status === 403) {
+                        const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
                         window.location.replace(loginLocationWithPrompt)
                     }
                     return;
                 }
             } else {
                 //change the counter at liveRouter to false
-                // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments`, {
-                //     method: 'GET',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({ meetingId })
-                // });
-                // const result = await res.json();
-                const result = { status: true, message: 'ok' }
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT' });
+                const result = await res.json();
                 if (!result.status) throw new Error(result.message);
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
                 return;
@@ -101,7 +88,7 @@ export function updateYoutubeRefreshToken(meetingId: number, code: string) {
                 body: JSON.stringify({ accessCode: encodeURIComponent(code) })
             });
             const result = await res.json();
-            if(!result.status) window.alert(result.message);
+            if (!result.status) window.alert(result.message);
         } catch (e) {
             window.alert(e.message);
         } finally {

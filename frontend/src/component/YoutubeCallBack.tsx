@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { loginGoogle } from '../redux/auth/thunk'
-import { push } from 'connected-react-router'
 import { updateYoutubeRefreshToken } from '../redux/rooms/thunk'
+import Spinner from 'react-bootstrap/Spinner'
 
 export default function YoutubeCallBack() {
     const dispatch = useDispatch()
@@ -26,7 +24,7 @@ export default function YoutubeCallBack() {
 
     return (
         <div>
-            Get Refresh Token for Youtube
+           <Spinner animation="grow" />
         </div>
     )
 }
