@@ -12,7 +12,7 @@ a:hover{
 
 }
 
-    .nav{
+    .main-nav{
         background-color: $BackgroundColor;
         color: black;
         width: 100vw;
@@ -25,11 +25,11 @@ a:hover{
         justify-content: flex-start;
         z-index: 999999;
         
-        .nav-item:last-child{
+        .main-nav-item:last-child{
             margin: auto;
             margin-right: 5px;
         }
-        .nav-link{
+        .main-nav-link{
             color: $PrimaryTextColor;
 
             &:hover{

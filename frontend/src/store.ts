@@ -11,6 +11,8 @@ import { AuthActions } from './redux/auth/actions';
 import { MeetingPastActions } from './redux/meetingpast/action';
 import { MeetingPastState, MeetingPastReducer } from './redux/meetingpast/reducers';
 import { MeetingLiveState, MeetingLiveReducer } from './redux/meetinglive/reducers';
+import { ReportState, reportReducer } from './redux/report/reducers';
+import { ReportActions } from './redux/report/actions';
 
 
 declare global {
@@ -21,7 +23,7 @@ declare global {
 }
 // export type RootAction = QuestionsActions|RoomsActions|AuthActions;
 
-export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions;
+export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions | ReportActions;
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 
@@ -34,6 +36,7 @@ export interface RootState {
   router: RouterState
   meetingsPast: MeetingPastState,
   meetingsLive: MeetingLiveState,
+  report: ReportState
 }
 
 const reducer = combineReducers<RootState>({
@@ -44,6 +47,7 @@ const reducer = combineReducers<RootState>({
   router: connectRouter(history),
   meetingsPast: MeetingPastReducer,
   meetingsLive: MeetingLiveReducer,
+  report: reportReducer
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
