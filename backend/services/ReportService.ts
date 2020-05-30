@@ -9,14 +9,14 @@ export class ReportService {
     //get count questions from diff platform
     //question per person
 
-    getViewsByMeetingId = async (meetingId: number[]) => {
+    getViewsByMeetingId = async (meetingIds: number[]) => {
         try{
-            if (meetingId.length === 0) throw new RangeError("meetingId array is empty")
-            if (meetingId.some(id => id < 1)) throw new RangeError("meetingId array contain value smaller than 1");
+            if (meetingIds.length === 0) throw new RangeError("meetingId array is empty")
+            if (meetingIds.some(id => id < 1)) throw new RangeError("meetingId array contain value smaller than 1");
             const result = await this.knex.raw(/*SQL*/`SELECT meeting_id, youtube, facebook, handsup, created_at 
                                         FROM views WHERE meeting_id = ANY(?)
                                         ORDER BY meeting_id ASC,
-                                                created_at ASC`, [meetingId])
+                                                created_at ASC`, [meetingIds])
             return result.rows
         } catch (error) {
             console.log('[Report Service Error] ' + 'getViewsByMeetingId')
@@ -24,5 +24,19 @@ export class ReportService {
         }
     }
     
+    getQuestionReportDataByMeetingId = async (meetingIds: number[]) => {
+        try{
+            if (meetingIds.length === 0) throw new RangeError("meetingId array is empty")
+            if (meetingIds.some(id => id < 1)) throw new RangeError("meetingId array contain value smaller than 1");
+            const result = await this.knex.raw(/*SQL*/`SELECT * FROM questions 
+                                        WHERE meeting_id =ANY(?) 
+                                        ORDER BY meeting_id ASC,
+                                                created_at ASC`,[meetingIds])
+            return result.rows
+        } catch (error) {
+            console.log('[Report Service Error] ' + 'getQuestionReportDataByMeetingId')
+            throw error
+        }
+    }
 
 }
