@@ -86,7 +86,7 @@ const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
-const liveRouter = new LiveRouter(questionService, io);
+const liveRouter = new LiveRouter(questionService, io, userService);
 const meetingRouter = new MeetingRouter(meetingService);
 const reportRouter = new ReportRouter(reportService);
 
