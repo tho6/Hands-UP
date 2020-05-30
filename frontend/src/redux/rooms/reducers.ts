@@ -5,14 +5,14 @@ export interface RoomState {
     roomsInformation: {
         [id: string]: IRoomInformation
     };
-    questionLimitStatus: { [id: string]: {isChecking:boolean, count:number} };
-    liveStatus: {[id: string]:{facebook:boolean, youtube:boolean}}
+    questionLimitStatus: { [id: string]: { isChecking: boolean, count: number } };
+    liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } }
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
-    questionLimitStatus:{},
-    liveStatus:{}
+    questionLimitStatus: {},
+    liveStatus: {}
 
 }
 
@@ -57,16 +57,16 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
             }
         case '@@ROOMS/SET_STATUS_OF_QUESTION_LIMIT':
             {
-                const newQuestionLimitStatus = {...oldState.questionLimitStatus}
-                const newStatus = {...oldState.questionLimitStatus[action.meetingId], isChecking:action.isChecking}
-                if(action.isChecking){
-                    const c = newStatus.count||0;
+                const newQuestionLimitStatus = { ...oldState.questionLimitStatus }
+                const newStatus = { ...oldState.questionLimitStatus[action.meetingId], isChecking: action.isChecking }
+                if (action.isChecking) {
+                    const c = newStatus.count || 0;
                     newStatus.count = c + 1;
-                }else{
+                } else {
                     newStatus.count = 0;
                 }
                 newQuestionLimitStatus[action.meetingId] = newStatus;
-        
+
                 return {
                     ...oldState,
                     questionLimitStatus: newQuestionLimitStatus
@@ -74,10 +74,19 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
             }
         case '@@ROOMS/TOGGLE_YOUTUBE_LIVE_STATUS':
             {
-                const newLiveStatus = {...oldState.liveStatus}
-                const newStatus = {...oldState.liveStatus[action.meetingId], youtube:action.isFetch}
+                const newLiveStatus = { ...oldState.liveStatus }
+                const newStatus = { ...oldState.liveStatus[action.meetingId], youtube: action.isFetch }
                 newLiveStatus[action.meetingId] = newStatus;
-        
+
+                return {
+                    ...oldState,
+                    liveStatus: newLiveStatus
+                };
+            }
+        case '@@ROOMS/LOAD_INITIAL_LIVE_STATUS':
+            {
+                const newLiveStatus = { ...oldState.liveStatus }
+                newLiveStatus[action.meetingId] = { youtube: action.youtube, facebook: action.facebook };
                 return {
                     ...oldState,
                     liveStatus: newLiveStatus

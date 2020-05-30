@@ -11,7 +11,8 @@ import useReactRouter from 'use-react-router';
 import Question from './Question';
 import {
   fetchRoomInformation,
-  toggleYoutubeLiveStatus
+  toggleYoutubeLiveStatus,
+  getLiveStatus
 } from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
@@ -75,7 +76,9 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-
+  useEffect(() => {
+    dispatch(getLiveStatus(parseInt(meetingId)));
+  }, [dispatch, meetingId]);
   useEffect(() => {
     if (personInfo) {
       const { guestId, guestName } = personInfo;
