@@ -68,25 +68,26 @@ export function authenticateGuestToken(guestService: GuestService) {
         return
     }
 }
-export function checkThirdPartyPlatformToken(userService: UserService, platform:string) {
+export function checkThirdPartyPlatformToken() {
     return (req: Request, res: Response, next: NextFunction) => {
-        if(req.personInfo?.userId){
+        // if(req.personInfo?.userId){
+        if(true){
             try{
                 //const user = await userService.get(req.personInfo.userId);
                 //if(!userService.accessToken) return res.status(401).json('No platform access token!')
-                switch(platform){
-                    case 'facebook':
-                        //check token with facebook
-                        break;
+                
+                switch('youtube'){
+                    // case 'facebook':
+                    //     //check token with facebook
+                    //     break;
                     case 'youtube':
-                        //check token with youtube
-                        //res status 401 if token expired
-                        //if token expired --> use refresh token to refresh access token
-                        //if get token, save to database -> next
-                        //if refresh token expires, user has to logged in again
+                        //if database no token, return redirect to login page
+                       //if have token, req.youtubeRefreshToken = token (get from DB)
+                       req.youtubeRefreshToken = `1//0ebnERUBVsn-uCgYIARAAGA4SNwF-L9IrAicfHjeg1icgAFLRpMd6gEC_gkDApJr_0fZNGS46rOU3RynWbvNfBTj21IeZ5RwDN-s`
                         break;
                 }
-
+                next();
+                return;
             }catch(e){
                 console.error(e);
                 res.status(500).json({status:false, message:e})
