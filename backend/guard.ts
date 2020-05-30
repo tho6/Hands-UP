@@ -82,8 +82,9 @@ export function checkThirdPartyPlatformToken() {
                     //     break;
                     case 'youtube':
                         //if database no token, return redirect to login page
+                       //return res.status(401).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
                        //if have token, req.youtubeRefreshToken = token (get from DB)
-                       req.youtubeRefreshToken = `1//0ebnERUBVsn-uCgYIARAAGA4SNwF-L9IrAicfHjeg1icgAFLRpMd6gEC_gkDApJr_0fZNGS46rOU3RynWbvNfBTj21IeZ5RwDN-s`
+                       req.youtubeRefreshToken = `1//0eU4Xq5W3bhQrCgYIARAAGA4SNwF-L9IrLHHZ1hsibiqm2_-ZH-xFhVqMwtpSrcr3ooFnMaBakQldhn5hDb7PRVR_WIA0UOUy3aE`
                         break;
                 }
                 next();
@@ -91,6 +92,7 @@ export function checkThirdPartyPlatformToken() {
             }catch(e){
                 console.error(e);
                 res.status(500).json({status:false, message:e})
+                return
             }
 
         }else{

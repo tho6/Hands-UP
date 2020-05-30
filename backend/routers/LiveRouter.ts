@@ -14,9 +14,10 @@ export class LiveRouter {
         router.post('/fb/token', this.fetchAccessCode)
         router.post('/fb/comments', this.fetchComments)
         router.post('/fb/views', this.fetchViews)
-        router.post('/yt/token', this.fetchYTAccessToken)
-        router.get('/yt/comments', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
+        router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
+        router.post('/yt/comments', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
         router.post('/yt/views', this.fetchViews)
+        router.get('/status/:meetingId', this.checkStatus)
         return router
 
     }
@@ -145,7 +146,7 @@ export class LiveRouter {
                 res.status(500).json({ success: false, message: 'internal error' })
         }
     }
-    fetchYTAccessToken = async (req: Request, res: Response) => {
+    fetchYTAccessAndRefreshToken = async (req: Request, res: Response) => {
         try {
             const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.GOOGLE_REDIRECT_URL + '&grant_type=authorization_code';
             console.log(bodyString);
@@ -157,19 +158,20 @@ export class LiveRouter {
                 body: bodyString,
             })
             const result = await fetchRes.json();
+            console.log(result);
             if (result.error) throw new Error(result['error_description']);
-            res.status(200).json({ status: true, message: 'Successfully Exchange Access Token!' });
+            res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
             return;
         } catch (e) {
             console.log(e)
-            res.status(400).json({ status: false, message: 'Fail to exchange Access Token!' })
+            res.status(400).json({ status: false, message: 'Fail to Exchange Access and Refresh Token!' })
             return;
         }
 
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
-        if (!req.youtubeRefreshToken) return res.status(400).json({ status: false, message: 'Check live broadcast - No Refresh Token!' })
+        if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' })
         try {
             //check instance
             if (this.eventSourceExistence[`${req.body.meetingId}`] && this.eventSourceExistence[`${req.body.meetingId}`].youtube) {
@@ -179,9 +181,8 @@ export class LiveRouter {
             }
             //get access token check refresh token, may put this in guard
             const resultFromYT = await this.youtubeExchangeForAccessToken(req.youtubeRefreshToken);
-            if(!resultFromYT['access_token']) return res.status(401).json({status:false, message:'Expired/Invalid Refresh token, please log in again!'});
-            const accessToken = encodeURIComponent(resultFromYT['access_token']); 
-            //const accessToken = 'ya29.a0AfH6SMCNak19NeHXNCm1VqZ74SY17svpITV0y7LBXvljLARhyhuZNusTVU70EHW4kZNd3elI5lsYLIAj_Ia2swmuddHEv6GNFNZA9OcveNaTlfmY2csKCSlkgQ7EvYI3I5W7nMq83qV9CXmN5wwMtw4VtVGjHdlVHIU';
+            if (!resultFromYT['access_token']) return res.status(401).json({ status: false, message: 'Expired/Invalid Refresh token, please log in again!' });
+            const accessToken = encodeURIComponent(resultFromYT['access_token']);
             //find live broadcast
             const fetchRes = await fetch(`https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&broadcastStatus=active&broadcastType=all&key=${process.env.YOUTUBE_API_KEY}`, {
                 method: "GET",
@@ -193,14 +194,14 @@ export class LiveRouter {
             const result = await fetchRes.json();
             console.log(result);
             if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
-            if (result.pageInfo.totalResults !== 1) return res.status(403).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
+            if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             //fetch comments from youtube 
-            this.fetchYTComments(liveChatId, req.body.meetingId, accessToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(liveChatId, req.body.meetingId, accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
-            res.status(400).json({ status: false, message: error.message });
+            res.status(500).json({ status: false, message: error.message });
             return;
         }
     }
@@ -218,7 +219,7 @@ export class LiveRouter {
             //do we need to notice the user here??
         }
     }
-    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, pageTokenStr: string = '') => {
+    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, refreshToken: string, pageTokenStr: string = '') => {
         let pageTokenString = pageTokenStr;
         const fetchYTTimer = setInterval(async () => {
             try {
@@ -233,24 +234,28 @@ export class LiveRouter {
                 });
                 const result = await fetchLiveChat.json();
                 console.log(result);
-                //check liveChat existence
-                /*           if(result.error.code === 401) {
+                /* If access token expires in the middle of live broadcast */
+                if (result.error.code === 401) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
-                    refresh token exchange for access token
-                    if(!result.access_token){
-                        //notify user
-                        return;
+                    const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
+                    if (!refreshResult['access_token']) {
+                        //socket io to notice users
+                        return
                     }
-                    fetchYTComments(liveChatId, meetingId,  newAccessToken, pageTokenString)
+                    const newAccessToken = encodeURIComponent(refreshResult['access_token']);
+                    this.fetchYTComments(liveChatId, meetingId, newAccessToken, refreshToken, pageTokenString);
                     return;
-                } */
+                }
+                /* Check if live broadcast ends */
                 if (result.offlineAt) {
                     console.log('Youtube Live Chat ends')
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     return;
                 }
                 pageTokenString = `pageToken=${result.nextPageToken}&`;
+                /* Check if user stops the live fetch function */
                 if (!this.eventSourceExistence[`${meetingId}`].youtube) return;
+                /* Create questions and io emit */
                 for (const item of result.items) {
                     if (!item.snippet.displayMessage) continue;
                     await this.createQuestion(meetingId, item.snippet.displayMessage, 3, item.authorDetails.displayName || 'Anonymous');
@@ -261,12 +266,14 @@ export class LiveRouter {
                 return;
             }
         }, 5000);
+        /* Let server knows the live function is operating in which room and on which platform */
         const temp = { ...this.eventSourceExistence[`${meetingId}`], youtube: true }
         this.eventSourceExistence[`${meetingId}`] = temp;
     }
     clearTimeIntervalAndTimer = (timer: NodeJS.Timeout, platform: string, meetingId: number) => {
         clearInterval(timer);
         //maybe need to emit message to meetings owner
+        /* Check if only one platform is using the live function, if yes then delete the whole key, otherwise, delete only the platform key */
         if (Object.keys(this.eventSourceExistence[`${meetingId}`]).length === 1) {
             delete this.eventSourceExistence[`${meetingId}`];
             return
@@ -275,17 +282,29 @@ export class LiveRouter {
         return;
     }
     youtubeExchangeForAccessToken = async (refreshToken: string) => {
-            const bodyString = 'client_id=' + process.env.GOOGLE_CLIENT_ID+ '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&refresh_token=' + encodeURIComponent(refreshToken) + '&grant_type=refresh_token';
-            const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
-                method:'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: bodyString,
-            })
-            const result = await fetchRes.json();
-            console.log(result);
-            return result;
+        const bodyString = 'client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&refresh_token=' + encodeURIComponent(refreshToken) + '&grant_type=refresh_token';
+        const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: bodyString,
+        })
+        const result = await fetchRes.json();
+        console.log(result);
+        return result;
+    }
+    checkStatus = async (req: Request, res: Response) => {
+        try {
+            const meetingId = req.params.meetingId;
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
+            const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];
+            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false } });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
+            return;
+        }
     }
 
 }

@@ -14,6 +14,7 @@ import FacebookLogin from './component/FacebookLogin'
 import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 import Home from './component/Home';
 import Navbar from './component/Navbar';
+import YoutubeCallBack from './component/YoutubeCallBack';
 
 function App() {
   const dispatch = useDispatch()
@@ -35,7 +36,7 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/questions/room/:id/:page" exact>
+          <Route path="/room/:id/questions/:page" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>
@@ -49,6 +50,9 @@ function App() {
           </Route>
           <Route path="/googleLogin/callback" exact>
           {(isAuthenticated != null &&<GoogleLoginCallBack />)}
+          </Route>
+          <Route path="/youtube/callback" exact>
+          {(isAuthenticated != null &&<YoutubeCallBack />)}
           </Route>
           <Route path="/facebookLogin/callback" exact>
           {(isAuthenticated != null &&<FacebookLoginCallBack />)}
