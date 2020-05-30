@@ -1,13 +1,14 @@
 import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import EventSource from 'eventsource'
-import { QuestionService } from '../services'
 import { checkThirdPartyPlatformToken } from '../guard';
+import { IQuestionService } from '../models/Interface/IQuestionService';
+import { UserService } from '../services/UserService';
 
 
 export class LiveRouter {
     private eventSourceExistence: { [id: string]: { facebook: boolean, youtube: boolean } } = {};
-    constructor(private questionService: QuestionService, private io: SocketIO.Server) { }
+    constructor(private questionService: IQuestionService, private io: SocketIO.Server, private userService: UserService) { }
 
     router() {
         const router = express.Router()
@@ -15,7 +16,7 @@ export class LiveRouter {
         router.post('/fb/comments', this.fetchComments)
         router.post('/fb/views', this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
-        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
+        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.post('/yt/views', this.fetchViews)
         router.get('/status/:meetingId', this.checkStatus)
@@ -161,6 +162,8 @@ export class LiveRouter {
             const result = await fetchRes.json();
             console.log(result);
             if (result.error) throw new Error(result['error_description']);
+            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(2, result['refresh_token']);
+            if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
             return;
