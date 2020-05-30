@@ -9,7 +9,7 @@ export interface IRoomInformation{
     canModerate: boolean,
     canUploadFiles: boolean,
     questionLimit: number,
-    userInformation?: IGuest|null
+    userInformation?: IGuest|null,
 }
 export interface IRoomConfiguration{
     canModerate:boolean;

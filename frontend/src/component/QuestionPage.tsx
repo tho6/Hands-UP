@@ -9,7 +9,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import useReactRouter from 'use-react-router';
 import Question from './Question';
-import { fetchRoomInformation } from '../redux/rooms/thunk';
+import {
+  fetchRoomInformation,
+  toggleYoutubeLiveStatus
+} from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
 import { useFormState } from 'react-use-form-state';
@@ -53,6 +56,9 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
   );
+  const liveStatus = useSelector(
+    (rootState: RootState) => rootState.roomsInformation.liveStatus[meetingId]
+  );
   const [formState, { textarea }] = useFormState();
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
@@ -76,9 +82,11 @@ const QuestionPage: React.FC = () => {
       const userInRoom = {
         guestId,
         name: guestName,
-        isHost: personInfo.userId === roomInformation?.owenId ? true : false
+        //isHost: personInfo.userId === roomInformation?.owenId ? true : false
+        isHost: true
       };
-      if(roomInformation) dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
+      if (roomInformation)
+        dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
     }
   }, [dispatch, meetingId, personInfo, roomInformation?.id]);
   useEffect(() => {
@@ -102,10 +110,7 @@ const QuestionPage: React.FC = () => {
     const { guestId, questionId } = res;
     dispatch(successfullyVoteForAQuestion(questionId, guestId));
   };
-  const removeVoteListener = (res: {
-    guestId: number;
-    questionId: number;
-  }) => {
+  const removeVoteListener = (res: { guestId: number; questionId: number }) => {
     const { guestId, questionId } = res;
     dispatch(successfullyRemoveVote(questionId, guestId));
   };
@@ -121,9 +126,7 @@ const QuestionPage: React.FC = () => {
   };
   const updateReplyListener = (res: updateReply) => {
     const { replyId, questionId, content, updatedAt } = res;
-    dispatch(
-      successfullyUpdateReply(questionId, replyId, content, updatedAt)
-    );
+    dispatch(successfullyUpdateReply(questionId, replyId, content, updatedAt));
   };
   const createReplyListener = (res: reply) => {
     dispatch(addedReplyToQuestion(res));
@@ -166,7 +169,8 @@ const QuestionPage: React.FC = () => {
       window.addEventListener('beforeunload', onUnload);
 
       return () => {
-        window.removeEventListener('beforeunload', onUnload)};
+        window.removeEventListener('beforeunload', onUnload);
+      };
     }, [cb, dispatch, meetingId]);
   };
   useUnload(() => {
@@ -201,7 +205,10 @@ const QuestionPage: React.FC = () => {
   );
   const questionsNeedToBeApproved = questions
     ?.filter((question) => !question.isApproved && !question.isHide)
-    .sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
+    .sort(
+      (a, b) =>
+        new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+    );
   const questionsInAppropriate = questions?.filter(
     (question) => question.isHide
   );
@@ -213,10 +220,10 @@ const QuestionPage: React.FC = () => {
     .filter((reply) => reply.isHide);
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
-      <div className="meeting-information d-flex justify-content-between flex-wrap mb-4">
+      <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
         <div className="d-flex">
           <span>{roomInformation?.name}</span>
-          <span className='px-2'>
+          <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}
           </span>
         </div>
@@ -224,6 +231,36 @@ const QuestionPage: React.FC = () => {
           roomInformation.canModerate && (
             <div>Moderation: {questionsNeedToBeApproved?.length}</div>
           )}
+        {roomInformation?.userInformation?.isHost && (
+          <div className="d-flex">
+            <div className="util-spacing">
+              <i className="fab fa-facebook-f fa-lg"></i>{' '}
+              {liveStatus?.facebook ? (
+                <i className="fas fa-toggle-on fa-lg"></i>
+              ) : (
+                <i className="fas fa-toggle-off fa-lg"></i>
+              )}
+            </div>
+            <div
+              className="util-spacing"
+              onClick={() => {
+                dispatch(
+                  toggleYoutubeLiveStatus(
+                    parseInt(meetingId),
+                    liveStatus?.youtube ? false : true
+                  )
+                );
+              }}
+            >
+              <i className="fab fa-youtube-square fa-lg"></i>{' '}
+              {liveStatus?.youtube ? (
+                <i className="fas fa-toggle-on fa-lg"></i>
+              ) : (
+                <i className="fas fa-toggle-off fa-lg"></i>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <div className="question-form text-left mb-4">
         <div className="d-flex text-area-container rounded shadow flex-wrap">
@@ -338,7 +375,7 @@ const QuestionPage: React.FC = () => {
               }}
             >
               INAPPROPRIATE QUESTIONS{' '}
-              {questionsInAppropriate.length > 0
+              {questionsInAppropriate?.length > 0
                 ? `(${questionsInAppropriate.length})`
                 : ''}
             </button>
@@ -354,7 +391,7 @@ const QuestionPage: React.FC = () => {
               }}
             >
               INAPPROPRIATE REPLIES{' '}
-              {replyInAppropriate.length > 0
+              {replyInAppropriate?.length > 0
                 ? `(${replyInAppropriate.length})`
                 : ''}
             </button>
@@ -400,27 +437,27 @@ const QuestionPage: React.FC = () => {
               </button>
             </div>
             <div>
-              {page === 'main' &&
-              <FlipMove>
-                {mostPopularQuestions?.map((question) => {
-                  return (
-                    <Question
-                    key={question.id}
-                    user={roomInformation.userInformation}
-                    canUploadFiles={roomInformation.canUploadFiles}
-                    question={question}
-                    answering={
-                      mostPopularQuestions[0].id === question.id
-                      ? true
-                      : false
-                    }
-                    isModerate={false}
-                    />
+              {page === 'main' && (
+                <FlipMove>
+                  {mostPopularQuestions?.map((question) => {
+                    return (
+                      <Question
+                        key={question.id}
+                        user={roomInformation.userInformation}
+                        canUploadFiles={roomInformation.canUploadFiles}
+                        question={question}
+                        answering={
+                          mostPopularQuestions[0].id === question.id
+                            ? true
+                            : false
+                        }
+                        isModerate={false}
+                      />
                     );
                   })}
-                  </FlipMove>
-                  }
-                  
+                </FlipMove>
+              )}
+
               {page === 'latest' &&
                 latestQuestions?.map((question) => {
                   return (

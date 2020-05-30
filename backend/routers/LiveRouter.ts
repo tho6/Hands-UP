@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import EventSource from 'eventsource'
 import { QuestionService } from '../services'
+import { checkThirdPartyPlatformToken } from '../guard';
 
 
 export class LiveRouter {
@@ -14,7 +15,7 @@ export class LiveRouter {
         router.post('/fb/comments', this.fetchComments)
         router.post('/fb/views', this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessToken)
-        router.get('/yt/comments', this.checkYTLiveBroadcast)
+        router.get('/yt/comments', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
         router.post('/yt/views', this.fetchViews)
         return router
 
@@ -144,30 +145,31 @@ export class LiveRouter {
                 res.status(500).json({ success: false, message: 'internal error' })
         }
     }
-    fetchYTAccessToken = async(req:Request, res:Response) =>{
-        try{
-            const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID+ '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.GOOGLE_REDIRECT_URL + '&grant_type=authorization_code';
-           console.log(bodyString);
+    fetchYTAccessToken = async (req: Request, res: Response) => {
+        try {
+            const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.GOOGLE_REDIRECT_URL + '&grant_type=authorization_code';
+            console.log(bodyString);
             const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
-                method:'POST',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: bodyString,
             })
             const result = await fetchRes.json();
-            if(result.error) throw new Error(result['error_description']);
-            res.status(200).json({status:true, message:'Successfully Exchange Access Token!'});
+            if (result.error) throw new Error(result['error_description']);
+            res.status(200).json({ status: true, message: 'Successfully Exchange Access Token!' });
             console.log(result);
             return;
-        }catch(e){
+        } catch (e) {
             console.log(e)
-            res.status(400).json({status:false, message:'Fail to exchange Access Token!'})
+            res.status(400).json({ status: false, message: 'Fail to exchange Access Token!' })
             return;
         }
 
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
+        if (!req.youtubeRefreshToken) return res.status(400).json({ status: false, message: 'Check live broadcast - No Refresh Token!' })
         try {
             //check instance
             if (this.eventSourceExistence[`${req.body.meetingId}`] && this.eventSourceExistence[`${req.body.meetingId}`].youtube) {
@@ -176,20 +178,10 @@ export class LiveRouter {
                 return;
             }
             //get access token check refresh token, may put this in guard
-/*             const refreshToken =  this.userService.getRefreshToken(userId, platform);
-            if(!refreshToken) return res.status(401).json({status:false, message:'No refreshToken. Login Again!'});
-            const bodyString = 'client_id=' + process.env.GOOGLE_CLIENT_ID+ '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&refresh_token=' + encodeURIComponent(refreshToken) + '&grant_type=refresh_token';
-            const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
-                method:'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: bodyString,
-            })
-            const result = await fetchRes.json();
-            if(!result['access_token']) return res.status(401).json({status:true, message:'Expired/Invalid Refresh token, please log in again!'});
-            const accessToken = encodeURIComponent(result['access_token']); */
-            const accessToken = 'ya29.a0AfH6SMCNak19NeHXNCm1VqZ74SY17svpITV0y7LBXvljLARhyhuZNusTVU70EHW4kZNd3elI5lsYLIAj_Ia2swmuddHEv6GNFNZA9OcveNaTlfmY2csKCSlkgQ7EvYI3I5W7nMq83qV9CXmN5wwMtw4VtVGjHdlVHIU';
+            const resultFromYT = await this.youtubeExchangeForAccessToken(req.youtubeRefreshToken);
+            if(!resultFromYT['access_token']) return res.status(401).json({status:false, message:'Expired/Invalid Refresh token, please log in again!'});
+            const accessToken = encodeURIComponent(resultFromYT['access_token']); 
+            //const accessToken = 'ya29.a0AfH6SMCNak19NeHXNCm1VqZ74SY17svpITV0y7LBXvljLARhyhuZNusTVU70EHW4kZNd3elI5lsYLIAj_Ia2swmuddHEv6GNFNZA9OcveNaTlfmY2csKCSlkgQ7EvYI3I5W7nMq83qV9CXmN5wwMtw4VtVGjHdlVHIU';
             //find live broadcast
             const fetchRes = await fetch(`https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&broadcastStatus=active&broadcastType=all&key=${process.env.YOUTUBE_API_KEY}`, {
                 method: "GET",
@@ -200,11 +192,11 @@ export class LiveRouter {
             });
             const result = await fetchRes.json();
             console.log(result);
-            if(result.error) return res.status(result.error.code).json({status:false, message:result.error.message});
+            if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(403).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             //fetch comments from youtube 
-            this.fetchYTComments(liveChatId,req.body.meetingId,accessToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(liveChatId, req.body.meetingId, accessToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
@@ -226,7 +218,7 @@ export class LiveRouter {
             //do we need to notice the user here??
         }
     }
-    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, pageTokenStr:string='') => {
+    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, pageTokenStr: string = '') => {
         let pageTokenString = pageTokenStr;
         const fetchYTTimer = setInterval(async () => {
             try {
@@ -258,7 +250,7 @@ export class LiveRouter {
                     return;
                 }
                 pageTokenString = `pageToken=${result.nextPageToken}&`;
-                if(!this.eventSourceExistence[`${meetingId}`].youtube) return;
+                if (!this.eventSourceExistence[`${meetingId}`].youtube) return;
                 for (const item of result.items) {
                     if (!item.snippet.displayMessage) continue;
                     await this.createQuestion(meetingId, item.snippet.displayMessage, 3, item.authorDetails.displayName || 'Anonymous');
@@ -281,6 +273,19 @@ export class LiveRouter {
         }
         delete this.eventSourceExistence[`${meetingId}`][`${platform}`];
         return;
+    }
+    youtubeExchangeForAccessToken = async (refreshToken: string) => {
+            const bodyString = 'client_id=' + process.env.GOOGLE_CLIENT_ID+ '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&refresh_token=' + encodeURIComponent(refreshToken) + '&grant_type=refresh_token';
+            const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: bodyString,
+            })
+            const result = await fetchRes.json();
+            console.log(result);
+            return result;
     }
 
 }

@@ -29,7 +29,8 @@ import { authenticateGuestToken, authenticateUserToken } from "./guard";
 declare global {
   namespace Express {
     interface Request {
-      personInfo?: PersonInfo
+      personInfo?: PersonInfo,
+      youtubeRefreshToken:string;
     }
   }
 }

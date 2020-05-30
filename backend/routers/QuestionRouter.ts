@@ -43,18 +43,12 @@ export class QuestionRouter {
                 const idx = `${req.personInfo.guestId}`;
                 if (this.counter[`${req.personInfo.guestId}`]) {
                     if (this.counter[idx].count >= 3) throw new Error('Exceed question limits!');
-                    if (this.counter[idx].counting === false) {
-                        this.counter[idx].counting = true;
-                        setTimeout(() => {
-                            this.counter[idx] = {counting: false, count:0};
-                        }, 10000)
-                    }
                     this.counter[idx].count += 1;
                     console.log( this.counter[idx].count);
                 }else{
                     this.counter[idx] = {counting: true, count:1};
                         setTimeout(() => {
-                        this.counter[idx] = {counting: false, count:0};
+                        delete this.counter[idx];
                         }, 10000)
                 }
                 /* Validation */
@@ -236,7 +230,7 @@ export class QuestionRouter {
                 const { isHide } = req.body;
                 if (!(typeof isHide === 'boolean')) throw new Error('isHide should be a boolean!')
                 const questionId = parseInt(req.params.id);
-                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to delete the question!')
+                if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)))) throw new Error('You are not allowed to hide/approve the question!')
                 /* Action */
                 try {
                     await this.questionService.hideOrApprovedQuestion(questionId, isHide);
