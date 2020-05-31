@@ -8,7 +8,7 @@ export class MeetingRouter {
     router() {
         const router = express.Router();
         router.get('/', this.getMeeting);
-        router.post('/', this.createMeeting);
+        router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
         router.delete('/:id', this.deleteMeeting);
         return router;
