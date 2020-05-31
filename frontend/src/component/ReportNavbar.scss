@@ -1,5 +1,26 @@
 @import './variables';
 
-.report-navbar {
-    flex-direction: column;
+.report-navbar{
+    background-color: brown;
+    height: 100vh;
+    left:0;
+    z-index: 200;
+    top: 3rem;
+    position: absolute;
+    display: flex;
+    align-items: flex-start;
+
+    .report-navbar-nav{
+        top: 10;
+    }
+    .report-nav-toggler {
+        margin: auto;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        border:none;
+        border-radius: 5px;
+        span{
+            color: black;
+        }
+    }
 }

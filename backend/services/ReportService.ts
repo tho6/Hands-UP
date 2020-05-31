@@ -49,6 +49,7 @@ export class ReportService {
                                         ORDER BY questions.meeting_id ASC,
                                                 questions.created_at ASC
                                                 `,[meetingIds])
+            console.log('service: ')
             console.log(result.rows)
             return result.rows
         } catch (error) {

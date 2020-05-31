@@ -1,7 +1,7 @@
 @import './component/_variables.scss';
 .App {
   display: flex;
-  // height: 100vh
+  height: 100vh;
   margin-left: 4.5rem;
   margin-right: 4.5rem;
   padding-top: 5rem;
@@ -20,6 +20,7 @@
 #root{
   font-size: 16px;
   font-family: $PrimaryFontStyle;
+  height: 100%;
 }
 
 body{
@@ -27,6 +28,7 @@ body{
   color: black;
   margin: 0;
   padding: 0;  
+  height: 100%;
 }
 
 body::-webkit-scrollbar {

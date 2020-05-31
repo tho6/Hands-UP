@@ -46,7 +46,7 @@ function App() {
           <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
           </Route>
-          <Route path="/report" exact>
+          <Route path="/report/:loc" exact>
           {(isAuthenticated != null &&<Report />)}
           </Route>
           <Route path="/googleLogin" exact>
@@ -63,7 +63,7 @@ function App() {
           </Route>
         </Switch>
 
-      <FacebookLogin />
+      {/* <FacebookLogin /> */}
       
     </div>
   );
