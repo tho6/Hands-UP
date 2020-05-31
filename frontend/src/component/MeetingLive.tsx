@@ -26,7 +26,7 @@ const MeetingLiveCard: React.FC<{ meeting: IMeetingLive }> = (props) => {
                             <div>Meeting code: {props.meeting.code}</div>
                             {/* <div>{props.meeting.date}</div> */}
                             <div>Host by: {props.meeting.host}</div>
-                            <div className="joinButton"><Button variant="success" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
+                            <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
                         </Col>
                     </Row>
                 </Card.Body>
