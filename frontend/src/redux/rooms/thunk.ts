@@ -58,6 +58,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                         const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
                         window.location.replace(loginLocation)
                     } else if (res.status === 403) {
+                        if(!confirm('Press OK to redirect to login page')) return;
                         const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
                         window.location.replace(loginLocationWithPrompt)
                     }
