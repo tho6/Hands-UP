@@ -81,12 +81,13 @@ const QuestionPage: React.FC = () => {
   }, [dispatch, meetingId]);
   useEffect(() => {
     if (personInfo) {
-      const { guestId, guestName } = personInfo;
+      const { guestId, guestName, userId } = personInfo;
       const userInRoom = {
         guestId,
         name: guestName,
         //isHost: personInfo.userId === roomInformation?.owenId ? true : false
-        isHost: true
+        isHost: true,
+        userId: 1
       };
       if (roomInformation)
         dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
@@ -95,67 +96,78 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-
-  const newQuestionListener = (question: IQuestion) => {
-    dispatch(addedQuestion(question));
-  };
-  const updateQuestionListener = (update: updateQuestion) => {
-    dispatch(successfullyUpdateQuestion(update));
-  };
-  const deleteQuestionListener = (res: {
-    meetingId: number;
-    questionId: number;
-  }) => {
-    const { meetingId, questionId } = res;
-    dispatch(successfullyDeleteQuestion(questionId, meetingId));
-  };
-  const addVoteListener = (res: { guestId: number; questionId: number }) => {
-    const { guestId, questionId } = res;
-    dispatch(successfullyVoteForAQuestion(questionId, guestId));
-  };
-  const removeVoteListener = (res: { guestId: number; questionId: number }) => {
-    const { guestId, questionId } = res;
-    dispatch(successfullyRemoveVote(questionId, guestId));
-  };
-  const answeredQuestionListener = (questionId: number) => {
-    dispatch(successfullyAnsweredQuestion(questionId));
-  };
-  const hideOrApprovedQuestionListener = (res: {
-    questionId: number;
-    isHide: boolean;
-  }) => {
-    const { isHide, questionId } = res;
-    dispatch(successfullyApprovedOrHideAQuestion(questionId, isHide));
-  };
-  const updateReplyListener = (res: updateReply) => {
-    const { replyId, questionId, content, updatedAt } = res;
-    dispatch(successfullyUpdateReply(questionId, replyId, content, updatedAt));
-  };
-  const createReplyListener = (res: reply) => {
-    dispatch(addedReplyToQuestion(res));
-  };
-  const deleteReplyListener = (res: {
-    questionId: number;
-    replyId: number;
-  }) => {
-    const { questionId, replyId } = res;
-    dispatch(successfullyDeleteReply(questionId, replyId));
-  };
-  const hideOrNotReplyListener = (res: {
-    replyId: number;
-    questionId: number;
-    isHide: boolean;
-  }) => {
-    const { replyId, questionId, isHide } = res;
-    dispatch(successfullyHideOrDisplayAReply(replyId, questionId, isHide));
-  };
-  const peopleCountListener = (count: number) => {
-    setPeopleCount(count);
-  };
-  const useUnload = (fn: () => void) => {
-    const cb = useRef(fn);
-    useEffect(() => {
-      const onUnload = cb.current;
+  
+  useEffect(()=>{
+    const newQuestionListener = (question: IQuestion) => {
+      dispatch(addedQuestion(question));
+    };
+    const updateQuestionListener = (update: updateQuestion) => {
+      dispatch(successfullyUpdateQuestion(update));
+    };
+    const deleteQuestionListener = (res: {
+      meetingId: number;
+      questionId: number;
+    }) => {
+      const { meetingId, questionId } = res;
+      dispatch(successfullyDeleteQuestion(questionId, meetingId));
+    };
+    const addVoteListener = (res: { guestId: number; questionId: number }) => {
+      const { guestId, questionId } = res;
+      dispatch(successfullyVoteForAQuestion(questionId, guestId));
+    };
+    const removeVoteListener = (res: { guestId: number; questionId: number }) => {
+      const { guestId, questionId } = res;
+      dispatch(successfullyRemoveVote(questionId, guestId));
+    };
+    const answeredQuestionListener = (questionId: number) => {
+      dispatch(successfullyAnsweredQuestion(questionId));
+    };
+    const hideOrApprovedQuestionListener = (res: {
+      questionId: number;
+      isHide: boolean;
+    }) => {
+      const { isHide, questionId } = res;
+      dispatch(successfullyApprovedOrHideAQuestion(questionId, isHide));
+    };
+    const updateReplyListener = (res: updateReply) => {
+      const { replyId, questionId, content, updatedAt } = res;
+      dispatch(successfullyUpdateReply(questionId, replyId, content, updatedAt));
+    };
+    const createReplyListener = (res: reply) => {
+      dispatch(addedReplyToQuestion(res));
+    };
+    const deleteReplyListener = (res: {
+      questionId: number;
+      replyId: number;
+    }) => {
+      const { questionId, replyId } = res;
+      dispatch(successfullyDeleteReply(questionId, replyId));
+    };
+    const hideOrNotReplyListener = (res: {
+      replyId: number;
+      questionId: number;
+      isHide: boolean;
+    }) => {
+      const { replyId, questionId, isHide } = res;
+      dispatch(successfullyHideOrDisplayAReply(replyId, questionId, isHide));
+    };
+    const peopleCountListener = (count: number) => {
+      setPeopleCount(count);
+    };
+    const leaveRoom = ()=>{
+    socket.emit('leave_event', meetingId);
+    socket.off('create-question', newQuestionListener);
+    socket.off('update-question', updateQuestionListener);
+    socket.off('delete-question', deleteQuestionListener);
+    socket.off('add-vote', addVoteListener);
+    socket.off('remove-vote', removeVoteListener);
+    socket.off('answered-question', answeredQuestionListener);
+    socket.off('hideOrApproved-question', hideOrApprovedQuestionListener);
+    socket.off('update-reply', updateReplyListener);
+    socket.off('create-reply', createReplyListener);
+    socket.off('delete-reply', deleteReplyListener);
+    socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
+    }
       socket.emit('join_event', meetingId);
       socket.on('create-question', newQuestionListener);
       socket.on('update-question', updateQuestionListener);
@@ -169,27 +181,22 @@ const QuestionPage: React.FC = () => {
       socket.on('delete-reply', deleteReplyListener);
       socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
       socket.on('update-count', peopleCountListener);
-      window.addEventListener('beforeunload', onUnload);
-
+      window.addEventListener('beforeunload', leaveRoom);
       return () => {
-        window.removeEventListener('beforeunload', onUnload);
+        window.removeEventListener('beforeunload', leaveRoom);
       };
-    }, [cb, dispatch, meetingId]);
-  };
-  useUnload(() => {
-    socket.emit('leave_event', meetingId);
-    socket.off('create-question', newQuestionListener);
-    socket.off('update-question', updateQuestionListener);
-    socket.off('delete-question', deleteQuestionListener);
-    socket.off('add-vote', addVoteListener);
-    socket.off('remove-vote', removeVoteListener);
-    socket.off('answered-question', answeredQuestionListener);
-    socket.off('hideOrApproved-question', hideOrApprovedQuestionListener);
-    socket.off('update-reply', updateReplyListener);
-    socket.off('create-reply', createReplyListener);
-    socket.off('delete-reply', deleteReplyListener);
-    socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
-  });
+
+  },[dispatch, meetingId]);
+  useEffect(() => {
+    const leaveHost = ()=>{
+      if(roomInformation?.userInformation?.isHost) socket.emit('leave-host', roomInformation.userInformation.userId);
+    }
+      if(roomInformation?.userInformation?.isHost) socket.emit('join-host', roomInformation.userInformation.userId);
+      window.addEventListener('beforeunload', leaveHost);
+      return () => {
+        window.removeEventListener('beforeunload', leaveHost);
+      };
+    },[roomInformation?.userInformation]);
 
   const mostPopularQuestions = questions
     ?.filter(
@@ -410,7 +417,7 @@ const QuestionPage: React.FC = () => {
                   page === 'main' && 'is-active'
                 }`}
                 onClick={() => {
-                  dispatch(push(`/questions/room/${meetingId}/main`));
+                  dispatch(push(`/room/${meetingId}/questions/main`));
                 }}
               >
                 Most Popular
@@ -420,7 +427,7 @@ const QuestionPage: React.FC = () => {
                   page === 'latest' && 'is-active'
                 }`}
                 onClick={() => {
-                  dispatch(push(`/questions/room/${meetingId}/latest`));
+                  dispatch(push(`/room/${meetingId}/questions/latest`));
                 }}
               >
                 Latest
@@ -430,7 +437,7 @@ const QuestionPage: React.FC = () => {
                   page === 'answered' && 'is-active'
                 }`}
                 onClick={() => {
-                  dispatch(push(`/questions/room/${meetingId}/answered`));
+                  dispatch(push(`/room/${meetingId}/questions/answered`));
                 }}
               >
                 Answered{' '}

@@ -156,7 +156,6 @@ io.on('connection', socket => {
     if (!counter[idx]) return;
     counter[idx].count -= 1;
     if (!counter[idx].counting) {
-      ``
       counter[idx].counting = true;
       setTimeout(() => {
         counter[idx].counting = false;
@@ -164,6 +163,14 @@ io.on('connection', socket => {
       }, 3000)
     }
   });
+  socket.on('join-host', (userId:number)=>{
+    console.log('join host'+userId);
+    socket.join('host:' + userId)
+  })
+  socket.on('leave-host', (userId:number)=>{
+    console.log('leave host'+userId);
+    socket.leave('host:' + userId)
+  })
 });
 
 /* Listening port */

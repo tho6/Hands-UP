@@ -91,7 +91,7 @@ export function checkThirdPartyPlatformToken(userService:UserService) {
                 return
             }
         }else{
-            res.status(401).json({status:false, message: 'You have not logged in yet'});
+            res.status(401).json({status:false, message: 'You have not logged in yet', platform:true});
             return
         }
     }
