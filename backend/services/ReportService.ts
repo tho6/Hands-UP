@@ -32,7 +32,7 @@ export class ReportService {
                                         questions.id as id, questions.is_answered as isAnswered, 
                                         questions.guest_id as questionAskedById,
                                         questions.is_approved as isApproved, questions.is_hide as isHide,
-                                        questions.created_at as questionCreatedAt,
+                                        questions.created_at as questionCreatedAt, questions.content as questionContent,
                                         questions.meeting_id as meetingId, meetings.name as meetingName,
                                         meetings.date_time as meetingScheduleTime, meetings.created_at as meetingCreatedAt,
                                         meetings.updated_at as meetingUpdatedAt, questions.platform_id as platformId,
