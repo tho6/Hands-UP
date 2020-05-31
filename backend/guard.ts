@@ -68,23 +68,19 @@ export function authenticateGuestToken(guestService: GuestService) {
         return
     }
 }
-export function checkThirdPartyPlatformToken() {
-    return (req: Request, res: Response, next: NextFunction) => {
+export function checkThirdPartyPlatformToken(userService:UserService) {
+    return async (req: Request, res: Response, next: NextFunction) => {
         // if(req.personInfo?.userId){
         if(true){
             try{
-                //const user = await userService.get(req.personInfo.userId);
-                //if(!userService.accessToken) return res.status(401).json('No platform access token!')
-                
                 switch('youtube'){
                     // case 'facebook':
                     //     //check token with facebook
                     //     break;
                     case 'youtube':
-                        //if database no token, return redirect to login page
-                       //return res.status(401).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
-                       //if have token, req.youtubeRefreshToken = token (get from DB)
-                       req.youtubeRefreshToken = `1//0eU4Xq5W3bhQrCgYIARAAGA4SNwF-L9IrLHHZ1hsibiqm2_-ZH-xFhVqMwtpSrcr3ooFnMaBakQldhn5hDb7PRVR_WIA0UOUy3aE`
+                       const refreshToken = await userService.getYoutubeRefreshTokenByUserId(2);
+                       if(!refreshToken) return res.status(401).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
+                       req.youtubeRefreshToken = refreshToken;
                         break;
                 }
                 next();
@@ -94,9 +90,8 @@ export function checkThirdPartyPlatformToken() {
                 res.status(500).json({status:false, message:e})
                 return
             }
-
         }else{
-            res.status(401).json({status:false, message: 'You have not logged in yet'});
+            res.status(401).json({status:false, message: 'You have not logged in yet', platform:true});
             return
         }
     }

@@ -6,6 +6,6 @@
 export interface IGuest{
 guestId:number;
 name:string;
-userId?:number;
+userId?:number|null;
 isHost:boolean;
 }

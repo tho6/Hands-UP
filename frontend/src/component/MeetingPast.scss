@@ -1,3 +1,5 @@
+@import '../component/_variables.scss';
+
 .meetingPastContainer{
     display: flex;
     // flex-wrap: wrap;
@@ -6,6 +8,8 @@
 }
 
 .headline {
+    font-family: $SecondaryFontStyle;
+    color: $PrimaryTextColor;
     display: flex;
     justify-content: left;
     align-items: left;
@@ -14,20 +18,26 @@
 
 .meetingPastCard{
     background-color: #F8F8F8;
-    border-radius: 40px;
+    font-size: 14px;
+    border-radius: 10px;
     padding: 20px;
     margin: 50px 20px 20px 20px;
+    width: 280px
 }
 
 .viewButtonBlue{
-    background-color: #0275B1;
+    // background-color: #0275B1;
+    background-color: $PrimaryTextColor;
+    border: none;
     border-radius: 20px;
 }
 
 .past-icon {
+    display: flex;
     justify-content: flex-end;
     i {
-        margin-bottom: 1rem;
+        margin-right: 0.5rem;
+        margin-bottom: 1.5rem;
     }
 }
 

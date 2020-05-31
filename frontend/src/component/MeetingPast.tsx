@@ -29,7 +29,7 @@ const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
                                 <i className="far fa-calendar-alt fa-3x"></i>
                             </Row>
                             <Row className="past-icon">
-                                <Button variant="primary" className="viewButtonBlue"><b>VIEW</b></Button>{' '}
+                                <Button variant="secondary" className="viewButtonBlue"><b>VIEW</b></Button>{' '}
                             </Row>
                         </Col>
                     {/* </div> */}

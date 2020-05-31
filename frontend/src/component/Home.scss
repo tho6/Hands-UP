@@ -1,14 +1,27 @@
 @import './variables';
 
+.background{
+    background-image: url("/homepage-bg-test.jpg");
+    height: 100vh;
+    background-size: cover;
+    background-position: bottom;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .headings{
     text-align: center;
     h2 {
         color: black;
         font-weight: 900;
         font-size: 2.5rem;
+        text-justify: inter-word;
     }
 
     h4 {
+        font-family: $SecondaryFontStyle;
         color: $PrimaryTextColor;
         font-weight: 400;
         margin-bottom: 1.5rem;

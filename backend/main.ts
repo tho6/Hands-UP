@@ -86,7 +86,7 @@ const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
-const liveRouter = new LiveRouter(questionService, io);
+const liveRouter = new LiveRouter(questionService, io, userService);
 const meetingRouter = new MeetingRouter(meetingService);
 const reportRouter = new ReportRouter(reportService);
 
@@ -123,7 +123,8 @@ app.get('/test/callback', isGuest, (req: Request, res: Response) => {
   return res.status(200).json({ message: req.query })
 })
 app.use('/rooms', isGuest, questionRouter.router());
-app.use(`${API_VERSION}/meetings`, meetingRouter.router())
+// app.use(`${API_VERSION}/meetings`, meetingRouter.router())
+app.use('/meetings', meetingRouter.router())
 
 /* Socket Io */
 let counter: { [id: string]: { count: number, counting: boolean } } = {}
@@ -156,7 +157,6 @@ io.on('connection', socket => {
     if (!counter[idx]) return;
     counter[idx].count -= 1;
     if (!counter[idx].counting) {
-      ``
       counter[idx].counting = true;
       setTimeout(() => {
         counter[idx].counting = false;
@@ -164,6 +164,14 @@ io.on('connection', socket => {
       }, 3000)
     }
   });
+  socket.on('join-host', (userId:number)=>{
+    console.log('join host'+userId);
+    socket.join('host:' + userId)
+  })
+  socket.on('leave-host', (userId:number)=>{
+    console.log('leave host'+userId);
+    socket.leave('host:' + userId)
+  })
 });
 
 /* Listening port */

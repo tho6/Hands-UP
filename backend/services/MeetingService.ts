@@ -30,7 +30,7 @@ export class MeetingService {
                 name,
                 date_time,
                 code,
-                url,
+                code,
                 owner_id
             ]
         );
@@ -40,7 +40,7 @@ export class MeetingService {
 
     async editMeeting(id: number, name: string, date_time: Date, code: string, url: string, owner_id: number) { // or use name??
         return this.knex.raw(/*SQL*/`UPDATE meetings SET name = ?,date_time = ?,code = ?,url = ?,owner_id = ? WHERE id = ?`, [name, date_time, code, url, owner_id, id]);
-        console.log(name);
+        // console.log(name);
     }
 
     async deleteMeeting(id: number) {

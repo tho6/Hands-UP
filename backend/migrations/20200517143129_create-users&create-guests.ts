@@ -8,6 +8,8 @@ export async function up(knex: Knex): Promise<any> {
         table.string('name').notNullable();
         table.string('email').notNullable();
         table.string('google_id').notNullable().unique();
+        table.string('youtube_refresh_token');
+        table.string('facebook_token');
         table.timestamps(false, true);
     })
     await knex.schema.createTable('guests', (table)=>{

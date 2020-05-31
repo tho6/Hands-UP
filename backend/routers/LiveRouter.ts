@@ -1,13 +1,14 @@
 import express, { Request, Response } from 'express'
 import fetch from 'node-fetch'
 import EventSource from 'eventsource'
-import { QuestionService } from '../services'
 import { checkThirdPartyPlatformToken } from '../guard';
+import { IQuestionService } from '../models/Interface/IQuestionService';
+import { UserService } from '../services/UserService';
 
 
 export class LiveRouter {
     private eventSourceExistence: { [id: string]: { facebook: boolean, youtube: boolean } } = {};
-    constructor(private questionService: QuestionService, private io: SocketIO.Server) { }
+    constructor(private questionService: IQuestionService, private io: SocketIO.Server, private userService: UserService) { }
 
     router() {
         const router = express.Router()
@@ -15,7 +16,7 @@ export class LiveRouter {
         router.post('/fb/comments', this.fetchComments)
         router.post('/fb/views', this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
-        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(), this.checkYTLiveBroadcast)
+        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.post('/yt/views', this.fetchViews)
         router.get('/status/:meetingId', this.checkStatus)
@@ -161,6 +162,8 @@ export class LiveRouter {
             const result = await fetchRes.json();
             console.log(result);
             if (result.error) throw new Error(result['error_description']);
+            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(2, result['refresh_token']);
+            if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
             return;
@@ -172,7 +175,10 @@ export class LiveRouter {
 
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
-        if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' })
+        if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
+        // if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
+        // const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
+        // if(req.personInfo.userId!==hostId) return res.status(400).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!'});
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
@@ -203,7 +209,7 @@ export class LiveRouter {
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             /* fetch comments from youtube  */
-            this.fetchYTComments(liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(1, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
@@ -225,7 +231,7 @@ export class LiveRouter {
             //do we need to notice the user here??
         }
     }
-    fetchYTComments = async (liveChatId: string, meetingId: number, accessToken: string, refreshToken: string, pageTokenStr: string = '') => {
+    fetchYTComments = async (userId: number, liveChatId: string, meetingId: number, accessToken: string, refreshToken: string, pageTokenStr: string = '') => {
         let pageTokenString = pageTokenStr;
         const fetchYTTimer = setInterval(async () => {
             try {
@@ -245,17 +251,19 @@ export class LiveRouter {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {
-                        //socket io to notice users
+                        /* io emit to toggle the button */
+                        this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
                         return
                     }
                     const newAccessToken = encodeURIComponent(refreshResult['access_token']);
-                    this.fetchYTComments(liveChatId, meetingId, newAccessToken, refreshToken, pageTokenString);
+                    this.fetchYTComments(userId, liveChatId, meetingId, newAccessToken, refreshToken, pageTokenString);
                     return;
                 }
                 /* Check if live broadcast ends */
                 if (result.offlineAt) {
                     console.log('Youtube Live Chat ends')
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
+                    this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
                     return;
                 }
                 pageTokenString = `pageToken=${result.nextPageToken}&`;
@@ -269,6 +277,7 @@ export class LiveRouter {
             } catch (e) {
                 console.error(e);
                 this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
+                this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
                 return;
             }
         }, 5000);
@@ -278,7 +287,6 @@ export class LiveRouter {
     }
     clearTimeIntervalAndTimer = (timer: NodeJS.Timeout, platform: string, meetingId: number) => {
         clearInterval(timer);
-        //maybe need to emit message to meetings owner
         /* Check if only one platform is using the live function, if yes then delete the whole key, otherwise, delete only the platform key */
         if (Object.keys(this.eventSourceExistence[`${meetingId}`]).length === 1) {
             delete this.eventSourceExistence[`${meetingId}`];
