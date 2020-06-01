@@ -1,10 +1,10 @@
 @import '../component/_variables.scss';
 
-.meetingPastContainer{
+.meetingPast {
+    background-color: #F8F8F8;
     display: flex;
-    // flex-wrap: wrap;
     flex-direction: row;
-    // justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
 .headline {
@@ -12,7 +12,6 @@
     color: $PrimaryTextColor;
     display: flex;
     justify-content: left;
-    align-items: left;
     padding: 20px;
 }
 
@@ -20,16 +19,17 @@
     background-color: #F8F8F8;
     font-size: 14px;
     border-radius: 10px;
-    padding: 20px;
-    margin: 50px 20px 20px 20px;
-    width: 280px
+    padding: 10px;
+    margin: 40px 0px 10px 5px;
+    width: 220px
 }
 
 .viewButtonBlue{
     // background-color: #0275B1;
     background-color: $PrimaryTextColor;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
+    // width: 80px;
 }
 
 .past-icon {
@@ -41,11 +41,9 @@
     }
 }
 
-
 .fa-calendar-alt{
     color: #000000;
 }
-
 
 .calendarIconDiv{
     display: flex;
