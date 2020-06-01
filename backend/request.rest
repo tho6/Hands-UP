@@ -70,3 +70,7 @@ https://www.facebook.com/v7.0/dialog/oauth?client_id={{facebook_client_id}}&redi
 https://www.facebook.com/v7.0/dialog/oauth?client_id=2313103855661187&redirect_uri=http://localhost:8080/test/callback&state=stststst&response_type=token&scope=user_videos
 
 curl -i -X GET "https://graph.facebook.com/611099456422217/comments?access_token=EAAg3wXWlMIMBAMTb8eJuBLxmlVbkZAV3SWEc8qXGOw2plZANFqwXIkeSzQK12XZBlYyiFaZCikXXecvdARXPveh0R2Iqs0KbTL5b0YZCZBOPOdGWiCGPEz1hLke7AZALqtH3dqCrqX4pcatWCW8bZBzAu4ZAtMaOf2nLHIHhGZAXY1OAz9p6KO9AZB0QPt4XYEjXZAQZD"
+
+###
+http://localhost:8080/report/question/1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImd1ZXN0SWQiOjUsImlhdCI6MTU5MDk0MTU4NCwiZXhwIjoxNTkwOTQxNTk5fQ.cWT_faaKdH20hyE-1U5_8y0dy8qgKoG3ZGJGrLk5CZE9c0dJ_fwu5tEb_dU5DlxlYKqFWVEdfwUVq4_nxInA-5mXQvug4ABHFS17XyvXKeuWVrQPs90Lr6ZMBkPsYAk5YVMEyGxgtPho3A6C_TiJhVTwVcRZL0Xe0DzXs0Ep834

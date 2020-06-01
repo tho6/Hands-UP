@@ -12,13 +12,13 @@ export function authenticateUserToken(userService: UserService, guestService: Gu
         if (!token) return res.status(401).json({ success: false, message: 'No Token' })
         jwt.verify(token, accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
             try {
-                if (!info.userId ||
+                if (!info.hasOwnProperty('userId') ||
                     !info.guestId ||
                     !info ||
                     err) {
                     return res.status(401).json({ success: false, message: "Invalid Token" })
                 }
-                const userResult = await userService.getUserById([info.userId])
+                const userResult = await userService.getUserById([info.userId!])
                 const guestResult = await guestService.getGuestById([info.guestId])
                 if (!userResult || !guestResult) return res.status(401).json({ success: false, message: "Unauthorized" })
                 req.personInfo = {

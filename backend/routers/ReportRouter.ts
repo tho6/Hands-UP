@@ -35,8 +35,10 @@ export class ReportRouter {
             // const searchArrayPre = searchString.split(',')
             // const searchArray = searchArrayPre.map(v => parseInt(v.trim()))
             const result = await this.reportService.getQuestionReportDataByMeetingId(resultMeeting)
-            // console.log('result' + result)
-            return res.status(200).json({success: true, message: result})
+            console.log('router: ')
+            console.log(result)
+            res.status(200).json({success: true, message: result})
+            return 
 
         } catch (error) {
             console.log(error)

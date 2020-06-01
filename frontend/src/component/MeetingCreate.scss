@@ -1,0 +1,60 @@
+@import '../component/_variables.scss';
+
+.createForm {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: $SecondaryTextColor 1px solid;
+    text-align: center;
+    padding: 80px 50px 80px 50px;
+    margin: 0px 200px 0px 200px;
+    border-radius: 5px;
+
+    h4 {
+        font-family: $SecondaryFontStyle;
+        color: $PrimaryTextColor;
+    }
+}
+
+.formRemind {
+    font-family: $PrimaryFontStyle;
+    color: $ThirdTextColor;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.textarea{
+    border: black;
+    resize: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    height: 2rem;
+    overflow: hidden;
+    outline: none;
+    transition: border 0.5s;
+    -webkit-transition: border 0.5s;
+    -moz-transition: border 0.5s;
+    -o-transition: border 0.5s;
+    border: solid 1px $SecondaryTextColor
+}
+.textarea:focus{
+    border: solid 3px $SecondaryTextColor;	
+}
+
+.createButtons {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.createButtonColour{
+    background-color: $ThirdTextColor;
+    border-radius: 5px;
+}
+
+.resetButtonColour{
+    background-color: $PrimaryTextColor;
+    border-radius: 5px;
+}

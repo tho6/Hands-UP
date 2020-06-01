@@ -80,7 +80,7 @@ export function restoreLogin() {
         const result = await res.json()
         if (!result.success) {
             // window.alert(result.message)
-            dispatch(logout())
+            // dispatch(logout())
             return
         }
         console.log(result)

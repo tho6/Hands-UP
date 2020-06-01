@@ -8,7 +8,7 @@ export class MeetingRouter {
     router() {
         const router = express.Router();
         router.get('/', this.getMeeting);
-        router.post('/', this.createMeeting);
+        router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
         router.delete('/:id', this.deleteMeeting);
         return router;
@@ -28,11 +28,17 @@ export class MeetingRouter {
     createMeeting = async (req: Request, res: Response) => {
         try {
             const { name, date_time, code, url, owner_id } = req.body;
+            console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
             if (checkMeeting) {
                 res.status(400).json({ message: "Meeting name existed" });
                 return;
             }
+            // console.log(name);
+            // console.log(date_time);
+            // console.log(code);
+            // console.log(url);
+            // console.log(owner_id);
             const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, owner_id);
             res.json({ meeting_id: meetingId });
         } catch (err) {

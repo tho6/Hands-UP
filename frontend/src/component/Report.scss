@@ -1,0 +1,12 @@
+@import './variables';
+
+.report-container {
+
+    // margin-right: 5rem;
+    margin-left: 8rem;
+    max-width: 990rem;
+    @media screen and (max-width: 1024px){
+        margin-left: 1rem;
+        max-width: 990rem;
+    }
+}

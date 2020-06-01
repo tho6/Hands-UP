@@ -1,15 +1,20 @@
+@import '../component/_variables.scss';
+
 .headline {
+    font-family: $SecondaryFontStyle;
+    text-align: right;
     display: flex;
     justify-content: left;
-    align-items: left;
     padding: 20px;
 }
 
 .meetingLiveCard{
-    border-radius: 40px;
+    background-color: $SecondaryTextColor;
+    border: none;
+    border-radius: 10px;
     box-shadow: 0 8px 6px -3px #e5e3e3;
     padding: 20px;
-    margin: 50px;
+    margin: 50px 50px 20px 0px;
 }
 
 .meetingLiveCard:hover {
@@ -23,8 +28,10 @@
 }
 
 .joinButtonGreen{
-    background-color: #1B8C6F;
-    border-radius: 40px;
+    background-color: $ThirdTextColor;
+    border: none;
+    border-radius: 5px;
+    width: 100px;
 }
 
 .liveIcon{
@@ -32,5 +39,6 @@
 }
 
 .fa-video{
-    color: #0D3A83;
+    // color: #0D3A83;
+    color: #ffffff;
 }

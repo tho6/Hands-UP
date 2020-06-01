@@ -13,30 +13,30 @@ import Col from 'react-bootstrap/Col'
 
 const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
     return (<>
-        {/* <Container className="meetingPastContainer"> */}
-        <Card className="meetingPastCard">
-            <Card.Body>
-                <Row>
-                    <Col md={9}>
-                        <div><b>{props.meeting.name}</b></div>
-                        <div>Meeting code: {props.meeting.code}</div>
-                        {/* <div>{props.meeting.date}</div> */}
-                        <div>Host by: {props.meeting.host}</div>
-                    </Col>
-                    {/* <div className="calendarIconDiv"> */}
+        <Container>
+            <Card className="meetingPastCard">
+                <Card.Body>
+                    <Row>
+                        <Col md={9}>
+                            <div><b>{props.meeting.name}</b></div>
+                            <div>Meeting code: {props.meeting.code}</div>
+                            {/* <div>{props.meeting.date}</div> */}
+                            <div>Host by: {props.meeting.host}</div>
+                        </Col>
+                        {/* <div className="calendarIconDiv"> */}
                         <Col md={3}>
                             <Row className="past-icon">
                                 <i className="far fa-calendar-alt fa-3x"></i>
                             </Row>
                             <Row className="past-icon">
-                                <Button variant="primary" className="viewButtonBlue"><b>VIEW</b></Button>{' '}
+                                <Button variant="secondary" className="viewButtonBlue">VIEW</Button>{' '}
                             </Row>
                         </Col>
-                    {/* </div> */}
-                </Row>
-            </Card.Body>
-        </Card>
-        {/* </Container> */}
+                        {/* </div> */}
+                    </Row>
+                </Card.Body>
+            </Card>
+        </Container>
     </>);
 }
 
@@ -49,7 +49,7 @@ export function MeetingPast() {
     }, [dispatch])
 
     return (
-        <div>
+        <div className="meetingPast">
             <h2 className="headline"><b>Past</b></h2>
             {
                 meetings.map((meeting) => <MeetingPastCard meeting={meeting} />)

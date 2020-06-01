@@ -123,7 +123,8 @@ app.get('/test/callback', isGuest, (req: Request, res: Response) => {
   return res.status(200).json({ message: req.query })
 })
 app.use('/rooms', isGuest, questionRouter.router());
-app.use(`${API_VERSION}/meetings`, meetingRouter.router())
+// app.use(`${API_VERSION}/meetings`, meetingRouter.router())
+app.use('/meetings', meetingRouter.router())
 
 /* Socket Io */
 let counter: { [id: string]: { count: number, counting: boolean } } = {}

@@ -4,12 +4,14 @@ import { fetchReportQuestionsAction, fetchReportViewsAction } from "./actions";
 export function fetchReportQuestions(meetingId: string | number[]){
     
     return async (dispatch: ThunkDispatch, getState:(()=>RootState)) => {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/report/question/${meetingId}`,{
+        const resFetch = await fetch(`${process.env.REACT_APP_BACKEND_URL}/report/question/${meetingId}`,{
             headers: {
                 'Authorization': `Bearer ${getState().auth.accessToken}`,
             }});
-        const result = await res.json()
-        console.log(result)
+        const result = await resFetch.json()
+        // const result =JSON.parse(resFetch)
+        console.log('fetch Report questions: ')
+        console.log(result.message)
         dispatch(fetchReportQuestionsAction(result.message))
     }
 }
