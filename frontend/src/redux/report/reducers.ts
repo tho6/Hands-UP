@@ -27,8 +27,9 @@ const initialState = {
 export const reportReducer = (oldState: ReportState = initialState,action:ReportActions) => {
     switch (action.type) {
         case '@@REPORT/LOADED_QUESTIONS':
-            const newQuestions = {} as any
-            const newQuestionsByMeetingId = {} as any
+            console.log(action.questions)
+            const newQuestions = {...oldState.questions} as any
+            const newQuestionsByMeetingId = {...oldState.questionsByMeetingId} as any
             for (let question of action.questions) {
                 newQuestions[question.id] = question
                 if (question.meetingid in newQuestionsByMeetingId){
@@ -44,8 +45,8 @@ export const reportReducer = (oldState: ReportState = initialState,action:Report
                 questionsByMeetingId: newQuestionsByMeetingId
             };
         case '@@REPORT/LOADED_VIEWS':
-            const newViews = {} as any
-            const neViewsByMeetingId = {} as any
+            const newViews = {...oldState.views} as any
+            const neViewsByMeetingId = {...oldState.viewsByMeetingId} as any
             for (let view of action.views) {
                 newViews[view.id] = view
                 if (view.meetingid in neViewsByMeetingId){

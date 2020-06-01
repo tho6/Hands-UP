@@ -13,7 +13,7 @@ export class ReportRouter {
     getQuestionsByMeetingId = async (req: express.Request, res: express.Response) => {
         try {
             const userMeetingIds = await this.reportService.getMeetingIdsById(req.personInfo?.userId!)
-            const userMeeting = userMeetingIds.map((obj:any) => (obj.id+''))
+            const userMeeting = userMeetingIds.map((obj:{id:number}) => (obj.id+''))
             let resultMeeting
             const searchString = req.params?.paramsArray
             if (searchString == 'all'){
@@ -51,7 +51,7 @@ export class ReportRouter {
     getViewsByMeetingId = async (req: express.Request, res: express.Response) => {
         try {
             const userMeetingIds = await this.reportService.getMeetingIdsById(req.personInfo?.userId!)
-            const userMeeting = userMeetingIds.map((obj:any) => (obj.id+''))
+            const userMeeting = userMeetingIds.map((obj:{id:number}) => (obj.id+''))
             let resultMeeting
             const searchString = req.params?.paramsArray
             if (searchString == 'all'){
@@ -70,15 +70,7 @@ export class ReportRouter {
             if (resultMeeting.length === 0) {
                 return res.status(400).json({ success: false, message: 'Please Input meetingId to get views' })
             }
-            // // const searchString = req.params?.paramsArray
-            // const resultMeeting = await this.reportService.getMeetingIdsById(req.personInfo?.userId!)
-            // console.log('userId: '+req.personInfo?.userId!)
-            // const searchArray = resultMeeting.map((obj:any) => obj.id)
-            // if (searchArray.length === 0) {
-            //     return res.status(400).json({ success: false, message: 'Please Input meetingId to get views' })
-            // }
-            // // const searchArrayPre = searchString.split(',')
-            // // const searchArray = searchArrayPre.map(v => parseInt(v.trim()))
+            
             const result = await this.reportService.getViewsByMeetingId(resultMeeting)
             return res.status(200).json({success: true, message: result})
 

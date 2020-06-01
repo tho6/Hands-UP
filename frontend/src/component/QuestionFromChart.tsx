@@ -23,7 +23,7 @@ export const QuestionFromChart:React.FC<any> = (props) => {
     if (props.data){
         for (const question of props.data){
             for (const platform of dataMap){
-                if (question.platformname = platform.id){
+                if (question.platformname == platform.id){
                     platform.value += 1
                     break;
                 }
