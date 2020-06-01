@@ -3,12 +3,17 @@ import { useFormState } from 'react-use-form-state';
 //CSS
 import './MeetingCreate.scss'
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 const CreateMeeting = () => {
     const [formState, { text, date, textarea }] = useFormState();
 
     return (
-        <div className="createForm">
+        <Container className="createForm">
+            <Row>
+                <Col>
             <h4>Create meeting</h4>
             <div>Meeting name
                 <input className="textarea" {...text('name')} />
@@ -40,14 +45,17 @@ const CreateMeeting = () => {
                         },
                         body: JSON.stringify(formState.values)
                     })
-                    .then(response => response.json());
+                        .then(response => response.json());
                     // alert(JSON.stringify(formState, null, 2))
-                }}><b>CREATE</b></Button>
-                <Button variant="secondary" className="resetButtonColour" onClick={() => {
-                    alert(JSON.stringify(formState, null, 2))
-                }}>RESET</Button>
+                }}><b>CREATE</b>
+                </Button>
+                <Button variant="secondary" className="resetButtonColour" onClick={formState.clear}>
+                    RESET
+                </Button>
             </div>
-        </div>
+            </Col>
+            </Row>
+        </Container>
     )
 }
 
