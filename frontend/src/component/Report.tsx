@@ -43,7 +43,7 @@ export function Report() {
         <Container className='report-container'>
             {/* <Col md={1}> */}
             {/* <Toggler /> */}
-            <Backdrop open={isDrawerOpen}/>
+            {/* <Backdrop open={isDrawerOpen}/> */}
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
