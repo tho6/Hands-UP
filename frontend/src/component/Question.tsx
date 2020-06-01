@@ -13,16 +13,17 @@ import {
   answeredQuestion
 } from '../redux/questions/thunk';
 import { useFormState } from 'react-use-form-state';
-import { IGuest } from '../models/IUserQ';
 import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
+import { PersonInfo } from '../redux/auth/reducers';
 
 export interface IQuestionProps {
   question: IQuestion;
-  user: IGuest | null | undefined;
+  user: PersonInfo|null;
   canUploadFiles: boolean;
   answering: boolean;
   isModerate: boolean;
+  isHost:boolean
 }
 
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
@@ -35,8 +36,8 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFiles, answering, isModerate } = props;
-  const canEdit = user?.guestId === question.questioner.id || user?.isHost;
+  const { user, question, canUploadFiles, answering, isModerate, isHost } = props;
+  const canEdit = (user?.guestId === question.questioner.id) || isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
   const questionContentBackUp = question.content;
@@ -303,6 +304,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                       reply={reply}
                       user={user}
                       meetingId={question.meetingId}
+                      isHost={isHost}
                     ></Reply>
                   );
                 })}
@@ -326,7 +328,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
             </div>
           )}
           <div>
-            {user?.isHost && isModerate && (
+            {isHost && isModerate && (
               <div
                 data-testid="approve-button"
                 className="util-spacing will-hover"
@@ -337,7 +339,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 <i className="far fa-check-circle fa-2x"></i>
               </div>
             )}
-            {user?.isHost &&
+            {isHost &&
               question.isApproved &&
               !question.isAnswered &&
               !question.isHide && (
@@ -351,7 +353,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <i className="fab fa-angellist fa-2x"></i>
                 </div>
               )}
-            {user?.isHost && !question.isHide && (
+            {isHost && !question.isHide && (
               <div
                 data-testid="hide-button"
                 className="util-spacing will-hover"
@@ -362,7 +364,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 <i className="far fa-eye-slash fa-2x"></i>
               </div>
             )}
-            {user?.isHost && question.isHide && (
+            {isHost && question.isHide && (
               <div
                 data-testid="display-button"
                 className="util-spacing will-hover"

@@ -32,7 +32,6 @@ import {
   successfullyDeleteReply,
   successfullyHideOrDisplayAReply
 } from '../redux/questions/actions';
-import { loadedUserInRoom } from '../redux/rooms/actions';
 import FlipMove from 'react-flip-move';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
@@ -53,6 +52,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
+  const isHost = personInfo?.userId === roomInformation.owenId;
   const questionLimitStatus = useSelector(
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
@@ -79,19 +79,6 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(getLiveStatus(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-  useEffect(() => {
-    if (personInfo) {
-      const { guestId, guestName, userId } = personInfo;
-      const userInRoom = {
-        guestId,
-        name: guestName,
-        isHost: personInfo.userId === roomInformation?.owenId ? true : false,
-        userId
-      };
-      if (roomInformation)
-        dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
-    }
-  }, [dispatch, meetingId, personInfo, roomInformation]); // this
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
@@ -183,17 +170,19 @@ const QuestionPage: React.FC = () => {
       window.addEventListener('beforeunload', leaveRoom);
       return () => {
         window.removeEventListener('beforeunload', leaveRoom);
+        leaveRoom();
       };
 
   },[dispatch, meetingId]);
   useEffect(() => {
     const leaveHost = ()=>{
-      if(roomInformation?.userInformation?.isHost) socket.emit('leave-host', roomInformation.userInformation.userId);
+      if(isHost) socket.emit('leave-host', personInfo?.userId);
     }
-      if(roomInformation?.userInformation?.isHost) socket.emit('join-host', roomInformation.userInformation.userId);
+      if(isHost) socket.emit('join-host', personInfo?.userId);
       window.addEventListener('beforeunload', leaveHost);
       return () => {
         window.removeEventListener('beforeunload', leaveHost);
+        leaveHost();
       };
     },[roomInformation]); // this
 
@@ -236,11 +225,11 @@ const QuestionPage: React.FC = () => {
             <i className="fas fa-users"></i> {peopleCount}
           </span>
         </div>
-        {roomInformation?.userInformation?.isHost === false &&
+        {isHost === false &&
           roomInformation.canModerate && (
             <div data-testid='moderation-count'>Moderation: {questionsNeedToBeApproved?.length}</div>
           )}
-        {roomInformation?.userInformation?.isHost && (
+        {isHost && (
           <div className="d-flex">
             <div className="util-spacing" data-testid='facebook-live'>
               <i className="fab fa-facebook-f fa-lg"></i>{' '}
@@ -357,7 +346,7 @@ const QuestionPage: React.FC = () => {
           </button>
         </div>
         {roomInformation?.canModerate &&
-          roomInformation.userInformation?.isHost && (
+          isHost && (
             <div data-testid="moderation-tab">
               <button
                 className={`util-spacing rounded ${
@@ -374,7 +363,7 @@ const QuestionPage: React.FC = () => {
               </button>
             </div>
           )}
-        {roomInformation?.userInformation?.isHost && (
+        {isHost && (
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[2] && 'is-active'}`}
@@ -390,7 +379,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
-        {roomInformation?.userInformation?.isHost && (
+        {isHost && (
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[3] && 'is-active'}`}
@@ -452,7 +441,7 @@ const QuestionPage: React.FC = () => {
                     return (
                       <Question
                         key={question.id}
-                        user={roomInformation.userInformation}
+                        user={personInfo}
                         canUploadFiles={roomInformation.canUploadFiles}
                         question={question}
                         answering={
@@ -461,6 +450,7 @@ const QuestionPage: React.FC = () => {
                             : false
                         }
                         isModerate={false}
+                        isHost={isHost}
                       />
                     );
                   })}
@@ -472,7 +462,7 @@ const QuestionPage: React.FC = () => {
                   return (
                     <Question
                       key={question.id}
-                      user={roomInformation.userInformation}
+                      user={personInfo}
                       canUploadFiles={roomInformation.canUploadFiles}
                       question={question}
                       answering={
@@ -481,6 +471,7 @@ const QuestionPage: React.FC = () => {
                           : false
                       }
                       isModerate={false}
+                      isHost={isHost}
                     />
                   );
                 })}
@@ -491,11 +482,12 @@ const QuestionPage: React.FC = () => {
                     question.isAnswered && (
                       <Question
                         key={question.id}
-                        user={roomInformation.userInformation}
+                        user={personInfo}
                         canUploadFiles={roomInformation.canUploadFiles}
                         question={question}
                         answering={false}
                         isModerate={false}
+                        isHost={isHost}
                       />
                     )
                   );
@@ -514,11 +506,12 @@ const QuestionPage: React.FC = () => {
                 >
                   <Question
                     key={`${question.id}`}
-                    user={roomInformation.userInformation}
+                    user={personInfo}
                     canUploadFiles={roomInformation.canUploadFiles}
                     question={question}
                     answering={false}
                     isModerate={true}
+                    isHost={isHost}
                   />
                 </div>
               );
@@ -542,11 +535,12 @@ const QuestionPage: React.FC = () => {
                 >
                   <Question
                     //key={`${question.id}`}
-                    user={roomInformation.userInformation}
+                    user={personInfo}
                     canUploadFiles={roomInformation.canUploadFiles}
                     question={question}
                     answering={false}
                     isModerate={false}
+                    isHost={isHost}
                   />
                 </div>
               );
@@ -569,8 +563,9 @@ const QuestionPage: React.FC = () => {
                 >
                   <Reply
                     reply={reply}
-                    user={roomInformation.userInformation}
+                    user={personInfo}
                     meetingId={parseInt(meetingId)}
+                    isHost={isHost}
                   />
                 </div>
               );

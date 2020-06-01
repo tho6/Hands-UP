@@ -92,7 +92,7 @@ describe('Question Reducer', () => {
             questionId: 1,
             content: 'update',
             deleteFilesId:[2],
-            files:[{ id: 3, filename: '3.png' }],
+            files:[{ id: 1, filename: '1234.png' }, { id: 3, filename: '3.png' }],
             updatedAt: new Date(Date.now()+12345),
             isApproved:true
         }

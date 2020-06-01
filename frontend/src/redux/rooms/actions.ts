@@ -14,13 +14,13 @@ export function successfullyUpdatedRoomConfiguration(meetingId: number, configur
         configuration
     }
 }
-export function loadedUserInRoom(user: IGuest, meetingId:number) {
-    return {
-        type: '@@ROOMS/LOADED_USER' as '@@ROOMS/LOADED_USER',
-        user,
-        meetingId
-    }
-}
+// export function updateHostList(meetingId:number) {
+//     return {
+//         type: '@@ROOMS/UPDATE_HOST_LIST' as '@@ROOMS/UPDATE_HOST_LIST',
+//         user,
+//         meetingId
+//     }
+// }
 export function loggedInSuccessInRoom(token: string) {
     return {
         type: '@@ROOMS/LOGGED_IN_SUCCESS' as '@@ROOMS/LOGGED_IN_SUCCESS',
@@ -50,5 +50,5 @@ export function loadInitialLiveStatus(meetingId:number, facebook: boolean, youtu
     }
 }
 // action types
-export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loadedUserInRoom> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>
+export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>
 |ReturnType<typeof successfullyToggleYoutubeLiveStatus>|ReturnType<typeof loadInitialLiveStatus>;
