@@ -52,7 +52,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
-  const isHost = personInfo?.userId === roomInformation.owenId;
+  const isHost = personInfo?.userId === roomInformation?.owenId;
   const questionLimitStatus = useSelector(
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
@@ -226,7 +226,7 @@ const QuestionPage: React.FC = () => {
           </span>
         </div>
         {isHost === false &&
-          roomInformation.canModerate && (
+          roomInformation?.canModerate && (
             <div data-testid='moderation-count'>Moderation: {questionsNeedToBeApproved?.length}</div>
           )}
         {isHost && (
