@@ -6,17 +6,18 @@ stages:
   - react-build
   - react-deploy
 
-variables:
+# variables:
   # REPOSITORY_URL: alexlau811/project3
   # IMAGE_TAG: latest
 
 react-build:
   stage: react-build
   before_script:
-    - cd frontend
+    - cd frontend/
   script:
     - yarn install
-    - GENERATE_SOURCEMAP=false yarn build
+    - yarn build
+    # - GENERATE_SOURCEMAP=false yarn build
   artifacts:
     paths:
       - frontend/build
