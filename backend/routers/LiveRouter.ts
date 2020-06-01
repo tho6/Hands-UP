@@ -150,7 +150,7 @@ export class LiveRouter {
     }
     fetchYTAccessAndRefreshToken = async (req: Request, res: Response) => {
         try {
-            const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.GOOGLE_REDIRECT_URL + '&grant_type=authorization_code';
+            const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.YOUTUBE_REDIRECT_URL + '&grant_type=authorization_code';
             console.log(bodyString);
             const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
                 method: 'POST',
