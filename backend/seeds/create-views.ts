@@ -28,10 +28,10 @@ export async function seed(knex: Knex): Promise<any> {
             picture: 'https://lh4.googleusercontent.com/-FSfCxmiwmew/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuck-5vtxd-XEFTx-XWNDo-htdW0Pzw/s96-c/photo.jpg'
         },
         {
-            name: "peter",
-            email: "peter@hibye.com",
-            google_id: 2,
-            picture: 'pic2'
+            name: "tavin",
+            email: "chingching6@gmail.com",
+            google_id: "113245393588712888848",
+            picture: 'https://lh3.googleusercontent.com/a-/AOh14GjlPiDGPYTjYq-tesPi5OaOL05x_MpudrAM7M6RVA=s96-c'
         },
         {
             name: 'mary',
