@@ -69,4 +69,4 @@ server-deploy:
           docker pull $REPOSITORY_URL:$IMAGE_TAG;
           docker stop handsup || :;
           docker rm handsup || :;
-          docker run -d -it --name=handsup -e DB_NAME -e DB_PASSWORD -e DB_USER --network host $REPOSITORY_URL:$IMAGE_TAG;"
+          docker run -d -it --name=handsup -e DB_NAME -e DB_PASSWORD -e DB_USERNAME --network host $REPOSITORY_URL:$IMAGE_TAG;"
