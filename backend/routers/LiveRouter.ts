@@ -176,9 +176,9 @@ export class LiveRouter {
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
         if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
-        // if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
-        // const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
-        // if(req.personInfo.userId!==hostId) return res.status(400).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!'});
+        if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
+        const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
+        if(req.personInfo.userId!==hostId) return res.status(401).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!', platform:true});
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {

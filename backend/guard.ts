@@ -70,15 +70,14 @@ export function authenticateGuestToken(guestService: GuestService) {
 }
 export function checkThirdPartyPlatformToken(userService:UserService) {
     return async (req: Request, res: Response, next: NextFunction) => {
-        // if(req.personInfo?.userId){
-        if(true){
+        if(req.personInfo?.userId){
             try{
                 switch('youtube'){
                     // case 'facebook':
                     //     //check token with facebook
                     //     break;
                     case 'youtube':
-                       const refreshToken = await userService.getYoutubeRefreshTokenByUserId(2);
+                       const refreshToken = await userService.getYoutubeRefreshTokenByUserId(req.personInfo.userId);
                        if(!refreshToken) return res.status(401).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
                        req.youtubeRefreshToken = refreshToken;
                         break;
