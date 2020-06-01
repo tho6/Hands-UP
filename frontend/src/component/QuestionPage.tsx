@@ -239,11 +239,11 @@ const QuestionPage: React.FC = () => {
         </div>
         {roomInformation?.userInformation?.isHost === false &&
           roomInformation.canModerate && (
-            <div>Moderation: {questionsNeedToBeApproved?.length}</div>
+            <div data-testid='moderation-count'>Moderation: {questionsNeedToBeApproved?.length}</div>
           )}
         {roomInformation?.userInformation?.isHost && (
           <div className="d-flex">
-            <div className="util-spacing">
+            <div className="util-spacing" data-testid='facebook-live'>
               <i className="fab fa-facebook-f fa-lg"></i>{' '}
               {liveStatus?.facebook ? (
                 <i className="fas fa-toggle-on fa-lg"></i>
@@ -252,6 +252,7 @@ const QuestionPage: React.FC = () => {
               )}
             </div>
             <div
+              data-testid='youtube-live'
               className="util-spacing"
               onClick={() => {
                 dispatch(
@@ -358,12 +359,11 @@ const QuestionPage: React.FC = () => {
         </div>
         {roomInformation?.canModerate &&
           roomInformation.userInformation?.isHost && (
-            <div>
+            <div data-testid="moderation-tab">
               <button
                 className={`util-spacing rounded ${
                   isQuestion[1] && 'is-active'
                 }`}
-                data-testid="moderate-button"
                 onClick={() => {
                   setIsQuestion(moderateActive);
                 }}
@@ -379,7 +379,7 @@ const QuestionPage: React.FC = () => {
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[2] && 'is-active'}`}
-              data-testid="moderate-button"
+              data-testid="inappropriate-questions-tab"
               onClick={() => {
                 setIsQuestion(inAppropriateQuestionActive);
               }}
@@ -395,7 +395,7 @@ const QuestionPage: React.FC = () => {
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[3] && 'is-active'}`}
-              data-testid="moderate-button"
+              data-testid="inappropriate-replies-tab"
               onClick={() => {
                 setIsQuestion(inAppropriateRepliesActive);
               }}
