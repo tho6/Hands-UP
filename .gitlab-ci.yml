@@ -65,7 +65,7 @@ server-deploy:
     - production
   script:
     - ssh ubuntu@${SERVER_HOSTNAME} 
-        "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+        "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin;
           docker pull $REPOSITORY_URL:$IMAGE_TAG;
           docker stop handsup || :;
           docker rm handsup || :;
