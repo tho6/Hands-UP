@@ -26,7 +26,6 @@ export function Report() {
     useEffect(() => {
         dispatch(fetchReportQuestions('all'))
         dispatch(fetchReportViews('all'))
-        console.log(match.params.loc)
 
     }, [dispatch])
 
