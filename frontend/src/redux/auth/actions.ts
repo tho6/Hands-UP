@@ -1,4 +1,3 @@
-import { PersonInfo } from "./reducers"
 export interface UserForm{
         id: number,
         name: string,

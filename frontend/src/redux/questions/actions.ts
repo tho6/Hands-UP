@@ -1,4 +1,4 @@
-import { IQuestion, reply, file, updateQuestion } from "../../models/IQuestion";
+import { IQuestion, reply, updateQuestion } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
@@ -18,7 +18,6 @@ export function successfullyDeleteQuestion(questionId: number, meetingId: number
 export function successfullyUpdateQuestion(question: updateQuestion) {
     const {questionId, content, deleteFilesId, files, updatedAt, isApproved} = question
     return {
-
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
         content,

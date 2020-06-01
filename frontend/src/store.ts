@@ -23,7 +23,7 @@ declare global {
 }
 // export type RootAction = QuestionsActions|RoomsActions|AuthActions;
 
-export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions | ReportActions;
+export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions | ReportActions | AuthActions; // this
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 

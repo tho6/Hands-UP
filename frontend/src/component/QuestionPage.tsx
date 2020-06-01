@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IQuestion,
   reply,
@@ -85,14 +85,13 @@ const QuestionPage: React.FC = () => {
       const userInRoom = {
         guestId,
         name: guestName,
-        //isHost: personInfo.userId === roomInformation?.owenId ? true : false
-        isHost: true,
-        userId: 1
+        isHost: personInfo.userId === roomInformation?.owenId ? true : false,
+        userId
       };
       if (roomInformation)
         dispatch(loadedUserInRoom(userInRoom, roomInformation.id));
     }
-  }, [dispatch, meetingId, personInfo, roomInformation?.id]);
+  }, [dispatch, meetingId, personInfo, roomInformation]); // this
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
@@ -196,7 +195,7 @@ const QuestionPage: React.FC = () => {
       return () => {
         window.removeEventListener('beforeunload', leaveHost);
       };
-    },[roomInformation?.userInformation]);
+    },[roomInformation]); // this
 
   const mostPopularQuestions = questions
     ?.filter(

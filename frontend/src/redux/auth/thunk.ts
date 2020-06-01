@@ -1,7 +1,6 @@
 import { ThunkDispatch } from "../../store";
 import { loginSuccess, logout, loginFailed, getPersonInfo } from "./actions";
 import { push } from "connected-react-router";
-import { useSelector } from "react-redux";
 import { RootState } from '../../store'
 import jwt from 'jsonwebtoken'
 const timeOutId: Array<any> = []
@@ -154,7 +153,7 @@ export function logoutAccount() {
 
         })
         const result = await res.json();
-        if (result.status == 200) {
+        if (result.status === 200) {
             dispatch(logout())
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')

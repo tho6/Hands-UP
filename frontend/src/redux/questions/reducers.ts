@@ -1,6 +1,6 @@
 import { QuestionsActions } from "./actions"
 import { IQuestion } from "../../models/IQuestion";
-import { routerActions } from "connected-react-router";
+// import { routerActions } from "connected-react-router";
 
 
 export interface QuestionState {
@@ -41,7 +41,7 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
             {
                 const newQuestions = { ...oldState.questions };
                 delete newQuestions[action.questionId]
-                const newArray = { ...oldState.questionsByMeetingId }[action.meetingId].filter(id => id != action.questionId)
+                const newArray = { ...oldState.questionsByMeetingId }[action.meetingId].filter(id => id !== action.questionId)
                 const newQuestionsByMeetingId = { ...oldState.questionsByMeetingId };
                 newQuestionsByMeetingId[action.meetingId] = newArray;
 

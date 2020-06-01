@@ -30,7 +30,7 @@ export default function Navbar() {
                     </Nav.Item>
                     <Nav.Item className = 'main-nav-item'>
                         <Nav.Link className = 'main-nav-link' eventKey="logout" onClick={()=>dispatch(logoutAccount())}>
-                        {pic != null && <img src={pic}/>}
+                        {pic != null && <img src={pic} alt="icon"/>}
                         Logout
                         </Nav.Link>
                     </Nav.Item>
