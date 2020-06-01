@@ -1,10 +1,10 @@
 image: node:12
 
 stages:
-  - server-build
-  - server-deploy
+  # - server-build
+  # - server-deploy
   - react-build
-  - react-deploy
+  # - react-deploy
 
 # variables:
   # REPOSITORY_URL: alexlau811/project3
@@ -18,21 +18,21 @@ react-build:
     - yarn install
     - yarn build
     # - GENERATE_SOURCEMAP=false yarn build
-  artifacts:
-    paths:
-      - frontend/build
+  # artifacts:
+  #   paths:
+  #     - frontend/build
 
-react-deploy:
-  image: "python:3.6"
-  stage: react-deploy
-  before_script:
-    - pip install awscli
-  dependencies:
-    - react-build
-  only:
-    - production
-  script:
-    - aws s3 sync frontend/build s3://${BUCKET_NAME} --delete
-    - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION} --paths "/*"
+# react-deploy:
+#   image: "python:3.6"
+#   stage: react-deploy
+#   before_script:
+#     - pip install awscli
+#   dependencies:
+#     - react-build
+#   only:
+#     - production
+#   script:
+#     - aws s3 sync frontend/build s3://${BUCKET_NAME} --delete
+#     - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION} --paths "/*"
 
 
