@@ -38,6 +38,8 @@ export class LiveRouter {
             const resultLongLivedToken = await fetchResLongLivedToken.json()
             if (!resultLongLivedToken) return res.status(401).json({ success: false, message: "Exchange Long Lived User Code Error" })
             console.log(resultLongLivedToken)
+            if (!req.personInfo?.userId) return res.status(401).json({ success: false, message: "No UserID" })
+            await this.userService.saveFacebookTokenByUserId(req.personInfo?.userId, resultLongLivedToken)
             //****save token */
             return res.status(200).json({ success: true, message: "Get Access Code Successful" })
         } catch (error) {
@@ -62,7 +64,9 @@ export class LiveRouter {
             //egt access token
             //whcih live?? user ? page?
             //***get token from database */
-            const accessToken = 'EAAg3wXWlMIMBAKT6ZAcK9G2XnzHjeRHb8ZAg7htaUQA4D8kV9rZCom0D2WodSCZBNupn0uQu5RzirdJHxk1oMqbN6XhmhBk5ZAdqzcxdhS6bF1jlqkhlTUWE8GZCYZAPEfKu98j20CUDYq5ZBNjDuYYje53o8yl39Uki6JmEkURnKSzVAbGRYaim'
+            if (!req.personInfo?.userId) return res.status(401).json({ success: false, message: "No UserID" })
+            const accessToken = await this.userService.getFacebookTokenByUserId(req.personInfo?.userId)
+            // const accessToken = 'EAAg3wXWlMIMBAKT6ZAcK9G2XnzHjeRHb8ZAg7htaUQA4D8kV9rZCom0D2WodSCZBNupn0uQu5RzirdJHxk1oMqbN6XhmhBk5ZAdqzcxdhS6bF1jlqkhlTUWE8GZCYZAPEfKu98j20CUDYq5ZBNjDuYYje53o8yl39Uki6JmEkURnKSzVAbGRYaim'
             const liveLoc = req.body.liveLoc
             // const liveLoc = 'user'
             let liveVideoId: number
@@ -78,7 +82,7 @@ export class LiveRouter {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${pageId}/live_videos?access_token=${accessToken}`)
                 result = await fetchRes.json()
             }
-            const liveVideos = result.data.filter((video: any) => video.status === "LIVE")
+            const liveVideos = result.data.filter((video: {"status":string}) => video.status === "LIVE")
             if (liveVideos.length > 1) {
                 return res.status(400).json({ success: false, message: "More than one live is on facebook" })
             } else if (liveVideos.length === 0) {
@@ -176,9 +180,9 @@ export class LiveRouter {
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
         if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
-        // if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
-        // const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
-        // if(req.personInfo.userId!==hostId) return res.status(400).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!'});
+        if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
+        const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
+        if(req.personInfo.userId!==hostId) return res.status(401).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!', platform:true});
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
@@ -209,7 +213,7 @@ export class LiveRouter {
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             /* fetch comments from youtube  */
-            this.fetchYTComments(1, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)

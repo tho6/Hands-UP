@@ -193,4 +193,17 @@ export class UserService {
         return true;
     }
 
+    getFacebookTokenByUserId = async(id:number):Promise<string|null>=>{
+        const sql = `SELECT facebook_token as "youtubeRefreshToken" from users where id = ?`
+        const result =  await this.knex.raw(sql, [id]);
+        if(result.rowCount !== 1) throw new Error('Cannot find user, invalid user id!');
+        return result.rows[0].youtubeRefreshToken;
+    }
+    saveFacebookTokenByUserId = async(userId:number, token:string):Promise<boolean>=>{
+        const sql = `UPDATE users SET facebook_token = ? where id = ?`
+        const result =  await this.knex.raw(sql, [token, userId]);
+        if(result.rowCount !== 1) throw new Error('Fail to save facebook token!');
+        return true;
+    }
+
 }
