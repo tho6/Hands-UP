@@ -14,7 +14,6 @@ export class UserService {
                 picture,
                 google_id: googleId
             }).returning('id')
-            // console.log(result[0])
             return result[0]
             
         } catch (error) {
@@ -49,7 +48,6 @@ export class UserService {
                 /*sql*/ `SELECT id, name, email, google_id as "googleId", picture
                         FROM users 
                         WHERE id = ANY(?)`, [ids])
-            // console.log(result.rows)
             return result.rows
 
         } catch (error) {
@@ -65,7 +63,6 @@ export class UserService {
                 /*sql*/ `SELECT id, name, email, google_id as "googleId", picture
                         FROM users 
                         WHERE name = ANY(?)`, [names])
-            // console.log(result.rows)
             return result.rows
 
         } catch (error) {
@@ -81,7 +78,6 @@ export class UserService {
                 /*sql*/ `SELECT id, name, email, google_id as "googleId", picture
                         FROM users 
                         WHERE email = ANY(?)`, [emails])
-            // console.log(result.rows)
             return result.rows
 
         } catch (error) {
@@ -91,7 +87,6 @@ export class UserService {
     }
 
     getUserByGoogleId = async (ids: string[]):Promise<UserForm[]> => {
-        console.log(ids)
         try {
             if (ids.length === 0) throw new RangeError("GoogleId array is empty")
             
@@ -99,7 +94,6 @@ export class UserService {
                 /*sql*/ `SELECT id, name, email, google_id as "googleId", picture
                         FROM users 
                         WHERE google_id = ANY(?)`, [ids])
-            // console.log(result.rows)
             return result.rows
 
         } catch (error) {
@@ -116,7 +110,6 @@ export class UserService {
             const deletedRows = await this.knex.raw(/*sql*/ `WITH deleted as (DELETE FROM users 
                                                         WHERE id = ANY(?) RETURNING *) 
                                                         SELECT count(*) FROM deleted;`, [ids])
-            // console.log(result.rows)
             return parseInt(deletedRows.rows[0].count)
 
         } catch (error) {
@@ -125,23 +118,6 @@ export class UserService {
         }
     }
 
-    // deleteUserByEmail = async (emails: string[]) => {
-    //     try {
-    //         if (emails.length === 0) throw new Error("Email array is empty")
-            
-    //         const deletedRows = await this.knex.raw(/*sql*/ `WITH deleted as (DELETE FROM users 
-    //                             WHERE email = ANY(?) RETURNING *) 
-    //                             SELECT count(*) FROM deleted;`, [emails])
-    //         // console.log(result.rows)
-    //         return parseInt(deletedRows.rows[0].count)
-
-    //     } catch (error) {
-    //         console.log('[User Service Error] ' + 'deleteUserByEmail')
-    //         throw error
-    //     }
-    // }
-
-    //update user
     updateUserById = async (updateForms: UserForm[]):Promise<number> => {
         if (updateForms.length === 0) throw new RangeError("Update array is empty")
         const trx = await this.knex.transaction();

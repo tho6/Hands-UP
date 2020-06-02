@@ -2,7 +2,7 @@ import { seed } from "../seeds/create-questions";
 import Knex from 'knex';
 const knexConfig = require("../knexfile");
 // const knex = Knex(knexConfig["testing"]);
-const knex = Knex(knexConfig["development"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 import { QuestionService } from "./QuestionService";
 import { QuestionDAO } from "./dao/questionDAO";
 import { ReplyDAO } from "./dao/replyDAO";
@@ -138,14 +138,14 @@ describe
             expect(isUpdate).toEqual({ files: [{ id: 1, filename: '123.png' }], needApproved: false });
             const question = await questionService.getQuestionsByRoomId(1);
             const expectedResult = [{ ...defaultQuestions[0], content: 'update question', isApproved: true}, defaultQuestions[1]];
-            expect(question).toEqual(expectedResult);
+            expect(question.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id));
         });
         it('updateQuestion - room1 delete one file (upload:false, moderate:false)', async () => {
             const isUpdate = await questionService.updateQuestion(1, 'update question', [1], []);
             expect(isUpdate).toEqual({ files: [], needApproved: false });
             const question = await questionService.getQuestionsByRoomId(1);
             const expectedResult = [ { ...defaultQuestions[0], files: [], content: 'update question', isApproved: true},defaultQuestions[1]];
-            expect(question).toEqual(expectedResult);
+            expect(question.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id));
         });
         it('updateQuestion - room1 upload files (upload:false, moderate:false)', async () => {
             await expect(questionService.updateQuestion(1, 'update question', [1], ['123.s', '4124.s'])).rejects.toThrowError('This room is not allowed to upload any files!');

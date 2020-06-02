@@ -4,7 +4,8 @@ import { GuestService } from '../services/GuestService';
 import { GuestRouter } from './GuestRouter';
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV || "cicd"]);
+// const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
 
 describe('Guest Router Testing', ()=>{
     let guestService: GuestService

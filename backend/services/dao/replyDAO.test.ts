@@ -4,7 +4,7 @@ import { ReplyDAO } from './replyDAO';
 import { replyDB } from "../../models/type/replyFromDB";
 
 const knexConfig = require("../../knexfile");
-const knex = Knex(knexConfig["testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 // console.log(knex);
 describe('replyDAO', () => {
     const replyDAO = new ReplyDAO(knex)
@@ -66,8 +66,8 @@ describe('replyDAO', () => {
                             guestId: 2,
                             guestName: 'guest2',
                             content: 'reply 1',
-                            createdAt: new Date("2020-05-23T12:00:00.000z"),
-                            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+                            createdAt: expect.anything(),
+                            updatedAt: expect.anything(),
                             isHide: false,
                             questionId: 1
                         },
@@ -76,13 +76,13 @@ describe('replyDAO', () => {
                             guestId: 1,
                             guestName: 'guest1',
                             content: 'create a new question',
-                            createdAt: result[1].createdAt,
-                            updatedAt: result[1].updatedAt,
+                            createdAt: expect.anything(),
+                            updatedAt: expect.anything(),
                             isHide: false,
                             questionId: 1
                         }
                     ]
-        expect(result).toEqual(expectedResult)
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id))
     });
     it('createReply - question room is not found', async () => {
         await expect(replyDAO.createReply(10, 'create a new question',1)).rejects.toThrowError();

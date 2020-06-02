@@ -121,10 +121,6 @@ app.use('/user', userRouter.router())
 app.use('/guest', guestRouter.router())
 app.use('/live', liveRouter.router())
 app.use('/report', isUser, reportRouter.router())
-app.get('/test/callback', isGuest, (req: Request, res: Response) => {
-  console.log('guard is working')
-  return res.status(200).json({ message: req.query })
-})
 app.use('/rooms', isGuest, questionRouter.router());
 // app.use(`${API_VERSION}/meetings`, meetingRouter.router())
 app.use('/meetings', meetingRouter.router())
