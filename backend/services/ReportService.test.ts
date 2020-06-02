@@ -506,7 +506,7 @@ describe('Report Service Test', ()=>{
             }
           ]
         const serviceResult = await reportService.getQuestionReportDataByMeetingId([2,1])
-        expect(serviceResult).toEqual(result)
+        expect(serviceResult.sort((a:any,b:any)=>a.id-b.id)).toEqual(result.sort((a:any,b:any)=>a.id-b.id))
     })
 
     it('getQuestionReportDataByMeetingId - one meetingId', async ()=>{
@@ -589,7 +589,7 @@ describe('Report Service Test', ()=>{
             }
           ]
         const serviceResult = await reportService.getQuestionReportDataByMeetingId([1])
-        expect(serviceResult).toEqual(result)
+        expect(serviceResult.sort((a:any,b:any)=>a.id-b.id)).toEqual(result.sort((a:any,b:any)=>a.id-b.id))
     })
 
     it('getQuestionReportDataByMeetingId - no meeting id', async ()=>{
