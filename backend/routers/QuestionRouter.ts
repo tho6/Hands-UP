@@ -57,7 +57,7 @@ export class QuestionRouter {
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
                 /* Action */
                 try {
-                    const files = req.files.length === 0 ? [] : (req.files as Express.Multer.File[]).map((file) => file.filename);
+                    const files = req.files.length === 0 ? [] : (req.files as any[]).map((file) => file.location);
                     const resQuestion: question = await this.questionService.createQuestion(parseInt(req.params.id), content, files, 1, req.personInfo.guestId);
                     this.io.in(`event:${resQuestion.meetingId}`).emit('create-question', resQuestion);
                     res.status(200).json({ status: true, message: resQuestion });
@@ -92,7 +92,7 @@ export class QuestionRouter {
                 if (!(await this.checkHost(questionId, (req.personInfo.userId || 0)) || await this.checkQuestionOwner(questionId, req.personInfo.guestId))) throw new Error('You are not allowed to update the question!');
                 /* Action */
                 try {
-                    const files = req.files.length === 0 ? [] : (req.files as Express.Multer.File[]).map((file) => file.filename);
+                    const files = req.files.length === 0 ? [] : (req.files as any[]).map((file) => file.location);
                     const result: { files: customFileDB[], needApproved: boolean } = await this.questionService.updateQuestion(questionId, content, deleteFilesIdArr, files);
                     const data = { content, questionId, deleteFilesId:deleteFilesIdArr, files: result.files, updatedAt: new Date(Date.now()), isApproved: result.needApproved ? false : true };
                     const meetingId = await this.questionService.getRoomIdByQuestionId(questionId);

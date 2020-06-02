@@ -1,5 +1,5 @@
 import Knex from "knex";
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
 // import expressSession from 'express-session'
 import bodyParser from "body-parser";
