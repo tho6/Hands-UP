@@ -13,10 +13,15 @@ export class AuthRouter {
     private refreshTokenPublicKey: string
     private refreshTokenPrivateKey: string
     constructor(private userService: UserService, private guestService: GuestService, private authService: AuthService) {
-        this.accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
-        this.accessTokenPrivateKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PRIVATE_KEY}"`)
-        this.refreshTokenPublicKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PUBLIC_KEY}"`)
-        this.refreshTokenPrivateKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PRIVATE_KEY}"`)
+        // this.accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
+        // this.accessTokenPrivateKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PRIVATE_KEY}"`)
+        // this.refreshTokenPublicKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PUBLIC_KEY}"`)
+        // this.refreshTokenPrivateKey = JSON.parse(`"${process.env.REFRESH_TOKEN_PRIVATE_KEY}"`)
+        this.accessTokenPublicKey = process.env.ACCESS_TOKEN_PUBLIC_KEY!.replace(/\\n/g,"\n")
+        this.accessTokenPrivateKey = process.env.ACCESS_TOKEN_PRIVATE_KEY!.replace(/\\n/g,"\n")
+        this.refreshTokenPublicKey = process.env.REFRESH_TOKEN_PUBLIC_KEY!.replace(/\\n/g,"\n")
+        this.refreshTokenPrivateKey = process.env.REFRESH_TOKEN_PRIVATE_KEY!.replace(/\\n/g,"\n")
+
     }
 
     router() {

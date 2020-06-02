@@ -210,12 +210,13 @@ const QuestionPage: React.FC = () => {
   const questionsInAppropriate = questions?.filter(
     (question) => question.isHide
   );
-  const replyInAppropriate = questions
-    ?.map((question) => question.replies)
-    .reduce((a, b) => {
-      return a.concat(b);
-    })
-    .filter((reply) => reply.isHide);
+  let replyInAppropriate:reply[]=[]
+  if(questions?.length > 0) replyInAppropriate = questions
+  ?.map((question) => question.replies)
+  .reduce((a, b) => {
+    return a.concat(b);
+  })
+  .filter((reply) => reply.isHide);
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
