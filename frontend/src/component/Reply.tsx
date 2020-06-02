@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { reply } from '../models/IQuestion';
 import { useFormState } from 'react-use-form-state';
-import { IGuest } from '../models/IUserQ';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
 import {
@@ -9,20 +8,22 @@ import {
   deleteReply,
   hideOrDisplayReply
 } from '../redux/questions/thunk';
+import { PersonInfo } from '../redux/auth/reducers';
 
 export interface IReplyProps {
   reply: reply;
-  user: IGuest | null | undefined;
+  user: PersonInfo|null;
   meetingId: number;
+  isHost: boolean
 }
 
 const Reply: React.FC<IReplyProps> = (props) => {
-  const { reply, user, meetingId } = props;
+  const { reply, user, meetingId, isHost } = props;
   const [formState, { textarea }] = useFormState();
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCancelModal, setCancelModal] = useState(false);
-  const canEdit = reply.guestId === user?.guestId || user?.isHost;
+  const canEdit = (reply.guestId === user?.guestId) || isHost;
   const dispatch = useDispatch();
   const backupValue = reply.content;
   return (
@@ -99,7 +100,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
             </span>
           </div>
         )}
-        {user?.isHost && !reply.isHide && (
+        {isHost && !reply.isHide && (
           <div
             data-testid="hide-button"
             className="util-spacing will-hover"
@@ -110,7 +111,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
             <i className="far fa-eye-slash"></i>
           </div>
         )}
-        {user?.isHost && reply.isHide && (
+        {isHost && reply.isHide && (
           <div
             data-testid="display-button"
             className="util-spacing will-hover"

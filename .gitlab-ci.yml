@@ -1,14 +1,20 @@
 image: node:12
 
 stages:
+  - server-testing
   - server-build
   - server-deploy
+  - react-testing
   - react-build
   - react-deploy
 
 variables:
   REPOSITORY_URL: tho6/handsup
   IMAGE_TAG: latest
+  POSTGRES_DB: testing
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: postgres
 
 react-build:
   stage: react-build
@@ -70,3 +76,23 @@ server-deploy:
           docker stop handsup || :;
           docker rm handsup || :;
           docker run -d -it --name=handsup -e DB_NAME=$DB_NAME -e DB_PASSWORD=$DB_PASSWORD -e DB_USERNAME=$DB_USERNAME --network host $REPOSITORY_URL:$IMAGE_TAG;"
+
+react-testing:
+  before_script:
+    - cd frontend
+    - yarn install
+  stage: react-testing
+  script:
+    - yarn test
+
+server-testing:
+  services:
+    - postgres:latest
+
+  before_script:
+    - cd backend
+    - yarn install
+    - yarn knex migrate:latest --env cicd
+  stage: server-testing
+  script:
+    - yarn jest --runInBand

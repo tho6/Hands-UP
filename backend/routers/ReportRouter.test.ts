@@ -73,7 +73,7 @@ describe('Report Router test', ()=>{
                   meetingcreatedat: createdAt,
                   meetingupdatedat: createdAt,
                   platformid: 1,
-                  platformname: 'project3',
+                  platformname: 'handsup',
                   meetingownerid: 1,
                   meetingsownername: 'ivan',
                   questionlikes: '2'
@@ -92,7 +92,7 @@ describe('Report Router test', ()=>{
                   meetingcreatedat: createdAt,
                   meetingupdatedat: createdAt,
                   platformid: 1,
-                  platformname: 'project3',
+                  platformname: 'handsup',
                   meetingownerid: 1,
                   meetingsownername: 'ivan',
                   questionlikes: null
@@ -130,7 +130,7 @@ describe('Report Router test', ()=>{
                     meetingcreatedat: createdAt,
                     meetingupdatedat: createdAt,
                     platformid: 1,
-                    platformname: 'project3',
+                    platformname: 'handsup',
                     meetingownerid: 1,
                     meetingsownername: 'ivan',
                     questionlikes: null
@@ -149,7 +149,7 @@ describe('Report Router test', ()=>{
                     meetingcreatedat: createdAt,
                     meetingupdatedat: createdAt,
                     platformid: 1,
-                    platformname: 'project3',
+                    platformname: 'handsup',
                     meetingownerid: 1,
                     meetingsownername: 'ivan',
                     questionlikes: null

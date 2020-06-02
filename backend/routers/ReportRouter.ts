@@ -21,22 +21,14 @@ export class ReportRouter {
             }else{
                 const searchArrayPre = searchString.split(',')
                 const searchArray = searchArrayPre.map(v=>v.trim())
-                // console.log(searchArray)
-                // console.log(userMeeting)
                 resultMeeting = userMeeting.filter(function(obj:string) { return searchArray.indexOf(obj) != -1; });
-                console.log('else: '+resultMeeting)
-            }
-            console.log('userId: '+req.personInfo?.userId!)
-            
-            // const searchString = resultMeetingIds
+            }            
             if (resultMeeting.length === 0) {
                 return res.status(400).json({ success: false, message: 'Please Input meetingId to search question' })
             }
-            // const searchArrayPre = searchString.split(',')
-            // const searchArray = searchArrayPre.map(v => parseInt(v.trim()))
+
             const result = await this.reportService.getQuestionReportDataByMeetingId(resultMeeting)
-            console.log('router: ')
-            console.log(result)
+
             res.status(200).json({success: true, message: result})
             return 
 
@@ -59,14 +51,9 @@ export class ReportRouter {
             }else{
                 const searchArrayPre = searchString.split(',')
                 const searchArray = searchArrayPre.map(v=>v.trim())
-                console.log(searchArray)
-                console.log(userMeeting)
                 resultMeeting = userMeeting.filter(function(obj:string) { return searchArray.indexOf(obj) != -1; });
-                console.log('else: '+resultMeeting)
             }
-            console.log('userId: '+req.personInfo?.userId!)
             
-            // const searchString = resultMeetingIds
             if (resultMeeting.length === 0) {
                 return res.status(400).json({ success: false, message: 'Please Input meetingId to get views' })
             }

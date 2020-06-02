@@ -4,7 +4,8 @@ import { UserService } from '../services/UserService';
 import { UserRouter } from './UserRouter';
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV || "cicd"]);
+// const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
 
 describe('User Router Testing', ()=>{
     let userService: UserService
