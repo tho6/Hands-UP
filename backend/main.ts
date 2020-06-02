@@ -24,6 +24,8 @@ import http from 'http';
 import { authenticateGuestToken, authenticateUserToken } from "./guard";
 import { ReportRouter } from "./routers/ReportRouter";
 import { ReportService } from "./services/ReportService";
+import multerS3 from "multer-s3";
+import aws from 'aws-sdk';
 // import redis from 'redis';
 // const client = redis.createClient();
 
@@ -58,19 +60,36 @@ const knexConfig = require("./knexfile");
 const knex = Knex(knexConfig[process.env.NODE_ENV || "development"]);
 
 /* Multer configuration */
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "uploads"));
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      `${req.params.id}-${Date.now()}.${file.mimetype.split("/")[1]}`
-    ); // category and dish refer to html form name tag
-  },
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "uploads"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(
+//       null,
+//       `${req.params.id}-${Date.now()}.${file.mimetype.split("/")[1]}`
+//     ); // category and dish refer to html form name tag
+//   },
+// });
+
+//const upload = multer({ storage: storage });
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID_CDN,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_CDN,
+  region: 'ap-southeast-1'
 });
-//@ts-ignore
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: multerS3({
+      s3: s3,
+      bucket: 'cdn.handsup.host',
+      metadata: (req,file,cb)=>{
+          cb(null,{fieldName: file.fieldname});
+      },
+      key: (req,file,cb)=>{
+          cb(null,`${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
+      }
+  })
+})
 
 /* DAO */
 const questionDAO = new services.QuestionDAO(knex);
@@ -172,28 +191,6 @@ io.on('connection', socket => {
     socket.leave('host:' + userId)
   })
 });
-
-/* Multer */
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID_CDN,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_CDN,
-  region: 'ap-southeast-1'
-});
-
-
-const upload = multer({
-  storage: multerS3({
-      s3: s3,
-      bucket: 'cdn.handsup.host',
-      metadata: (req,file,cb)=>{
-          cb(null,{fieldName: file.fieldname});
-      },
-      key: (req,file,cb)=>{
-          cb(null,`${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
-      }
-  })
-})
-
 
 /* Listening port */
 const PORT = process.env.PORT || 8080;

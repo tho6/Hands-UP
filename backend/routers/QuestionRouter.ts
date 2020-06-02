@@ -5,9 +5,10 @@ import { question } from "../models/type/question";
 import { customFileDB } from "../models/type/questionFromDB";
 import socketIO from 'socket.io';
 
+
 export class QuestionRouter {
     private counter: { [id: string]: { counting: boolean, count: number } } = {};
-    constructor(private questionService: IQuestionService, private upload: any, private io: socketIO.Server) { }
+    constructor(private questionService: IQuestionService, private upload:any, private io: socketIO.Server) { }
 
     router() {
         const router = express.Router();
