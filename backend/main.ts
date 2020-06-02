@@ -1,5 +1,5 @@
 import Knex from "knex";
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
 // import expressSession from 'express-session'
 import bodyParser from "body-parser";
@@ -26,7 +26,8 @@ import { ReportRouter } from "./routers/ReportRouter";
 import { ReportService } from "./services/ReportService";
 // import redis from 'redis';
 // const client = redis.createClient();
-
+import dotenv from 'dotenv'
+dotenv.config()
 
 declare global {
   namespace Express {

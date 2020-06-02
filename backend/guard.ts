@@ -42,6 +42,7 @@ export function authenticateUserToken(userService: UserService, guestService: Gu
 
 export function authenticateGuestToken(guestService: GuestService) {
     return (req: Request, res: Response, next: NextFunction) => {
+        console.log(process.env.ACCESS_TOKEN_PUBLIC_KEY)
         const accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
         const authHeader = req.headers['authorization']
         const token = authHeader && authHeader.split(' ')[1]
