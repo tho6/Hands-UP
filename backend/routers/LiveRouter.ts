@@ -180,9 +180,9 @@ export class LiveRouter {
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
         if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
-        // if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
-        // const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
-        // if(req.personInfo.userId!==hostId) return res.status(400).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!'});
+        if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
+        const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
+        if(req.personInfo.userId!==hostId) return res.status(401).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!', platform:true});
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
@@ -213,7 +213,7 @@ export class LiveRouter {
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             /* fetch comments from youtube  */
-            this.fetchYTComments(1, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)

@@ -1,16 +1,8 @@
 import React from 'react'
 import './ReportNavbar.scss'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import { Navbar, Nav, NavDropdown, NavItem } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
+
 export const ReportNavbar:React.FC<any> = (props) => {
-    const questions = useSelector((state:RootState)=>state.report.questions)
-    const objMeetings:any = {}
- 
     // for (const questionKey in questions){
     //     objMeetings[questions[questionKey].meetingid] = questions[questionKey].meetingscheduletime
     // }

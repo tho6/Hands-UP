@@ -6,14 +6,13 @@ export interface RoomState {
         [id: string]: IRoomInformation
     };
     questionLimitStatus: { [id: string]: { isChecking: boolean, count: number } };
-    liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } }
+    liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } };
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
     questionLimitStatus: {},
-    liveStatus: {}
-
+    liveStatus: {},
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -37,15 +36,6 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
                 return {
                     ...oldState,
                     roomsInformation: newRooms,
-                };
-            }
-        case '@@ROOMS/LOADED_USER':
-            {
-                const newRoomInformation = { ...oldState.roomsInformation };
-                newRoomInformation[action.meetingId] = { ...oldState.roomsInformation[action.meetingId], userInformation: action.user };
-                return {
-                    ...oldState,
-                    roomsInformation: newRoomInformation,
                 };
             }
         case '@@ROOMS/LOGGED_IN_SUCCESS':

@@ -1,7 +1,7 @@
-import { ThunkDispatch, RootState } from "../../store";
-import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, loadedUserInRoom, loggedInSuccessInRoom, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus } from "./actions";
+import { ThunkDispatch } from "../../store";
+import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
-import { tFetchRoomInformation, tLoginAsGuest, tUserIsNotAHost, tCurrentGuest, tUserToken, tGuestToken, tCurrentHost } from "../../fakeResponse";
+import { tFetchRoomInformation} from "../../fakeResponse";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {

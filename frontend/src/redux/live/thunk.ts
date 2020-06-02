@@ -11,7 +11,8 @@ export function sendFacebookCode(authCode: string){
                 authCode
             })
         })
-        const result = await res.json() //sucess =true?
+        const result = await res.json() //success =true?
+        console.log(result) // this
 
     }
 }

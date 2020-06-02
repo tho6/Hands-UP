@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 import { ReportNavbar } from './ReportNavbar';
-import { Container, Col } from 'react-bootstrap';
-import Toggler from './Toggler';
+import { Container } from 'react-bootstrap';
 import { Backdrop } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { RootState } from '../store';
@@ -27,9 +26,8 @@ export function Report() {
     useEffect(() => {
         dispatch(fetchReportQuestions('all'))
         dispatch(fetchReportViews('all'))
-        console.log(match.params.loc)
 
-    }, [])
+    }, [dispatch])
 
     const questionsByMeetingId = useSelector((state:RootState)=>state.report.questionsByMeetingId[meetingId!])
     const questions = useSelector((state:RootState)=>questionsByMeetingId?.map((id:number) => state.report.questions[id]))
@@ -43,7 +41,7 @@ export function Report() {
         <Container className='report-container'>
             {/* <Col md={1}> */}
             {/* <Toggler /> */}
-            {/* <Backdrop open={isDrawerOpen}/> */}
+            <Backdrop open={isDrawerOpen}/>
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>

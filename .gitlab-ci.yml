@@ -1,0 +1,98 @@
+image: node:12
+
+stages:
+  - server-testing
+  - server-build
+  - server-deploy
+  - react-testing
+  - react-build
+  - react-deploy
+
+variables:
+  REPOSITORY_URL: tho6/handsup
+  IMAGE_TAG: latest
+  POSTGRES_DB: testing
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: postgres
+
+react-build:
+  stage: react-build
+  before_script:
+    - cd frontend/
+  script:
+    - yarn install
+    # - yarn build
+    - GENERATE_SOURCEMAP=false yarn build
+  artifacts:
+    paths:
+      - frontend/build
+
+server-build:
+  image: "docker:18.09"
+  stage: server-build
+  services:
+    - docker:18.09.7-dind
+  before_script:
+    - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+  script:
+    - cd backend
+    - docker build  -t handsup:$IMAGE_TAG -f Dockerfile .
+    - docker tag handsup:$IMAGE_TAG $REPOSITORY_URL:$IMAGE_TAG
+    - docker push $REPOSITORY_URL:$IMAGE_TAG
+
+
+react-deploy:
+  image: "python:3.6"
+  stage: react-deploy
+  before_script:
+    - pip install awscli
+  dependencies:
+    - react-build
+  only:
+    - production
+  script:
+    - aws s3 sync frontend/build s3://${BUCKET_NAME} --delete
+    - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION} --paths "/*"
+
+server-deploy:
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > private.pem
+    - chmod 400 private.pem
+    - ssh-add private.pem > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H  ${SERVER_HOSTNAME} > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  stage: server-deploy
+  only:
+    - production
+  script:
+    - ssh ubuntu@${SERVER_HOSTNAME} 
+        "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin;
+          docker pull $REPOSITORY_URL:$IMAGE_TAG;
+          docker stop handsup || :;
+          docker rm handsup || :;
+          docker run -d -it --name=handsup -e DB_NAME=$DB_NAME -e DB_PASSWORD=$DB_PASSWORD -e DB_USERNAME=$DB_USERNAME --network host $REPOSITORY_URL:$IMAGE_TAG;"
+
+react-testing:
+  before_script:
+    - cd frontend
+    - yarn install
+  stage: react-testing
+  script:
+    - yarn test
+
+server-testing:
+  services:
+    - postgres:latest
+
+  before_script:
+    - cd backend
+    - yarn install
+    - yarn knex migrate:latest --env cicd
+  stage: server-testing
+  script:
+    - yarn jest --runInBand

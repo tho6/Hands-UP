@@ -1,4 +1,4 @@
-import { AuthActions, getPersonInfo } from "./actions";
+import { AuthActions } from "./actions";
 export interface AuthState {
     accessToken: string | null | undefined
     refreshToken: string | null | undefined

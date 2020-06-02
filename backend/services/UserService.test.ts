@@ -4,7 +4,8 @@ import { UserService } from './UserService';
 import { UserForm } from '../models/UserInterface';
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+// const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 
 describe('testing User Service', ()=>{
     let userService: UserService

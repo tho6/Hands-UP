@@ -21,7 +21,6 @@ describe('Question Reducer', () => {
             roomsInformation: {},
             questionLimitStatus: {},
             liveStatus:{}
-
         };
 
     })

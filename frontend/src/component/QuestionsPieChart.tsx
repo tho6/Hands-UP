@@ -23,15 +23,15 @@ export const QuestionsPieChart:React.FC<any> = (props) => {
     if (props.data){
         for (const question of props.data){
             for (const category of dataMap){
-                if (question.isanswered && category.id == 'Answered Question'){
+                if (question.isanswered && category.id === 'Answered Question'){
                     category.value += 1
                     break;
                 }
-                if (!question.isanswered && question.ishide && category.id == 'Inappropriate Question'){
+                if (!question.isanswered && question.ishide && category.id === 'Inappropriate Question'){
                     category.value += 1
                     break
                 }
-                if (!question.isanswered && category.id == 'Not Answered Question'){
+                if (!question.isanswered && category.id === 'Not Answered Question'){
                     category.value += 1
                     break
                 }

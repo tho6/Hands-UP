@@ -1,4 +1,4 @@
-import { IQuestion, reply, file, updateQuestion } from "../../models/IQuestion";
+import { IQuestion, reply as IReply, updateQuestion } from "../../models/IQuestion";
 
 // action creator
 export function loadQuestions(meetingId: number, questions: IQuestion[]) {
@@ -18,7 +18,6 @@ export function successfullyDeleteQuestion(questionId: number, meetingId: number
 export function successfullyUpdateQuestion(question: updateQuestion) {
     const {questionId, content, deleteFilesId, files, updatedAt, isApproved} = question
     return {
-
         type: '@@QUESTIONS/UPDATE_QUESTION' as '@@QUESTIONS/UPDATE_QUESTION',
         questionId,
         content,
@@ -28,7 +27,7 @@ export function successfullyUpdateQuestion(question: updateQuestion) {
         isApproved
 }
 }
-export function addedReplyToQuestion(reply: reply) {
+export function addedReplyToQuestion(reply: IReply) {
     return {
         type: '@@QUESTIONS/ADDED_REPLY_TO_QUESTION' as '@@QUESTIONS/ADDED_REPLY_TO_QUESTION',
         reply

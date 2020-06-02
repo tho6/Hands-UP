@@ -10,7 +10,8 @@ import { ReplyDAO } from "../services/dao/replyDAO";
 
 const knexConfig = require('../knexfile');
 // const knex = Knex(knexConfig["testing"]);
-const knex = Knex(knexConfig["development"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV || "cicd"]);
+
 
 describe('Question Router', () => {
     let questionDAO: IQuestionDAO = new QuestionDAO(knex);
@@ -130,8 +131,8 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         const question = await questionService.getQuestionsByRoomId(1);
-        expect(io.emit).toBeCalledWith('create-question', question[1]);
-        expect(res.json).toBeCalledWith({ status: true, message: question[1] });
+        expect(io.emit).toBeCalledWith('create-question', question.sort((a,b)=>a.id-b.id)[2]);
+        expect(res.json).toBeCalledWith({ status: true, message: question.sort((a,b)=>a.id-b.id)[2] });
         expect(res.status).toBeCalledWith(200);
     });
     it('createQuestion - normal spam', async () => {
@@ -594,7 +595,7 @@ describe('Question Router', () => {
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).not.toBeCalled();
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to answer the question!` });
     });
     it('answered question - not a user', async () => {
         let res = {
@@ -616,7 +617,7 @@ describe('Question Router', () => {
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).not.toBeCalled();
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to answer the question!` });
     });
     it('hide question - normal', async () => {
         let res = {
@@ -704,7 +705,7 @@ describe('Question Router', () => {
         //assert
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to hide/approve the question!` });
         expect(io.emit).not.toBeCalled();
         expect(res.status).toBeCalledWith(400);
     });
