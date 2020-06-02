@@ -29,7 +29,6 @@ import aws from 'aws-sdk';
 // import redis from 'redis';
 // const client = redis.createClient();
 
-
 declare global {
   namespace Express {
     interface Request {
