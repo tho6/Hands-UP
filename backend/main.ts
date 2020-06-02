@@ -45,7 +45,8 @@ const io = SocketIO(server)
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://localhost:3000'
+    'https://localhost:3000',
+    'https://handsup.host'
   ]
 }))
 
