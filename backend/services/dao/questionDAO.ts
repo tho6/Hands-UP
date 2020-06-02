@@ -25,7 +25,7 @@ export class QuestionDAO implements IQuestionDAO {
     async updateQuestion(id: number, content: string, deleteFilesId: number[], files: string[], isApproved: boolean): Promise<boolean> {
         const updateContent = `UPDATE questions SET (content, updated_at, is_approved) = (?, NOW(), ?) WHERE id = ?;`;
         const insertFiles = `INSERT INTO question_attachments (question_id, name) VALUES (?, ?);`;
-        const deleteFiles = `DELETE FROM question_attachments WHERE id = ?;`;
+        const deleteFiles = `DELETE FROM question_attachments WHERE id = ANY (?);`;
         const trx = await this.knex.transaction();
         try {
             const updateResult = await trx.raw(updateContent, [content, isApproved, id]);
@@ -38,11 +38,9 @@ export class QuestionDAO implements IQuestionDAO {
                     throw new Error('Fail to update question - insert files');
                 }
             }
-            for (const deleteId of deleteFilesId) {
-                const deleteFileResult = await trx.raw(deleteFiles, [deleteId]);
-                if (deleteFileResult.rowCount !== 1) {
-                    throw new Error('Fail to update question - delete files');
-                }
+           if(deleteFilesId.length>0) {
+                const deleteFileResult = await trx.raw(deleteFiles, [deleteFilesId]);
+                if (deleteFileResult.rowCount !== deleteFilesId.length) throw new Error('Fail to update question - delete files');
             }
             await trx.commit();
             return true;
