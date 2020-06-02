@@ -87,7 +87,7 @@ react-testing:
 
 server-testing:
   services:
-    - postgres:latest
+    - postgres:12
 
   before_script:
     - cd backend
