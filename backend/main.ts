@@ -44,9 +44,11 @@ const io = SocketIO(server)
 /* Enable cors */
 app.use(cors({
   origin: [
-    'http://localhost:3000',
-    'https://localhost:3000',
-    'https://handsup.host'
+    process.env.REACT_APP_FRONTEND_URL!
+    // 'http://localhost:3000',
+    // 'https://localhost:3000',
+    // 'https://handsup.host',
+    // 'https://api.handsup.host'
   ]
 }))
 
