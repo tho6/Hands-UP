@@ -92,7 +92,7 @@ server-testing:
   before_script:
     - cd backend
     - yarn install
-    - yarn knex migrate:latest
+    - yarn knex migrate:latest --env cicd
   stage: server-testing
   script:
     - yarn jest --runInBand
