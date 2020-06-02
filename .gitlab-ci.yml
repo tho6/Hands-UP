@@ -80,8 +80,8 @@ react-testing:
   stage: react-testing
   script:
     - yarn test
-    
-  server-testing:
+
+server-testing:
   services:
     - postgres:latest
 
