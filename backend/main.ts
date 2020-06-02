@@ -173,6 +173,28 @@ io.on('connection', socket => {
   })
 });
 
+/* Multer */
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID_CDN,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_CDN,
+  region: 'ap-southeast-1'
+});
+
+
+const upload = multer({
+  storage: multerS3({
+      s3: s3,
+      bucket: 'cdn.handsup.host',
+      metadata: (req,file,cb)=>{
+          cb(null,{fieldName: file.fieldname});
+      },
+      key: (req,file,cb)=>{
+          cb(null,`${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
+      }
+  })
+})
+
+
 /* Listening port */
 const PORT = process.env.PORT || 8080;
 // app.listen(PORT, () => {
