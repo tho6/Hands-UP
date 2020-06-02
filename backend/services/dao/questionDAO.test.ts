@@ -93,21 +93,21 @@ describe('QuestionDAO', () => {
         expect(isUpdate).toBe(true);
         const result = await questionDAO.getQuestionsByRoomId(1);
         const expectedResult: questionDB[] = [defaultQuestion[0], defaultQuestion[1]];
-        expect(result).toEqual(expectedResult);
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id));
         const files = await questionDAO.getQuestionFiles(1);
         expect(files).toEqual([]);
     });
     it('updateQuestion - delete 1 files - with no such file in the question', async () => {
         await expect(questionDAO.updateQuestion(1, 'question 1', [5], [], false)).rejects.toThrowError('Fail to update question - delete files');
         const result = await questionDAO.getQuestionsByRoomId(1);
-        expect(result).toEqual(defaultQuestion);
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(defaultQuestion.sort((a,b)=>a.id-b.id));
     });
     it('updateQuestion - upload 1 file', async () => {
         const isUpdate: boolean = await questionDAO.updateQuestion(1, 'question 1', [1], ['456.png'], false);
         expect(isUpdate).toBe(true);
         const result = await questionDAO.getQuestionsByRoomId(1);
         const expectedResult: questionDB[] = [defaultQuestion[0], defaultQuestion[1]];
-        expect(result).toEqual(expectedResult);
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id));
         const files = await questionDAO.getQuestionFiles(1);
         expect(files).toEqual([{ id: 2, filename: '456.png' }])
     });
@@ -261,7 +261,7 @@ describe('QuestionDAO', () => {
         const isAnswered = await questionDAO.answeredQuestion(1);
         expect(isAnswered).toBe(true);
         const result: questionDB[] = await questionDAO.getQuestionsByRoomId(1);
-        expect(result).toEqual(expectedResult)
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id))
     });
     it('answered question - fail to answer', async () => {
         await expect(questionDAO.answeredQuestion(10)).rejects.toThrowError('Fail to answer question - question is not found!');

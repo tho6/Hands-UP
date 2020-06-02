@@ -82,7 +82,7 @@ describe('replyDAO', () => {
                             questionId: 1
                         }
                     ]
-        expect(result).toEqual(expectedResult)
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id))
     });
     it('createReply - question room is not found', async () => {
         await expect(replyDAO.createReply(10, 'create a new question',1)).rejects.toThrowError();
