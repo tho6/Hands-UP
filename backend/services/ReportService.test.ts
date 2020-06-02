@@ -9,7 +9,7 @@ const createdAt = new Date("2020-05-23T12:00:00.000z")  // Date.parse createdDat
 //@ts-ignore
 const updatedAt = new Date("2020-05-23T13:00:00.000z")  // Date.parse createdDate --> = 1590238800000
 const scheduleTime = new Date("2020-05-30T13:00:00.000z")  // Date.parse createdDate --> = 1590238800000
-describe('Report Service Test', ()=>{
+describe.skip('Report Service Test', ()=>{
     let reportService: ReportService
     
     beforeEach(async ()=>{

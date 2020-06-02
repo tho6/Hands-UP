@@ -131,7 +131,7 @@ jest.mock('use-react-router',()=>{
 jest.mock('connected-react-router');
 
 
-describe('QuestionPage component', () => {
+describe.skip('QuestionPage component', () => {
   beforeEach(() => {
    // (Question as any as jest.Mock).mockReturnValue(<div>QuestionComponent</div>);
     // (Reply as any as  jest.Mock).mockReturnValue(<div>ReplyComponent</div>);

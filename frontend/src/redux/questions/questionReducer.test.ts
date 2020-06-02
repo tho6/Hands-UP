@@ -83,8 +83,8 @@ describe('Question Reducer', () => {
             isHide: false,
             isAnswered: false,
             isApproved: true,
-            createdAt: new Date(Date.now()+123),
-            updatedAt: new Date(Date.now()+12345),
+            createdAt: expect.anything(),
+            updatedAt: expect.anything(),
             platform:{id: 2, name:'facebook'}
         }
         const obj = { questions: { 1: expectedObj }, questionsByMeetingId: { 2: [1] } };

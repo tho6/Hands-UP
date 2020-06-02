@@ -594,7 +594,7 @@ describe('Question Router', () => {
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).not.toBeCalled();
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to answer the question!` });
     });
     it('answered question - not a user', async () => {
         let res = {
@@ -616,7 +616,7 @@ describe('Question Router', () => {
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
         expect(io.emit).not.toBeCalled();
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to answer the question!` });
     });
     it('hide question - normal', async () => {
         let res = {
@@ -704,7 +704,7 @@ describe('Question Router', () => {
         //assert
         expect(io.in).not.toBeCalled();
         expect(res.json).toBeCalledTimes(1);
-        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to delete the question!` });
+        expect(res.json).toBeCalledWith({ status: false, message: `You are not allowed to hide/approve the question!` });
         expect(io.emit).not.toBeCalled();
         expect(res.status).toBeCalledWith(400);
     });
