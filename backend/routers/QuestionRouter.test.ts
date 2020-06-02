@@ -10,7 +10,8 @@ import { ReplyDAO } from "../services/dao/replyDAO";
 
 const knexConfig = require('../knexfile');
 // const knex = Knex(knexConfig["testing"]);
-const knex = Knex(knexConfig["development"]);
+const knex = Knex(knexConfig["process.env.TESTING_ENV"||"cicd"]);
+
 
 describe('Question Router', () => {
     let questionDAO: IQuestionDAO = new QuestionDAO(knex);

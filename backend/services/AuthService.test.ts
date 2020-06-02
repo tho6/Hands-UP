@@ -3,7 +3,8 @@ import Knex from "knex";
 import { seed } from '../seeds/create-refresh-token'
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
+// const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
 
 describe('auth service testing', ()=>{
     let authService: AuthService

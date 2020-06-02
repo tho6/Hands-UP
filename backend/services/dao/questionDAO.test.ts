@@ -5,7 +5,7 @@ import { questionDB, customFileDB } from "../../models/type/questionFromDB";
 
 
 const knexConfig = require("../../knexfile");
-const knex = Knex(knexConfig["development"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 // const knex = Knex(knexConfig["testing"]);
 // console.log(knex);
 describe('QuestionDAO', () => {

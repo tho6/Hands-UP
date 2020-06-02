@@ -4,7 +4,8 @@ import { GuestService } from './GuestService';
 import { GuestForm } from '../models/GuestInterface';
 
 const knexConfig = require('../knexfile');
-const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
+// const knex = Knex(knexConfig[process.env.TESTING_ENV || "testing"]);
 
 describe('testing Guest Service', () => {
     let guestService: GuestService

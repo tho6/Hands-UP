@@ -4,7 +4,7 @@ import { ReplyDAO } from './replyDAO';
 import { replyDB } from "../../models/type/replyFromDB";
 
 const knexConfig = require("../../knexfile");
-const knex = Knex(knexConfig["testing"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 // console.log(knex);
 describe('replyDAO', () => {
     const replyDAO = new ReplyDAO(knex)

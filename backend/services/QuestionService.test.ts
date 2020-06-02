@@ -2,7 +2,7 @@ import { seed } from "../seeds/create-questions";
 import Knex from 'knex';
 const knexConfig = require("../knexfile");
 // const knex = Knex(knexConfig["testing"]);
-const knex = Knex(knexConfig["development"]);
+const knex = Knex(knexConfig[process.env.TESTING_ENV||'cicd']);
 import { QuestionService } from "./QuestionService";
 import { QuestionDAO } from "./dao/questionDAO";
 import { ReplyDAO } from "./dao/replyDAO";
