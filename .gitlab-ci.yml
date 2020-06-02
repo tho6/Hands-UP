@@ -11,6 +11,10 @@ stages:
 variables:
   REPOSITORY_URL: tho6/handsup
   IMAGE_TAG: latest
+  POSTGRES_DB: testing
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: postgres
 
 react-build:
   stage: react-build
