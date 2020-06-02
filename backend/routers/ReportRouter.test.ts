@@ -156,7 +156,7 @@ describe('Report Router test', ()=>{
                   }
               ]}
         await reportRouter.getQuestionsByMeetingId(req, res)
-        expect(res.json).toBeCalledWith(result)
+        expect(res.json.sort((a:any,b:any)=>a.id-b.id)).toBeCalledWith({...result, message:result.message.sort((a:any,b:any)=>a.id-b.id)})
     })
 
     it('getQuestionsByMeetingId - empty meetingId', async()=>{
