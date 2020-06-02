@@ -131,8 +131,8 @@ describe('Question Router', () => {
         expect(io.in).toBeCalledWith('event:1');
         expect(res.json).toBeCalledTimes(1);
         const question = await questionService.getQuestionsByRoomId(1);
-        expect(io.emit).toBeCalledWith('create-question', question[1]);
-        expect(res.json).toBeCalledWith({ status: true, message: question[1] });
+        expect(io.emit).toBeCalledWith('create-question', question.sort((a,b)=>a.id-b.id)[2]);
+        expect(res.json).toBeCalledWith({ status: true, message: question.sort((a,b)=>a.id-b.id)[2] });
         expect(res.status).toBeCalledWith(200);
     });
     it('createQuestion - normal spam', async () => {

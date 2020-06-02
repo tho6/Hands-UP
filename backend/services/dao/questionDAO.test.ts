@@ -84,7 +84,7 @@ describe('QuestionDAO', () => {
             isApproved: true,
         }, defaultQuestion[1]
         ];
-        expect(result).toEqual(expectedResult);
+        expect(result.sort((a,b)=>a.id-b.id)).toEqual(expectedResult.sort((a,b)=>a.id-b.id));
         const files = await questionDAO.getQuestionFiles(1);
         expect(files).toEqual([{ id: 1, filename: '123.png' }])
     });

@@ -66,8 +66,8 @@ describe('replyDAO', () => {
                             guestId: 2,
                             guestName: 'guest2',
                             content: 'reply 1',
-                            createdAt: new Date("2020-05-23T12:00:00.000z"),
-                            updatedAt: new Date("2020-05-23T12:00:00.000z"),
+                            createdAt: expect.anything(),
+                            updatedAt: expect.anything(),
                             isHide: false,
                             questionId: 1
                         },
@@ -76,8 +76,8 @@ describe('replyDAO', () => {
                             guestId: 1,
                             guestName: 'guest1',
                             content: 'create a new question',
-                            createdAt: result[1].createdAt,
-                            updatedAt: result[1].updatedAt,
+                            createdAt: expect.anything(),
+                            updatedAt: expect.anything(),
                             isHide: false,
                             questionId: 1
                         }
