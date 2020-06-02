@@ -1,5 +1,4 @@
 import { IRoomInformation, IRoomConfiguration } from "../../models/IRoomInformation";
-import { IGuest } from "../../models/IUserQ";
 
 export function loadedRoomInformation(room: IRoomInformation) {
     return {

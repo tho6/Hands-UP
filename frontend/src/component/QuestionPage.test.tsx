@@ -81,7 +81,6 @@ jest.mock('react-redux', () => {
     canModerate: true,
     canUploadFiles: true,
     questionLimit: 10,
-    userInformation: { ...tCurrentGuest.user }
   };
   const personInfo ={
     userId: 1,
@@ -96,7 +95,30 @@ jest.mock('react-redux', () => {
       mapDispatchToProps,
       ReactComponent
     }),
-    useSelector:jest.fn().mockReturnValueOnce([1,2]).mockReturnValueOnce(personInfo).mockReturnValueOnce(mockQuestions).mockReturnValueOnce(roomInformation).mockReturnValueOnce(questionStatus).mockResolvedValueOnce(liveStatus),
+    //useSelector:jest.fn().mockReturnValueOnce([1,2]).mockReturnValueOnce(personInfo).mockReturnValueOnce(mockQuestions).mockReturnValueOnce(roomInformation).mockReturnValueOnce(questionStatus).mockResolvedValueOnce(liveStatus),
+    useSelector: jest.fn().mockImplementation(selector => selector({
+      roomsInformation: {
+        roomsInformation:{
+          1: roomInformation
+        },
+        liveStatus:liveStatus,
+        questionLimitStatus:questionStatus
+      },
+      questions: { 
+        questionsByMeetingId: {
+          1:[1,2]
+        },
+        questions:{
+          1:mockQuestions[0],
+          2:mockQuestions[1]
+        }
+      },
+      auth:{
+        personInfo:personInfo
+        
+      }
+    }
+    )),
     //@ts-ignore
     Provider: ({ children }) => children,
     useDispatch:jest.fn(()=>{return ()=>{}})
