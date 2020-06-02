@@ -28,6 +28,8 @@ import multerS3 from "multer-s3";
 import aws from 'aws-sdk';
 // import redis from 'redis';
 // const client = redis.createClient();
+import dotenv from 'dotenv'
+dotenv.config()
 
 declare global {
   namespace Express {
