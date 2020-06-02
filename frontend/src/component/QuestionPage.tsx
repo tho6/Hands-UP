@@ -202,7 +202,7 @@ const QuestionPage: React.FC = () => {
       leaveHost();
       window.removeEventListener('beforeunload', leaveHost);
     };
-  }, [personInfo, isHost, meetingId]); // this
+  }, [personInfo, isHost, meetingId, dispatch]); // this
 
   const mostPopularQuestions = questions
     ?.filter(
