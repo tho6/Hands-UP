@@ -118,7 +118,7 @@ export async function seed(knex: Knex): Promise<any> {
         ])
         /* Insert Platform */
         await trx("platforms").insert([{
-            name: 'project3',
+            name: 'handsup',
         },
         {
             name: 'facebook'
