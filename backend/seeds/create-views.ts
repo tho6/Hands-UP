@@ -13,6 +13,8 @@ export async function seed(knex: Knex): Promise<any> {
         await trx.raw(/*sql*/ `TRUNCATE tokens RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE guests RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE users RESTART IDENTITY CASCADE`);
+        await trx.raw(/*sql*/ `TRUNCATE views RESTART IDENTITY CASCADE`);
+
 
         /*Timestamps Output the same number */
         const createdAt = new Date("2020-05-23T12:00:00.000z")  // Date.parse createdDate --> = 1590235200000

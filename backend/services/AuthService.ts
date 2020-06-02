@@ -19,8 +19,6 @@ export class AuthService {
             } else {
                 throw (new Error('Database Error'))
             }
-            
-            
         }
     }
 
@@ -30,7 +28,6 @@ export class AuthService {
             const deletedRows = await this.knex.raw(/*sql*/ `WITH deleted as (DELETE FROM tokens 
                 WHERE refresh_token = (?) RETURNING *) 
                 SELECT count(*) FROM deleted;`, [refreshToken])
-            // console.log(result.rows)
             return parseInt(deletedRows.rows[0].count)
         } catch (error) {
             console.log('[Auth Service Error] ' + 'deleteRefreshToken')
@@ -50,7 +47,6 @@ export class AuthService {
                 /*sql*/ `SELECT id
                         FROM tokens 
                         WHERE refresh_token = (?)`, [refreshToken])
-            // console.log(result.rows)
             if (result.rows.length > 0) {
                 return result.rows[0].id
             } else {
@@ -74,7 +70,6 @@ export class AuthService {
                 /*sql*/ `SELECT access_token
                         FROM tokens 
                         WHERE refresh_token = (?)`, [refreshToken])
-            // console.log(result.rows)
             if (result.rows.length > 0) {
                 return result.rows[0].access_token
             } else {

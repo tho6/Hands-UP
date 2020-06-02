@@ -11,7 +11,7 @@ const createdAt = new Date("2020-05-23T12:00:00.000z")  // Date.parse createdDat
 const updatedAt = new Date("2020-05-23T13:00:00.000z")  // Date.parse createdDate --> = 1590238800000
 const scheduleTime = new Date("2020-05-30T13:00:00.000z")  // Date.parse createdDate --> = 1590238800000
 
-describe.skip('Report Router test', ()=>{
+describe('Report Router test', ()=>{
     let reportRouter: ReportRouter
     let reportService: ReportService
     beforeEach(async ()=>{
@@ -73,7 +73,7 @@ describe.skip('Report Router test', ()=>{
                   meetingcreatedat: createdAt,
                   meetingupdatedat: createdAt,
                   platformid: 1,
-                  platformname: 'project3',
+                  platformname: 'handsup',
                   meetingownerid: 1,
                   meetingsownername: 'ivan',
                   questionlikes: '2'
@@ -92,7 +92,7 @@ describe.skip('Report Router test', ()=>{
                   meetingcreatedat: createdAt,
                   meetingupdatedat: createdAt,
                   platformid: 1,
-                  platformname: 'project3',
+                  platformname: 'handsup',
                   meetingownerid: 1,
                   meetingsownername: 'ivan',
                   questionlikes: null
@@ -130,7 +130,7 @@ describe.skip('Report Router test', ()=>{
                     meetingcreatedat: createdAt,
                     meetingupdatedat: createdAt,
                     platformid: 1,
-                    platformname: 'project3',
+                    platformname: 'handsup',
                     meetingownerid: 1,
                     meetingsownername: 'ivan',
                     questionlikes: null
@@ -149,7 +149,7 @@ describe.skip('Report Router test', ()=>{
                     meetingcreatedat: createdAt,
                     meetingupdatedat: createdAt,
                     platformid: 1,
-                    platformname: 'project3',
+                    platformname: 'handsup',
                     meetingownerid: 1,
                     meetingsownername: 'ivan',
                     questionlikes: null

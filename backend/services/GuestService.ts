@@ -12,12 +12,10 @@ export class GuestService {
         try {
             const maxIdResult = await this.knex.raw(/*SQL*/`SELECT max(id) FROM guests`)
             const maxId = maxIdResult.rows[0].max
-            // console.log(maxId)
             const name = await hashGuestName('guest'+maxId)
             const result = await this.knex('guests').insert({
                 name
             }).returning('id')
-            // console.log(name)
             return result[0]
         } catch (error) {
             console.log('[Guest Service Error] ' + 'createGuest')
@@ -46,7 +44,6 @@ export class GuestService {
                 /*sql*/ `SELECT id, name
                         FROM guests 
                         WHERE id = ANY(?)`, [ids])
-            // console.log(result.rows)
             return result.rows
 
         } catch (error) {
@@ -64,7 +61,6 @@ export class GuestService {
             const deletedRows = await this.knex.raw(/*sql*/ `WITH deleted as (DELETE FROM guests 
                                                         WHERE id = ANY(?) RETURNING *) 
                                                         SELECT count(*) FROM deleted;`, [ids])
-            // console.log(result.rows)
             return parseInt(deletedRows.rows[0].count)
 
         } catch (error) {
@@ -88,9 +84,7 @@ export class GuestService {
                 updated += parseInt(updatedRows.rows[0].count)
             }
             await trx.commit();
-
             return updated
-            
         } catch (error) {
             await trx.rollback()
             console.log('[Guest Service Error] ' + 'updateGuestById')

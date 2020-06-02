@@ -62,7 +62,6 @@ export class UserRouter {
                     break
             }
             const outputUsers = users!.map(({ googleId, ...item }) => item);
-            console.log(searchArray)
             return res.status(200).json({success: true, message: outputUsers})
         } catch (error) {
             return error.name == 'RangeError'? 
