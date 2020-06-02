@@ -40,6 +40,13 @@ export function successfullyToggleYoutubeLiveStatus(meetingId:number, isFetch: b
         meetingId
     }
 }
+export function successfullyToggleFacebookLiveStatus(meetingId:number, isFetch: boolean) {
+    return {
+        type: '@@ROOMS/TOGGLE_FACEBOOK_LIVE_STATUS' as '@@ROOMS/TOGGLE_FACEBOOK_LIVE_STATUS',
+        isFetch,
+        meetingId
+    }
+}
 export function loadInitialLiveStatus(meetingId:number, facebook: boolean, youtube:boolean) {
     return {
         type: '@@ROOMS/LOAD_INITIAL_LIVE_STATUS' as '@@ROOMS/LOAD_INITIAL_LIVE_STATUS',
@@ -50,4 +57,4 @@ export function loadInitialLiveStatus(meetingId:number, facebook: boolean, youtu
 }
 // action types
 export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loggedInSuccessInRoom>| ReturnType<typeof setQuestionLimitState>
-|ReturnType<typeof successfullyToggleYoutubeLiveStatus>|ReturnType<typeof loadInitialLiveStatus>;
+|ReturnType<typeof successfullyToggleYoutubeLiveStatus>|ReturnType<typeof loadInitialLiveStatus>|ReturnType<typeof successfullyToggleFacebookLiveStatus>;

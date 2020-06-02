@@ -12,7 +12,8 @@ import Question from './Question';
 import {
   fetchRoomInformation,
   toggleYoutubeLiveStatus,
-  getLiveStatus
+  getLiveStatus,
+  toggleFacebookLiveStatus
 } from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
@@ -33,6 +34,7 @@ import {
   successfullyHideOrDisplayAReply
 } from '../redux/questions/actions';
 import FlipMove from 'react-flip-move';
+import { successfullyToggleYoutubeLiveStatus, successfullyToggleFacebookLiveStatus } from '../redux/rooms/actions';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -82,8 +84,8 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     const newQuestionListener = (question: IQuestion) => {
       dispatch(addedQuestion(question));
     };
@@ -101,7 +103,10 @@ const QuestionPage: React.FC = () => {
       const { guestId, questionId } = res;
       dispatch(successfullyVoteForAQuestion(questionId, guestId));
     };
-    const removeVoteListener = (res: { guestId: number; questionId: number }) => {
+    const removeVoteListener = (res: {
+      guestId: number;
+      questionId: number;
+    }) => {
       const { guestId, questionId } = res;
       dispatch(successfullyRemoveVote(questionId, guestId));
     };
@@ -117,7 +122,9 @@ const QuestionPage: React.FC = () => {
     };
     const updateReplyListener = (res: updateReply) => {
       const { replyId, questionId, content, updatedAt } = res;
-      dispatch(successfullyUpdateReply(questionId, replyId, content, updatedAt));
+      dispatch(
+        successfullyUpdateReply(questionId, replyId, content, updatedAt)
+      );
     };
     const createReplyListener = (res: reply) => {
       dispatch(addedReplyToQuestion(res));
@@ -140,51 +147,62 @@ const QuestionPage: React.FC = () => {
     const peopleCountListener = (count: number) => {
       setPeopleCount(count);
     };
-    const leaveRoom = ()=>{
-    socket.emit('leave_event', meetingId);
-    socket.off('create-question', newQuestionListener);
-    socket.off('update-question', updateQuestionListener);
-    socket.off('delete-question', deleteQuestionListener);
-    socket.off('add-vote', addVoteListener);
-    socket.off('remove-vote', removeVoteListener);
-    socket.off('answered-question', answeredQuestionListener);
-    socket.off('hideOrApproved-question', hideOrApprovedQuestionListener);
-    socket.off('update-reply', updateReplyListener);
-    socket.off('create-reply', createReplyListener);
-    socket.off('delete-reply', deleteReplyListener);
-    socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
-    }
-      socket.emit('join_event', meetingId);
-      socket.on('create-question', newQuestionListener);
-      socket.on('update-question', updateQuestionListener);
-      socket.on('delete-question', deleteQuestionListener);
-      socket.on('add-vote', addVoteListener);
-      socket.on('remove-vote', removeVoteListener);
-      socket.on('answered-question', answeredQuestionListener);
-      socket.on('hideOrApproved-question', hideOrApprovedQuestionListener);
-      socket.on('update-reply', updateReplyListener);
-      socket.on('create-reply', createReplyListener);
-      socket.on('delete-reply', deleteReplyListener);
-      socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
-      socket.on('update-count', peopleCountListener);
-      window.addEventListener('beforeunload', leaveRoom);
-      return () => {
-        window.removeEventListener('beforeunload', leaveRoom);
-        leaveRoom();
-      };
-
-  },[dispatch, meetingId]);
+    const leaveRoom = () => {
+      socket.emit('leave_event', meetingId);
+      socket.off('create-question', newQuestionListener);
+      socket.off('update-question', updateQuestionListener);
+      socket.off('delete-question', deleteQuestionListener);
+      socket.off('add-vote', addVoteListener);
+      socket.off('remove-vote', removeVoteListener);
+      socket.off('answered-question', answeredQuestionListener);
+      socket.off('hideOrApproved-question', hideOrApprovedQuestionListener);
+      socket.off('update-reply', updateReplyListener);
+      socket.off('create-reply', createReplyListener);
+      socket.off('delete-reply', deleteReplyListener);
+      socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
+    };
+    socket.emit('join_event', meetingId);
+    socket.on('create-question', newQuestionListener);
+    socket.on('update-question', updateQuestionListener);
+    socket.on('delete-question', deleteQuestionListener);
+    socket.on('add-vote', addVoteListener);
+    socket.on('remove-vote', removeVoteListener);
+    socket.on('answered-question', answeredQuestionListener);
+    socket.on('hideOrApproved-question', hideOrApprovedQuestionListener);
+    socket.on('update-reply', updateReplyListener);
+    socket.on('create-reply', createReplyListener);
+    socket.on('delete-reply', deleteReplyListener);
+    socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
+    socket.on('update-count', peopleCountListener);
+    window.addEventListener('beforeunload', leaveRoom);
+    return () => {
+      window.removeEventListener('beforeunload', leaveRoom);
+      leaveRoom();
+    };
+  }, [dispatch, meetingId]);
   useEffect(() => {
-    const leaveHost = ()=>{
-      if(isHost) socket.emit('leave-host', personInfo?.userId);
-    }
-      if(isHost) socket.emit('join-host', personInfo?.userId);
-      window.addEventListener('beforeunload', leaveHost);
-      return () => {
-        window.removeEventListener('beforeunload', leaveHost);
-        leaveHost();
-      };
-    },[personInfo, isHost]); // this
+    if(!isHost) return
+    const turnOffYoutubeLive = () => {
+      dispatch(successfullyToggleYoutubeLiveStatus(parseInt(meetingId), false));
+    };
+    const turnOffFacebookLive = () => {
+      dispatch(successfullyToggleFacebookLiveStatus(parseInt(meetingId), false));
+    };
+    const leaveHost = () => {
+      if(!isHost) return
+      socket.emit('leave-host', personInfo?.userId);
+      socket.off('youtube-stop', turnOffYoutubeLive);
+      socket.off('facebook-stop', turnOffFacebookLive);
+    };
+    socket.emit('join-host', personInfo?.userId);
+    socket.on('youtube-stop', turnOffYoutubeLive);
+    socket.on('facebook-stop', turnOffFacebookLive);
+    window.addEventListener('beforeunload', leaveHost);
+    return () => {
+      leaveHost();
+      window.removeEventListener('beforeunload', leaveHost);
+    };
+  }, [personInfo, isHost, meetingId]); // this
 
   const mostPopularQuestions = questions
     ?.filter(
@@ -210,13 +228,14 @@ const QuestionPage: React.FC = () => {
   const questionsInAppropriate = questions?.filter(
     (question) => question.isHide
   );
-  let replyInAppropriate:reply[]=[]
-  if(questions?.length > 0) replyInAppropriate = questions
-  ?.map((question) => question.replies)
-  .reduce((a, b) => {
-    return a.concat(b);
-  })
-  .filter((reply) => reply.isHide);
+  let replyInAppropriate: reply[] = [];
+  if (questions?.length > 0)
+    replyInAppropriate = questions
+      ?.map((question) => question.replies)
+      .reduce((a, b) => {
+        return a.concat(b);
+      })
+      .filter((reply) => reply.isHide);
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
@@ -226,13 +245,26 @@ const QuestionPage: React.FC = () => {
             <i className="fas fa-users"></i> {peopleCount}
           </span>
         </div>
-        {isHost === false &&
-          roomInformation?.canModerate && (
-            <div data-testid='moderation-count'>Moderation: {questionsNeedToBeApproved?.length}</div>
-          )}
+        {isHost === false && roomInformation?.canModerate && (
+          <div data-testid="moderation-count">
+            Moderation: {questionsNeedToBeApproved?.length}
+          </div>
+        )}
         {isHost && (
           <div className="d-flex">
-            <div className="util-spacing" data-testid='facebook-live'>
+            <div
+              className="util-spacing"
+              data-testid="facebook-live"
+              onClick={() => {
+                dispatch(
+                  toggleFacebookLiveStatus(
+                    parseInt(meetingId),
+                    liveStatus?.facebook ? false : true,
+                    'page'
+                  )
+                );
+              }}
+            >
               <i className="fab fa-facebook-f fa-lg"></i>{' '}
               {liveStatus?.facebook ? (
                 <i className="fas fa-toggle-on fa-lg"></i>
@@ -241,7 +273,7 @@ const QuestionPage: React.FC = () => {
               )}
             </div>
             <div
-              data-testid='youtube-live'
+              data-testid="youtube-live"
               className="util-spacing"
               onClick={() => {
                 dispatch(
@@ -346,24 +378,21 @@ const QuestionPage: React.FC = () => {
               : ''}
           </button>
         </div>
-        {roomInformation?.canModerate &&
-          isHost && (
-            <div data-testid="moderation-tab">
-              <button
-                className={`util-spacing rounded ${
-                  isQuestion[1] && 'is-active'
-                }`}
-                onClick={() => {
-                  setIsQuestion(moderateActive);
-                }}
-              >
-                MODERATION{' '}
-                {questionsNeedToBeApproved.length > 0
-                  ? `(${questionsNeedToBeApproved.length})`
-                  : ''}
-              </button>
-            </div>
-          )}
+        {roomInformation?.canModerate && isHost && (
+          <div data-testid="moderation-tab">
+            <button
+              className={`util-spacing rounded ${isQuestion[1] && 'is-active'}`}
+              onClick={() => {
+                setIsQuestion(moderateActive);
+              }}
+            >
+              MODERATION{' '}
+              {questionsNeedToBeApproved.length > 0
+                ? `(${questionsNeedToBeApproved.length})`
+                : ''}
+            </button>
+          </div>
+        )}
         {isHost && (
           <div>
             <button
