@@ -16,7 +16,7 @@ jest.mock('node-fetch');
 const knexConfig = require('../knexfile');
 const knex = Knex(knexConfig[process.env.TESTING_ENV || "cicd"]);
 
-describe('LiveRouter', () => {
+describe.skip('LiveRouter', () => {
     let questionDAO: IQuestionDAO = new QuestionDAO(knex);
     let replyDAO: IReplyDAO = new ReplyDAO(knex);
     let questionService: IQuestionService;
