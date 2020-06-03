@@ -322,7 +322,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
               <i className="fab fa-youtube fa-2x"></i>
             </div>
           )}
-          {question.platform.name === 'project3' && (
+          {question.platform.name === 'handsup' && (
             <div className="p-2 platform-icon">
               <i className="far fa-hand-paper fa-2x"></i>
             </div>
