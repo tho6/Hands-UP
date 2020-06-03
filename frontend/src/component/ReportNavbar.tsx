@@ -6,7 +6,6 @@ export const ReportNavbar:React.FC<any> = (props) => {
     // for (const questionKey in questions){
     //     objMeetings[questions[questionKey].meetingid] = questions[questionKey].meetingscheduletime
     // }
-if(!props) return(<div></div>);
     return (
         // <nav className='side-drawer'>
         //     <ul className='side-drawer-items'>
@@ -31,7 +30,6 @@ if(!props) return(<div></div>);
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-    
-    )
+    );
 }
 

@@ -4,7 +4,7 @@ import { TokenInfo } from './models/AuthInterface'
 import { UserService } from './services/UserService'
 import { GuestService } from './services/GuestService'
 
-/* export function authenticateUserToken(userService: UserService, guestService: GuestService) {
+export function authenticateUserToken(userService: UserService, guestService: GuestService) {
     return (req: Request, res: Response, next: NextFunction) => {
         // const accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
         const accessTokenPublicKey = process.env.ACCESS_TOKEN_PUBLIC_KEY!.replace(/\\n/g,"\n")
@@ -39,7 +39,7 @@ import { GuestService } from './services/GuestService'
         })
         return
     }
-} */
+}
 
 export function authenticateToken(guestService: GuestService, userService: UserService) {
     return (req: Request, res: Response, next: NextFunction) => {
