@@ -13,10 +13,10 @@ export class LiveRouter {
     router() {
         const router = express.Router()
         router.post('/fb/token', this.fetchAccessCode)
-        router.post('/fb/comments', this.fetchComments)
-        router.post('/fb/views', this.fetchViews)
+        router.post('/fb/comments',checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchComments)
+        router.post('/fb/views',checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
-        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService), this.checkYTLiveBroadcast)
+        router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService, 'youtube'), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.put('/fb/comments/:meetingId([0-9]+)', this.stopGettingFacebookComments)
         router.post('/yt/views', this.fetchViews)
@@ -53,8 +53,8 @@ export class LiveRouter {
     fetchComments = async (req: Request, res: Response) => {
         try {
 
-            if (!req.personInfo?.userId) return res.status(401).json({ success: false, message: "No UserID" })
-            const accessToken = await this.userService.getFacebookTokenByUserId(req.personInfo?.userId)
+            if (!req.personInfo?.userId) return res.status(400).json({ success: false, message: "No UserID" })
+            const accessToken = req.facebookToken
             // const accessToken = 'EAAg3wXWlMIMBAKT6ZAcK9G2XnzHjeRHb8ZAg7htaUQA4D8kV9rZCom0D2WodSCZBNupn0uQu5RzirdJHxk1oMqbN6XhmhBk5ZAdqzcxdhS6bF1jlqkhlTUWE8GZCYZAPEfKu98j20CUDYq5ZBNjDuYYje53o8yl39Uki6JmEkURnKSzVAbGRYaim'
             const liveLoc = req.body.liveLoc
             let liveVideoId: number
@@ -70,6 +70,7 @@ export class LiveRouter {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${pageId}/live_videos?access_token=${accessToken}`)
                 result = await fetchRes.json()
             }
+            if (result['error']) return res.status(401).json({success:false, message:'Bad Request to FB'})
             const liveVideos = result.data.filter((video: {"status":string}) => video.status === "LIVE")
             if (liveVideos.length > 1) {
                 return res.status(400).json({ success: false, message: "More than one live is on facebook" })
@@ -107,7 +108,7 @@ export class LiveRouter {
     fetchViews = async (req: Request, res: Response) => {
         try {
             if (!req.personInfo?.userId) return res.status(401).json({ success: false, message: "No UserID" })
-            const accessToken = await this.userService.getFacebookTokenByUserId(req.personInfo?.userId)
+            const accessToken = req.facebookToken
             // const accessToken = 'EAAg3wXWlMIMBAKT6ZAcK9G2XnzHjeRHb8ZAg7htaUQA4D8kV9rZCom0D2WodSCZBNupn0uQu5RzirdJHxk1oMqbN6XhmhBk5ZAdqzcxdhS6bF1jlqkhlTUWE8GZCYZAPEfKu98j20CUDYq5ZBNjDuYYje53o8yl39Uki6JmEkURnKSzVAbGRYaim'
             const liveVideoId = req.body.liveId
             const fetchViewRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=live_views&access_token=${accessToken}`)
