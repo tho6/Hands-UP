@@ -44,12 +44,15 @@ export function Report() {
     
     return (
         <Container className='report-container'>
+            {/* <Col md={1}> */}
+            {/* <Toggler /> */}
             <Backdrop open={isDrawerOpen}/>
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
             <QuestionsPieChart data={questions}/>
             <QuestionLikesRank data={questions}/>
+            {/* </Col> */}
         </Container>
     )
 }
