@@ -13,6 +13,7 @@ import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 import Home from './component/Home';
 import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
+// import FacebookLogin from './component/FacebookLogin';
 
 function App() {
   const dispatch = useDispatch()
@@ -21,6 +22,10 @@ function App() {
     dispatch(checkToken())
     dispatch(restoreLogin())
     console.log('app dispatch')
+  }, [dispatch])
+  useEffect(() => {
+    dispatch(restoreLogin())
+    console.log('restore login')
   }, [dispatch, accessToken])
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)

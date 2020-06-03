@@ -34,7 +34,6 @@ export class AuthRouter {
         return router
     }
     private generateAccessToken = (payload: TokenInfo) => {
-        console.log(this.accessTokenPrivateKey)
         return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '15s', algorithm: 'RS256' })
     }
     private generateRefreshToken = (payload: TokenInfo) => {
