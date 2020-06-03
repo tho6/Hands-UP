@@ -15,6 +15,7 @@ export interface IReportQuestion{
     meetingownerid: number,
     meetingsownername: string,
     questionlikes: string | null
+    questioncontent: string
 }
 
 export interface IReportView{
