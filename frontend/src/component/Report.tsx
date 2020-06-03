@@ -6,7 +6,7 @@ import { Container } from 'react-bootstrap';
 import { Backdrop } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { RootState } from '../store';
-// import {ViewsChart} from './ViewsChart';
+import {ViewsChart} from './ViewsChart';
 import './Report.scss'
 // import { QuestionFromChart } from './QuestionFromChart';
 // import { QuestionsPieChart } from './QuestionsPieChart';
@@ -48,8 +48,8 @@ export function Report() {
             {/* <Toggler /> */}
             <Backdrop open={isDrawerOpen}/>
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
-            {/* <ViewsChart data={views}/>
-            <QuestionFromChart data={questions}/>
+            <ViewsChart data={views}/>
+            {/* <QuestionFromChart data={questions}/>
             <QuestionsPieChart data={questions}/>
             <QuestionLikesRank data={questions}/> */}
             <div>123</div>
