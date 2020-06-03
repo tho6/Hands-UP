@@ -3,7 +3,17 @@ import './ReportNavbar.scss'
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 
 export const ReportNavbar:React.FC<any> = (props) => {
+    // for (const questionKey in questions){
+    //     objMeetings[questions[questionKey].meetingid] = questions[questionKey].meetingscheduletime
+    // }
     return (
+        // <nav className='side-drawer'>
+        //     <ul className='side-drawer-items'>
+        //         <li>Most Recent</li>
+        //         <li>Overall</li>
+        //         <li>Past Events</li>
+        //     </ul>
+        // </nav>
         <Navbar bg="light" expand="xl" className="report-navbar">
         <Navbar.Toggle onClick={()=>props.setDrawerOpen(!props.open)}className='report-nav-toggler' aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
