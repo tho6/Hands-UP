@@ -3,6 +3,7 @@ export interface UserForm{
         name: string,
         email?: string,
         picture?: string
+        guestId: number
 }
 export function loginSuccess(accessToken: string, refreshToken: string) {
     return {

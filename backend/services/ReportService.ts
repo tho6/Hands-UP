@@ -47,7 +47,8 @@ export class ReportService {
 
                                         WHERE questions.meeting_id =ANY(?) 
                                         ORDER BY questions.meeting_id ASC,
-                                                questions.created_at ASC
+                                                questions.created_at ASC,
+                                                questions.id ASC
                                                 `,[meetingIds])
             return result.rows
         } catch (error) {
