@@ -10,13 +10,14 @@ import { ReplyDAO } from "../services/dao/replyDAO";
 import { UserService } from '../services/UserService';
 import fetch from 'node-fetch'
 
+
 jest.mock('node-fetch');
 
 
 const knexConfig = require('../knexfile');
 const knex = Knex(knexConfig[process.env.TESTING_ENV || "cicd"]);
 
-describe.skip('LiveRouter', () => {
+describe('LiveRouter', () => {
     let questionDAO: IQuestionDAO = new QuestionDAO(knex);
     let replyDAO: IReplyDAO = new ReplyDAO(knex);
     let questionService: IQuestionService;
@@ -30,8 +31,9 @@ describe.skip('LiveRouter', () => {
         questionService = new QuestionService(questionDAO, replyDAO)
         liveRouter = new LiveRouter(questionService,io,userService)
         io.in.mockClear();
-        io.emit.mockClear();        
-        await seed(knex);
+        io.emit.mockClear(); 
+        jest.useFakeTimers();
+        await seed(knex); 
     })
     afterAll(async () => {
         await knex.destroy();
