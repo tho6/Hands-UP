@@ -19,14 +19,10 @@ function App() {
   const accessToken = useSelector((state: RootState) => state.auth.accessToken)
   useEffect(() => {
     dispatch(checkToken())
-    // dispatch(restoreLogin())
+    dispatch(restoreLogin())
     console.log('app dispatch')
   }, [dispatch, accessToken])
-  useEffect(() => {
-    dispatch(restoreLogin())
-    // dispatch(restoreLogin())
-    console.log('restore login in APP')
-  }, [dispatch])
+
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   return (
     <div className="App">
