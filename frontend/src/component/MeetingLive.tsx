@@ -8,13 +8,13 @@ import { IMeetingLive } from '../redux/meetinglive/reducers';
 import './MeetingLive.scss';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card'
-import Container from 'react-bootstrap/Container'
+// import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 const MeetingLiveCard: React.FC<{ meeting: IMeetingLive }> = (props) => {
     return (<>
-        <Container>
+        <div>
             <Card className="meetingLiveCard">
                 <Card.Body>
                     <Row>
@@ -31,7 +31,7 @@ const MeetingLiveCard: React.FC<{ meeting: IMeetingLive }> = (props) => {
                     </Row>
                 </Card.Body>
             </Card>
-        </Container>
+        </div>
     </>);
 }
 

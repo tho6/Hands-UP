@@ -7,23 +7,21 @@ import { IMeetingPast } from '../redux/meetingpast/reducers';
 import './MeetingPast.scss';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card'
-import Container from 'react-bootstrap/Container'
+// import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
     return (<>
-        <Container>
+        <div>
             <Card className="meetingPastCard">
                 <Card.Body>
                     <Row>
                         <Col md={9}>
                             <div><b>{props.meeting.name}</b></div>
                             <div>Meeting code: {props.meeting.code}</div>
-                            {/* <div>{props.meeting.date}</div> */}
                             <div>Host by: {props.meeting.host}</div>
                         </Col>
-                        {/* <div className="calendarIconDiv"> */}
                         <Col md={3}>
                             <Row className="past-icon">
                                 <i className="far fa-calendar-alt fa-3x"></i>
@@ -32,11 +30,10 @@ const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
                                 <Button variant="secondary" className="viewButtonBlue">VIEW</Button>{' '}
                             </Row>
                         </Col>
-                        {/* </div> */}
                     </Row>
                 </Card.Body>
             </Card>
-        </Container>
+        </div>
     </>);
 }
 
@@ -51,10 +48,12 @@ export function MeetingPast() {
     return (
         <div className="meetingPast">
             <h2 className="headline"><b>Past</b></h2>
+            <div className="meetingPast-content">
             {
                 meetings.map((meeting) => <MeetingPastCard meeting={meeting} />)
                 // meetings.map((meeting) => <div>{meeting.name}</div>)
             }
+            </div>
         </div>
     )
 }

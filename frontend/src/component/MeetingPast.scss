@@ -7,6 +7,10 @@
     flex-wrap: wrap;
 }
 
+.meetingPast-content{
+    display: flex;
+}
+
 .headline {
     font-family: $SecondaryFontStyle;
     color: $PrimaryTextColor;
