@@ -13,6 +13,7 @@ import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 import Home from './component/Home';
 import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
+// import FacebookLogin from './component/FacebookLogin';
 
 function App() {
   const dispatch = useDispatch()
