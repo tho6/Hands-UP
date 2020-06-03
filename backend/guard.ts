@@ -4,7 +4,7 @@ import { TokenInfo } from './models/AuthInterface'
 import { UserService } from './services/UserService'
 import { GuestService } from './services/GuestService'
 
-export function authenticateUserToken(userService: UserService, guestService: GuestService) {
+/* export function authenticateUserToken(userService: UserService, guestService: GuestService) {
     return (req: Request, res: Response, next: NextFunction) => {
         // const accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
         const accessTokenPublicKey = process.env.ACCESS_TOKEN_PUBLIC_KEY!.replace(/\\n/g,"\n")
@@ -39,9 +39,9 @@ export function authenticateUserToken(userService: UserService, guestService: Gu
         })
         return
     }
-}
+} */
 
-export function authenticateGuestToken(guestService: GuestService) {
+export function authenticateToken(guestService: GuestService, userService: UserService) {
     return (req: Request, res: Response, next: NextFunction) => {
         // console.log(process.env.ACCESS_TOKEN_PUBLIC_KEY?.replace(/\\n/g,"\n"))
         // const accessTokenPublicKey = JSON.parse(`"${process.env.ACCESS_TOKEN_PUBLIC_KEY}"`)
@@ -60,7 +60,12 @@ export function authenticateGuestToken(guestService: GuestService) {
                     guestName: guestResult[0].name,
                     guestId: info.guestId
                 }
-
+                if(info?.userId){
+                    const userResult = await userService.getUserById([info.userId!])
+                    if (!userResult) return res.status(401).json({ success: false, message: "Unauthorized" })
+                    const temp = {...req.personInfo, userId:info.userId,  userName: userResult[0].name, email: userResult[0].email, picture: userResult[0].picture}
+                    req.personInfo = temp;
+                }
                 return next()
             } catch (error) {
                 console.log(error)
