@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
-// import { ReportNavbar } from './ReportNavbar';
+import { ReportNavbar } from './ReportNavbar';
 import { Container } from 'react-bootstrap';
 import { Backdrop } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
@@ -47,8 +47,8 @@ export function Report() {
             {/* <Col md={1}> */}
             {/* <Toggler /> */}
             <Backdrop open={isDrawerOpen}/>
-            {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
-            <ViewsChart data={views}/>
+            <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
+            {/* <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
             <QuestionsPieChart data={questions}/>
             <QuestionLikesRank data={questions}/> */}
