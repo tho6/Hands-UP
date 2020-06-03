@@ -1,7 +1,7 @@
 export const tFetchRoomInformation = {
     status: true, message: {
         id: 1,
-        owenId: 1,
+        owenId: 4,
         name: 'TestingRoom1',
         code: '#string',
         is_live: true,
