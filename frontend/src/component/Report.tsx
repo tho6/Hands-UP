@@ -6,11 +6,11 @@ import { Container } from 'react-bootstrap';
 import { Backdrop } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { RootState } from '../store';
-// import {ViewsChart} from './ViewsChart';
+import {ViewsChart} from './ViewsChart';
 import './Report.scss'
-// import { QuestionFromChart } from './QuestionFromChart';
-// import { QuestionsPieChart } from './QuestionsPieChart';
-// import { QuestionLikesRank } from './QuestionLikesRank';
+import { QuestionFromChart } from './QuestionFromChart';
+import { QuestionsPieChart } from './QuestionsPieChart';
+import { QuestionLikesRank } from './QuestionLikesRank';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -48,10 +48,10 @@ export function Report() {
             {/* <Toggler /> */}
             <Backdrop open={isDrawerOpen}/>
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
-            {/* <ViewsChart data={views}/>
+            <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
             <QuestionsPieChart data={questions}/>
-            <QuestionLikesRank data={questions}/> */}
+            <QuestionLikesRank data={questions}/>
             {/* </Col> */}
         </Container>
     )
