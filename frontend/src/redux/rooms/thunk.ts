@@ -96,15 +96,10 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                     dispatch(successfullyToggleFacebookLiveStatus(meetingId, true));
                 } else {
                     window.alert(result.message);
-                    // if (res.status === 401) {
-                    //     if(result.platform||false) return window.alert('You have to log in to our platform first!');
-                    //     const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
-                    //     window.location.replace(loginLocation)
-                    // } else if (res.status === 403) {
-                    //     if(!window.confirm('Press OK to redirect to login page')) return;
-                    //     const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
-                    //     window.location.replace(loginLocationWithPrompt)
-                    // }
+                    if (res.status === 401){
+                        const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=ststate123abc&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                        window.location.replace(loginLocationWithPrompt)
+                    }
                     return;
                 }
             } else {

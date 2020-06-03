@@ -36,6 +36,7 @@ declare global {
     interface Request {
       personInfo?: PersonInfo,
       youtubeRefreshToken:string;
+      facebookToken:string;
     }
   }
 }

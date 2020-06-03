@@ -37,6 +37,10 @@ export function Report() {
 
     console.log(questions)
     console.log(questionsByMeetingId)
+
+    if (!questions && !views) {
+        return (<div></div>);
+    }
     
     return (
         <Container className='report-container'>
