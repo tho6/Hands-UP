@@ -38,8 +38,8 @@ export function Report() {
     console.log(questions)
     console.log(questionsByMeetingId)
 
-    if (questions == null) {
-        return <div></div>;
+    if (!questions && !views) {
+        return (<div></div>);
     }
     
     return (
