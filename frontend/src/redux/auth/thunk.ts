@@ -1,5 +1,5 @@
 import { ThunkDispatch } from "../../store";
-import { loginSuccess, logout, loginFailed, getPersonInfo } from "./actions";
+import { loginSuccess, loginFailed, getPersonInfo } from "./actions";
 import { push } from "connected-react-router";
 import { RootState } from '../../store'
 import jwt from 'jsonwebtoken'
@@ -16,7 +16,7 @@ export function loginGuest() {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
-            dispatch(restoreLogin())
+            // dispatch(restoreLogin())
             // dispatch(push('/'))
         } else {
             dispatch(loginFailed('Failed to login'))
@@ -49,7 +49,7 @@ export function loginGoogle(authCode: string) {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
-            dispatch(restoreLogin())
+            // dispatch(restoreLogin())
 
             dispatch(push('/'))
         } else {
@@ -65,7 +65,7 @@ export function restoreLogin() {
         const refreshToken = getState().auth.refreshToken
         console.log('restore')
         if (!accessToken || !refreshToken) {
-            dispatch(logout())
+            // dispatch(logout())
             dispatch(loginGuest())
             return
         }
@@ -96,7 +96,7 @@ export function checkToken() {
         const refreshToken = getState().auth.refreshToken
         
         if (!accessToken || !refreshToken) {
-            dispatch(logout())
+            // dispatch(logout())
             dispatch(loginGuest())
             console.log('checktoken logout')
             return
@@ -118,7 +118,7 @@ export function checkToken() {
             const result = await res.json()
             if (!result.success) {
                 // window.alert(result.message)
-                dispatch(logout())
+                // dispatch(logout())
                 dispatch(loginGuest())
             }
             localStorage.setItem('accessToken', result.message.accessToken)
@@ -142,6 +142,10 @@ export function checkToken() {
 export function logoutAccount() {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const refreshToken = getState().auth.refreshToken
+        // const accessToken = getState().auth.accessToken
+        for (const id of timeOutId) {
+            clearTimeout(id)
+        }
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/logout`, {
             method: 'DELETE',
             headers: {
@@ -150,14 +154,17 @@ export function logoutAccount() {
             body: JSON.stringify({
                 refreshToken
             })
-
         })
+
         const result = await res.json();
-        if (result.status === 200) {
-            dispatch(logout())
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-            return window.alert(result.message)
+        if (result.success) {
+        //     // localStorage.removeItem('accessToken')
+        //     // localStorage.removeItem('refreshToken')
+            // dispatch(logout())
+            dispatch(loginGuest())
+            dispatch(push('/'))
+            return
+            // return window.alert(result.message)
         } else {
             return window.alert(result.message)
         }
