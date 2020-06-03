@@ -69,7 +69,7 @@ export const ViewsChart:React.FC<any> = (props) => {
             legendOffset: -40,
             legendPosition: 'middle'
         }}
-        colors={["#D82C26","#4267B2","rgba(30, 183, 197, 0.808)"]}
+        colors={["rgba(216, 44, 38,0.86)","#4267B2","rgba(30, 183, 197, 0.808)"]}
         lineWidth={6}
         pointSize={9}
         pointColor="#ffffff"

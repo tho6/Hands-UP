@@ -1,6 +1,19 @@
 import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
-export const QuestionFromChart:React.FC<any> = (props) => {
+import { IReportQuestion } from '../models/IReport';
+export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
+    const theme = {
+        labels:{
+            text:{
+                fontSize:13
+            }
+        },
+        legends:{
+            text: {
+                fontSize: 13
+            }
+        }
+      };
     const dataMap = [{
         "id": "youtube",
         "label": "youtube",
@@ -30,13 +43,14 @@ export const QuestionFromChart:React.FC<any> = (props) => {
             }
         }
     }
+    const totalValue = dataMap.reduce((a,b)=>a+b.value,0)
     const data = dataMap
     return (<ResponsivePie
         data={data}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
         innerRadius={0.45}
         cornerRadius={6}
-        colors={{ scheme: 'nivo' }}
+        colors={["rgba(216, 44, 38,0.86)","#4267B2","rgba(30, 183, 197, 0.808)"]}
         borderWidth={6}
         borderColor="#f0f0f0"
         radialLabelsSkipAngle={10}
@@ -47,11 +61,13 @@ export const QuestionFromChart:React.FC<any> = (props) => {
         radialLabelsLinkHorizontalLength={24}
         radialLabelsLinkStrokeWidth={2}
         radialLabelsLinkColor={{ from: 'color' }}
+        sliceLabel={function(e){return e.value+" ("+e.value/totalValue*100+"%)"}}
         slicesLabelsSkipAngle={10}
         slicesLabelsTextColor="#333333"
         animate={true}
         motionStiffness={90}
         motionDamping={15}
+        theme={theme}
         defs={[
             {
                 id: 'dots',
@@ -72,56 +88,7 @@ export const QuestionFromChart:React.FC<any> = (props) => {
                 spacing: 10
             }
         ]}
-        fill={[
-            {
-                match: {
-                    id: 'ruby'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'c'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'go'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'python'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'scala'
-                },
-                id: 'lines'
-            },
-            {
-                match: {
-                    id: 'lisp'
-                },
-                id: 'lines'
-            },
-            {
-                match: {
-                    id: 'elixir'
-                },
-                id: 'lines'
-            },
-            {
-                match: {
-                    id: 'javascript'
-                },
-                id: 'lines'
-            }
-        ]}
+        
         legends={[
             {
                 anchor: 'bottom',

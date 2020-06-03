@@ -1,0 +1,24 @@
+@import './variables';
+
+.question-likes-rank-container{
+    width: 100%;
+    height: 100%;
+    // display: flex;
+    // .question-likes-rank-header{
+    //     justify-content: flex-start;
+    // }
+    .question-likes-rank-content{
+        // display: flex;
+        // justify-content: center;
+        // flex-direction: row;
+        > div{
+            display:flex;
+            // flex-wrap: wrap;
+            > div{
+                    flex-grow: 1;
+                    width: 33%;
+                    height: 100px;
+            }
+        }
+    }
+}
