@@ -8,7 +8,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { RootState } from '../store';
 import {ViewsChart} from './ViewsChart';
 import './Report.scss'
-// import { QuestionFromChart } from './QuestionFromChart';
+import { QuestionFromChart } from './QuestionFromChart';
 // import { QuestionsPieChart } from './QuestionsPieChart';
 // import { QuestionLikesRank } from './QuestionLikesRank';
 
@@ -49,8 +49,8 @@ export function Report() {
             <Backdrop open={isDrawerOpen}/>
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
-            {/* <QuestionFromChart data={questions}/>
-            <QuestionsPieChart data={questions}/>
+            <QuestionFromChart data={questions}/>
+            {/* <QuestionsPieChart data={questions}/>
             <QuestionLikesRank data={questions}/> */}
             <div>123</div>
             {/* </Col> */}
