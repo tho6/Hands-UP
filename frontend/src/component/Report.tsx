@@ -9,8 +9,8 @@ import { RootState } from '../store';
 import {ViewsChart} from './ViewsChart';
 import './Report.scss'
 import { QuestionFromChart } from './QuestionFromChart';
-import { QuestionsPieChart } from './QuestionsPieChart';
-import { QuestionLikesRank } from './QuestionLikesRank';
+// import { QuestionsPieChart } from './QuestionsPieChart';
+// import { QuestionLikesRank } from './QuestionLikesRank';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -50,8 +50,8 @@ export function Report() {
             <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
-            <QuestionsPieChart data={questions}/>
-            <QuestionLikesRank data={questions}/>
+            {/* <QuestionsPieChart data={questions}/>
+            <QuestionLikesRank data={questions}/> */}
             {/* </Col> */}
         </Container>
     )
