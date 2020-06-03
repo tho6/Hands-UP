@@ -37,7 +37,8 @@ export const ViewsChart:React.FC<any> = (props) => {
         })
       }
     }
-
+  }else{
+    return <div></div>
   }
   console.log('datamap: ' + JSON.stringify(dataMap))
   const data = dataMap

@@ -12,6 +12,8 @@ export const QuestionLikesRank:React.FC<{data:IReportQuestion[]}> = (props) => {
             const bCopy = b.questionlikes === null?  0 : parseInt(b.questionlikes)
             return (bCopy-aCopy)
         })
+    }else{
+        return <div></div>
     }
     return (
         <div className='question-likes-rank-container'>

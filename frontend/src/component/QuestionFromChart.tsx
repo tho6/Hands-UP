@@ -42,6 +42,8 @@ export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
                 }
             }
         }
+    }else{
+        return <div></div>
     }
     const totalValue = dataMap.reduce((a,b)=>a+b.value,0)
     const data = dataMap

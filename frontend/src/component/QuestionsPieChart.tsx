@@ -2,6 +2,7 @@ import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
 import { IReportQuestion } from '../models/IReport';
 export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
+    
     const theme = {
         labels:{
             text:{
@@ -51,6 +52,8 @@ export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
                 }
             }
         }
+    }else{
+        return <div></div>
     }
     const totalValue = dataMap.reduce((a,b)=>a+b.value,0)
 
