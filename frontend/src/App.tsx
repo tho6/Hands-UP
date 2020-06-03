@@ -22,7 +22,7 @@ function App() {
     dispatch(restoreLogin())
     console.log('app dispatch')
   }, [dispatch, accessToken])
-
+  
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   return (
     <div className="App">

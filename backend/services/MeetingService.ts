@@ -10,32 +10,39 @@ export class MeetingService {
     }
 
     async getMeetingByMeetingName(name: string) {
-        return (
-            await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`,
-                [name]
-            )
-        ).rows[0] as IMeeting;
+        try {
+            return (
+                await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`,
+                    [name]
+                )
+            ).rows[0] as IMeeting;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number) {
-        {
+        try {
+
             let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`, [name]);
             console.log(check.rowCount);
             if (check.rows.length > 0) {
                 throw new Error("Duplicate meeting name");
             }
+            let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url, owner_id) VALUES (?,?,?,?,?) RETURNING id`,
+                [
+                    name,
+                    date_time,
+                    code,
+                    url,
+                    owner_id
+                ]
+            );
+            console.log(result);
+            return result.rows[0].id;
+        } catch (error) {
+            throw error;
         }
-        let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url, owner_id) VALUES (?,?,?,?,?) RETURNING id`,
-            [
-                name,
-                date_time,
-                code,
-                code,
-                owner_id
-            ]
-        );
-        console.log(result);
-        return result.rows[0].id;
     }
 
     async editMeeting(id: number, name: string, date_time: Date, code: string, url: string, owner_id: number) { // or use name??

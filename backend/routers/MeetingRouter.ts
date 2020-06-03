@@ -27,44 +27,60 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date_time, code, url, owner_id } = req.body;
+            const { name, date, time, code, url } = req.body;
+            const date_time = new Date(date + ' ' + time)
+            console.log(date_time);
+            // const userId = req.personInfo?.userId
+            const userId = 1 // change later
             console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
             if (checkMeeting) {
                 res.status(400).json({ message: "Meeting name existed" });
                 return;
             }
-            // console.log(name);
-            // console.log(date_time);
-            // console.log(code);
-            // console.log(url);
-            // console.log(owner_id);
-            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, owner_id);
-            res.json({ meeting_id: meetingId });
+            if (!userId) {
+                return res.status(400).json({ message: "UserId not found" });
+            }
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, userId);
+            return res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);
             res.json({ message: "Cannot create meeting" });
+            return;
         }
     }
 
     editMeeting = async (req: Request, res: Response) => {
-        const { name, date_time, code, url, owner_id } = req.body;
-        const meetingId = parseInt(req.params.id);
-        if (isNaN(meetingId)) {
-            res.status(400).json({ message: "Id is not a number" })
+        try {
+            const { name, date_time, code, url, owner_id } = req.body;
+            const meetingId = parseInt(req.params.id);
+            if (isNaN(meetingId)) {
+                res.status(400).json({ message: "Meeting Id is not a number" })
+                return;
+            }
+            const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url, owner_id);
+            res.json({ result });
+        }
+        catch (err) {
+            console.log(err.message);
+            res.json({ message: "Cannot edit meeting" });
             return;
         }
-        const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url, owner_id);
-        res.json({ result });
     }
 
     deleteMeeting = async (req: Request, res: Response) => {
-        let meetingId = parseInt(req.params.id);
-        if (isNaN(meetingId)) {
-            res.status(400).json({ message: "Id is not a number" })
+        try {
+            let meetingId = parseInt(req.params.id);
+            if (isNaN(meetingId)) {
+                res.status(400).json({ message: "Meeting Id is not a number" })
+                return;
+            }
+            const result = await this.meetingService.deleteMeeting(meetingId);
+            res.json({ result });
+        } catch (err) {
+            console.log(err.message);
+            res.json({ message: "Cannot delete meeting" });
             return;
         }
-        const result = await this.meetingService.deleteMeeting(meetingId);
-        res.json({ result });
     }
 }

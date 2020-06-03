@@ -41,7 +41,7 @@ export function Report() {
     if (!questions && !views) {
         return (<div></div>);
     }
-    
+    console.log(setDrawerOpen)
     return (
         <Container className='report-container'>
             {/* <Col md={1}> */}

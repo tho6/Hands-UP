@@ -9,21 +9,23 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 
 const CreateMeeting = () => {
-    const [formState, { text, date }] = useFormState();
+    const [formState, { text, date, time }] = useFormState();
 
     return (
         <Container className="createForm">
-                    <Form>
-            <Form.Row>
-                <Col>
+            <Form>
+                <Form.Row>
+                    <Col>
                         <h4>Create meeting</h4>
                         <div>Meeting name
                 <input className="textarea" {...text('name')} />
                             {formState.touched.name && formState.values.name === '' && <div className="formRemind">Please fill in the meeting name</div>}
                         </div>
-                        <div>Meeting date
-                <input className="textarea"{...date('date_time')} />
-                            {formState.touched.date && formState.values.date === '' && <div className="formRemind">Please fill in the meeting date</div>}
+                        <div>Meeting date and time
+                <input className="textarea"{...date('date')} />
+                <input className="textarea"{...time('time')} />
+                            { formState.touched.date && formState.values.date === '' && <div className="formRemind">Please fill in the meeting date and time</div>}
+                            { formState.touched.time && formState.values.time === '' && <div className="formRemind">Please fill in the meeting date and time</div>}
                         </div>
                         <div>Meeting code
                 <input className="textarea"{...text('code')} />
@@ -33,13 +35,9 @@ const CreateMeeting = () => {
                 <input className="textarea"{...text('url')} />
                             {formState.touched.name && formState.values.url === '' && <div className="formRemind">Please fill in the meeting url</div>}
                         </div>
-                        <div>Owner id
-                <input className="textarea"{...text('owner_id')} />
-                            {formState.touched.name && formState.values.owner_id === '' && <div className="formRemind">Owner id</div>}
-                        </div>
                         <div className="createButtons">
                             <Button variant="info" className="createButtonColour" onClick={() => {
-                                // console.log(formState);
+                                console.log(formState);
                                 fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/create`, {
                                     method: "POST",
                                     headers: {
@@ -55,9 +53,9 @@ const CreateMeeting = () => {
                                 RESET
                         </Button>
                         </div>
-                </Col>
-            </Form.Row>
-                    </Form>
+                    </Col>
+                </Form.Row>
+            </Form>
         </Container>
     )
 }
