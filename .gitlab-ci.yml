@@ -95,4 +95,4 @@ server-testing:
     - yarn knex migrate:latest --env cicd
   stage: server-testing
   script:
-    - yarn jest --runInBand
+    - yarn jest --runInBand --forceExit
