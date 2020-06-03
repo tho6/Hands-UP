@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
-// import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 // import { ReportNavbar } from './ReportNavbar';
 import { Container } from 'react-bootstrap';
-// import { Backdrop } from '@material-ui/core';
+import { Backdrop } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { RootState } from '../store';
 // import {ViewsChart} from './ViewsChart';
@@ -21,7 +20,7 @@ import './Report.scss'
 // youtube: 1
 export function Report() {
     const dispatch = useDispatch();
-    // const [isDrawerOpen, setDrawerOpen] = useState(false)
+    const [isDrawerOpen, setDrawerOpen] = useState(false)
     const match = useRouteMatch<{loc?:string}>()
     const meetingId = match.params.loc
     
@@ -47,8 +46,8 @@ export function Report() {
         <Container className='report-container'>
             {/* <Col md={1}> */}
             {/* <Toggler /> */}
-            {/* <Backdrop open={isDrawerOpen}/>
-            <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
+            <Backdrop open={isDrawerOpen}/>
+            {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/>
             <ViewsChart data={views}/>
             <QuestionFromChart data={questions}/>
             <QuestionsPieChart data={questions}/>
