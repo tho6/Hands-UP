@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+// import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 // import { ReportNavbar } from './ReportNavbar';
@@ -20,7 +21,7 @@ import './Report.scss'
 // youtube: 1
 export function Report() {
     const dispatch = useDispatch();
-    const [isDrawerOpen, setDrawerOpen] = useState(false)
+    // const [isDrawerOpen, setDrawerOpen] = useState(false)
     const match = useRouteMatch<{loc?:string}>()
     const meetingId = match.params.loc
     
