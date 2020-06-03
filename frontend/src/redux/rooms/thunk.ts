@@ -1,5 +1,5 @@
 import { ThunkDispatch } from "../../store";
-import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus } from "./actions";
+import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
 import { tFetchRoomInformation} from "../../fakeResponse";
 
@@ -70,6 +70,49 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 const result = await res.json();
                 if (!result.status) throw new Error(result.message);
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
+                return;
+            }
+        } catch (e) {
+            window.alert(e.message);
+            console.error(e);
+            return;
+        }
+    }
+}
+export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, liveLoc:string) {
+    return async (dispatch: ThunkDispatch) => {
+        try {
+            if (isFetch) {
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/comments`,
+                {
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({meetingId, liveLoc})
+                });
+                const result = await res.json();
+                if (result.success) {
+                    dispatch(successfullyToggleFacebookLiveStatus(meetingId, true));
+                } else {
+                    window.alert(result.message);
+                    // if (res.status === 401) {
+                    //     if(result.platform||false) return window.alert('You have to log in to our platform first!');
+                    //     const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
+                    //     window.location.replace(loginLocation)
+                    // } else if (res.status === 403) {
+                    //     if(!window.confirm('Press OK to redirect to login page')) return;
+                    //     const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
+                    //     window.location.replace(loginLocationWithPrompt)
+                    // }
+                    return;
+                }
+            } else {
+                //change the counter at liveRouter to false
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/comments/${meetingId}`, { method: 'PUT' });
+                const result = await res.json();
+                if (!result.status) throw new Error(result.message);
+                dispatch(successfullyToggleFacebookLiveStatus(meetingId, false));
                 return;
             }
         } catch (e) {

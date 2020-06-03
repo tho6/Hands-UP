@@ -73,6 +73,17 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
                     liveStatus: newLiveStatus
                 };
             }
+        case '@@ROOMS/TOGGLE_FACEBOOK_LIVE_STATUS':
+            {
+                const newLiveStatus = { ...oldState.liveStatus }
+                const newStatus = { ...oldState.liveStatus[action.meetingId], facebook: action.isFetch }
+                newLiveStatus[action.meetingId] = newStatus;
+
+                return {
+                    ...oldState,
+                    liveStatus: newLiveStatus
+                };
+            }
         case '@@ROOMS/LOAD_INITIAL_LIVE_STATUS':
             {
                 const newLiveStatus = { ...oldState.liveStatus }
