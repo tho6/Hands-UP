@@ -1,4 +1,5 @@
 import Knex from "knex";
+import { reportDataQuestionsBasic, reportDataQuestionsBasicWithMeetingName, questionsCountOfLatestMeetings } from "../models/type/reportData";
 
 export class ReportService {
     constructor(private knex: Knex){}
@@ -67,4 +68,19 @@ export class ReportService {
         }
     }
 
+    getAllQuestions = async ():Promise<reportDataQuestionsBasicWithMeetingName[]> =>{
+        const sql = `SELECT questions.id as "questionId", name as "meetingName", is_answered as "isAnswered", is_approved as "isApproved", is_hide as "isHide", meeting_id as "meetingId", platform_id as "platformId" FROM  questions;`;
+        const result = await this.knex.raw(sql);
+        return result.rows
+    }
+    getQuestionsOfLatestXMeetings = async (numberOfMeetings:number):Promise<reportDataQuestionsBasic[]> =>{
+        const sql = `SELECT is_answered as "isAnswered", is_approved as "isApproved", is_hide as "isHide", meeting_id as "meetingId", platform_id as "platformId" FROM  questions WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT ?);`;
+        const result = await this.knex.raw(sql, numberOfMeetings);
+        return result.rows
+    }
+    getQuestionsCountOfLatestXMeetings = async (numberOfMeetings:number):Promise<questionsCountOfLatestMeetings[]> =>{
+        const sql = `SELECT name as "meetingName",meeting_id as "meetingId", COUNT(meeting_id) FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  ? ) GROUP BY meeting_id, meetings.name;`;
+        const result = await this.knex.raw(sql, numberOfMeetings);
+        return result.rows
+    }
 }

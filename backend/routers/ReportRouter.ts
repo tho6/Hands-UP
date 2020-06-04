@@ -7,6 +7,9 @@ export class ReportRouter {
         const router = express.Router()
         router.get('/question/:paramsArray', this.getQuestionsByMeetingId)
         router.get('/view/:paramsArray', this.getViewsByMeetingId)
+        router.get('/overall', this.getAllQuestions)
+        router.get('/overall/latest-meetings', this.getQuestionsOfLatestXMeetings)
+        router.get('/overall/meetings/count/:count', this.getQuestionCountOfLatestMeetings)
         return router
     }
 
@@ -61,6 +64,36 @@ export class ReportRouter {
             const result = await this.reportService.getViewsByMeetingId(resultMeeting)
             return res.status(200).json({success: true, message: result})
 
+        } catch (error) {
+            return error.name == 'RangeError' ?
+                res.status(400).json({ success: false, message: error.message }) :
+                res.status(500).json({ success: false, message: 'internal error' })
+        }
+    }
+    getAllQuestions = async (req: express.Request, res: express.Response) => {
+        try {
+            const reportDataAllQuestions = await this.reportService.getAllQuestions();
+            return res.status(200).json({success: true, message: reportDataAllQuestions})
+        } catch (error) {
+            return error.name == 'RangeError' ?
+                res.status(400).json({ success: false, message: error.message }) :
+                res.status(500).json({ success: false, message: 'internal error' })
+        }
+    }
+    getQuestionsOfLatestXMeetings = async (req: express.Request, res: express.Response) => {
+        try {
+            const reportQuestionsOfLatestXMeetings = await this.reportService.getQuestionsOfLatestXMeetings(30);
+            return res.status(200).json({success: true, message: reportQuestionsOfLatestXMeetings})
+        } catch (error) {
+            return error.name == 'RangeError' ?
+                res.status(400).json({ success: false, message: error.message }) :
+                res.status(500).json({ success: false, message: 'internal error' })
+        }
+    }
+    getQuestionCountOfLatestMeetings = async (req: express.Request, res: express.Response) => {
+        try {
+            const reportQuestionsOfLatestXMeetings = await this.reportService.getQuestionsCountOfLatestXMeetings(parseInt(req.params.count));
+            return res.status(200).json({success: true, message: reportQuestionsOfLatestXMeetings})
         } catch (error) {
             return error.name == 'RangeError' ?
                 res.status(400).json({ success: false, message: error.message }) :
