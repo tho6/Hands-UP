@@ -79,7 +79,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
         }
     }
 }
-export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, liveLoc:string) {
+export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, liveLoc:string, pageId:string='') {
     return async (dispatch: ThunkDispatch, getState:()=>RootState) => {
         try {
             if (isFetch) {
@@ -90,7 +90,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${getState().auth.accessToken}`
                     },
-                    body:JSON.stringify({meetingId, liveLoc})
+                    body:JSON.stringify({meetingId, liveLoc, pageId})
                 });
                 const result = await res.json();
                 if (result.success) {

@@ -38,6 +38,7 @@ import {
   successfullyToggleYoutubeLiveStatus,
   successfullyToggleFacebookLiveStatus
 } from '../redux/rooms/actions';
+import FacebookModal from './FacebookModal';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -45,6 +46,7 @@ const QuestionPage: React.FC = () => {
   const [peopleCount, setPeopleCount] = useState(0);
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
+  const [facebookModal, setFacebookModal] = useState(false);
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
@@ -195,16 +197,16 @@ const QuestionPage: React.FC = () => {
         successfullyToggleFacebookLiveStatus(parseInt(meetingId), false)
       );
     };
-    const youtubeViewsStop = (msg:string) => {
-      window.alert(msg)
+    const youtubeViewsStop = (msg: string) => {
+      window.alert(msg);
     };
-    const youtubeViewsUpdate = (views:string|number) => {
+    const youtubeViewsUpdate = (views: string | number) => {
       setYoutubeViews(parseInt(`${views}`));
     };
-    const facebookViewsStop = (msg:string) => {
-      window.alert(msg)
+    const facebookViewsStop = (msg: string) => {
+      window.alert(msg);
     };
-    const facebookViewsUpdate = (views:string|number) => {
+    const facebookViewsUpdate = (views: string | number) => {
       setFacebookViews(parseInt(`${views}`));
     };
     const leaveHost = () => {
@@ -293,13 +295,7 @@ const QuestionPage: React.FC = () => {
               className="util-spacing"
               data-testid="facebook-live"
               onClick={() => {
-                dispatch(
-                  toggleFacebookLiveStatus(
-                    parseInt(meetingId),
-                    liveStatus?.facebook ? false : true,
-                    'page'
-                  )
-                );
+                setFacebookModal(true);
               }}
             >
               <i className="fab fa-facebook-f fa-lg"></i>{' '}
@@ -646,6 +642,26 @@ const QuestionPage: React.FC = () => {
             </div>
           ))}
       </div>
+      {facebookModal && (
+        <FacebookModal
+          title={'Where do you want to start your live broadcast?'}
+          message={'Choose your platform'}
+          yes={(liveLoc:string,pageId:string='') => {
+                dispatch(
+                  toggleFacebookLiveStatus(
+                    parseInt(meetingId),
+                    liveStatus?.facebook ? false : true,
+                    liveLoc,
+                    liveLoc==='page'?pageId:''
+                  )
+                );
+                setFacebookModal(false);
+          }}
+          no={() => {
+            setFacebookModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };
