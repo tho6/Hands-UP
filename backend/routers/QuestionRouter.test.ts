@@ -135,7 +135,7 @@ describe('Question Router', () => {
         expect(res.json).toBeCalledWith({ status: true, message: question.sort((a,b)=>a.id-b.id)[2] });
         expect(res.status).toBeCalledWith(200);
     });
-    it('createQuestion - normal spam', async () => {
+    it.only('createQuestion - normal spam', async () => {
         let res = {
             json: jest.fn(),
             status: jest.fn(() => res)

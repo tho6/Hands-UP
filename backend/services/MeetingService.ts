@@ -53,4 +53,11 @@ export class MeetingService {
     async deleteMeeting(id: number) {
         return this.knex.raw(/*SQL*/`DELETE FROM meetings WHERE id = ?`, [id]);
     }
+
+    async getMeetingById(id: number){
+        const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFile", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
+        const result = await this.knex.raw(sql,[id]);
+        if(result.rowCount !== 1) throw new Error('No meeting is found!');
+        return result.rows[0];
+    }
 }

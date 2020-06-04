@@ -54,5 +54,14 @@ export interface ICompareQuestion{
     facebook:{
         latestQuestions?:number,
         previousQuestions?:number
-    },
+    }
+}
+export type IReportDataQuestionsBasicWithMeetingName = {
+    meetingName:string,
+    isAnswered: boolean,
+    isApproved:boolean,
+    isHide:boolean,
+    meetingId: number, 
+    platformId: number,
+    questionId:number
 }

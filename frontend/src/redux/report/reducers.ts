@@ -15,13 +15,15 @@ export interface ReportState{
     viewsByMeetingId:{
         [meetingId: string]: number[]
     },
+    questionsCountOfLatestMeetings:{meetingId:number, count:number, meetingName:string}[]
 }
 
 const initialState = {
     questions:{},
     questionsByMeetingId:{},
     views:{},
-    viewsByMeetingId:{}
+    viewsByMeetingId:{},
+    questionsCountOfLatestMeetings:[]
 }
 
 export const reportReducer = (oldState: ReportState = initialState,action:ReportActions): ReportState => {
@@ -60,6 +62,11 @@ export const reportReducer = (oldState: ReportState = initialState,action:Report
                 ...oldState,
                 views: newViews,
                 viewsByMeetingId: neViewsByMeetingId
+            };
+        case '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS':
+            return {
+                ...oldState,
+                questionsCountOfLatestMeetings: action.questionsCount
             };
         
         default:

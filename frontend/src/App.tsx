@@ -13,6 +13,7 @@ import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 import Home from './component/Home';
 import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
+import ReportOverall from './component/ReportOverall';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route path="/facebookLogin/callback" exact>
           {(isAuthenticated != null &&<FacebookLoginCallBack />)}
+          </Route>
+          <Route path="/testing/:lastXMeetings" exact>
+          {(isAuthenticated != null && <ReportOverall />)}
           </Route>
         </Switch>
 

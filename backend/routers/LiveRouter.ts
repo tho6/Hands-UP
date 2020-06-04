@@ -19,7 +19,7 @@ export class LiveRouter {
         router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService, 'youtube'), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.put('/fb/comments/:meetingId([0-9]+)', this.stopGettingFacebookComments)
-        router.post('/yt/views', this.fetchViews)
+        router.get('/yt/views', this.fetchViews)
         router.get('/status/:meetingId', this.checkStatus)
         return router
 
@@ -182,7 +182,8 @@ export class LiveRouter {
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             /* fetch comments from youtube  */
-            this.fetchYTComments(req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken) //setTimer, set this.eventSourceExistence
+            this.fetchYTComments(req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken); //setTimer, set this.eventSourceExistence
+            this.fetchYTViews(accessToken,result.items[0].id,req.personInfo.userId);
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
@@ -317,5 +318,37 @@ export class LiveRouter {
             return;
         }
     }
-
+    fetchYTViews = async (accessToken:string, videoId:string, userId:number) => {
+        try {
+            const liveViewTimer = setInterval(async()=>{
+                const fetchViewRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                /* Check response */
+                if(fetchViewRes.status!==200){
+                    this.io.in('host:'+userId).emit('youtube-views-stop','Youtube Live views is not working!');
+                    clearInterval(liveViewTimer);
+                    return;
+                }
+                
+                const result = await fetchViewRes.json();
+                /* check liveBroadcast status */
+                    if(!result.items[0].liveStreamingDetails.concurrentViewers){
+                        console.log('Youtube live broadcast ends...')
+                        clearInterval(liveViewTimer);
+                        return;
+                    }
+                const liveViews = result.items[0].liveStreamingDetails.concurrentViewers;
+                this.io.in('host:'+userId).emit('youtube-views-update',liveViews);
+                return;
+            },20000)
+        } catch (error) {
+            console.log(error)
+            return;
+        }
+    }
 }

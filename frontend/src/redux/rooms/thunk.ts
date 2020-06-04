@@ -1,16 +1,14 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
-import { tFetchRoomInformation} from "../../fakeResponse";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
-            // }); // GET + 'memos'
-            // const result = await res.json();
-            const result = tFetchRoomInformation;
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
+            }); // GET + 'memos'
+            const result = await res.json();
             if (result.status) {
                 dispatch(loadedRoomInformation(result.message));
             } else {
@@ -79,7 +77,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
         }
     }
 }
-export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, liveLoc:string) {
+export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, liveLoc:string, pageId:string='') {
     return async (dispatch: ThunkDispatch, getState:()=>RootState) => {
         try {
             if (isFetch) {
@@ -90,7 +88,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${getState().auth.accessToken}`
                     },
-                    body:JSON.stringify({meetingId, liveLoc})
+                    body:JSON.stringify({meetingId, liveLoc, pageId})
                 });
                 const result = await res.json();
                 if (result.success) {

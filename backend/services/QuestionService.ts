@@ -99,6 +99,10 @@ export class QuestionService implements IQuestionService {
         const hostId = await this.questionDAO.getRoomHost(meetingId);
         return hostId;
     }
+    async getRoomQuestionLimitByMeetingId(meetingId: number): Promise<number> {
+        const questionLimit = await this.questionDAO.getRoomQuestionLimit(meetingId);
+        return questionLimit;
+    }
     async getQuestionOwner(questionId: number): Promise<number> {
         const id = await this.questionDAO.getQuestionOwner(questionId);
         return id;

@@ -12,5 +12,11 @@ export function fetchReportViewsAction(views: IReportView[]){
         views
     }
 }
+export function fetchQuestionCountOfLatestXMeetings(questionsCount:{meetingId:number, count:number, meetingName:string}[] ){
+    return {
+        type: '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS' as '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS',
+        questionsCount
+    }
+}
 
-export type ReportActions = ReturnType<typeof fetchReportQuestionsAction> | ReturnType<typeof fetchReportViewsAction>
+export type ReportActions = ReturnType<typeof fetchReportQuestionsAction> | ReturnType<typeof fetchReportViewsAction> | ReturnType<typeof fetchQuestionCountOfLatestXMeetings>

@@ -8,6 +8,7 @@ export class MeetingRouter {
     router() {
         const router = express.Router();
         router.get('/', this.getMeeting);
+        router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
         router.delete('/:id', this.deleteMeeting);
@@ -80,6 +81,16 @@ export class MeetingRouter {
         } catch (err) {
             console.log(err.message);
             res.json({ message: "Cannot delete meeting" });
+            return;
+        }
+    }
+    getMeetingById = async (req: Request, res: Response) => {
+        try {
+            const meetingInformation = await this.meetingService.getMeetingById(parseInt(req.params.id));
+            res.status(200).json({status:true, message:meetingInformation})
+        } catch (err) {
+            console.log(err.message);
+            res.status(404).json({status:false, message: err.message });
             return;
         }
     }

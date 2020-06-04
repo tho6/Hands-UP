@@ -18,6 +18,7 @@ export interface IQuestionDAO {
     approvedQuestion(questionId: number): Promise<boolean>;
     /* Auth */
     getRoomHost(roomId: number): Promise<number>;
+    getRoomQuestionLimit(roomId: number): Promise<number>;
     getQuestionOwner(questionId: number): Promise<number>;
     /* get room config */
     getMeetingConfiguration(meetingId: number): Promise<meetingConfig>;

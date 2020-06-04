@@ -54,5 +54,9 @@ UPDATE questions SET (is_hide, is_approved) = (false, true) WHERE id = 2;
 SELECT owner_id "ownerId" FROM meetings WHERE id = 1;
 /* get question owner*/
 SELECT guest_id "guestId" FROM questions WHERE id = 1;
-
-
+/* Get questions of the latest 10 meetins */
+SELECT name as "meetingName", is_answered as "isAnswered", is_approved as "isApproved", is_hide as "isHide", meeting_id as "meetingId", platform_id as "platformId" FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  2 );
+/* Get All questions */
+SELECT is_answered as "isAnswered", is_approved as "isApproved", is_hide as "isHide", meeting_id as "meetingId", platform_id as "platformId" FROM  questions;
+/* Get questions count of the latest 10 meetins */
+SELECT name as "meetingName",meeting_id as "meetingId", COUNT(meeting_id) FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  2 ) GROUP BY meeting_id, meetings.name;

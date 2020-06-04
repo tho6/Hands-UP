@@ -74,13 +74,17 @@ jest.mock('react-redux', () => {
   
   const roomInformation: IRoomInformation = {
     id: 1,
-    owenId: 1,
+    ownerId: 1,
     name: 'TestingRoom1',
     code: '#string',
     is_live: true,
     canModerate: true,
     canUploadFiles: true,
     questionLimit: 10,
+    url:'url',
+    createdAt:expect.anything(),
+    updatedAt:expect.anything(),
+    dateTime:expect.anything()
   };
   const personInfo ={
     userId: 1,
