@@ -34,12 +34,17 @@ import {
   successfullyHideOrDisplayAReply
 } from '../redux/questions/actions';
 import FlipMove from 'react-flip-move';
-import { successfullyToggleYoutubeLiveStatus, successfullyToggleFacebookLiveStatus } from '../redux/rooms/actions';
+import {
+  successfullyToggleYoutubeLiveStatus,
+  successfullyToggleFacebookLiveStatus
+} from '../redux/rooms/actions';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
   const [peopleCount, setPeopleCount] = useState(0);
+  const [youtubeViews, setYoutubeViews] = useState(0);
+  const [facebookViews, setFacebookViews] = useState(0);
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
@@ -181,22 +186,44 @@ const QuestionPage: React.FC = () => {
     };
   }, [dispatch, meetingId]);
   useEffect(() => {
-    if(!isHost) return
+    if (!isHost) return;
     const turnOffYoutubeLive = () => {
       dispatch(successfullyToggleYoutubeLiveStatus(parseInt(meetingId), false));
     };
     const turnOffFacebookLive = () => {
-      dispatch(successfullyToggleFacebookLiveStatus(parseInt(meetingId), false));
+      dispatch(
+        successfullyToggleFacebookLiveStatus(parseInt(meetingId), false)
+      );
+    };
+    const youtubeViewsStop = (msg:string) => {
+      window.alert(msg)
+    };
+    const youtubeViewsUpdate = (views:string|number) => {
+      setYoutubeViews(parseInt(`${views}`));
+    };
+    const facebookViewsStop = (msg:string) => {
+      window.alert(msg)
+    };
+    const facebookViewsUpdate = (views:string|number) => {
+      setFacebookViews(parseInt(`${views}`));
     };
     const leaveHost = () => {
-      if(!isHost) return
+      if (!isHost) return;
       socket.emit('leave-host', personInfo?.userId);
       socket.off('youtube-stop', turnOffYoutubeLive);
       socket.off('facebook-stop', turnOffFacebookLive);
+      socket.off('youtube-views-stop', youtubeViewsStop);
+      socket.off('youtube-views-update', youtubeViewsUpdate);
+      socket.off('facebook-views-stop', facebookViewsStop);
+      socket.off('facebook-views-update', facebookViewsUpdate);
     };
     socket.emit('join-host', personInfo?.userId);
     socket.on('youtube-stop', turnOffYoutubeLive);
     socket.on('facebook-stop', turnOffFacebookLive);
+    socket.on('youtube-views-stop', youtubeViewsStop);
+    socket.on('youtube-views-update', youtubeViewsUpdate);
+    socket.on('facebook-views-stop', facebookViewsStop);
+    socket.on('facebook-views-update', facebookViewsUpdate);
     window.addEventListener('beforeunload', leaveHost);
     return () => {
       leaveHost();
@@ -244,6 +271,16 @@ const QuestionPage: React.FC = () => {
           <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}
           </span>
+          {isHost && liveStatus?.facebook && (
+            <span className="px-2">
+              <i className="fab fa-facebook-f"></i> {facebookViews}
+            </span>
+          )}
+          {isHost && liveStatus?.youtube && (
+            <span className="px-2">
+              <i className="fab fa-youtube"></i> {youtubeViews}
+            </span>
+          )}
         </div>
         {isHost === false && roomInformation?.canModerate && (
           <div data-testid="moderation-count">
