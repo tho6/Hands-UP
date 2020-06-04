@@ -1,4 +1,4 @@
-import { IReportQuestion, IReportView, IReportDataQuestionsBasicWithMeetingName } from "../../models/IReport";
+import { IReportQuestion, IReportView } from "../../models/IReport";
 
 export function fetchReportQuestionsAction(questions: IReportQuestion[]){
     return {

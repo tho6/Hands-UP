@@ -14,8 +14,6 @@ import Home from './component/Home';
 import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
 import ReportOverall from './component/ReportOverall';
-import ReportOverallChart from './component/ReportOverallChart';
-import Example from './component/testChart';
 // import FacebookLogin from './component/FacebookLogin';
 
 function App() {

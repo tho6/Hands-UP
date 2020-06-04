@@ -3,7 +3,7 @@ import { NodeGroup } from 'react-move'
 import { interpolate, interpolateTransformSvg } from 'd3-interpolate'
 import Surface from './Surface'
 import { scaleBand, scaleLinear } from 'd3-scale'
-import { shuffle, max } from 'd3-array'
+import { max } from 'd3-array'
 import { easeExpInOut, easePoly } from 'd3-ease'
 
 // **************************************************
