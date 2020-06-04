@@ -1,16 +1,14 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
-import { tFetchRoomInformation} from "../../fakeResponse";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            // const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
-            // }); // GET + 'memos'
-            // const result = await res.json();
-            const result = tFetchRoomInformation;
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
+            }); // GET + 'memos'
+            const result = await res.json();
             if (result.status) {
                 dispatch(loadedRoomInformation(result.message));
             } else {

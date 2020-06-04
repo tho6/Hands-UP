@@ -11,11 +11,15 @@ describe('Question Reducer', () => {
     beforeEach(() => {
         roomInformation = {
             id: 1,
-            owenId: 1,
+            ownerId: 1,
             name: 'TestingRoom1',
             code: '#string',
             is_live: true,
             canModerate: false, canUploadFiles: false, questionLimit: 10,
+            url:'url',
+            createdAt:expect.anything(),
+            updatedAt:expect.anything(),
+            dateTime:expect.anything(),
         }
         initialState = {
             roomsInformation: {},

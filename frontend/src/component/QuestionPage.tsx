@@ -61,7 +61,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
-  const isHost = personInfo?.userId === roomInformation?.owenId;
+  const isHost = personInfo?.userId === roomInformation?.ownerId;
   const questionLimitStatus = useSelector(
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
@@ -660,7 +660,7 @@ const QuestionPage: React.FC = () => {
                 dispatch(
                   toggleFacebookLiveStatus(
                     parseInt(meetingId),
-                    liveStatus?.facebook ? false : true,
+                    true,
                     liveLoc,
                     liveLoc==='page'?pageId:''
                   )
