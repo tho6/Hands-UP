@@ -18,12 +18,12 @@ import YoutubeCallBack from './component/YoutubeCallBack';
 function App() {
   const dispatch = useDispatch()
   const accessToken = useSelector((state: RootState) => state.auth.accessToken)
+  // useEffect(() => {
+  //   dispatch(checkToken())
+  //   console.log('app dispatch')
+  // }, [dispatch,accessToken])
   useEffect(() => {
     dispatch(checkToken())
-    dispatch(restoreLogin())
-    console.log('app dispatch')
-  }, [dispatch])
-  useEffect(() => {
     dispatch(restoreLogin())
     console.log('restore login')
   }, [dispatch, accessToken])
