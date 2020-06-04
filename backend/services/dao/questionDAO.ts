@@ -152,6 +152,14 @@ export class QuestionDAO implements IQuestionDAO {
         }
         return result.rows[0].ownerId;
     }
+    async getRoomQuestionLimit(roomId: number): Promise<number> {
+        const sql = `SELECT question_limit as "questionLimit" FROM meetings WHERE id = ?;`;
+        const result = await this.knex.raw(sql, [roomId]);
+        if(result.rows.length !== 1){
+                throw new Error('Fail to getHost - room is not found!')
+        }
+        return result.rows[0].questionLimit;
+    }
     async getQuestionOwner(questionId: number): Promise<number> {
         const sql = `SELECT guest_id as "guestId" FROM questions WHERE id = ?;`;
         const result = await this.knex.raw(sql, [questionId]);

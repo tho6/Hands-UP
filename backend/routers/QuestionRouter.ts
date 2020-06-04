@@ -42,8 +42,9 @@ export class QuestionRouter {
             try {
               // console.log(this.counter[`${req.personInfo.guestId}`]);
                 const idx = `${req.personInfo.guestId}`;
+                const questionLimit = await this.questionService.getRoomQuestionLimitByMeetingId(parseInt(req.params.id));
                 if (this.counter[`${req.personInfo.guestId}`]) {
-                    if (this.counter[idx].count >= 3) throw new Error('Exceed question limits!');
+                    if (this.counter[idx].count >= questionLimit) throw new Error('Exceed question limits!');
                     this.counter[idx].count += 1;
                     console.log( this.counter[idx].count);
                 }else{

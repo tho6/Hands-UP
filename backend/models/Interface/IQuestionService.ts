@@ -19,6 +19,7 @@ export interface IQuestionService {
     getRoomIdByQuestionId(questionId: number): Promise<number>;
     getRoomIdByReplyId(replyId: number): Promise<number>;
     getRoomHostByMeetingId(meetingId: number): Promise<number>;
+    getRoomQuestionLimitByMeetingId(meetingId: number): Promise<number>;
     getQuestionOwner(questionId: number): Promise<number>;
     /* reply */
     updateReply(id: number, content: string): Promise<boolean>;
