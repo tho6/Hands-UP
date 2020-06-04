@@ -14,10 +14,11 @@
         > div{
             display:flex;
             // flex-wrap: wrap;
-            > div{
-                    flex-grow: 1;
-                    width: 33%;
-                    height: 100px;
+            .question-likes-rank-content-id, .question-likes-rank-content-likes{
+                flex: 1;
+            }
+            .question-likes-rank-content-questions{
+                flex: 3;
             }
         }
     }

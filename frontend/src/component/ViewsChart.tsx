@@ -1,5 +1,7 @@
 import { ResponsiveLine } from '@nivo/line'
 import React from 'react'
+import { IReportView } from '../models/IReport'
+import './ViewsChart.scss'
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
@@ -7,7 +9,7 @@ import React from 'react'
 // you'll often use just a few of them.
 
 
-export const ViewsChart:React.FC<any> = (props) => {
+export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
 
   const dataMap = [{
     "id": "youtube",
@@ -25,11 +27,10 @@ export const ViewsChart:React.FC<any> = (props) => {
     "data": []
   }
   ] as any
-  console.log('inchart : '+typeof(props.data))
-  console.log('inchart : '+JSON.stringify(props.data))
-  if (props.data){
-    const baseDate = new Date(props.data[0].created_at)
-    for (const view of props.data as any) {
+  const views = props.data? [...props.data]:''
+  if (views){
+    const baseDate = new Date(views[0].created_at)
+    for (const view of views as any) {
       for (const platform of dataMap){
         platform['data'].push({
           x: (new Date(view.created_at).getTime() - baseDate.getTime())/1000 / 60,
@@ -40,16 +41,15 @@ export const ViewsChart:React.FC<any> = (props) => {
   }else{
     return <div></div>
   }
-  console.log('datamap: ' + JSON.stringify(dataMap))
+  console.log(dataMap)
+  // console.log('datamap: ' + JSON.stringify(dataMap))
   const data = dataMap
     
-    return (
+    return ( 
             <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
-        yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
-        curve="natural"
+        curve="catmullRom"
         axisTop={null}
         axisRight={null}
         axisBottom={{

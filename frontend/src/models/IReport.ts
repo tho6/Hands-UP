@@ -27,3 +27,32 @@ export interface IReportView{
     created_at: Date
 
 }
+
+export interface IPeakViews{
+    youtube:{
+        latestViews?:number,
+        previousViews?:number
+    },
+    handsup:{
+        latestViews?:number,
+        previousViews?:number
+    },
+    facebook:{
+        latestViews?:number,
+        previousViews?:number
+    },
+}
+export interface ICompareQuestion{
+    youtube:{
+        latestQuestions?:number,
+        previousQuestions?:number
+    },
+    handsup:{
+        latestQuestions?:number,
+        previousQuestions?:number
+    },
+    facebook:{
+        latestQuestions?:number,
+        previousQuestions?:number
+    },
+}
