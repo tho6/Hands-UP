@@ -295,6 +295,16 @@ const QuestionPage: React.FC = () => {
               className="util-spacing"
               data-testid="facebook-live"
               onClick={() => {
+                if(liveStatus?.facebook === true){
+                  dispatch(
+                    toggleFacebookLiveStatus(
+                      parseInt(meetingId),
+                      false,
+                      'page'
+                    )
+                  );
+                  return;
+                }
                 setFacebookModal(true);
               }}
             >
