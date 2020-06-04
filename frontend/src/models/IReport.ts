@@ -27,3 +27,12 @@ export interface IReportView{
     created_at: Date
 
 }
+export type IReportDataQuestionsBasicWithMeetingName = {
+    meetingName:string,
+    isAnswered: boolean,
+    isApproved:boolean,
+    isHide:boolean,
+    meetingId: number, 
+    platformId: number,
+    questionId:number
+}
