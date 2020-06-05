@@ -124,7 +124,6 @@ export class LiveRouter {
     fetchYTAccessAndRefreshToken = async (req: Request, res: Response) => {
         try {
             const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.YOUTUBE_REDIRECT_URL + '&grant_type=authorization_code';
-            console.log(bodyString);
             const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
                 method: 'POST',
                 headers: {
@@ -133,9 +132,10 @@ export class LiveRouter {
                 body: bodyString,
             })
             const result = await fetchRes.json();
-            console.log(result);
+            console.log('[Fetch YT refresh and access token]');
+            console.log(result['refresh_token'])
             if (result.error) throw new Error(result['error_description']);
-            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(2, result['refresh_token']);
+            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
             if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
@@ -177,6 +177,7 @@ export class LiveRouter {
                 }
             });
             const result = await fetchRes.json();
+            console.log('[Check Live Broadcast]');
             console.log(result);
             if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
@@ -279,7 +280,6 @@ export class LiveRouter {
             body: bodyString,
         })
         const result = await fetchRes.json();
-        console.log(result);
         return result;
     }
     checkStatus = async (req: Request, res: Response) => {
