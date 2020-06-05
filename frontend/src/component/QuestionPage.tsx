@@ -36,10 +36,12 @@ import {
 import FlipMove from 'react-flip-move';
 import {
   successfullyToggleYoutubeLiveStatus,
-  successfullyToggleFacebookLiveStatus
+  successfullyToggleFacebookLiveStatus,
+  successfullyUpdatedRoomConfiguration
 } from '../redux/rooms/actions';
 import FacebookModal from './FacebookModal';
 import RoomSettingButton from './RoomSetting';
+import { IRoomConfiguration } from '../models/IRoomInformation';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -155,6 +157,10 @@ const QuestionPage: React.FC = () => {
     const peopleCountListener = (count: number) => {
       setPeopleCount(count);
     };
+    const updateRoomConfiguration = (res: {roomConfiguration:IRoomConfiguration, meetingId:number}) => {
+      const {meetingId, roomConfiguration} = res
+      dispatch(successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration));
+    };
     const leaveRoom = () => {
       socket.emit('leave_event', meetingId);
       socket.off('create-question', newQuestionListener);
@@ -168,6 +174,7 @@ const QuestionPage: React.FC = () => {
       socket.off('create-reply', createReplyListener);
       socket.off('delete-reply', deleteReplyListener);
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
+      socket.off('update-room-configuration', updateRoomConfiguration);
     };
     socket.emit('join_event', meetingId);
     socket.on('create-question', newQuestionListener);
@@ -182,6 +189,7 @@ const QuestionPage: React.FC = () => {
     socket.on('delete-reply', deleteReplyListener);
     socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
     socket.on('update-count', peopleCountListener);
+    socket.on('update-room-configuration', updateRoomConfiguration);
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
       window.removeEventListener('beforeunload', leaveRoom);

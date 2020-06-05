@@ -1,5 +1,5 @@
 import Knex from "knex";
-import { IMeeting } from "../models/Interface/IMeeting";
+import { IMeeting, IRoomConfiguration } from "../models/Interface/IMeeting";
 
 export class MeetingService {
     constructor(private knex: Knex) { }
@@ -59,5 +59,12 @@ export class MeetingService {
         const result = await this.knex.raw(sql,[id]);
         if(result.rowCount !== 1) throw new Error('No meeting is found!');
         return result.rows[0];
+    }
+    async updateMeetingInRoom(id: number, roomConfiguration:IRoomConfiguration){
+        const {canModerate, canUploadFiles, questionLimit} = roomConfiguration;
+        const sql = 'update meetings set (can_upload_file, can_moderate, question_limit) = (?, ?, ?) where id = ?;'
+        const result = await this.knex.raw(sql,[canUploadFiles, canModerate, questionLimit, id]);
+        if(result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
+        return true;
     }
 }

@@ -1,5 +1,5 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadedRoomInformation, successfullyUpdatedRoomConfiguration, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
+import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
 
 // Thunk Action
@@ -23,7 +23,7 @@ export function fetchRoomInformation(meetingId: number) {
 export function updateRoom(meetingId: number, roomConfiguration: IRoomConfiguration) {
     return async (dispatch: ThunkDispatch) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/in/room/${meetingId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -31,9 +31,7 @@ export function updateRoom(meetingId: number, roomConfiguration: IRoomConfigurat
                 body: JSON.stringify(roomConfiguration)
             });
             const result = await res.json();
-            if (result.status) {
-                dispatch(successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration));
-            } else {
+            if (!result.status) {
                 window.alert(result.message);
             }
         } catch (e) {
