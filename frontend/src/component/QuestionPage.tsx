@@ -430,7 +430,7 @@ const QuestionPage: React.FC = () => {
               }}
             >
               MODERATION{' '}
-              {questionsNeedToBeApproved.length > 0
+              {questionsNeedToBeApproved?.length > 0
                 ? `(${questionsNeedToBeApproved.length})`
                 : ''}
             </button>
@@ -570,7 +570,7 @@ const QuestionPage: React.FC = () => {
         )}
         {roomInformation?.canModerate &&
           isQuestion[1] &&
-          (questionsNeedToBeApproved.length > 0 ? (
+          (questionsNeedToBeApproved?.length > 0 ? (
             questionsNeedToBeApproved.map((question) => {
               return (
                 <div
