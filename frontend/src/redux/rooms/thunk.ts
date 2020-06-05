@@ -96,14 +96,21 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                 } else {
                     window.alert(result.message);
                     if (res.status === 401){
-                        const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=ststate123abc&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                        const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
                         window.location.replace(loginLocationWithPrompt)
                     }
                     return;
                 }
             } else {
                 //change the counter at liveRouter to false
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/comments/${meetingId}`, { method: 'PUT' });
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/comments/${meetingId}`,
+                {
+                    method:'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getState().auth.accessToken}`
+                    },
+                })
                 const result = await res.json();
                 if (!result.status) throw new Error(result.message);
                 dispatch(successfullyToggleFacebookLiveStatus(meetingId, false));

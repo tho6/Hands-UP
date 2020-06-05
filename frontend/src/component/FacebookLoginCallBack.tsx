@@ -5,15 +5,17 @@ import { push } from 'connected-react-router'
 
 export default function FacebookLoginCallBack() {
     const dispatch = useDispatch()
+    
     useEffect(()=>{
         const params = new URLSearchParams(window.location.search)
+        const meetingId = params.get('state')
         if (params.get('error')) {
             window.alert('We need your permission')
         }else{
             dispatch(sendFacebookCode(params.get('code')!));
             console.log(params.get('code')!)
-            dispatch(push('/'))
         }
+        dispatch(push(`/room/${meetingId}/questions/main`))
 
     }, [dispatch])
 

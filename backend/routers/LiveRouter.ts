@@ -38,7 +38,7 @@ export class LiveRouter {
             const resultLongLivedToken = await fetchResLongLivedToken.json()
             if (!resultLongLivedToken) return res.status(401).json({ success: false, message: "Exchange Long Lived User Code Error" })
             if (!req.personInfo?.userId) return res.status(401).json({ success: false, message: "No UserID" })
-            await this.userService.saveFacebookTokenByUserId(req.personInfo?.userId, resultLongLivedToken)
+            await this.userService.saveFacebookTokenByUserId(req.personInfo?.userId, resultLongLivedToken.access_token)
             return res.status(200).json({ success: true, message: "Get Access Code Successful" })
         } catch (error) {
             console.log(error)

@@ -82,6 +82,7 @@ export function checkThirdPartyPlatformToken(userService:UserService, platform:s
                 switch(platform){
                     case 'facebook':
                         const fbToken = await userService.getFacebookTokenByUserId(req.personInfo.userId);
+                        console.log(fbToken);
                         if(!fbToken) return res.status(401).json({status:false, message:'No token found in DB, redirecting to login page'})
                         req.facebookToken = fbToken;
                         break;

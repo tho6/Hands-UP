@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { Nav } from 'react-bootstrap';
 import { logoutAccount } from '../redux/auth/thunk';
+import GoogleLogin from './GoogleLogin';
 
 export default function Navbar() {
     const pic = useSelector((state:RootState)=>state.auth.personInfo?.picture)
@@ -29,14 +30,15 @@ export default function Navbar() {
                         <Nav.Link className = 'main-nav-link' href="/report">Report</Nav.Link>
                     </Nav.Item>
                     <Nav.Item className = 'main-nav-item'>
-                        <Nav.Link className = 'main-nav-link' eventKey="logout" onClick={()=>dispatch(logoutAccount())}>
-                        {pic != null && <img src={pic} alt="icon"/>}
-                        Logout
-                        </Nav.Link>
+                        {<Nav.Link className = 'main-nav-link' eventKey="logout" onClick={()=>dispatch(logoutAccount())}>
+                            {pic != null && <img src={pic} alt="icon"/>}
+                            Logout
+                        </Nav.Link>}
                     </Nav.Item>
+                    
                     </>)}
+                    {!userId && <Nav.Item className = 'main-nav-item'><GoogleLogin /></Nav.Item>}
                     </Nav>
-
             {/* <ul className='navbar-nav'>  
             
                 <div className="spacer"></div>
