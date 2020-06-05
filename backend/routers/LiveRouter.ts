@@ -78,6 +78,7 @@ export class LiveRouter {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
+            if(this.eventSourceExistence[`${req.body.meetingId}`].facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
                 if (!this.eventSourceExistence[`${req.body.meetingId}`].facebook) return;
@@ -124,7 +125,6 @@ export class LiveRouter {
     fetchYTAccessAndRefreshToken = async (req: Request, res: Response) => {
         try {
             const bodyString = 'code=' + req.body.accessCode + '&client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&redirect_uri=' + process.env.YOUTUBE_REDIRECT_URL + '&grant_type=authorization_code';
-            console.log(bodyString);
             const fetchRes = await fetch('https://accounts.google.com/o/oauth2/token', {
                 method: 'POST',
                 headers: {
@@ -133,7 +133,8 @@ export class LiveRouter {
                 body: bodyString,
             })
             const result = await fetchRes.json();
-            console.log(result);
+            console.log('[Fetch YT refresh and access token]');
+            console.log(result)
             if (result.error) throw new Error(result['error_description']);
             const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
             if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
@@ -168,6 +169,8 @@ export class LiveRouter {
             const resultFromYT = await this.youtubeExchangeForAccessToken(req.youtubeRefreshToken);
             if (!resultFromYT['access_token']) return res.status(401).json({ status: false, message: 'Expired/Invalid Refresh token, please log in again!' });
             const accessToken = encodeURIComponent(resultFromYT['access_token']);
+            console.log('[accessToken]')
+            console.log(accessToken)
             //find live broadcast
             const fetchRes = await fetch(`https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&broadcastStatus=active&broadcastType=all&key=${process.env.YOUTUBE_API_KEY}`, {
                 method: "GET",
@@ -177,6 +180,7 @@ export class LiveRouter {
                 }
             });
             const result = await fetchRes.json();
+            console.log('[Check Live Broadcast]');
             console.log(result);
             if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
@@ -279,7 +283,6 @@ export class LiveRouter {
             body: bodyString,
         })
         const result = await fetchRes.json();
-        console.log(result);
         return result;
     }
     checkStatus = async (req: Request, res: Response) => {
