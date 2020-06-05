@@ -78,6 +78,7 @@ export class LiveRouter {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
+            if(this.eventSourceExistence[`${req.body.meetingId}`].facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
                 if (!this.eventSourceExistence[`${req.body.meetingId}`].facebook) return;
