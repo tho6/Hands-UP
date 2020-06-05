@@ -117,8 +117,8 @@ const QuestionPage: React.FC = () => {
       const { guestId, questionId } = res;
       dispatch(successfullyRemoveVote(questionId, guestId));
     };
-    const answeredQuestionListener = (questionId: number) => {
-      dispatch(successfullyAnsweredQuestion(questionId));
+    const answeredQuestionListener = (message:{questionId: number}) => {
+      dispatch(successfullyAnsweredQuestion(message.questionId));
     };
     const hideOrApprovedQuestionListener = (res: {
       questionId: number;
