@@ -64,3 +64,21 @@
     }
         
 }
+@media screen and (min-width: 1350px){
+    .report-desktop-first-row{
+        display: flex;
+        .report-snap-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 2;
+            .report-peak-view-outer, .report-total-questions-outer{
+                flex:1;
+            }
+        }
+        .views-chart-outer{
+            flex: 5;
+        }
+    }
+        
+}
