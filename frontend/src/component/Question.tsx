@@ -43,7 +43,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const questionContentBackUp = question.content;
   return (
     <div ref={ref}>
-      <div className="mb-4 d-flex">
+      <div className="mb-4 d-flex question-container">
         <div className="question flex-grow-1 p-2 p-lg-4">
           <div className="d-flex question-content-area">
             <div className="content text-wrap mb-2">
