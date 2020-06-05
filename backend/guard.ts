@@ -88,6 +88,7 @@ export function checkThirdPartyPlatformToken(userService:UserService, platform:s
                         break;
                     case 'youtube':
                        const refreshToken = await userService.getYoutubeRefreshTokenByUserId(req.personInfo.userId);
+                       console.log(refreshToken)
                        if(!refreshToken) return res.status(401).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
                        req.youtubeRefreshToken = refreshToken;
                         break;

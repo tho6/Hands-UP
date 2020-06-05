@@ -135,7 +135,7 @@ export class LiveRouter {
             const result = await fetchRes.json();
             console.log(result);
             if (result.error) throw new Error(result['error_description']);
-            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(2, result['refresh_token']);
+            const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
             if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
@@ -193,7 +193,7 @@ export class LiveRouter {
     }
 
     createQuestion = async (meetingId: number, message: string, platformId: number, name: string) => {
-        const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+|^(can)+|(呢)$/, 'i');
+        const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+||(\？)+^(can)+|(呢)$/, 'i');
         if (!regex.test(message)) return;
         try {
             const question = await this.questionService.createQuestionFromPlatform(meetingId, message, platformId, name);
