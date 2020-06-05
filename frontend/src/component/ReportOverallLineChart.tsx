@@ -52,7 +52,6 @@ const {all, youtube, facebook, handsup} = props
   }
  
   const data = dataMap
-    
     return ( 
             <ResponsiveLine
         data={data}

@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import useReactRouter from 'use-react-router';
-import { reportQuestionsCountOnLatestXMeetings, fetchReportQuestions } from '../redux/report/thunk';
+import {
+  reportQuestionsCountOnLatestXMeetings,
+  fetchReportQuestions
+} from '../redux/report/thunk';
 import { push } from 'connected-react-router';
 import { ReportOverallLineChart } from './ReportOverallLineChart';
 //import Example from './testChart';
@@ -11,45 +14,60 @@ const ReportOverall: React.FC = () => {
   const router = useReactRouter<{ lastXMeetings: string }>();
   const lastXMeetings = router.match.params.lastXMeetings;
   const dispatch = useDispatch();
-  const questionByMeetingIds = useSelector(  (rootState: RootState) => rootState.report.questionsByMeetingId);
-  const questionsRoot = useSelector(  (rootState: RootState) => rootState.report.questions);
+  const questionByMeetingIds = useSelector(
+    (rootState: RootState) => rootState.report.questionsByMeetingId
+  );
+  const questionsRoot = useSelector(
+    (rootState: RootState) => rootState.report.questions
+  );
   const questionsCount = useSelector(
     (rootState: RootState) => rootState.report.questionsCountOfLatestMeetings
   );
-  const data = questionsCount
-  .slice()
-  .sort((a, b) => b.meetingId - a.meetingId)
-  .slice(0, parseInt(lastXMeetings))
-  .map((elem) => {
-    const obj = { meetingName: elem.meetingName, count: elem.count };
-    return obj;
-  });
-  const meetingIds = questionsCount
-  .slice()
-  .sort((a, b) => b.meetingId - a.meetingId)
-  .slice(0, parseInt(lastXMeetings))
-  .map((elem) => elem.meetingId);
-  const meetingIdsOfLatestMeetings = meetingIds;
+  const t = questionsCount
+    .slice()
+    .sort((a, b) => b.meetingId - a.meetingId)
+    .slice(0, parseInt(lastXMeetings));
+  const data = t
+    .slice()
+    .sort((a, b) => a.meetingId - b.meetingId)
+    .map((elem) => {
+      const obj = { meetingName: elem.meetingName, count: elem.count };
+      return obj;
+    });
+  const meetingIds = t.slice().sort((a, b) => a.meetingId - b.meetingId).map((elem) => elem.meetingId);
 
-let youtube =[];
-let facebook =[];
-let handsup =[];
-for(const id of meetingIdsOfLatestMeetings){
- const questionIds = questionByMeetingIds[id];
-const questions = questionIds?.map(id=>questionsRoot[`${questionIds}`])
-  if(questions?.length>0){
-    const yt = questions.filter(elem=>elem?.platformid===3)
-    const fb = questions.filter(elem=>elem?.platformid===2)
-    const hp = questions.filter(elem=>elem?.platformid===1)
-    youtube.push({meetingName:questions[0]?.meetingname, count:yt.length})
-    facebook.push({meetingName:questions[0]?.meetingname, count:fb.length})
-    handsup.push({meetingName:questions[0]?.meetingname, count:hp.length})
+  const youtube = [];
+  const facebook = [];
+  const handsup = [];
+  for (const id of meetingIds) {
+    const questionIds = questionByMeetingIds[`${id}`];
+    const questions = questionIds?.map((id) => questionsRoot[`${id}`]);
+    console.log(questions);
+    if (questions?.length > 0) {
+      const yt = questions.filter((elem) => elem?.platformid === 3);
+      const fb = questions.filter((elem) => elem?.platformid === 2);
+      const hp = questions.filter((elem) => elem?.platformid === 1);
+      youtube.push({
+        meetingName: questions[0]?.meetingname,
+        count: yt.length
+      });
+      facebook.push({
+        meetingName: questions[0]?.meetingname,
+        count: fb.length
+      });
+      handsup.push({
+        meetingName: questions[0]?.meetingname,
+        count: hp.length
+      });
+    }
   }
-}
+
   useEffect(() => {
-    dispatch(reportQuestionsCountOnLatestXMeetings(lastXMeetings));
     dispatch(fetchReportQuestions('all'));
-  }, [dispatch, lastXMeetings]);
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(reportQuestionsCountOnLatestXMeetings('30'));
+  }, [dispatch]);
   return (
     <div className="report-container">
       Overall
