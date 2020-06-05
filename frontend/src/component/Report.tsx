@@ -65,7 +65,7 @@ export function Report() {
             {/* <Toggler /> */}
             {/* <Backdrop open={isDrawerOpen}/> */}
             {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/> */}
-            <div>
+            <div className='report-desktop-first-row'>
                 <div className='report-snap-container'>
                     <div className="report-peak-view-outer">
                         <div className="report-header"><span>Peak Views</span></div>

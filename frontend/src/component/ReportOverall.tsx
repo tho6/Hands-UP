@@ -21,7 +21,7 @@ const ReportOverall: React.FC = () => {
   );
   let allLatestQuestions:IReportQuestion[] =[];
   if(allLatestQuestions.length>0){
-    allLatestQuestions
+    // allLatestQuestions
   }
   const data = questionsCount
     .slice()
