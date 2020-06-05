@@ -313,17 +313,17 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
         </div>
         <div className="d-flex flex-column justify-content-between">
           {question.platform.name === 'facebook' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="fab fa-facebook fa-2x"></i>
             </div>
           )}
           {question.platform.name === 'youtube' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="fab fa-youtube fa-2x"></i>
             </div>
           )}
           {question.platform.name === 'handsup' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="far fa-hand-paper fa-2x"></i>
             </div>
           )}
