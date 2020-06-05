@@ -15,6 +15,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
   const [formState, { text }] = useFormState({
     limit: `${roomConfig.questionLimit}`
   });
+  if(formState){}
   const [showSetting, setShowSetting] = useState(false);
   return (
     <div>
