@@ -168,6 +168,8 @@ export class LiveRouter {
             const resultFromYT = await this.youtubeExchangeForAccessToken(req.youtubeRefreshToken);
             if (!resultFromYT['access_token']) return res.status(401).json({ status: false, message: 'Expired/Invalid Refresh token, please log in again!' });
             const accessToken = encodeURIComponent(resultFromYT['access_token']);
+            console.log('[accessToken]')
+            console.log(accessToken)
             //find live broadcast
             const fetchRes = await fetch(`https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&broadcastStatus=active&broadcastType=all&key=${process.env.YOUTUBE_API_KEY}`, {
                 method: "GET",
