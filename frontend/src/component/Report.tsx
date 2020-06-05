@@ -81,7 +81,7 @@ export function Report() {
                     <ViewsChart data={views}/>
                 </div>
             </div>
-            <div>
+            <div className='report-desktop-second-row'>
                 <div className="questions-from-chart-outer">
                     <div className="report-header"><span>Your Questions From</span></div>
                     <QuestionFromChart data={questions}/>
