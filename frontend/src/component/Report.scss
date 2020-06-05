@@ -17,9 +17,17 @@
 //         flex: 1;
 //     }
 // }
+.report-header::before{
+    content: '';
+    border-left: rgba(30, 183, 197, 0.808) 4.5px solid;
+    border-radius: 19px;
+    position: relative;
+    left: -1.3rem;
+}
 .report-header{
     font-weight: $ChartHeaderWeight;
     font-size: $ChartHeaderFontSize;
+    
 }
 .report-container{
     margin: 0;

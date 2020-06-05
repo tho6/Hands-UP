@@ -22,7 +22,7 @@ export const QuestionLikesRank:React.FC<{data:IReportQuestion[]}> = (props) => {
                     return (
                         <div key={`id-${idx}`} className='question-likes-rank-content-row'>
                             <div className="question-likes-rank-content-id">
-                                {i.id}
+                                {idx+1}
                             </div>
                             <div className="question-likes-rank-content-questions">
                                 {i.questioncontent}

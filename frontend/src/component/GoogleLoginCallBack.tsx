@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginGoogle } from '../redux/auth/thunk'
+import { push } from 'connected-react-router'
 
 export default function GoogleLoginCallBack() {
     const dispatch = useDispatch()
@@ -8,7 +9,7 @@ export default function GoogleLoginCallBack() {
         const params = new URLSearchParams(window.location.search)
         dispatch(loginGoogle(params.get('code')!));
         console.log(params.get('code')!)
-        // dispatch(push('/'))
+        dispatch(push('/'))
     }, [dispatch])
 
     return (
