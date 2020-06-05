@@ -12,25 +12,41 @@ const ReportOverall: React.FC = () => {
   const router = useReactRouter<{ lastXMeetings: string }>();
   const lastXMeetings = router.match.params.lastXMeetings;
   const dispatch = useDispatch();
+  const questionByMeetingIds = useSelector(  (rootState: RootState) => rootState.report.questionsByMeetingId);
+  const questionsRoot = useSelector(  (rootState: RootState) => rootState.report.questions);
   const questionsCount = useSelector(
     (rootState: RootState) => rootState.report.questionsCountOfLatestMeetings
   );
-  const meetingIdsOfLatestMeetings = questionsCount.map(elem=>elem.meetingId);
-  const allLatestQuestionsId = useSelector(
-    (rootState: RootState) =>meetingIdsOfLatestMeetings.map(id=>rootState.report.questionsByMeetingId[`${id}`])
-  );
-  let allLatestQuestions:IReportQuestion[] =[];
-  if(allLatestQuestions.length>0){
-    allLatestQuestions
-  }
   const data = questionsCount
-    .slice()
-    .sort((a, b) => b.meetingId - a.meetingId)
-    .slice(0, parseInt(lastXMeetings))
-    .map((elem) => {
-      const obj = { meetingName: elem.meetingName, count: elem.count };
-      return obj;
-    });
+  .slice()
+  .sort((a, b) => b.meetingId - a.meetingId)
+  .slice(0, parseInt(lastXMeetings))
+  .map((elem) => {
+    const obj = { meetingName: elem.meetingName, count: elem.count };
+    return obj;
+  });
+  const meetingIds = questionsCount
+  .slice()
+  .sort((a, b) => b.meetingId - a.meetingId)
+  .slice(0, parseInt(lastXMeetings))
+  .map((elem) => elem.meetingId);
+  const meetingIdsOfLatestMeetings = meetingIds;
+
+let youtube =[];
+let facebook =[];
+let handsup =[];
+for(const id of meetingIdsOfLatestMeetings){
+ const questionIds = questionByMeetingIds[id];
+const questions = questionIds?.map(id=>questionsRoot[`${questionIds}`])
+  if(questions?.length>0){
+    const yt = questions.filter(elem=>elem?.platformid===3)
+    const fb = questions.filter(elem=>elem?.platformid===2)
+    const hp = questions.filter(elem=>elem?.platformid===1)
+    youtube.push({meetingName:questions[0]?.meetingname, count:yt.length})
+    facebook.push({meetingName:questions[0]?.meetingname, count:fb.length})
+    handsup.push({meetingName:questions[0]?.meetingname, count:hp.length})
+  }
+}
   useEffect(() => {
     dispatch(reportQuestionsCountOnLatestXMeetings(lastXMeetings));
     dispatch(fetchReportQuestions('all'));
@@ -108,9 +124,9 @@ const ReportOverall: React.FC = () => {
         </div>
         <ReportOverallLineChart
           all={data}
-          youtube={[]}
-          facebook={[]}
-          handsup={[]}
+          youtube={youtube}
+          facebook={facebook}
+          handsup={handsup}
         />
       </div>
       {/* <Example /> */}
