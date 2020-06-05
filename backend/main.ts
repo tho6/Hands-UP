@@ -26,6 +26,8 @@ import { ReportRouter } from "./routers/ReportRouter";
 import { ReportService } from "./services/ReportService";
 import multerS3 from "multer-s3";
 import aws from 'aws-sdk';
+import referrerPolicy from 'referrer-policy'
+
 // import redis from 'redis';
 // const client = redis.createClient();
 import dotenv from 'dotenv'
@@ -55,7 +57,7 @@ app.use(cors({
     // 'https://api.handsup.host'
   ]
 }))
-
+app.use(referrerPolicy());
 /* Database configuration */
 const knexConfig = require("./knexfile");
 //@ts-ignore
