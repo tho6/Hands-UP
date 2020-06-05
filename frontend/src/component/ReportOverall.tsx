@@ -5,7 +5,6 @@ import useReactRouter from 'use-react-router';
 import { reportQuestionsCountOnLatestXMeetings, fetchReportQuestions } from '../redux/report/thunk';
 import { push } from 'connected-react-router';
 import { ReportOverallLineChart } from './ReportOverallLineChart';
-import { IReportQuestion } from '../models/IReport';
 //import Example from './testChart';
 
 const ReportOverall: React.FC = () => {
