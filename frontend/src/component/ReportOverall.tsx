@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import useReactRouter from 'use-react-router';
-import { reportQuestionsCountOnLatestXMeetings } from '../redux/report/thunk';
+import { reportQuestionsCountOnLatestXMeetings, fetchReportQuestions } from '../redux/report/thunk';
 import { push } from 'connected-react-router';
 import { ReportOverallLineChart } from './ReportOverallLineChart';
+import { IReportQuestion } from '../models/IReport';
 //import Example from './testChart';
 
 const ReportOverall: React.FC = () => {
@@ -14,6 +15,14 @@ const ReportOverall: React.FC = () => {
   const questionsCount = useSelector(
     (rootState: RootState) => rootState.report.questionsCountOfLatestMeetings
   );
+  const meetingIdsOfLatestMeetings = questionsCount.map(elem=>elem.meetingId);
+  const allLatestQuestionsId = useSelector(
+    (rootState: RootState) =>meetingIdsOfLatestMeetings.map(id=>rootState.report.questionsByMeetingId[`${id}`])
+  );
+  let allLatestQuestions:IReportQuestion[] =[];
+  if(allLatestQuestions.length>0){
+    allLatestQuestions
+  }
   const data = questionsCount
     .slice()
     .sort((a, b) => b.meetingId - a.meetingId)
@@ -24,6 +33,7 @@ const ReportOverall: React.FC = () => {
     });
   useEffect(() => {
     dispatch(reportQuestionsCountOnLatestXMeetings(lastXMeetings));
+    dispatch(fetchReportQuestions('all'));
   }, [dispatch, lastXMeetings]);
   return (
     <div className="report-container">

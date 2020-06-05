@@ -134,7 +134,7 @@ export class LiveRouter {
             })
             const result = await fetchRes.json();
             console.log('[Fetch YT refresh and access token]');
-            console.log(result['refresh_token'])
+            console.log(result)
             if (result.error) throw new Error(result['error_description']);
             const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
             if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
