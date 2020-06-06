@@ -4,9 +4,10 @@ import { MeetingLiveActions } from './action';
 export interface IMeetingLive {
     id: number;
     name: string;
-    date: Date;
+    date_time: Date;
     code: string;
-    host: string;
+    url: string,
+    owner_id: string;
 }
 
 export interface MeetingLiveState {
@@ -15,14 +16,15 @@ export interface MeetingLiveState {
 
 const initialState: MeetingLiveState = {
     meetingsLive: [
-        { id: 1, name: "LiveMeeting1", date: new Date(), code: "NEW1", host: "Host1" },
-        { id: 2, name: "LiveMeeting2", date: new Date(), code: "NEW2", host: "Host2" }],
+        { id: 1, name: "LiveMeeting1", date_time: new Date(), code: "NEW1", url: "url", owner_id: "Host1" },
+        { id: 2, name: "LiveMeeting2", date_time: new Date(), code: "NEW2", url: "url", owner_id: "Host2" }],
 }
 
 export function MeetingLiveReducer(state: MeetingLiveState = initialState, action: MeetingLiveActions): MeetingLiveState {
-    return produce(state, state => {
+    return produce(state, draftState => {
         switch (action.type) {
             case "@@MEETINGS/LOAD_MEETINGS":
+                draftState.meetingsLive = action.meetings;
                 break;
         }
     })

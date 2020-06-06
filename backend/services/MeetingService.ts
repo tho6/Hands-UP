@@ -4,9 +4,19 @@ import { IMeeting } from "../models/Interface/IMeeting";
 export class MeetingService {
     constructor(private knex: Knex) { }
 
-    async getMeeting() {
-        let result = await this.knex.raw(/*SQL*/`SELECT * FROM meetings`)
-        return result.rows as IMeeting[];
+    // async getMeeting() {
+    //     let result = await this.knex.raw(/*SQL*/`SELECT * FROM meetings`)
+    //     return result.rows as IMeeting[];
+    // }
+
+    async getMeetingByUserId(id:number) {
+        try {
+            const result = await this.knex.raw(/*SQL*/`SELECT * from meetings WHERE owner_id = (?)`, [id])
+            return result.rows
+        } catch (error) {
+            console.log('[Meeting Service Error] ' + 'getMeetingIdsById')
+            throw error
+        }
     }
 
     async getMeetingByMeetingName(name: string) {
@@ -21,21 +31,23 @@ export class MeetingService {
         }
     }
 
-    async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number) {
+    async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number, question_limit: number, can_moderate: boolean, can_upload_file:boolean) {
         try {
-
             let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`, [name]);
             console.log(check.rowCount);
             if (check.rows.length > 0) {
                 throw new Error("Duplicate meeting name");
             }
-            let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url, owner_id) VALUES (?,?,?,?,?) RETURNING id`,
+            let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url, owner_id, question_limit, can_moderate, can_upload_file) VALUES (?,?,?,?,?,?,?,?) RETURNING id`,
                 [
                     name,
                     date_time,
                     code,
                     url,
-                    owner_id
+                    owner_id,
+                    question_limit,
+                    can_moderate,
+                    can_upload_file
                 ]
             );
             console.log(result);
@@ -54,10 +66,10 @@ export class MeetingService {
         return this.knex.raw(/*SQL*/`DELETE FROM meetings WHERE id = ?`, [id]);
     }
 
-    async getMeetingById(id: number){
+    async getMeetingById(id: number) {
         const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFile", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
-        const result = await this.knex.raw(sql,[id]);
-        if(result.rowCount !== 1) throw new Error('No meeting is found!');
+        const result = await this.knex.raw(sql, [id]);
+        if (result.rowCount !== 1) throw new Error('No meeting is found!');
         return result.rows[0];
     }
 }

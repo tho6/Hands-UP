@@ -7,7 +7,8 @@ export class MeetingRouter {
 
     router() {
         const router = express.Router();
-        router.get('/', this.getMeeting);
+        // router.get('/', this.getMeeting);
+        router.get('/', this.getMeetingByUserId);
         router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
@@ -15,10 +16,23 @@ export class MeetingRouter {
         return router;
     }
 
-    getMeeting = async (req: Request, res: Response) => {
+    // getMeeting = async (req: Request, res: Response) => {
+    //     try {
+    //         const result = await this.meetingService.getMeeting();
+    //         res.json(result);
+    //         // return;
+    //     } catch (err) {
+    //         console.log(err.message);
+    //         res.status(500).json({ message: "Meeting Router getMeeting error" });
+    //     }
+    // }
+
+    getMeetingByUserId = async (req: Request, res: Response) => {
         try {
-            const result = await this.meetingService.getMeeting();
-            res.json(result);
+            // const userId = req.personInfo?.userId!
+            const userId = 1 // change later
+            const result = await this.meetingService.getMeetingByUserId(userId);
+            res.status(200).json({ success: true, message: result });
             // return;
         } catch (err) {
             console.log(err.message);
@@ -28,9 +42,11 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date, time, code, url } = req.body;
+            const { name, date, time, code, url, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
             const date_time = new Date(date + ' ' + time)
             console.log(date_time);
+            const can_moderate = pre_can_moderate === '1' ? true : false
+            const can_upload_file = pre_can_upload_file === '1' ? true : false
             // const userId = req.personInfo?.userId
             const userId = 1 // change later
             console.log(req.body.name);
@@ -42,7 +58,7 @@ export class MeetingRouter {
             if (!userId) {
                 return res.status(400).json({ message: "UserId not found" });
             }
-            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, userId);
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, userId, question_limit, can_moderate, can_upload_file);
             return res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);
@@ -87,10 +103,10 @@ export class MeetingRouter {
     getMeetingById = async (req: Request, res: Response) => {
         try {
             const meetingInformation = await this.meetingService.getMeetingById(parseInt(req.params.id));
-            res.status(200).json({status:true, message:meetingInformation})
+            res.status(200).json({ status: true, message: meetingInformation })
         } catch (err) {
             console.log(err.message);
-            res.status(404).json({status:false, message: err.message });
+            res.status(404).json({ status: false, message: err.message });
             return;
         }
     }

@@ -8,47 +8,80 @@ import { IMeetingLive } from '../redux/meetinglive/reducers';
 import './MeetingLive.scss';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card'
-// import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-
-const MeetingLiveCard: React.FC<{ meeting: IMeetingLive }> = (props) => {
-    return (<>
-        <div>
-            <Card className="meetingLiveCard">
-                <Card.Body>
-                    <Row>
-                        <Col md={3}>
-                            <div className="liveIcon"><i className="fas fa-video fa-3x"></i></div>
-                        </Col>
-                        <Col md={9}>
-                            <div><b>{props.meeting.name}</b></div>
-                            <div>Meeting code: {props.meeting.code}</div>
-                            {/* <div>{props.meeting.date}</div> */}
-                            <div>Host by: {props.meeting.host}</div>
-                            <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
-                        </Col>
-                    </Row>
-                </Card.Body>
-            </Card>
-        </div>
-    </>);
-}
 
 export function MeetingLive() {
     const meetings = useSelector((state: RootState) => state.meetingsLive.meetingsLive)
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchMeetingLive)
+        dispatch(fetchMeetingLive(0))
     }, [dispatch])
 
     return (
-        <div>
-            <h2 className="headline"><b>Live</b></h2>
-            {
-                meetings.map((meeting) => <MeetingLiveCard meeting={meeting} />)
-            }
-        </div>
-    )
+    <div>
+        {meetings.map((meeting) => {
+            return (<Card className="meetingLiveCard">
+                <Card.Body>
+                    <Row>
+                        <Col md={3}>
+                            <div className="liveIcon"><i className="fas fa-video fa-3x"></i></div>
+                        </Col>
+                        <Col md={9}>
+                            <div><b>{meeting.name}</b></div>
+                            <div>Meeting code: {meeting.code}</div>
+                            <div>Meeting url: {meeting.url}</div>
+                            <div>Meeting time: {meeting.date_time.toString()}</div>
+                            <div>Host by: {meeting.owner_id}</div>
+                            <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
+                        </Col>
+                    </Row>
+                </Card.Body>
+            </Card>)
+        })}
+    </div>
+    );
 }
+
+// const MeetingLiveCard: React.FC<{ meeting: IMeetingLive }> = (props) => {
+//     return (<>
+//         <div>
+//             <Card className="meetingLiveCard">
+//                 <Card.Body>
+//                     <Row>
+//                         <Col md={3}>
+//                             <div className="liveIcon"><i className="fas fa-video fa-3x"></i></div>
+//                         </Col>
+//                         <Col md={9}>
+//                             <div><b>{props.meeting.name}</b></div>
+//                             <div>Meeting code: {props.meeting.code}</div>
+//                             <div>Meeting url: {props.meeting.url}</div>
+//                             <div>Meeting time: {props.meeting.date_time.toString()}</div>
+//                             <div>Host by: {props.meeting.owner_id}</div>
+//                             <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
+//                         </Col>
+//                     </Row>
+//                 </Card.Body>
+//             </Card>
+//         </div>
+//     </>);
+// }
+
+// export function MeetingLive() {
+//     const meetings = useSelector((state: RootState) => state.meetingsLive.meetingsLive)
+//     const dispatch = useDispatch();
+
+//     useEffect(() => {
+//         dispatch(fetchMeetingLive(0))
+//     }, [dispatch])
+
+//     return (
+//         <div>
+//             <h2 className="headline"><b>Live</b></h2>
+//             {
+//                 meetings.map((meeting) => <MeetingLiveCard meeting={meeting} />)
+//             }
+//         </div>
+//     )
+// }

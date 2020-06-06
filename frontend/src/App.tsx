@@ -3,7 +3,7 @@ import './App.scss';
 import QuestionPage from './component/QuestionPage';
 import { Route, Switch } from 'react-router-dom';
 import Meetings from './component/Meetings';
-import CreateMeeting from './component/MeetingCreate';
+// import CreateMeeting from './component/MeetingCreate';
 import GoogleLogin from './component/GoogleLogin';
 import GoogleLoginCallBack from './component/GoogleLoginCallBack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,9 +43,9 @@ function App() {
           <Route path="/meetings" exact>
           {(isAuthenticated != null && <Meetings />)}
           </Route>
-          <Route path="/meetings/create" exact>
+          {/* <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
-          </Route>
+          </Route> */}
           <Route path="/report/:loc" exact>
           {(isAuthenticated != null &&<Report />)}
           </Route>
