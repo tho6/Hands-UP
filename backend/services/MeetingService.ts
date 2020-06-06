@@ -70,14 +70,8 @@ export class MeetingService {
         const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFile", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
         const result = await this.knex.raw(sql, [id]);
         if (result.rowCount !== 1) throw new Error('No meeting is found!');
+        return result.rows[0];
     }
-
-    // async getMeetingById(id: number){
-    //     const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFiles", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
-    //     const result = await this.knex.raw(sql,[id]);
-    //     if(result.rowCount !== 1) throw new Error('No meeting is found!');
-    //     return result.rows[0];
-    // }
 
     async updateMeetingInRoom(id: number, roomConfiguration: IRoomConfiguration) {
         const { canModerate, canUploadFiles, questionLimit } = roomConfiguration;
