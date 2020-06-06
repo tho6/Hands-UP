@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMeetingLive } from '../redux/meetinglive/thunk';
 import { RootState } from '../store';
-import { IMeetingLive } from '../redux/meetinglive/reducers';
+// import { IMeetingLive } from '../redux/meetinglive/reducers';
 // import Moment from 'react-moment';
 // CSS
 import './MeetingLive.scss';
