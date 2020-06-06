@@ -171,6 +171,7 @@ io.on('connection', socket => {
       // counter[idx] = { count: 1, counting: true };
       counter[idx] = { count: [guestId], counting: true };
       setTimeout(() => {
+        if(!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', counter[idx].count.length);
@@ -189,6 +190,7 @@ io.on('connection', socket => {
     if (!counter[idx].counting) {
       counter[idx].counting = true;
       setTimeout(() => {
+        if (!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', counter[idx].count.length);

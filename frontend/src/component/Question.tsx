@@ -131,7 +131,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
             </div>
             <div className="d-flex p-2 flex-wrap">
               <div className="to-center util-spacing">
-                {question.questioner.name}
+                {question.questioner.id === user?.guestId?'You':question.questioner.name}
               </div>
               {isEdit && (
                 <div className="d-flex">
