@@ -2,21 +2,28 @@ import React, { useState } from 'react';
 import './RoomSetting.scss';
 import { useFormState } from 'react-use-form-state';
 import { IRoomConfiguration } from '../models/IRoomInformation';
+import Message from './Message';
+import { useDispatch } from 'react-redux';
+import { updateRoom } from '../redux/rooms/thunk';
 
 interface IProps {
+  meetingId:number;
   roomConfig: IRoomConfiguration;
   // yes: () => void;
   // no: () => void;
 }
 
 const RoomSettingButton: React.FC<IProps> = (props) => {
-  const { roomConfig } = props;
+  const { roomConfig, meetingId} = props;
   console.log(roomConfig)
   const [formState, { text }] = useFormState({
     limit: `${roomConfig.questionLimit}`
   });
+  const [canUploadFiles, setCanUpload] = useState(roomConfig.canUploadFiles);
+  const [canModerate, setCanModerate] = useState(roomConfig.canModerate);
   if(formState){}
   const [showSetting, setShowSetting] = useState(false);
+  const dispatch = useDispatch();
   return (
     <div>
       <div onClick={()=>setShowSetting(!showSetting)}>
@@ -25,17 +32,17 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
       {showSetting && (
         <div className="room-setting-container">
           <div className="d-flex py-2">
-          <div>
+          <div onClick={()=>setCanModerate(!canModerate)}>
             Moderation{' '}
-            {roomConfig.canModerate ? (
+            {canModerate ? (
               <i className="far fa-check-square"></i>
             ) : (
               <i className="far fa-square"></i>
             )}
           </div>
-          <div className="pl-2">
+          <div className="pl-2" onClick={()=>setCanUpload(!canUploadFiles)}>
             Upload files{' '}
-            {roomConfig.canUploadFiles ? (
+            {canUploadFiles ? (
               <i className="far fa-check-square"></i>
             ) : (
               <i className="far fa-square"></i>
@@ -44,7 +51,14 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           </div>
           <div className="py-2 break-div">
             <span>Question Rate <input className='input-text' {...text('limit')}/></span>
-            <button className="room-update-save">Save</button>
+            {(!formState.isPristine() || canUploadFiles!== roomConfig.canUploadFiles || canModerate!== roomConfig.canModerate) &&
+              <button className="room-update-save" onClick={()=>{
+                if(!(formState.values.limit.trim().length>0) || isNaN(formState.values.limit)) return window.alert('Invaid limit!')
+                const updateRoomConfig = {canUploadFiles, canModerate, questionLimit: formState.values.limit}
+                dispatch(updateRoom(meetingId, updateRoomConfig));
+                setShowSetting(false);
+              }}>Save</button>
+            }
           </div>
           <div className='py-2'>
           <button>Reset Facebook Platform</button>
@@ -52,8 +66,12 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           <div className='py-2'>
           <button>Reset Youtube Platform</button>
           </div>
+          <div className='py-2'>
+          <button>Reset All Platform</button>
+          </div>
         </div>
       )}
+      <Message />
     </div>
   );
 };

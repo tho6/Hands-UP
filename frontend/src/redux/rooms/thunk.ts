@@ -1,5 +1,5 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus } from "./actions";
+import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus, message } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
 
 // Thunk Action
@@ -28,12 +28,10 @@ export function updateRoom(meetingId: number, roomConfiguration: IRoomConfigurat
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(roomConfiguration)
+                body: JSON.stringify({roomConfiguration})
             });
             const result = await res.json();
-            if (!result.status) {
-                window.alert(result.message);
-            }
+            dispatch(message(true,result.status?'Successfully Update Room Configuration':'Something went wrong! You may try again later.'));
         } catch (e) {
             window.alert(e.message);
         }

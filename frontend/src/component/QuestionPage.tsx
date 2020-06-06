@@ -278,7 +278,7 @@ const QuestionPage: React.FC = () => {
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
         <div className="d-flex">
-  <span className="position-relative">{isHost && <RoomSettingButton roomConfig={{canModerate:roomInformation?.canModerate, canUploadFiles:roomInformation?.canUploadFiles, questionLimit:roomInformation?.questionLimit}} />}</span>
+  <span className="position-relative">{isHost && <RoomSettingButton meetingId={parseInt(meetingId)} roomConfig={{canModerate:roomInformation?.canModerate, canUploadFiles:roomInformation?.canUploadFiles, questionLimit:roomInformation?.questionLimit}} />}</span>
           <span>{roomInformation?.name}</span>
           <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}

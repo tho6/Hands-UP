@@ -77,7 +77,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <div key={file.id} className="p-2 mr-4">
                     <img
                       className="mw-100"
-                      src={`/${file.filename}`}
+                      src={`${file.filename}`}
                       alt={file.filename}
                       data-testid="image"
                     />
