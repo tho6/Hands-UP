@@ -17,5 +17,5 @@ export interface IRoomInformation{
 export interface IRoomConfiguration{
     canModerate:boolean;
     canUploadFiles: boolean;
-    question_limit:number;
+    questionLimit:number;
 }

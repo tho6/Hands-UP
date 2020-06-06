@@ -36,9 +36,12 @@ import {
 import FlipMove from 'react-flip-move';
 import {
   successfullyToggleYoutubeLiveStatus,
-  successfullyToggleFacebookLiveStatus
+  successfullyToggleFacebookLiveStatus,
+  successfullyUpdatedRoomConfiguration
 } from '../redux/rooms/actions';
 import FacebookModal from './FacebookModal';
+import RoomSettingButton from './RoomSetting';
+import { IRoomConfiguration } from '../models/IRoomInformation';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -91,8 +94,9 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-
+/* Join and leave room (guest) */
   useEffect(() => {
+    if(!personInfo?.guestId) return
     const newQuestionListener = (question: IQuestion) => {
       dispatch(addedQuestion(question));
     };
@@ -117,8 +121,8 @@ const QuestionPage: React.FC = () => {
       const { guestId, questionId } = res;
       dispatch(successfullyRemoveVote(questionId, guestId));
     };
-    const answeredQuestionListener = (questionId: number) => {
-      dispatch(successfullyAnsweredQuestion(questionId));
+    const answeredQuestionListener = (message:{questionId: number}) => {
+      dispatch(successfullyAnsweredQuestion(message.questionId));
     };
     const hideOrApprovedQuestionListener = (res: {
       questionId: number;
@@ -154,8 +158,12 @@ const QuestionPage: React.FC = () => {
     const peopleCountListener = (count: number) => {
       setPeopleCount(count);
     };
+    const updateRoomConfiguration = (res: {roomConfiguration:IRoomConfiguration, meetingId:number}) => {
+      const {meetingId, roomConfiguration} = res
+      dispatch(successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration));
+    };
     const leaveRoom = () => {
-      socket.emit('leave_event', meetingId);
+      socket.emit('leave_event', meetingId, personInfo.guestId);
       socket.off('create-question', newQuestionListener);
       socket.off('update-question', updateQuestionListener);
       socket.off('delete-question', deleteQuestionListener);
@@ -167,8 +175,9 @@ const QuestionPage: React.FC = () => {
       socket.off('create-reply', createReplyListener);
       socket.off('delete-reply', deleteReplyListener);
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
+      socket.off('update-room-configuration', updateRoomConfiguration);
     };
-    socket.emit('join_event', meetingId);
+    socket.emit('join_event', meetingId, personInfo.guestId);
     socket.on('create-question', newQuestionListener);
     socket.on('update-question', updateQuestionListener);
     socket.on('delete-question', deleteQuestionListener);
@@ -181,12 +190,13 @@ const QuestionPage: React.FC = () => {
     socket.on('delete-reply', deleteReplyListener);
     socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
     socket.on('update-count', peopleCountListener);
+    socket.on('update-room-configuration', updateRoomConfiguration);
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
       window.removeEventListener('beforeunload', leaveRoom);
       leaveRoom();
     };
-  }, [dispatch, meetingId]);
+  }, [dispatch, meetingId, personInfo]);
   useEffect(() => {
     if (!isHost) return;
     const turnOffYoutubeLive = () => {
@@ -269,6 +279,7 @@ const QuestionPage: React.FC = () => {
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
         <div className="d-flex">
+  <span className="position-relative">{isHost && <RoomSettingButton meetingId={parseInt(meetingId)} roomConfig={{canModerate:roomInformation?.canModerate, canUploadFiles:roomInformation?.canUploadFiles, questionLimit:roomInformation?.questionLimit}} />}</span>
           <span>{roomInformation?.name}</span>
           <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}
@@ -436,7 +447,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
-        {isHost && (
+        {isHost && roomInformation?.canModerate && (
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[2] && 'is-active'}`}
@@ -452,7 +463,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
-        {isHost && (
+        {isHost &&  roomInformation?.canModerate && (
           <div>
             <button
               className={`util-spacing rounded ${isQuestion[3] && 'is-active'}`}
@@ -515,7 +526,7 @@ const QuestionPage: React.FC = () => {
                       <Question
                         key={question.id}
                         user={personInfo}
-                        canUploadFiles={roomInformation.canUploadFiles}
+                        canUploadFiles={roomInformation?.canUploadFiles}
                         question={question}
                         answering={
                           mostPopularQuestions[0].id === question.id
@@ -536,7 +547,7 @@ const QuestionPage: React.FC = () => {
                     <Question
                       key={question.id}
                       user={personInfo}
-                      canUploadFiles={roomInformation.canUploadFiles}
+                      canUploadFiles={roomInformation?.canUploadFiles}
                       question={question}
                       answering={
                         mostPopularQuestions[0].id === question.id
@@ -556,7 +567,7 @@ const QuestionPage: React.FC = () => {
                       <Question
                         key={question.id}
                         user={personInfo}
-                        canUploadFiles={roomInformation.canUploadFiles}
+                        canUploadFiles={roomInformation?.canUploadFiles}
                         question={question}
                         answering={false}
                         isModerate={false}
@@ -580,7 +591,7 @@ const QuestionPage: React.FC = () => {
                   <Question
                     key={`${question.id}`}
                     user={personInfo}
-                    canUploadFiles={roomInformation.canUploadFiles}
+                    canUploadFiles={roomInformation?.canUploadFiles}
                     question={question}
                     answering={false}
                     isModerate={true}
@@ -609,7 +620,7 @@ const QuestionPage: React.FC = () => {
                   <Question
                     //key={`${question.id}`}
                     user={personInfo}
-                    canUploadFiles={roomInformation.canUploadFiles}
+                    canUploadFiles={roomInformation?.canUploadFiles}
                     question={question}
                     answering={false}
                     isModerate={false}

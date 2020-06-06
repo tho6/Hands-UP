@@ -1,10 +1,32 @@
+@import './variables';
+
+// Meetings.tsx
+
 .Container {
     display: flex;
-    flex-direction: row;
-    margin: 0px 10px 20px 10px;
+    flex-direction: column;
+    margin-top: 50px;
     height: 100vw;
+}
+
+.h4 {
+    font-family: $SecondaryFontStyle;
+    text-align: center;
+    color: $PrimaryTextColor;
 }
   
 .Container > div {
     flex: 1;
+}
+
+.create-meeting-btn{
+    font-family: $PrimaryFontStyle;
+    border: none;
+    // width: 100px;
+    // height: 100px;
+    // border-radius: 50%;
+}
+
+.popup {
+    background-color: $SecondaryTextColor;
 }

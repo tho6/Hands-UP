@@ -26,6 +26,8 @@ import { ReportRouter } from "./routers/ReportRouter";
 import { ReportService } from "./services/ReportService";
 import multerS3 from "multer-s3";
 import aws from 'aws-sdk';
+import referrerPolicy from 'referrer-policy'
+
 // import redis from 'redis';
 // const client = redis.createClient();
 import dotenv from 'dotenv'
@@ -55,7 +57,7 @@ app.use(cors({
     // 'https://api.handsup.host'
   ]
 }))
-
+app.use(referrerPolicy());
 /* Database configuration */
 const knexConfig = require("./knexfile");
 //@ts-ignore
@@ -111,7 +113,7 @@ const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
 const liveRouter = new LiveRouter(questionService, io, userService);
-const meetingRouter = new MeetingRouter(meetingService);
+const meetingRouter = new MeetingRouter(meetingService, io);
 const reportRouter = new ReportRouter(reportService);
 
 //guard
@@ -148,40 +150,50 @@ app.use('/rooms', guard, questionRouter.router());
 app.use('/meetings', meetingRouter.router())
 
 /* Socket Io */
-let counter: { [id: string]: { count: number, counting: boolean } } = {}
+let counter: { [id: string]: { count: number[], counting: boolean } } = {}
 io.on('connection', socket => {
-  socket.on('join_event', (meetingId: number) => {
-    console.log('join room:' + meetingId);
+  socket.on('join_event', (meetingId: number, guestId:number) => {
+    console.log('join room:' + meetingId, 'GuestId'+guestId);
     const idx = 'event:' + meetingId;
     socket.join(idx)
     if (counter[idx]) {
-      counter[idx].count += 1;
+      // counter[idx].count += 1;
+      if(!counter[idx].count.includes(guestId)) counter[idx].count.push(guestId)
       if (!counter[idx].counting) {
         counter[idx].counting = true;
         setTimeout(() => {
           counter[idx].counting = false;
-          io.in(idx).emit('update-count', counter[idx].count);
+          // io.in(idx).emit('update-count', counter[idx].count);
+          io.in(idx).emit('update-count', counter[idx].count.length);
         }, 3000)
       }
     } else {
-      counter[idx] = { count: 1, counting: true };
+      // counter[idx] = { count: 1, counting: true };
+      counter[idx] = { count: [guestId], counting: true };
       setTimeout(() => {
+        if(!counter[idx]) return;
         counter[idx].counting = false;
-        io.in(idx).emit('update-count', counter[idx].count);
+        // io.in(idx).emit('update-count', counter[idx].count);
+        io.in(idx).emit('update-count', counter[idx].count.length);
       }, 3000)
     }
   });
-  socket.on('leave_event', (meetingId: number) => {
-    console.log('leave room:' + meetingId);
+  socket.on('leave_event', (meetingId: number, guestId:number) => {
+    console.log('leave room:' + meetingId, 'GuestId'+guestId);
     const idx = 'event:' + meetingId;
     socket.leave(idx);
     if (!counter[idx]) return;
-    counter[idx].count -= 1;
+    // counter[idx].count -= 1;
+    counter[idx].count.splice(counter[idx].count.indexOf(guestId),1);
+    if(counter[idx].count.length === 0) delete counter[idx];
+    if (!counter[idx]) return;
     if (!counter[idx].counting) {
       counter[idx].counting = true;
       setTimeout(() => {
+        if (!counter[idx]) return;
         counter[idx].counting = false;
-        io.in(idx).emit('update-count', counter[idx].count);
+        // io.in(idx).emit('update-count', counter[idx].count);
+        io.in(idx).emit('update-count', counter[idx].count.length);
       }, 3000)
     }
   });

@@ -3,7 +3,8 @@ import './App.scss';
 import QuestionPage from './component/QuestionPage';
 import { Route, Switch } from 'react-router-dom';
 import Meetings from './component/Meetings';
-import CreateMeeting from './component/MeetingCreate';
+// import CreateMeeting from './component/MeetingCreate';
+// import GoogleLogin from './component/GoogleLogin';
 import GoogleLoginCallBack from './component/GoogleLoginCallBack';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState } from './store';
@@ -37,15 +38,16 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/room/:id/questions/:page" exact>
+          <Route path="/room/:id/questions/:page/:fb?" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>
           {(isAuthenticated != null && <Meetings />)}
           </Route>
-          <Route path="/meetings/create" exact>
+          {/* <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
           </Route>
+          </Route> */}
           <Route path="/report/past" exact>
           {(isAuthenticated != null &&<ReportPast />)}
           </Route>

@@ -1,5 +1,10 @@
 @import '../component/_variables.scss';
 
+.meeting-past-bg {
+    background-color: #F8F8F8;
+    opacity: 0.6;
+  }
+
 .meetingPast {
     background-color: #F8F8F8;
     display: flex;

@@ -13,14 +13,15 @@ export class LiveRouter {
     router() {
         const router = express.Router()
         router.post('/fb/token', this.fetchAccessCode)
-        router.post('/fb/comments',checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchComments)
-        router.post('/fb/views',checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchViews)
+        router.post('/fb/comments', checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchComments)
+        router.post('/fb/views', checkThirdPartyPlatformToken(this.userService, 'facebook'), this.fetchViews)
         router.post('/yt/token', this.fetchYTAccessAndRefreshToken)
         router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService, 'youtube'), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.put('/fb/comments/:meetingId([0-9]+)', this.stopGettingFacebookComments)
         router.get('/yt/views', this.fetchViews)
         router.get('/status/:meetingId', this.checkStatus)
+        router.delete('/token/:platform', this.removeToken)
         return router
 
     }
@@ -70,15 +71,15 @@ export class LiveRouter {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${pageId}/live_videos?access_token=${accessToken}`)
                 result = await fetchRes.json()
             }
-            if (result['error']) return res.status(401).json({success:false, message:'Bad Request to FB'})
-            const liveVideos = result.data.filter((video: {"status":string}) => video.status === "LIVE")
+            if (result['error']) return res.status(401).json({ success: false, message: 'Bad Request to FB' })
+            const liveVideos = result.data.filter((video: { "status": string }) => video.status === "LIVE")
             if (liveVideos.length > 1) {
                 return res.status(400).json({ success: false, message: "More than one live is on facebook" })
             } else if (liveVideos.length === 0) {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
-            if(this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
                 if (!this.eventSourceExistence[`${req.body.meetingId}`].facebook) return;
@@ -91,8 +92,8 @@ export class LiveRouter {
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
                     console.log('live closed')
-                    this.clearTimeIntervalAndTimer(checkLiveStatus,'facebook',req.body.meetingId)
-                    this.io.in('host:'+req.personInfo?.userId).emit('facebook-stop','stop facebook live comments');
+                    this.clearTimeIntervalAndTimer(checkLiveStatus, 'facebook', req.body.meetingId)
+                    this.io.in('host:' + req.personInfo?.userId).emit('facebook-stop', 'stop facebook live comments');
                 }
             }, 5000)
             const temp = { ...this.eventSourceExistence[`${req.body.meetingId}`], facebook: true }
@@ -137,7 +138,7 @@ export class LiveRouter {
             console.log(result)
             if (result.error) throw new Error(result['error_description']);
             const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
-            if(!isSaved) res.status(500).json({status:false, message:'Internal Error, fail to save token to database!'})
+            if (!isSaved) res.status(500).json({ status: false, message: 'Internal Error, fail to save token to database!' })
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
             return;
@@ -150,9 +151,9 @@ export class LiveRouter {
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
         if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
-        if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform:true});
+        if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform: true });
         const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
-        if(req.personInfo.userId!==hostId) return res.status(401).json({status:false, message:'You are not allowed to enable the youtube live comments in this meeting!', platform:true});
+        if (req.personInfo.userId !== hostId) return res.status(401).json({ status: false, message: 'You are not allowed to enable the youtube live comments in this meeting!', platform: true });
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
@@ -187,7 +188,7 @@ export class LiveRouter {
             const liveChatId = result.items[0].snippet.liveChatId;
             /* fetch comments from youtube  */
             this.fetchYTComments(req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken); //setTimer, set this.eventSourceExistence
-            this.fetchYTViews(accessToken,result.items[0].id,req.personInfo.userId);
+            this.fetchYTViews(accessToken, result.items[0].id, req.personInfo.userId);
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
             console.error(error)
@@ -197,7 +198,7 @@ export class LiveRouter {
     }
 
     createQuestion = async (meetingId: number, message: string, platformId: number, name: string) => {
-        const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+||(\？)+^(can)+|(呢)$/, 'i');
+        const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+|(\？)+|^(can)+|(呢)$/, 'i');
         if (!regex.test(message)) return;
         try {
             const question = await this.questionService.createQuestionFromPlatform(meetingId, message, platformId, name);
@@ -230,7 +231,7 @@ export class LiveRouter {
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {
                         /* io emit to toggle the button */
-                        this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
+                        this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
                         return
                     }
                     const newAccessToken = encodeURIComponent(refreshResult['access_token']);
@@ -241,7 +242,7 @@ export class LiveRouter {
                 if (result.offlineAt) {
                     console.log('Youtube Live Chat ends')
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
-                    this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
+                    this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
                     return;
                 }
                 pageTokenString = `pageToken=${result.nextPageToken}&`;
@@ -255,7 +256,7 @@ export class LiveRouter {
             } catch (e) {
                 console.error(e);
                 this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
-                this.io.in('host:'+userId).emit('youtube-stop','stop youtube live comments');
+                this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
                 return;
             }
         }, 5000);
@@ -300,9 +301,9 @@ export class LiveRouter {
     stopGettingYoutubeComments = async (req: Request, res: Response) => {
         try {
             const meetingId = req.params.meetingId;
-            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message:'Timer not found, make sure the meetingId is correct!' });
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
             this.eventSourceExistence[`${meetingId}`].youtube = false;
-            return res.status(200).json({ status: true, message:'Successfully stop fetching comments from youtube'});
+            return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from youtube' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
@@ -312,18 +313,18 @@ export class LiveRouter {
     stopGettingFacebookComments = async (req: Request, res: Response) => {
         try {
             const meetingId = req.params.meetingId;
-            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message:'Timer not found, make sure the meetingId is correct!' });
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
             this.eventSourceExistence[`${meetingId}`].facebook = false;
-            return res.status(200).json({ status: true, message:'Successfully stop fetching comments from facebook'});
+            return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from facebook' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
             return;
         }
     }
-    fetchYTViews = async (accessToken:string, videoId:string, userId:number) => {
+    fetchYTViews = async (accessToken: string, videoId: string, userId: number) => {
         try {
-            const liveViewTimer = setInterval(async()=>{
+            const liveViewTimer = setInterval(async () => {
                 const fetchViewRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {
@@ -332,25 +333,38 @@ export class LiveRouter {
                     }
                 });
                 /* Check response */
-                if(fetchViewRes.status!==200){
-                    this.io.in('host:'+userId).emit('youtube-views-stop','Youtube Live views is not working!');
+                if (fetchViewRes.status !== 200) {
+                    this.io.in('host:' + userId).emit('youtube-views-stop', 'Youtube Live views is not working!');
                     clearInterval(liveViewTimer);
                     return;
                 }
-                
+
                 const result = await fetchViewRes.json();
                 /* check liveBroadcast status */
-                    if(!result.items[0].liveStreamingDetails.concurrentViewers){
-                        console.log('Youtube live broadcast ends...')
-                        clearInterval(liveViewTimer);
-                        return;
-                    }
+                if (!result.items[0].liveStreamingDetails.concurrentViewers) {
+                    console.log('Youtube live broadcast ends...')
+                    clearInterval(liveViewTimer);
+                    return;
+                }
                 const liveViews = result.items[0].liveStreamingDetails.concurrentViewers;
-                this.io.in('host:'+userId).emit('youtube-views-update',liveViews);
+                this.io.in('host:' + userId).emit('youtube-views-update', liveViews);
                 return;
-            },20000)
+            }, 20000)
         } catch (error) {
             console.log(error)
+            return;
+        }
+    }
+    removeToken = async (req: Request, res: Response) => {
+        try {
+            const platform = req.params.platform;
+            if(platform !== 'all' && platform !== 'youtube' && platform !== 'facebook') return res.status(400).json({status:false,message:'Invalid parameters'});
+            if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'You are not logged in!'});
+            await this.userService.removeToken(req.personInfo.userId, platform)
+            return res.status(200).json({ status: true, message: 'Successfully reset platforms!' });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
             return;
         }
     }

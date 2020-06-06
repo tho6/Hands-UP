@@ -14,7 +14,7 @@ import Col from 'react-bootstrap/Col'
 const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
     return (<>
         <div>
-            <Card className="meetingPastCard">
+            <Card className="meetingPastCard meeting-past-bg">
                 <Card.Body>
                     <Row>
                         <Col md={9}>
