@@ -92,7 +92,7 @@ export class ReportRouter {
     }
     getQuestionCountOfLatestMeetings = async (req: express.Request, res: express.Response) => {
         try {
-            const reportQuestionsOfLatestXMeetings = await this.reportService.getQuestionsCountOfLatestXMeetings(parseInt(req.params.count));
+            const reportQuestionsOfLatestXMeetings = await this.reportService.getQuestionsCountOfLatestXMeetings(parseInt(req.params.count),req.personInfo?.userId!);
             return res.status(200).json({success: true, message: reportQuestionsOfLatestXMeetings})
         } catch (error) {
             return error.name == 'RangeError' ?

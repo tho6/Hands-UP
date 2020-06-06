@@ -78,9 +78,9 @@ export class ReportService {
         const result = await this.knex.raw(sql, numberOfMeetings);
         return result.rows
     }
-    getQuestionsCountOfLatestXMeetings = async (numberOfMeetings:number):Promise<questionsCountOfLatestMeetings[]> =>{
-        const sql = `SELECT name as "meetingName",meeting_id as "meetingId", COUNT(meeting_id) FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  ? ) GROUP BY meeting_id, meetings.name;`;
-        const result = await this.knex.raw(sql, numberOfMeetings);
+    getQuestionsCountOfLatestXMeetings = async (numberOfMeetings:number, userId:number):Promise<questionsCountOfLatestMeetings[]> =>{
+        const sql = `SELECT name as "meetingName",meeting_id as "meetingId", COUNT(meeting_id) FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE owner_id = ? AND meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  ? ) GROUP BY meeting_id, meetings.name;`;
+        const result = await this.knex.raw(sql, [userId, numberOfMeetings]);
         return result.rows
     }
 }

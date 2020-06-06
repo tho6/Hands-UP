@@ -56,7 +56,7 @@ const {all, youtube, facebook, handsup} = props
             <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        curve="catmullRom"
+        curve="monotoneX"
         axisTop={null}
         axisRight={null}
         axisBottom={{
@@ -64,7 +64,7 @@ const {all, youtube, facebook, handsup} = props
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Minute',
+            legend: 'Events',
             legendOffset: 36,
             legendPosition: 'middle'
         }}
@@ -73,7 +73,7 @@ const {all, youtube, facebook, handsup} = props
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Viewer',
+            legend: 'No. of Questions',
             legendOffset: -40,
             legendPosition: 'middle'
         }}
