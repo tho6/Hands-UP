@@ -81,9 +81,6 @@ $replyTextAreaMultiplier: 0.7;
   margin-top:2rem;
   top:0px;
   transition: all 0.5s;
-  img {
-    max-height: 150px;
-  }
   .content{
     @extend %content;
   }
@@ -188,6 +185,9 @@ background-color: #EFEFEF;
       top: 0px;
       right: -1.3rem;
     }
+  }
+  .image-no-zoom {
+    max-height: 200px;
   }
 
   .new-reply-area {

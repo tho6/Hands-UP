@@ -94,8 +94,9 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-
+/* Join and leave room (guest) */
   useEffect(() => {
+    if(!personInfo?.guestId) return
     const newQuestionListener = (question: IQuestion) => {
       dispatch(addedQuestion(question));
     };
@@ -162,7 +163,7 @@ const QuestionPage: React.FC = () => {
       dispatch(successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration));
     };
     const leaveRoom = () => {
-      socket.emit('leave_event', meetingId);
+      socket.emit('leave_event', meetingId, personInfo.guestId);
       socket.off('create-question', newQuestionListener);
       socket.off('update-question', updateQuestionListener);
       socket.off('delete-question', deleteQuestionListener);
@@ -176,7 +177,7 @@ const QuestionPage: React.FC = () => {
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
       socket.off('update-room-configuration', updateRoomConfiguration);
     };
-    socket.emit('join_event', meetingId);
+    socket.emit('join_event', meetingId, personInfo.guestId);
     socket.on('create-question', newQuestionListener);
     socket.on('update-question', updateQuestionListener);
     socket.on('delete-question', deleteQuestionListener);
@@ -195,7 +196,7 @@ const QuestionPage: React.FC = () => {
       window.removeEventListener('beforeunload', leaveRoom);
       leaveRoom();
     };
-  }, [dispatch, meetingId]);
+  }, [dispatch, meetingId, personInfo]);
   useEffect(() => {
     if (!isHost) return;
     const turnOffYoutubeLive = () => {

@@ -16,6 +16,7 @@ import { useFormState } from 'react-use-form-state';
 import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
 import { PersonInfo } from '../redux/auth/reducers';
+import ImageContainer from './ImageContainer';
 
 export interface IQuestionProps {
   question: IQuestion;
@@ -28,6 +29,7 @@ export interface IQuestionProps {
 
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [showImage, setShowImage] = useState(false);
   const [formState, { textarea }] = useFormState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyTextArea, setShowReplyTextArea] = useState(false);
@@ -76,11 +78,13 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 return (
                   <div key={file.id} className="p-2 mr-4">
                     <img
-                      className="mw-100"
+                      className="mw-100 image-no-zoom"
                       src={`${file.filename}`}
                       alt={file.filename}
                       data-testid="image"
+                      onClick={()=>setShowImage(true)}
                     />
+                    {showImage && <ImageContainer fileName={file.filename} no={()=>setShowImage(false)}/>}
                     {isEdit && (
                       <span
                         className="p-2"

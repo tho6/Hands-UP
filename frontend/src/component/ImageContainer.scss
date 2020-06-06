@@ -1,0 +1,12 @@
+.image-container{
+    max-width:90%;
+    min-width:350px;
+    @media only screen and (max-width: 768px) {
+        max-width: 95%;
+      }
+}
+
+.img-zoom{
+    max-height: none;
+    max-width:100%;
+}
