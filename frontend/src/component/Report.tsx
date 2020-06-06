@@ -50,17 +50,21 @@ export function Report() {
     const pastQuestions = useSelector((state:RootState)=>pastQuestionsByMeetingId?.map((id:number) => state.report.questions[id]))
     const pastViewsByMeetingId = useSelector((state:RootState)=>state.report.viewsByMeetingId[pastMeetingId!])
     const pastViews = useSelector((state:RootState)=>pastViewsByMeetingId?.map((id:number) => state.report.views[id]))
-
+    if (!questions && !views) {
+        return (<div></div>);
+    }
     console.log(meetingId)
     console.log(pastMeetingId)
     // console.log(pastQuestions)
     // console.log(pastViews)
 
-    if (!questions && !views) {
-        return (<div></div>);
-    }
+
     return (
         <div className='report-container'>
+            <header className='report-container-header-row'>
+                <span className='report-container-header'>{questions? questions[0].meetingname:''}</span>
+                <span className='report-container-secondary-header'>{questions? new Date(questions[0].meetingscheduletime).toLocaleString():''}</span>
+            </header>
             {/* <Col md={1}> */}
             {/* <Toggler /> */}
             {/* <Backdrop open={isDrawerOpen}/> */}
@@ -95,7 +99,6 @@ export function Report() {
                     <QuestionLikesRank data={questions}/>
                 </div>
             </div>
-            {/* </Col> */}
         </div>
     )
 }

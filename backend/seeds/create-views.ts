@@ -116,6 +116,32 @@ export async function seed(knex: Knex): Promise<any> {
             date_time: scheduledTime,
             created_at: createdAt,
             updated_at: createdAt
+        },
+        {
+            owner_id: 1,
+            name: 'Meeting Room 5',
+            code: '#MeetingRoom5',
+            url: 'urlmeetingroom5',
+            is_live: true,
+            can_moderate: true,
+            can_upload_file: false,
+            question_limit: 10,
+            date_time: scheduledTime,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            owner_id: 1,
+            name: 'Meeting Room 6',
+            code: '#MeetingRoom6',
+            url: 'urlmeetingroom6',
+            is_live: true,
+            can_moderate: true,
+            can_upload_file: false,
+            question_limit: 10,
+            date_time: scheduledTime,
+            created_at: createdAt,
+            updated_at: createdAt
         }
         ])
         /* Insert Platform */
@@ -191,6 +217,94 @@ export async function seed(knex: Knex): Promise<any> {
             is_hide: false,
             meeting_id: 2,
             platform_id: 1,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 7',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 3,
+            platform_id: 1,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 8',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 4,
+            platform_id: 1,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 9',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 5,
+            platform_id: 1,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 10',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 6,
+            platform_id: 2,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 11',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 6,
+            platform_id: 1,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 12',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 4,
+            platform_id: 2,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 13',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 3,
+            platform_id: 3,
+            guest_id: 3,
+            created_at: createdAt,
+            updated_at: createdAt
+        },
+        {
+            content: 'question 14',
+            is_answered: false,
+            is_approved: true,
+            is_hide: false,
+            meeting_id: 2,
+            platform_id: 3,
             guest_id: 3,
             created_at: createdAt,
             updated_at: createdAt

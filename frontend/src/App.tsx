@@ -13,6 +13,7 @@ import Home from './component/Home';
 import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
 import ReportOverall from './component/ReportOverall';
+import {ReportPast} from './component/ReportPast'
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -44,6 +45,9 @@ function App() {
           </Route>
           <Route path="/meetings/create" exact>
           {(isAuthenticated != null && <CreateMeeting />)}
+          </Route>
+          <Route path="/report/past" exact>
+          {(isAuthenticated != null &&<ReportPast />)}
           </Route>
           <Route path="/report/:loc" exact>
           {(isAuthenticated != null &&<Report />)}

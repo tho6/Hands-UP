@@ -20,19 +20,16 @@ export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
         "id": "youtube",
         "label": "youtube",
         "value": 0,
-        "color": "hsl(346, 70%, 50%)"
     },
     {
         "id": "facebook",
         "label": "facebook",
         "value": 0,
-        "color": "hsl(346, 70%, 50%)"
     },
     {
         "id": "handsup",
         "label": "handsup",
         "value": 0,
-        "color": "hsl(346, 70%, 50%)"
     }]
     // console.log('piechart: '+ JSON.stringify(props.data))
     if (questions){
