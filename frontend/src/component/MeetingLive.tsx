@@ -21,6 +21,7 @@ export function MeetingLive() {
 
     return (
     <div>
+       <h2 className="headline"><b>Past</b></h2>
         {meetings.map((meeting) => {
             return (<Card className="meetingLiveCard">
                 <Card.Body>
