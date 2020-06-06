@@ -15,7 +15,7 @@ const Message: React.FC = () => {
         dispatch(message(false,messageStatus.message));
       },3000);
     }
-  },[messageStatus])
+  },[dispatch, messageStatus])
   return (
     <div>
         <div className={`message-box p-2 ${messageStatus.status?'message-active':'message-inactive'}`}>{messageStatus.message}</div>
