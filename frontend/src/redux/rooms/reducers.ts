@@ -7,12 +7,14 @@ export interface RoomState {
     };
     questionLimitStatus: { [id: string]: { isChecking: boolean, count: number } };
     liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } };
+    message:{status:boolean, message:string}
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
     questionLimitStatus: {},
     liveStatus: {},
+    message:{status:false, message:''}
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -91,6 +93,13 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
                 return {
                     ...oldState,
                     liveStatus: newLiveStatus
+                };
+            }
+        case '@@ROOMS/MESSAGE':
+            {
+                return {
+                    ...oldState,
+                    message: {status:action.status, message:action.message}
                 };
             }
         default:

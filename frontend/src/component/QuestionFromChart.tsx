@@ -66,7 +66,7 @@ export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
         radialLabelsLinkHorizontalLength={0}
         radialLabelsLinkStrokeWidth={2}
         radialLabelsLinkColor={{ from: 'color' }}
-        sliceLabel={function(e){return e.value+" ("+e.value/totalValue*100+"%)"}}
+        sliceLabel={function(e){return e.value+" ("+Math.round(e.value/totalValue*100)+"%)"}}
         slicesLabelsSkipAngle={10}
         slicesLabelsTextColor="#333333"
         animate={true}

@@ -16,6 +16,7 @@ import { useFormState } from 'react-use-form-state';
 import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
 import { PersonInfo } from '../redux/auth/reducers';
+import ImageContainer from './ImageContainer';
 
 export interface IQuestionProps {
   question: IQuestion;
@@ -28,6 +29,7 @@ export interface IQuestionProps {
 
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [showImage, setShowImage] = useState(false);
   const [formState, { textarea }] = useFormState();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyTextArea, setShowReplyTextArea] = useState(false);
@@ -43,7 +45,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const questionContentBackUp = question.content;
   return (
     <div ref={ref}>
-      <div className="mb-4 d-flex">
+      <div className="mb-4 d-flex question-container">
         <div className="question flex-grow-1 p-2 p-lg-4">
           <div className="d-flex question-content-area">
             <div className="content text-wrap mb-2">
@@ -76,11 +78,13 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 return (
                   <div key={file.id} className="p-2 mr-4">
                     <img
-                      className="mw-100"
-                      src={`/${file.filename}`}
+                      className="mw-100 image-no-zoom"
+                      src={`${file.filename}`}
                       alt={file.filename}
                       data-testid="image"
+                      onClick={()=>setShowImage(true)}
                     />
+                    {showImage && <ImageContainer fileName={file.filename} no={()=>setShowImage(false)}/>}
                     {isEdit && (
                       <span
                         className="p-2"
@@ -313,17 +317,17 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
         </div>
         <div className="d-flex flex-column justify-content-between">
           {question.platform.name === 'facebook' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="fab fa-facebook fa-2x"></i>
             </div>
           )}
           {question.platform.name === 'youtube' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="fab fa-youtube fa-2x"></i>
             </div>
           )}
           {question.platform.name === 'handsup' && (
-            <div className="p-2 platform-icon">
+            <div className="util-spacing platform-icon">
               <i className="far fa-hand-paper fa-2x"></i>
             </div>
           )}

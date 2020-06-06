@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import { MeetingService } from '../services/MeetingService';
 
 export class MeetingRouter {
-    constructor(private meetingService: MeetingService) { }
+    constructor(private meetingService: MeetingService, private io: SocketIO.Server) { }
 
     router() {
         const router = express.Router();
@@ -12,6 +12,7 @@ export class MeetingRouter {
         router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
+        router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
         router.delete('/:id', this.deleteMeeting);
         return router;
     }
@@ -107,6 +108,23 @@ export class MeetingRouter {
         } catch (err) {
             console.log(err.message);
             res.status(404).json({ status: false, message: err.message });
+            return;
+        }
+    }
+    updateMeetingInRoom = async (req: Request, res: Response) => {
+        try {
+            const roomConfiguration = {...req.body.roomConfiguration}
+            const isUpdate = await this.meetingService.updateMeetingInRoom(parseInt(req.params.id),roomConfiguration);
+            if(isUpdate){
+                this.io.in(`event:${req.params.id}`).emit('update-room-configuration', {meetingId:parseInt(req.params.id),roomConfiguration});
+                res.status(200).json({status:true, message:roomConfiguration});
+                return;
+            }else{
+                throw new Error('Unknown Error - Fail to update meeting in room!');       
+            }
+        } catch (err) {
+            console.log(err.message);
+            res.status(404).json({status:false, message: err.message });
             return;
         }
     }

@@ -1,0 +1,29 @@
+@import './question.scss';
+button {
+  @extend %button;
+  @extend %button-font-size;
+  &:not(.room-update-save){
+    width: 205px;
+}
+border-radius: 15px;
+}
+.room-setting-container {
+    position: absolute;
+  width: 270px;
+  padding: 0.5rem;
+  background-color: rgb(0, 0, 0);
+  border-radius: 15px;
+  top:0px;
+  left:30px;
+  color:#5CC5D0;
+}
+.input-text {
+  width: 50px;
+  border: 0px;
+  border-radius: 15px;
+  margin-right: 0.5rem;
+}
+.break-div {
+border-bottom: solid 2px #5CC5D0;
+margin-bottom:1rem;
+}

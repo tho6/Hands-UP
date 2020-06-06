@@ -1,5 +1,5 @@
 import Knex from "knex";
-import { IMeeting } from "../models/Interface/IMeeting";
+import { IMeeting, IRoomConfiguration } from "../models/Interface/IMeeting";
 
 export class MeetingService {
     constructor(private knex: Knex) { }
@@ -9,7 +9,7 @@ export class MeetingService {
     //     return result.rows as IMeeting[];
     // }
 
-    async getMeetingByUserId(id:number) {
+    async getMeetingByUserId(id: number) {
         try {
             const result = await this.knex.raw(/*SQL*/`SELECT * from meetings WHERE owner_id = (?)`, [id])
             return result.rows
@@ -31,7 +31,7 @@ export class MeetingService {
         }
     }
 
-    async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number, question_limit: number, can_moderate: boolean, can_upload_file:boolean) {
+    async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number, question_limit: number, can_moderate: boolean, can_upload_file: boolean) {
         try {
             let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`, [name]);
             console.log(check.rowCount);
@@ -70,6 +70,20 @@ export class MeetingService {
         const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFile", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
         const result = await this.knex.raw(sql, [id]);
         if (result.rowCount !== 1) throw new Error('No meeting is found!');
-        return result.rows[0];
+    }
+
+    // async getMeetingById(id: number){
+    //     const sql = 'SELECT id, owner_id as "ownerId", name, code, url, is_live as "isLive", can_moderate as "canModerate", can_upload_file as "canUploadFiles", question_limit as "questionLimit", date_time as "dateTime", created_at as "createdAt", updated_at as "updatedAt" FROM meetings WHERE id = ?'
+    //     const result = await this.knex.raw(sql,[id]);
+    //     if(result.rowCount !== 1) throw new Error('No meeting is found!');
+    //     return result.rows[0];
+    // }
+
+    async updateMeetingInRoom(id: number, roomConfiguration: IRoomConfiguration) {
+        const { canModerate, canUploadFiles, questionLimit } = roomConfiguration;
+        const sql = 'update meetings set (can_upload_file, can_moderate, question_limit) = (?, ?, ?) where id = ?;'
+        const result = await this.knex.raw(sql, [canUploadFiles, canModerate, questionLimit, id]);
+        if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
+        return true;
     }
 }

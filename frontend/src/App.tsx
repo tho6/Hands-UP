@@ -37,7 +37,7 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/room/:id/questions/:page" exact>
+          <Route path="/room/:id/questions/:page/:fb?" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>
@@ -48,9 +48,6 @@ function App() {
           </Route> */}
           <Route path="/report/:loc" exact>
           {(isAuthenticated != null &&<Report />)}
-          </Route>
-          <Route path="/googleLogin" exact>
-          {(isAuthenticated != null &&<GoogleLogin />)}
           </Route>
           <Route path="/googleLogin/callback" exact>
           {(isAuthenticated != null &&<GoogleLoginCallBack />)}

@@ -4,7 +4,7 @@ $replyTextAreaMultiplier: 0.7;
   &:focus {
     outline: none;
   }
-  background-color: rgba(0, 99, 204, 0.411);
+  background-color: #5CC5D0;
 }
 %text-area {
   resize: none;
@@ -60,6 +60,7 @@ $replyTextAreaMultiplier: 0.7;
 }
 .question-page{
   max-width: 1800px;
+  background-color: #EFEFEF;
 }
 .question-moderation {
   &.bottom-border {
@@ -80,15 +81,12 @@ $replyTextAreaMultiplier: 0.7;
   margin-top:2rem;
   top:0px;
   transition: all 0.5s;
-  img {
-    max-height: 150px;
-  }
   .content{
     @extend %content;
   }
 }
 .content-container{
-background-color: #F0F0F0;
+background-color: #EFEFEF;
 }
 .question-form {
   i {
@@ -102,6 +100,7 @@ background-color: #F0F0F0;
     max-width: 1300px;
     min-width: 300px;
     border: none;
+    background-color: #EFEFEF;
     transition: height 0.2s;
     &:focus{
       height: 150px;
@@ -144,9 +143,11 @@ background-color: #F0F0F0;
   align-items: center;
   justify-content: center;
 }
+
 .question {
-  border: solid 1px black;
-  border-radius: 5px;
+  border: solid 0px black;
+  background-color: #FFF;
+  border-radius: 15px;
   @media only screen and (max-width: 600px) {
     max-width: 90%;
   }
@@ -184,6 +185,9 @@ background-color: #F0F0F0;
       top: 0px;
       right: -1.3rem;
     }
+  }
+  .image-no-zoom {
+    max-height: 200px;
   }
 
   .new-reply-area {

@@ -12,3 +12,8 @@ export interface IMeeting {
     can_upload_file: boolean;
     question_limit: number;
 }
+export interface IRoomConfiguration{
+    canModerate:boolean;
+    canUploadFiles: boolean;
+    questionLimit:number;
+}

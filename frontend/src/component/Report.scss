@@ -17,9 +17,17 @@
 //         flex: 1;
 //     }
 // }
+.report-header::before{
+    content: '';
+    border-left: rgba(30, 183, 197, 0.808) 4.5px solid;
+    border-radius: 19px;
+    position: relative;
+    left: -1.3rem;
+}
 .report-header{
     font-weight: $ChartHeaderWeight;
     font-size: $ChartHeaderFontSize;
+    
 }
 .report-container{
     margin: 0;
@@ -44,4 +52,40 @@
     height: 500px;
     padding-bottom: 3rem;
     min-width: 0px;
+
+}
+
+@media screen and (min-width: 800px){
+    .report-snap-container{
+        display: flex;
+        .report-peak-view-outer, .report-total-questions-outer{
+            flex:1;
+        }
+    }
+        
+}
+@media screen and (min-width: 1350px){
+    .report-desktop-first-row{
+        display: flex;
+        .report-snap-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 2;
+            .report-peak-view-outer, .report-total-questions-outer{
+                flex:1;
+            }
+        }
+        .views-chart-outer{
+            flex: 5;
+        }
+    }
+
+    .report-desktop-second-row{
+        display: flex;
+        .questions-from-chart-outer,.questions-pie-chart-outer,.question-likes-rank-outer{
+            flex: 1;
+        }
+    }
+        
 }

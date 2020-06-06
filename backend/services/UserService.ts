@@ -173,12 +173,27 @@ export class UserService {
         const sql = `SELECT facebook_token as "facebookToken" from users where id = ?`
         const result =  await this.knex.raw(sql, [id]);
         if(result.rowCount !== 1) throw new Error('Cannot find user, invalid user id!');
-        return result.rows[0].youtubeRefreshToken;
+        return result.rows[0].facebookToken;
     }
     saveFacebookTokenByUserId = async(userId:number, token:string):Promise<boolean>=>{
         const sql = `UPDATE users SET facebook_token = ? where id = ?`
         const result =  await this.knex.raw(sql, [token, userId]);
         if(result.rowCount !== 1) throw new Error('Fail to save facebook token!');
+        return true;
+    }
+    removeToken = async(userId:number, platform:string):Promise<boolean>=>{
+        let sql:string ='';
+        if(platform === 'all'){
+             sql = `UPDATE users SET (facebook_token, youtube_refresh_token) = (null, null) where id = ?`
+        }
+        else if(platform === 'youtube'){
+             sql = `UPDATE users SET youtube_refresh_token = null where id = ?`
+        }
+        else if(platform === 'facebook'){
+             sql = `UPDATE users SET facebook_token = null where id = ?`
+        }
+        const result =  await this.knex.raw(sql, [userId]);
+        if(result.rowCount !== 1) throw new Error('Fail to remove token!');
         return true;
     }
 
