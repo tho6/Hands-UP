@@ -15,7 +15,7 @@ export interface ReportState{
     viewsByMeetingId:{
         [meetingId: string]: number[]
     },
-    questionsCountOfLatestMeetings:{meetingId:number, count:number, meetingName:string}[]
+    questionsCountOfLatestMeetings:{meetingId:number, count:number, meetingName:string, youtubePeakViews:number, facebookPeakViews:number, handsupPeakViews:number}[]
 }
 
 const initialState = {

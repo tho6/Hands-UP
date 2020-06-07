@@ -10,8 +10,9 @@ import { push } from 'connected-react-router';
 import { ReportOverallLineChart } from './ReportOverallLineChart';
 import Loading from './Loading';
 import { OverallQuestionsPieChart } from './OverallQuestionPieChart';
-import './ReportOverall.scss'
+import './ReportOverall.scss';
 import { OverallQuestionDistributionPieChart } from './OverallQuestionDistributionPieChart';
+import { OverallPeakViewBarChart } from './OverallPeakViewBarChart';
 //import Example from './testChart';
 
 const ReportOverall: React.FC = () => {
@@ -36,11 +37,11 @@ const ReportOverall: React.FC = () => {
   }, [dispatch]);
   /* Pick recent n meetings */
   const t = questionsCount
-          .slice()
-          .sort((a, b) => b.meetingId - a.meetingId)
-          .slice(0, parseInt(lastXMeetings));
+    .slice()
+    .sort((a, b) => b.meetingId - a.meetingId)
+    .slice(0, parseInt(lastXMeetings));
   /* get only the meeting id of recent x meetings -- will use to map questions */
-  let meetingIds:number[]|string[] = t
+  let meetingIds: number[] = t
     .slice()
     .sort((a, b) => a.meetingId - b.meetingId)
     .map((elem) => elem.meetingId);
@@ -62,11 +63,14 @@ const ReportOverall: React.FC = () => {
     facebook: number;
     handsup: number;
   } = { youtube: 0, facebook: 0, handsup: 0 };
-let numberOfQuestions = 0;
-const numberOfMeetings = lastXMeetings==='all'?Object.keys(questionByMeetingIds).length:meetingIds.length;
-if(lastXMeetings==='all'){
-  meetingIds = Object.keys(questionByMeetingIds);
-}
+  let numberOfQuestions = 0;
+  const numberOfMeetings =
+    lastXMeetings === 'all'
+      ? Object.keys(questionByMeetingIds).length
+      : meetingIds.length;
+  if (lastXMeetings === 'all') {
+    meetingIds = Object.keys(questionByMeetingIds).map((x) => parseInt(x));
+  }
 
   for (const id of meetingIds) {
     const questionIds = questionByMeetingIds[`${id}`];
@@ -94,17 +98,37 @@ if(lastXMeetings==='all'){
       });
       allPlatform['questionCount'].push({
         meetingName: questions[0]?.meetingname,
-        count: hp.length+yt.length+fb.length
+        count: hp.length + yt.length + fb.length
       });
       pieChartData.isHide += isHide.length;
       pieChartData.isAnswered += isAnswered.length;
       pieChartData.totalQuestions += questions.length;
       pieChartDataDistribution.youtube += yt.length;
-      pieChartDataDistribution.facebook +=fb.length;
+      pieChartDataDistribution.facebook += fb.length;
       pieChartDataDistribution.handsup += hp.length;
     }
   }
-
+  /* Bar chart data */
+  let barCharData: {
+    meetingName: string;
+    youtube: number;
+    facebook: number;
+    handsup: number;
+  }[] = [];
+  if (lastXMeetings !== 'all') {
+    const barChartPreData = questionsCount.filter((elem) =>
+      meetingIds.includes(elem.meetingId)
+    );
+    barCharData = barChartPreData.sort((a,b)=>a.meetingId-b.meetingId).map((elem) => {
+      const obj = {
+        meetingName: elem.meetingName,
+        youtube: elem.youtubePeakViews,
+        facebook: elem.facebookPeakViews,
+        handsup: elem.handsupPeakViews
+      };
+      return obj;
+    });
+  }
   useEffect(() => {
     setTimeout(() => setLoading(false), 400);
   }, []);
@@ -174,9 +198,7 @@ if(lastXMeetings==='all'){
               <div className="report-header">
                 <span>Answered</span>
               </div>
-              <div>
-                {pieChartData.isAnswered}
-              </div>
+              <div>{pieChartData.isAnswered}</div>
             </div>
             <div className="report-peak-view-outer flex-grow-1">
               <div className="report-header">
@@ -184,8 +206,7 @@ if(lastXMeetings==='all'){
               </div>
               <div>
                 {(
-                  ((pieChartData.isAnswered) /
-                    pieChartData.totalQuestions) *
+                  (pieChartData.isAnswered / pieChartData.totalQuestions) *
                   100
                 ).toFixed(2)}
                 %
@@ -195,12 +216,7 @@ if(lastXMeetings==='all'){
               <div className="report-header">
                 <span>Avg. Questions</span>
               </div>
-              <div>
-                {Math.floor(
-                  numberOfQuestions/
-                    numberOfMeetings
-                )}
-              </div>
+              <div>{Math.floor(numberOfQuestions / numberOfMeetings)}</div>
             </div>
           </div>
           <div className="views-chart-outer">
@@ -208,7 +224,7 @@ if(lastXMeetings==='all'){
               <span>Questions</span>
             </div>
             <ReportOverallLineChart
-              range ={lastXMeetings}
+              range={lastXMeetings}
               all={allPlatform['questionCount']}
               youtube={youtube['questionCount']}
               facebook={facebook['questionCount']}
@@ -239,7 +255,12 @@ if(lastXMeetings==='all'){
               handsup={pieChartDataDistribution.handsup}
             />
           </div>
-          {/* <Example /> */}
+          {lastXMeetings!=='all' && <div className="views-chart-outer">
+            <div className="report-header">
+              <span>Peak Views</span>
+            </div>
+            <OverallPeakViewBarChart data={barCharData} range={lastXMeetings}/>
+          </div>}
         </div>
       )}{' '}
     </>
