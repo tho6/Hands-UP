@@ -29,7 +29,7 @@ function Meetings() {
                                 </Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <CreateMeeting />
+                                <CreateMeeting close={handleClose} />
                             </Modal.Body>
                         </Modal>
                     </Col>

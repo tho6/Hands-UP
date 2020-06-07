@@ -24,7 +24,7 @@
     text-align: center;
 }
 
-.textarea{
+.textarea {
     border: black;
     resize: none;
     -webkit-border-radius: 5px;
@@ -39,7 +39,7 @@
     -o-transition: border 0.5s;
     border: solid 1px $SecondaryTextColor
 }
-.textarea:focus{
+.textarea:focus {
     border: solid 3px $SecondaryTextColor;	
 }
 
@@ -49,12 +49,16 @@
     flex-direction: row;
 }
 
-.createButtonColour{
+.createButtonColour {
     background-color: $ThirdTextColor;
     border-radius: 5px;
 }
 
-.resetButtonColour{
+.resetButtonColour {
     background-color: $PrimaryTextColor;
     border-radius: 5px;
+}
+
+.create-meeting-text {
+    padding: 5px 0px 5px 0px;
 }

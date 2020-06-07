@@ -1,7 +1,5 @@
 @import './variables';
 
-// Meetings.tsx
-
 .Container {
     display: flex;
     flex-direction: column;
@@ -11,8 +9,11 @@
 
 .h4 {
     font-family: $SecondaryFontStyle;
-    text-align: center;
     color: $PrimaryTextColor;
+    content: '';
+    border-left: rgba(30, 183, 197, 0.808) 5px solid;
+    position: relative;
+    left: -1rem;
 }
   
 .Container > div {
