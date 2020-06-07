@@ -3,6 +3,7 @@ import './Navbar.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { logoutAccount } from '../redux/auth/thunk';
+import { NavLink } from 'react-router-dom';
 
 
 export default function Navbar() {
@@ -19,16 +20,17 @@ export default function Navbar() {
             <i className="fas fa-bars humbugger-toggler" onClick={()=>{
                 setMainNavBar(!isMainNavBarOpen)
             }}></i>
-            <span className="link-text" id='logo-text'>
-                <img src={'/hand-logo.png'} alt="HANDS UP logo" />
-                HANDS UP
-            </span>
+
+                <NavLink to="/" className="link-text" id='logo-text'>
+                    <img src={'/hand-logo.png'} alt="HANDS UP logo" />
+                    HANDS UP
+                </NavLink>
             <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
                 {userId && (<>
                     <li className="main-navbar-item">
-                        <a href="/">Event</a>
+                        <NavLink activeClassName='activeLink' to="/event">Event</NavLink>
                     </li>
-                    <li className="main-navbar-item"><a href="/report/past">Report</a></li>
+                    <li className="main-navbar-item"><NavLink activeClassName='activeLink' to="/report/past">Report</NavLink></li>
                     <li className="main-navbar-item">
                     {pic != null && <img src={pic} className='main-navbar-nav-personal-icon' alt="icon"/>}
                         <button className='logout-button' onClick={()=>{
@@ -39,7 +41,7 @@ export default function Navbar() {
                 </>)}
                 {guestId && !userId && 
                 <li className="main-navbar-item login-btn">    
-                    <a href = {`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`} rel = "noopener noreferrer">Google Login</a>
+                    <a href ={`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`} rel = "noopener noreferrer">Google Login</a>
                 </li>
                 }
             </ul>

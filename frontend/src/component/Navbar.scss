@@ -21,7 +21,7 @@ a:hover{
     content: "";
     background-color: $BackgroundColor;
     width: 100vw;
-    height: 45px;
+    height: 48px;
     position: fixed;
     top: 0;
     left: 0;
@@ -33,11 +33,10 @@ a:hover{
 }
 .main-navbar-nav{
     // padding-top: 1rem;
-    
     top: 0;
     position: fixed;
     width: 100%;
-    height: 100vh;
+    // height: 100vh;
     z-index:1500;
     .humbugger-toggler{
         margin-top: 0.6rem;
@@ -74,24 +73,28 @@ a:hover{
 
 
     .main-navbar-ul{
+        display: none;
         z-index: 1500;
         padding-left: 0;
         list-style: none;
         width: 100%;
-        height: 100%;
+        // height: 100%;
+        height: 100vh;
         display: flex;
         flex-direction: column;
+
         justify-content: center;
         align-items: center;
+
         // background-color: #16162d;
         border-bottom-right-radius: 100%;
         border-bottom-left-radius: 100%;    
         font-size: 1.2rem;
         position: absolute;
-        // right: -100vw;
-        transform: translateX(200%);
-        transition: transform 200ms ease-in-out;
-        // transition: all 200ms ease-in-out;
+        right: -100vw;
+        // transform: translateX(200%);
+        // transition: transform 200ms ease-in-out;
+        transition: all 200ms ease-in-out;
 
         // padding: 1rem 1rem;
         
@@ -113,6 +116,9 @@ a:hover{
                 &:hover{
                     color: $SecondaryTextColor;
                 }
+            }
+            .activeLink{
+                color: $SecondaryTextColor;
             }
             // &:hover{
             //     background-color: rgb(75, 83, 88);
@@ -146,10 +152,11 @@ a:hover{
         
     }
     .mainNavBarOpen{
-        // right: 0%;
+        right: 0%;
+        display: flex;
         background-color: rgb(225, 228, 228);
-        height: 100vh;
-        transform: translateX(0);
+        // height: 100vh;
+        // transform: translateX(0);
         
         border-radius: initial;
         
@@ -162,19 +169,31 @@ a:hover{
 @media screen and (min-width: 730px){
     
     .main-navbar-nav{
+        .mainNavBarOpen{
+            // right: 0%;
+            background-color: inherit;
+            height: initial;
+            transform: translateX(0);
+            
+            border-radius: initial;
+            
+        }
+        
         display: flex;
-        height: initial;
+        height: 48px;
         .humbugger-toggler{
             display: none;
         }
         .main-navbar-ul{
             display: flex;
+            height: initial;
             top:0;
             flex-direction: row;
             right: 0%;
             transition: none;
             position: relative;
             transform: translateX(0%);
+            transition-property: none !important;
             // margin: 0;
             // justify-content: flex-start;
             .main-navbar-item{
