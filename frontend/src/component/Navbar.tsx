@@ -19,10 +19,11 @@ export default function Navbar() {
             <i className="fas fa-bars humbugger-toggler" onClick={()=>{
                 setMainNavBar(!isMainNavBarOpen)
             }}></i>
-            <span className="link-text" id='logo-text'>
-                <img src={'/hand-logo.png'} alt="HANDS UP logo" />
-                HANDS UP
-            </span>
+
+                <a href="/" className="link-text" id='logo-text'>
+                    <img src={'/hand-logo.png'} alt="HANDS UP logo" />
+                    HANDS UP
+                </a>
             <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
                 {userId && (<>
                     <li className="main-navbar-item">
