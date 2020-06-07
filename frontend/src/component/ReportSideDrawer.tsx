@@ -1,88 +1,25 @@
-// import React, { useState, useRef, useEffect } from 'react'
-// import './ReportSideDrawer.scss'
-// import { CSSTransition } from 'react-transition-group';
-
-
-// export const ReportSideDrawer = () => {
-//     const [isSideDrawer, setSideDrawer] = useState(false)
-//     return (
-//         <div>
-//             <nav className="report-side-drawer-navbar">
-//                 <div className='report-side-drawer-navbar-toggle-button' onClick={() => setSideDrawer(!isSideDrawer)}>
-//                     <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
-//                 </div>
-//                 <DropDownMenu />
-//                 {/* <ul className="report-side-drawer-nav">
-//                     <li className="report-side-drawer-item">Most</li>
-//                 </ul> */}
-//             </nav>
-//         </div>
-//     )
-// }
-
-// function DropDownMenu() {
-//     const [activeMenu, setActiveMenu] = useState('main')
-//     const [menuHeight, setMenuHeight] = useState(null);
-//     const dropdownRef = useRef(null);
-
-//     useEffect(() => {
-//         if (!dropdownRef.current) return
-//         // @ts-ignore
-//         setMenuHeight(dropdownRef.current?.firstChild.offsetHeight)
-//     }, [])
-
-//     function calcHeight(el: any) {
-//         const height = el.offsetHeight;
-//         setMenuHeight(height);
-//     }
-
-//     function DropDownItem(props: any) {
-//         return (
-//             <>
-//                 <a href="#" className="menu-item" onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
-//                     <span className="report-side-drawer-dropdown-left-icon"></span>
-//                     {props.children}
-//                     <span className="report-side-drawer-dropdown-right-icon"></span>
-//                 </a>
-//             </>
-//         )
-//     }
-//     return (
-//         <div className='report-side-drawer-dropdown' style={{ height: menuHeight }} ref={dropdownRef}>
-//             <CSSTransition onEnter={calcHeight} in={activeMenu === 'main'} timeout={500} unmountOnExit classNames="message" addEndListener={((node, done) => { node.addEventListener('transitionend', done, false) })}>
-//                 <div className="report-side-drawer-menu">
-//                     <DropDownItem goToMenu="settings">Overall</DropDownItem>
-//                     <DropDownItem goToMenu="recents">Most Recent</DropDownItem>
-//                     <DropDownItem goToMenu="settings">Report</DropDownItem>
-//                 </div>
-//             </CSSTransition>
-//             <CSSTransition
-//                 in={activeMenu === 'recents'}
-//                 timeout={500}
-//                 classNames="menu-secondary"
-//                 unmountOnExit
-//                 onEnter={calcHeight}>
-//                 <div className="report-side-drawer-menu">
-//                     <DropDownItem goToMenu="settings">123</DropDownItem>
-//                     <DropDownItem goToMenu="recents">456</DropDownItem>
-//                     <DropDownItem goToMenu="settings">789</DropDownItem>
-//                 </div>
-//             </CSSTransition>
-//         </div>
-//     )
-// }
-
 import './ReportSideDrawer.scss'
 import React from 'react'
+import Backdrop from './Backdrop'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
+import { NavLink } from 'react-router-dom'
 
 export const ReportSideDrawer = () => {
+    const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
+   
     return (
-        <div>
-             <nav className="report-side-drawer-navbar">
-//                 <div className='report-side-drawer-navbar-toggle-button' onClick={() => setSideDrawer(!isSideDrawer)}>
-//                     <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
-//                 </div>
-//             </nav>
+        <div className={isSideDrawerOpen?'report-side-drawer-navbar-container-on report-side-drawer-navbar-container':'report-side-drawer-navbar-container report-side-drawer-navbar-container-off'}>
+            {isSideDrawerOpen &&<Backdrop />}
+
+             <nav className={isSideDrawerOpen?"report-side-drawer-navbar report-side-drawer-navbar-on":"report-side-drawer-navbar"}>
+                <ul className={isSideDrawerOpen?".report-side-drawer-navbar-nav-on report-side-drawer-nav":"report-side-drawer-nav"}>
+                    <li className="report-side-drawer-item"><span className="report-side-drawer-item-header">Reports</span></li>
+                    <li className="report-side-drawer-item hover-effect-navlink"><i className="far fa-newspaper"></i><span>Most Recent</span></li>
+                    <NavLink className='hover-effect-navlink' to='/report/overall'><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-tachometer-alt"></i><span>Overall</span></li></NavLink>
+                    <NavLink className='hover-effect-navlink' to='/report/past'><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-chart-line"></i><span>Past Reports</span></li></NavLink>
+                </ul>
+            </nav>
         </div>
     )
 }

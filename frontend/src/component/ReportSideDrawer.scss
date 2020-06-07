@@ -53,3 +53,106 @@
 //         color: blueviolet;
 //       }
 // }
+
+$navSize: 1.8em;
+$speed: 300ms;
+.report-side-drawer-navbar-toggle-button{
+    // margin: 0;
+    // margin-left: 10rem;
+    width:$navSize;
+    height:$navSize;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    padding: 5px;
+    margin-top: 0.8rem;
+    margin-left: 0.6rem;
+    transition: filter 300ms;
+    cursor: pointer;
+    color: $SecondaryTextColor;
+    z-index: 100;
+    position: absolute;
+    top: 2.65rem;
+    left: 0.3rem;
+    &:hover{
+        filter: brightness(0.95);
+    }
+    i{
+        font-size: $navSize*0.8;
+    }
+}
+
+.report-side-drawer-toggle-button-on{
+    transform: translateX(130px) rotate(180deg);
+    position: fixed;
+    transition: all 250ms ease-in-out;
+    z-index:101;
+    
+}
+.report-side-drawer-toggle-button-off{
+    transition: all 250ms ease-in-out
+}
+.report-side-drawer-navbar-container{
+    position: fixed;
+    z-index: 100;
+    left: -100vw;
+}
+.report-side-drawer-navbar{
+    // z-index: -1;
+    z-index: 100;
+    // width: 0;
+    height: 100vh;
+    background-color: #F4F4F4;
+    position: relative;
+    -webkit-box-shadow: 10px 14px 11px -13px rgba(92,92,92,1);
+    -moz-box-shadow: 10px 14px 11px -13px rgba(92,92,92,1);
+    box-shadow: 10px 14px 11px -13px rgba(92,92,92,1);
+    .report-side-drawer-nav{
+        // left: -100vw;
+        z-index: 100;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin-top: 40px;
+        margin-left: -10px;
+        padding-top: 50px;
+        .report-side-drawer-item{
+            margin: 0.7rem 0.4rem;
+            font-weight: 700;
+            text-decoration: none!important;
+            span{
+                padding-left: 0.5rem;
+            }
+        }
+        .report-side-drawer-item-header{
+                font-size: 1.3rem;
+                font-weight: 800;
+                background-color: #5EBFC8;
+                padding: 0.2rem 0.5rem;
+                border-radius: 15px;
+                margin-left: -10px;
+        }
+
+    }
+}
+.report-side-drawer-navbar-container-on{
+    left: 0;
+    width: 200px;
+    z-index: 100;
+    transition: all 250ms ease-in-out
+}
+.report-side-drawer-navbar-container-off{
+    transition: all 250ms ease-in-out
+}
+
+.hover-effect-navlink{
+    color: black;
+    &:hover{
+        background: linear-gradient(to top, rgb(166, 185, 187), $SecondaryTextColor);
+        -webkit-background-clip: text;
+        color: transparent;
+    }    
+}
