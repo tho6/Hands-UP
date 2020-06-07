@@ -30,6 +30,9 @@
     }
     .report-compare-platform-compare{
         flex: 2;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         .increase, .decrease, .increase-percent, .decrease-percent{
             display: inline-block;
             padding: 5px;

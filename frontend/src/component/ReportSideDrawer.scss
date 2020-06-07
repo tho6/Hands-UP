@@ -1,0 +1,55 @@
+@import './variables';
+// $navSize: 1.8em;
+// $speed: 300ms;
+// .report-side-drawer-navbar{
+    
+//     z-index: 100;
+//     font-weight: $ChartHeaderWeight;
+//     font-size: $ChartHeaderFontSize;
+//     color: $SecondaryTextColor;
+//     width: 50%;
+//     height: 100vh;
+//     background-color: rgb(70, 70, 70);
+//     position: fixed;
+//     .report-side-drawer-navbar-toggle-button{
+//         width:$navSize;
+//         height:$navSize;
+//         background-color: white;
+//         display: flex;
+//         justify-content: center;
+//         align-items: center;
+//         border-radius: 50%;
+//         padding: 5px;
+//         margin: 2px;
+//         transition: filter 300ms;
+//         cursor: pointer;
+//         &:hover{
+//             filter: brightness(0.95);
+//         }
+//         i{
+//             font-size: $navSize*0.8;
+//         }
+//     }
+//     .report-side-drawer-dropdown{
+//         position: absolute;
+//         top: 58px;
+//         width: 300px;
+//         // transform: translateX(-45%);
+//         background-color: rgb(82, 38, 38);
+//         // border: var(--border);
+//         // border-radius: var(--border-radius);
+//         padding: 1rem;
+//         overflow: hidden;
+//         transition: height var($speed) ease;
+//     }
+//     .menu-item {
+//         height: 50px;
+//         display: flex;
+//         align-items: center;
+//         // border-radius: var(--border-radius);
+//         transition: background var($speed);
+//         padding: 0.5rem;
+//         text-decoration: none;
+//         color: blueviolet;
+//       }
+// }

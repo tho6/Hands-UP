@@ -29,7 +29,7 @@ const initialState = {
 export const reportReducer = (oldState: ReportState = initialState,action:ReportActions): ReportState => {
     switch (action.type) {
         case '@@REPORT/LOADED_QUESTIONS':
-            console.log(action.questions)
+            // console.log(action.questions)
             const newQuestions = {...oldState.questions}
             const newQuestionsByMeetingId = {...oldState.questionsByMeetingId}
             for (let question of action.questions) {

@@ -10,8 +10,8 @@ export function fetchReportQuestions(meetingId: string | number[]){
             }});
         const result = await resFetch.json()
         // const result =JSON.parse(resFetch)
-        console.log('fetch Report questions: ')
-        console.log(result.message)
+        // console.log('fetch Report questions: ')
+        // console.log(result.message)
         dispatch(fetchReportQuestionsAction(result.message))
     }
 }

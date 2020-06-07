@@ -185,7 +185,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
-    tableRow:{
+    tableRow: {
       "&$hover:hover": {
         backgroundColor: "blue"
       }
@@ -252,17 +252,17 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    checkBox:{
-      "&$checked, &$checked:hover":{
-        color:'rgba(30, 183, 197, 0.8)'
+    checkBox: {
+      "&$checked, &$checked:hover": {
+        color: 'rgba(30, 183, 197, 0.8)'
       }
     },
-    tableRow:{
-      "&$selected, &$selected:hover":{
+    tableRow: {
+      "&$selected, &$selected:hover": {
         backgroundColor: "rgba(30, 183, 197, 0.1)"
       }
     },
-    selected:{},
+    selected: {},
     root: {
       width: '100%',
     },
@@ -287,7 +287,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const GreenCheckbox :any= withStyles({
+const GreenCheckbox: any = withStyles({
   root: {
     color: 'rgba(30, 183, 197, 0.5)',
     '&$checked': {
@@ -297,7 +297,7 @@ const GreenCheckbox :any= withStyles({
   // checked: {},
 })(props => <Checkbox color="default" {...props} />);
 
-const GreenSwitch :any= withStyles({
+const GreenSwitch: any = withStyles({
   switchBase: {
     color: '#efefef',
     '&$checked': {
@@ -308,7 +308,7 @@ const GreenSwitch :any= withStyles({
     },
   },
   checked: {},
-  track: {backgroundColor: 'rgba(30, 183, 197, 0.2)',},
+  track: { backgroundColor: 'rgba(30, 183, 197, 0.2)', },
   // checked: {},
 })(props => <Switch color="default" {...props} />);
 
@@ -328,33 +328,31 @@ export function ReportPastTable() {
 
   const questions = useSelector((state: RootState) => state.report.questions)
   const views = useSelector((state: RootState) => state.report.views)
-  const questionsByMeetingId = useSelector((state: RootState) => state.report.questionsByMeetingId)
+  const questionsByMeetingId = (useSelector((state: RootState) => state.report.questionsByMeetingId))
   const viewsByMeetingId = useSelector((state: RootState) => state.report.viewsByMeetingId)
+  const arrQuestions = Object.keys(questionsByMeetingId).sort(function (a: string, b: string): number {
+    return parseInt(b) - parseInt(a)
+  })
 
   const rows: Data[] = [];
-  console.log(viewsByMeetingId)
-  console.log(questionsByMeetingId)
+  // console.log(arrQuestions)
+  // console.log(questionsByMeetingId)
 
   if (Object.keys(views).length === 0 || Object.keys(questions).length === 0) {
     return <div></div>
-  }else{
-    for (const id in questionsByMeetingId) {
-      console.log('id: '+id)
+  } else {
+    for (const id of arrQuestions) {
       const meetingViews = viewsByMeetingId[id]?.map((i: number) => views[i])
-      console.log(meetingViews)
       const dataMap = [{
         "id": "Answered",
-        "label": "Answered",
         "value": 0,
       },
       {
         "id": "Not Answered",
-        "label": "Not Answered",
         "value": 0,
       },
       {
         "id": "Inappropriate",
-        "label": "Inappropriate",
         "value": 0,
       }]
       const dataMapQuestionFrom = [{
@@ -379,7 +377,7 @@ export function ReportPastTable() {
         facebook: {},
         handsup: {}
       }
-      
+
       const meetingId = id
       const totalQuestions = questionsByMeetingId[id].length
       const meetingscheduletime = questions[questionsByMeetingId[id][0]].meetingscheduletime
@@ -395,15 +393,15 @@ export function ReportPastTable() {
             category.value += 1
             break
           }
-          if (!questions[qId].isanswered && category.id === 'Not Answered') {
+          if (!questions[qId].isanswered && !questions[qId].ishide && category.id === 'Not Answered') {
             category.value += 1
             break
           }
         }
         for (const platform of arrPlatformMap) {
-          if (!meetingViews){
+          if (!meetingViews) {
             objViewsMap[platform]['latestViews'] = 0
-          }else{
+          } else {
             objViewsMap[platform]['latestViews'] = meetingViews.map(el => el[platform])
               .reduce(function (a, b) {
                 return Math.max(a, b);
@@ -418,10 +416,9 @@ export function ReportPastTable() {
         }
 
       }
-      console.log('id: '+id)
       rows.push(createData(parseInt(meetingId),
         meetingName,
-        meetingscheduletime.toLocaleString(),
+        new Date(meetingscheduletime).toLocaleString(),
         totalQuestions,
         dataMap.filter(el => el.id === 'Answered')[0].value,
         dataMap.filter(el => el.id === 'Not Answered')[0].value,
@@ -432,7 +429,7 @@ export function ReportPastTable() {
         objViewsMap['handsup'].latestViews!,
         objViewsMap['youtube'].latestViews!,
         objViewsMap['facebook'].latestViews!,
-        meetingcreatedat.toLocaleString()
+        new Date(meetingcreatedat).toLocaleString()
       ))
     }
   }
@@ -487,7 +484,7 @@ export function ReportPastTable() {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-  console.log(rows)
+  // console.log(rows)
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -529,14 +526,14 @@ export function ReportPastTable() {
                       <TableCell padding="checkbox">
                         <GreenCheckbox
                           checked={isItemSelected}
-                          onChange={(event:any) => handleClick(event, row.meetingId)}
+                          onChange={(event: any) => handleClick(event, row.meetingId)}
                           color='default'
                           className={classes.checkBox}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding='default' size='medium'>
-                        <a href={'/report/'+row.meetingId}>{row.meetingName}</a>
+                        <a href={'/report/' + row.meetingId}>{row.meetingName}</a>
                       </TableCell>
                       <TableCell align="right" size='medium'>{row.scheduleTime}</TableCell>
                       <TableCell align="right">{row.totalQuestions}</TableCell>

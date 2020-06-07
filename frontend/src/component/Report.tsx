@@ -12,6 +12,7 @@ import { QuestionsPieChart } from './QuestionsPieChart';
 import { QuestionLikesRank } from './QuestionLikesRank';
 import { ReportPeakViews } from './ReportPeakViews';
 import { ReportTotalQuestions } from './ReportTotalQuestions';
+import { ReportSideDrawer } from './ReportSideDrawer';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -39,13 +40,19 @@ export function Report() {
     
     const pastMeetingId = useSelector((state:RootState)=>{
         const arr = Object.keys(state.report.questionsByMeetingId).sort(function (a:string,b:string):number{
-            return parseInt(b) - parseInt(a)
+            return  parseInt(a) - parseInt(b)
         })
+        const idx = arr.indexOf(meetingId!)  <= 0 ? null:arr.indexOf(meetingId!) - 1
+        console.log(idx)
         console.log(arr)
-        return arr.indexOf(meetingId!) + 1 > arr.length -1 ? null:arr.indexOf(meetingId!) + 1
-        
+        if(idx){
+            console.log(arr[idx])
+        }
+        return idx !== null?arr[idx]:null
     })
+    console.log(pastMeetingId)
 
+    const pastQuestionsByMeeting = useSelector((state:RootState)=>state.report.questionsByMeetingId) 
     const pastQuestionsByMeetingId = useSelector((state:RootState)=>state.report.questionsByMeetingId[pastMeetingId!])
     const pastQuestions = useSelector((state:RootState)=>pastQuestionsByMeetingId?.map((id:number) => state.report.questions[id]))
     const pastViewsByMeetingId = useSelector((state:RootState)=>state.report.viewsByMeetingId[pastMeetingId!])
@@ -55,12 +62,16 @@ export function Report() {
     }
     console.log(meetingId)
     console.log(pastMeetingId)
-    // console.log(pastQuestions)
-    // console.log(pastViews)
+    console.log(pastQuestionsByMeeting)
+    console.log(pastQuestionsByMeetingId)
+    console.log(pastViews)
 
 
     return (
         <div className='report-container'>
+            <div className='report-container-side-drawer'>
+                <ReportSideDrawer />
+            </div>
             <header className='report-container-header-row'>
                 <span className='report-container-header'>{questions? questions[0].meetingname:''}</span>
                 <span className='report-container-secondary-header'>{questions? new Date(questions[0].meetingscheduletime).toLocaleString():''}</span>
@@ -69,6 +80,7 @@ export function Report() {
             {/* <Toggler /> */}
             {/* <Backdrop open={isDrawerOpen}/> */}
             {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/> */}
+
             <div className='report-desktop-first-row'>
                 <div className='report-snap-container'>
                     <div className="report-peak-view-outer">

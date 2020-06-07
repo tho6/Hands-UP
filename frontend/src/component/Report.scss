@@ -23,6 +23,7 @@
     border-radius: 19px;
     position: relative;
     left: -1.3rem;
+    z-index: -1;
 }
 // .report-header::before{
 //     content: '';
@@ -38,6 +39,10 @@
     font-size: $ChartHeaderFontSize;
     
 }
+.report-container-header-row{
+    padding-left: 0.8rem;
+    padding-top: 0.8rem;
+}
 .report-container{
     padding-left: 0.2rem;
     padding-right: 0.2rem;
@@ -49,8 +54,7 @@
     .report-container-header-row{
         font-size: 1.2rem;
         font-weight: 700;
-        padding-left: 0.8rem;
-        padding-top: 0.8rem;
+
         .report-container-secondary-header{
             padding-left: 0.6rem;
             font-weight: 400;
@@ -67,7 +71,6 @@
     min-width: 0px;
     // position: absolute;
     z-index: 0;
-    opacity: 0.99;
 }
 .views-chart-outer,.questions-from-chart-outer, .questions-pie-chart-outer{
     height: 500px;

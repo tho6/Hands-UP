@@ -46,7 +46,7 @@ export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
                     category.value += 1
                     break
                 }
-                if (!question.isanswered && category.id === 'Not Answered'){
+                if (!question.isanswered && !question.ishide && category.id === 'Not Answered'){
                     category.value += 1
                     break
                 }

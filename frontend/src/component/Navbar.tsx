@@ -21,16 +21,16 @@ export default function Navbar() {
                 setMainNavBar(!isMainNavBarOpen)
             }}></i>
 
-                <NavLink to="/" className="link-text" id='logo-text'>
+                <NavLink to="/" className="link-text" id='logo-text' onClick={()=>setMainNavBar(false)}>
                     <img src={'/hand-logo.png'} alt="HANDS UP logo" />
                     HANDS UP
                 </NavLink>
             <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
                 {userId && (<>
                     <li className="main-navbar-item">
-                        <NavLink activeClassName='activeLink' to="/event">Event</NavLink>
+                        <NavLink activeClassName='activeLink' to="/event" onClick={()=>setMainNavBar(false)}>Event</NavLink>
                     </li>
-                    <li className="main-navbar-item"><NavLink activeClassName='activeLink' to="/report/past">Report</NavLink></li>
+                    <li className="main-navbar-item"><NavLink activeClassName='activeLink' to="/report/past" onClick={()=>setMainNavBar(false)}>Report</NavLink></li>
                     <li className="main-navbar-item">
                     {pic != null && <img src={pic} className='main-navbar-nav-personal-icon' alt="icon"/>}
                         <button className='logout-button' onClick={()=>{

@@ -50,6 +50,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "react-table": "^7.1.0",
+    "react-transition-group": "^4.4.1",
     "react-use-form-state": "^0.13.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
