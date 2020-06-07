@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import './Navbar.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { Nav } from 'react-bootstrap';
 import { logoutAccount } from '../redux/auth/thunk';
-import GoogleLogin from './GoogleLogin';
-import Toggler from './Toggler';
+
 
 export default function Navbar() {
     const pic = useSelector((state:RootState)=>state.auth.personInfo?.picture)
     const userId = useSelector((state:RootState)=>state.auth.personInfo?.userId)
-    const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
+    // const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
     const guestId = useSelector((state:RootState)=>state.auth.personInfo?.guestId)
     const dispatch = useDispatch();
     const [isMainNavBarOpen, setMainNavBar] = useState(false)
@@ -28,10 +26,11 @@ export default function Navbar() {
             <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
                 {userId && (<>
                     <li className="main-navbar-item">
-                        <a href="#">Event</a>
+                        <a href="/">Event</a>
                     </li>
-                    <li className="main-navbar-item"><a href="#">Report</a></li>
-                    <li className="main-navbar-item">    
+                    <li className="main-navbar-item"><a href="/report/past">Report</a></li>
+                    <li className="main-navbar-item">
+                    {pic != null && <img src={pic} className='main-navbar-nav-personal-icon' alt="icon"/>}
                         <button className='logout-button' onClick={()=>{
                             dispatch(logoutAccount())
                             setMainNavBar(false)

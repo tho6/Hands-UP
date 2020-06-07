@@ -13,12 +13,32 @@ a:hover{
     margin-left:1rem;
     margin-right: 1rem;
     min-width: 200px;;
+    z-index: 1500;
     
 }
 
+.main-navbar-nav::before{
+    content: "";
+    background-color: $BackgroundColor;
+    width: 100vw;
+    height: 45px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index:-1;
+    -webkit-box-shadow: 10px 14px 11px -13px rgba(173,173,173,0.71);
+    -moz-box-shadow: 10px 14px 11px -13px rgba(173,173,173,0.71);
+    box-shadow: 10px 14px 11px -13px rgba(173,173,173,0.71);
+    opacity: 0.99;
+}
 .main-navbar-nav{
-    padding-top: 1rem;
+    // padding-top: 1rem;
     
+    top: 0;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index:1500;
     .humbugger-toggler{
         margin-top: 0.6rem;
         position: absolute;
@@ -26,7 +46,7 @@ a:hover{
         font-size: 1.5rem;
         color: $SecondaryTextColor;
         cursor: pointer;
-        z-index: 1000;
+        z-index: 1500;
         &:hover{
             background: linear-gradient(to top, rgb(166, 185, 187), $SecondaryTextColor);
             -webkit-background-clip: text;
@@ -38,13 +58,23 @@ a:hover{
         height: 2.5rem;
         margin: auto;
         margin-bottom: 0.5rem;
+        vertical-align: middle;
+        z-index: 1500;
     }
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    z-index:999;
+    .main-navbar-nav-personal-icon{
+        border-radius: 2rem;
+        height: 2rem;
+        margin: auto;
+        margin-bottom: 0.5rem;
+        vertical-align: middle;
+        margin: 0 0.25rem;
+        // position: absolute;
+        // left: 31%;
+    }
+
 
     .main-navbar-ul{
+        z-index: 1500;
         padding-left: 0;
         list-style: none;
         width: 100%;
@@ -57,9 +87,12 @@ a:hover{
         border-bottom-right-radius: 100%;
         border-bottom-left-radius: 100%;    
         font-size: 1.2rem;
-        transition: all 200ms ease-in-out;
         position: absolute;
-        right: -100vw;
+        // right: -100vw;
+        transform: translateX(200%);
+        transition: transform 200ms ease-in-out;
+        // transition: all 200ms ease-in-out;
+
         // padding: 1rem 1rem;
         
         
@@ -108,19 +141,23 @@ a:hover{
         }
         .main-navbar-item:last-child{
             // background-color: rgba(30, 183, 197, 0.56);
-
+            // display: flex;
         }
         
     }
     .mainNavBarOpen{
-        right: 0%;
+        // right: 0%;
         background-color: rgb(225, 228, 228);
+        height: 100vh;
+        transform: translateX(0);
+        
         border-radius: initial;
+        
     }
 }
-.setZIndex{
-    z-index: 0;
-}
+// .setZIndex{
+//     z-index: 0;
+// }
 
 @media screen and (min-width: 730px){
     
@@ -137,6 +174,7 @@ a:hover{
             right: 0%;
             transition: none;
             position: relative;
+            transform: translateX(0%);
             // margin: 0;
             // justify-content: flex-start;
             .main-navbar-item{
