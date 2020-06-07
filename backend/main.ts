@@ -31,6 +31,7 @@ import referrerPolicy from 'referrer-policy'
 // import redis from 'redis';
 // const client = redis.createClient();
 import dotenv from 'dotenv'
+import { LiveService } from "./services/LiveService";
 dotenv.config()
 
 declare global {
@@ -106,13 +107,14 @@ const authService = new AuthService(knex);
 const questionService = new services.QuestionService(questionDAO, replyDAO);
 const meetingService = new MeetingService(knex);
 const reportService = new ReportService(knex)
+const liveSevice = new LiveService(knex)
 
 /* Routers */
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const questionRouter = new routers.QuestionRouter(questionService, upload, io);
-const liveRouter = new LiveRouter(questionService, io, userService);
+const liveRouter = new LiveRouter(questionService, io, userService, liveSevice);
 const meetingRouter = new MeetingRouter(meetingService, io);
 const reportRouter = new ReportRouter(reportService);
 
@@ -165,16 +167,19 @@ io.on('connection', socket => {
           counter[idx].counting = false;
           // io.in(idx).emit('update-count', counter[idx].count);
           io.in(idx).emit('update-count', counter[idx].count.length);
+          liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
         }, 3000)
       }
     } else {
       // counter[idx] = { count: 1, counting: true };
       counter[idx] = { count: [guestId], counting: true };
+      liveRouter.createViewsTimer(parseInt(idx));
       setTimeout(() => {
         if(!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', counter[idx].count.length);
+        liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
       }, 3000)
     }
   });
@@ -185,7 +190,10 @@ io.on('connection', socket => {
     if (!counter[idx]) return;
     // counter[idx].count -= 1;
     counter[idx].count.splice(counter[idx].count.indexOf(guestId),1);
-    if(counter[idx].count.length === 0) delete counter[idx];
+    if(counter[idx].count.length === 0) {
+      delete counter[idx];
+      liveRouter.removeViewsTimer(parseInt(idx));
+    }
     if (!counter[idx]) return;
     if (!counter[idx].counting) {
       counter[idx].counting = true;
@@ -194,6 +202,7 @@ io.on('connection', socket => {
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', counter[idx].count.length);
+        liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
       }, 3000)
     }
   });

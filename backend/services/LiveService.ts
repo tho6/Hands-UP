@@ -1,5 +1,7 @@
 import Knex from "knex";
-export class VideoService{
+
+
+export class LiveService{
     constructor(private knex: Knex){}
 
     //*** save fb token
@@ -16,7 +18,7 @@ export class VideoService{
             return result
         } catch (error) {
             console.log('[Live Service Error] ' + 'saveViews')
-            throw error
+            // throw error
         }
         
     }
