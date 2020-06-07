@@ -9,6 +9,7 @@ import { QuestionDAO } from "../services/dao/questionDAO";
 import { ReplyDAO } from "../services/dao/replyDAO";
 import { UserService } from '../services/UserService';
 import fetch from 'node-fetch'
+import { LiveService } from '../services/LiveService';
 
 
 jest.mock('node-fetch');
@@ -22,6 +23,7 @@ describe('LiveRouter', () => {
     let replyDAO: IReplyDAO = new ReplyDAO(knex);
     let questionService: IQuestionService;
     let liveRouter:LiveRouter;
+    let liveService:LiveService;
     let userService = new UserService(knex)
     const io = {
         in: jest.fn(() => io),
@@ -29,7 +31,7 @@ describe('LiveRouter', () => {
     } as any
     beforeEach(async () => {
         questionService = new QuestionService(questionDAO, replyDAO)
-        liveRouter = new LiveRouter(questionService,io,userService)
+        liveRouter = new LiveRouter(questionService,io,userService, liveService)
         io.in.mockClear();
         io.emit.mockClear(); 
         jest.useFakeTimers();

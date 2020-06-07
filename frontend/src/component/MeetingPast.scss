@@ -1,19 +1,18 @@
 @import '../component/_variables.scss';
 
-.meeting-past-bg {
-    background-color: #F8F8F8;
-    opacity: 0.6;
-  }
-
 .meetingPast {
     background-color: #F8F8F8;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    opacity: 0.6;
+    width: 100%;
+    // display: flex;
+    // flex-direction: row;
+    // flex-wrap: wrap;
 }
 
 .meetingPast-content{
     display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
 }
 
 .headline {
@@ -28,9 +27,8 @@
     background-color: #F8F8F8;
     font-size: 14px;
     border-radius: 10px;
-    padding: 10px;
-    margin: 40px 0px 10px 5px;
-    width: 220px
+    margin: 0px 10px 10px 10px;
+    width: 240px
 }
 
 .viewButtonBlue{

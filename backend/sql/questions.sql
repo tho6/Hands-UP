@@ -60,3 +60,5 @@ SELECT name as "meetingName", is_answered as "isAnswered", is_approved as "isApp
 SELECT is_answered as "isAnswered", is_approved as "isApproved", is_hide as "isHide", meeting_id as "meetingId", platform_id as "platformId" FROM  questions;
 /* Get questions count of the latest 10 meetins */
 SELECT name as "meetingName",meeting_id as "meetingId", COUNT(meeting_id) FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id WHERE meeting_id IN (SELECT id from meetings ORDER BY id DESC LIMIT  2 ) GROUP BY meeting_id, meetings.name;
+
+SELECT name as "meetingName", questions.meeting_id as "meetingId", COUNT(questions.meeting_id), max(youtube) as "youtubePeakViews", max(facebook) as "facebookPeakViews", max(handsup) as "handsupPeakViews" FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id INNER JOIN views ON questions.meeting_id = views.meeting_id WHERE owner_id = 3 AND questions.meeting_id IN (SELECT id from meetings ORDER BY id DESC) GROUP BY questions.meeting_id, meetings.name  LIMIT  15 ; 

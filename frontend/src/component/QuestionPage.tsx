@@ -42,6 +42,7 @@ import {
 import FacebookModal from './FacebookModal';
 import RoomSettingButton from './RoomSetting';
 import { IRoomConfiguration } from '../models/IRoomInformation';
+import ScrollTop from './ScrollTop';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -683,6 +684,7 @@ const QuestionPage: React.FC = () => {
           }}
         />
       )}
+      <ScrollTop />
     </div>
   );
 };

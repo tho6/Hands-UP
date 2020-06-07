@@ -1,0 +1,26 @@
+.scroll-top-background{
+  position: fixed;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  pointer-events: none;
+}
+.scroll-top-container{
+  pointer-events: visible;
+
+
+}
+
+.scroll-top-item{
+  transition: all 0.5s;
+}
+
+.scroll-top-item.show-item{
+  position: relative;
+  top:0px;
+}
+.scroll-top-item.hide-item{
+  position: relative;
+  top:50px;
+}
