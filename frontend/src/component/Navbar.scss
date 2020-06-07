@@ -1,5 +1,8 @@
 @import './variables';
 
+
+
+
 a:hover{
     text-decoration: none;
 }
@@ -9,46 +12,203 @@ a:hover{
     font-size: 1.5rem;
     margin-left:1rem;
     margin-right: 1rem;
-
+    min-width: 200px;;
+    
 }
 
-    .main-nav{
-        background-color: $BackgroundColor;
-        color: black;
-        width: 100vw;
-        height: 3rem;
-        position: fixed;
-        border-bottom: solid $PrimaryTextColor;
-        border-width: thin;
-        align-content: center;
-        font-size: 1rem;
-        justify-content: flex-start;
-        z-index: 100;
-        
-        .main-nav-item:last-child{
-            margin: auto;
-            margin-right: 5px;
-        }
-        .main-nav-link{
-            color: $PrimaryTextColor;
-
-            &:hover{
-                border-bottom: $SecondaryTextColor;
-                border-width: 50rem;
-                color: $SecondaryTextColor;;
-            }
-        }
-        img {
-            // border: 0.05rem solid $PrimaryTextColor;
-            border-radius: 2rem;
-            // height: 1.5rem;
-            height: 2.5rem;
-            // padding-right: 0.5rem;
-            margin: auto;
-            // margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
+.main-navbar-nav{
+    padding-top: 1rem;
+    
+    .humbugger-toggler{
+        margin-top: 0.6rem;
+        position: absolute;
+        right: 3rem;
+        font-size: 1.5rem;
+        color: $SecondaryTextColor;
+        cursor: pointer;
+        z-index: 1000;
+        &:hover{
+            background: linear-gradient(to top, rgb(166, 185, 187), $SecondaryTextColor);
+            -webkit-background-clip: text;
+            color: transparent;
         }
     }
+    img{
+        border-radius: 2rem;
+        height: 2.5rem;
+        margin: auto;
+        margin-bottom: 0.5rem;
+    }
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    z-index:999;
+
+    .main-navbar-ul{
+        padding-left: 0;
+        list-style: none;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        // background-color: #16162d;
+        border-bottom-right-radius: 100%;
+        border-bottom-left-radius: 100%;    
+        font-size: 1.2rem;
+        transition: all 200ms ease-in-out;
+        position: absolute;
+        right: -100vw;
+        // padding: 1rem 1rem;
+        
+        
+        .main-navbar-item{
+            padding: 1rem 1rem;
+            margin: 0 1rem;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+            font-weight: 500;
+            // background-color: rgb(52, 59, 63);
+            
+            a{
+                display: block;
+                width: 100%;
+                text-decoration: none;
+                color: rgb(113, 116, 116);
+                &:hover{
+                    color: $SecondaryTextColor;
+                }
+            }
+            // &:hover{
+            //     background-color: rgb(75, 83, 88);
+            // }
+            .logout-button{
+                border: none;
+                background-color: inherit;
+                font-size: inherit;
+                font-weight: inherit;
+                display: block;
+                width: 100%;
+                color: rgb(0, 5, 5);
+                font-weight: 900;
+                // background-color: $SecondaryTextColor;
+                text-align: center;
+                &:hover{
+                    color: $SecondaryTextColor;
+                }
+
+                
+            }
+            // a:hover,.logout-button:hover{
+            //     color: $SecondaryTextColor;
+            //     border-bottom: 1px solid $SecondaryTextColor;
+            // }
+        }
+        .main-navbar-item:last-child{
+            // background-color: rgba(30, 183, 197, 0.56);
+
+        }
+        
+    }
+    .mainNavBarOpen{
+        right: 0%;
+        background-color: rgb(225, 228, 228);
+        border-radius: initial;
+    }
+}
+.setZIndex{
+    z-index: 0;
+}
+
+@media screen and (min-width: 730px){
+    
+    .main-navbar-nav{
+        display: flex;
+        height: initial;
+        .humbugger-toggler{
+            display: none;
+        }
+        .main-navbar-ul{
+            display: flex;
+            top:0;
+            flex-direction: row;
+            right: 0%;
+            transition: none;
+            position: relative;
+            // margin: 0;
+            // justify-content: flex-start;
+            .main-navbar-item{
+                padding: 0rem 0rem;
+                margin-top: 8px;
+                display: flex;
+                // justify-content: flex-end;
+                width: initial;
+                
+                .logout-btn{
+                    // width: 20%;
+                    a{
+                    // display: flex;
+                    // width: 60px;
+                    background-color: $SecondaryTextColor;
+                    border-radius: 10px;
+                    padding: 1rem 1rem;
+                    color: rgb(255, 255, 255);
+                    }
+                }
+                &:last-child{
+                    margin: 0;
+                    margin-left: auto;
+                    margin-right: 3rem;
+                    right: 5rem;
+                    // margin-left: 0px;
+                    // margin-right: auto;
+                }
+            }
+            
+
+
+        }
+    }
+}
+    // .main-nav{
+    //     background-color: $BackgroundColor;
+    //     color: black;
+    //     width: 100vw;
+    //     height: 3rem;
+    //     position: fixed;
+    //     border-bottom: solid $PrimaryTextColor;
+    //     border-width: thin;
+    //     align-content: center;
+    //     font-size: 1rem;
+    //     justify-content: flex-start;
+    //     z-index: 100;
+        
+    //     .main-nav-item:last-child{
+    //         margin: auto;
+    //         margin-right: 5px;
+    //     }
+    //     .main-nav-link{
+    //         color: $PrimaryTextColor;
+
+    //         &:hover{
+    //             border-bottom: $SecondaryTextColor;
+    //             border-width: 50rem;
+    //             color: $SecondaryTextColor;;
+    //         }
+    //     }
+    //     img {
+    //         // border: 0.05rem solid $PrimaryTextColor;
+    //         border-radius: 2rem;
+    //         // height: 1.5rem;
+    //         height: 2.5rem;
+    //         // padding-right: 0.5rem;
+    //         margin: auto;
+    //         // margin-right: 0.5rem;
+    //         margin-bottom: 0.5rem;
+    //     }
+    // }
 
     
 

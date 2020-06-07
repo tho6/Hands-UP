@@ -1,20 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Navbar.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { Nav } from 'react-bootstrap';
 import { logoutAccount } from '../redux/auth/thunk';
 import GoogleLogin from './GoogleLogin';
+import Toggler from './Toggler';
 
 export default function Navbar() {
     const pic = useSelector((state:RootState)=>state.auth.personInfo?.picture)
     const userId = useSelector((state:RootState)=>state.auth.personInfo?.userId)
+    const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
+    const guestId = useSelector((state:RootState)=>state.auth.personInfo?.guestId)
     const dispatch = useDispatch();
+    const [isMainNavBarOpen, setMainNavBar] = useState(false)
     // const ulStyle = {justify-content: 123}
     return (
         <>
+        <nav className={isMainNavBarOpen?'main-navbar-nav':'setZIndex main-navbar-nav'}>
+            <i className="fas fa-bars humbugger-toggler" onClick={()=>{
+                setMainNavBar(!isMainNavBarOpen)
+            }}></i>
+            <span className="link-text" id='logo-text'>
+                <img src={'/hand-logo.png'} alt="HANDS UP logo" />
+                HANDS UP
+            </span>
+            <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
+                {userId && (<>
+                    <li className="main-navbar-item">
+                        <a href="#">Event</a>
+                    </li>
+                    <li className="main-navbar-item"><a href="#">Report</a></li>
+                    <li className="main-navbar-item">    
+                        <button className='logout-button' onClick={()=>{
+                            dispatch(logoutAccount())
+                            setMainNavBar(false)
+                            }}>Logout</button>
+                    </li>
+                </>)}
+                {guestId && !userId && 
+                <li className="main-navbar-item login-btn">    
+                    <a href = {`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`} rel = "noopener noreferrer">Google Login</a>
+                </li>
+                }
+            </ul>
+        </nav>
         {/* <nav className='navbar'> */}
-                    
+{/*                     
                     <Nav defaultActiveKey="/" className='main-nav'>
                     <a href="/">
                         <span className="link-text" id='logo-text'>
@@ -37,8 +69,8 @@ export default function Navbar() {
                     </Nav.Item>
                     
                     </>)}
-                    {!userId && <Nav.Item className = 'main-nav-item'><GoogleLogin /></Nav.Item>}
-                    </Nav>
+                    {guestId && !userId && <Nav.Item className = 'main-nav-item'><GoogleLogin /></Nav.Item>}
+                    </Nav> */}
             {/* <ul className='navbar-nav'>  
             
                 <div className="spacer"></div>

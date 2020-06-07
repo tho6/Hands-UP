@@ -7,6 +7,8 @@ import { ReportComparePlatform } from './ReportComparePlatform'
 export const ReportPeakViews:React.FC<{data:IReportView[], pastData: IReportView[]}> = (props) => {
     const currentData = props.data? [...props.data]:''
     const pastData = props.pastData? [...props.pastData]:''
+    console.log(currentData)
+    console.log(pastData)
     const arrMap = [
         'youtube',
         'facebook',
@@ -28,6 +30,13 @@ export const ReportPeakViews:React.FC<{data:IReportView[], pastData: IReportView
                                                 return Math.max(a, b);
                                             }, -Infinity )
         }
+    } else if(currentData){
+        for (const platform of arrMap){
+            objMap[platform]['latestViews'] = currentData.map( el => el[platform] )
+                                            .reduce( function(a, b) {
+                                                return Math.max(a, b);
+                                            }, -Infinity )
+                                        }
     }else{
         return <div></div>
     }

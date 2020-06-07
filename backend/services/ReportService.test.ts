@@ -502,7 +502,26 @@ describe('Report Service Test', ()=>{
                 meetingownerid: 1,
                 meetingsownername: 'ivan',
                 questionlikes: null
-            }
+            },
+            {
+                id: 14,
+                isanswered: false,
+                isapproved: true,
+                ishide: false,
+                meetingcreatedat: createdAt,
+                meetingid: 2,
+                meetingname: "Meeting Room 2",
+                meetingownerid: 1,
+                meetingscheduletime: scheduleTime,
+                meetingsownername: "ivan",
+                meetingupdatedat: createdAt,
+                platformid: 3,
+                platformname: "youtube",
+                questionaskedbyid: 3,
+                questioncontent: "question 14",
+                questioncreatedat: createdAt,
+                questionlikes: null,
+        }
         ]
     
         const serviceResult = await reportService.getQuestionReportDataByMeetingId([2,1])
