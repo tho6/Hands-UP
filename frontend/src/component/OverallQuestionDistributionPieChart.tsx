@@ -1,57 +1,56 @@
 import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
-import './QuestionsPieChart.scss'
+import './QuestionFromChart.scss'
+
 interface IProps{
-    isAnswered: number;
-    notAnswered: number;
-    isHide: number;
+    youtube:number,
+    facebook:number,
+    handsup:number
 }
-export const OverallQuestionsPieChart:React.FC<IProps> = (props) => {
+export const OverallQuestionDistributionPieChart:React.FC<IProps> = (props) => {
     const theme = {
         labels:{
             text:{
-                fontSize: 13,
+                fontSize:13
             }
         },
         legends:{
             text: {
-                fontSize: 13,
+                fontSize: 13
             }
         }
       };
-    
     const dataMap = [{
-        "id": "Answered",
-        "label": "Answered",
-        "value": 0,
-        "color": "hsl(212, 70%, 50%)"
-    },
-    {
-        "id": "Not Answered",
-        "label": "Not Answered",
+        "id": "youtube",
+        "label": "youtube",
         "value": 0,
         "color": "hsl(346, 70%, 50%)"
     },
     {
-        "id": "Inappropriate",
-        "label": "Inappropriate",
+        "id": "facebook",
+        "label": "facebook",
+        "value": 0,
+        "color": "hsl(346, 70%, 50%)"
+    },
+    {
+        "id": "handsup",
+        "label": "handsup",
         "value": 0,
         "color": "hsl(346, 70%, 50%)"
     }]
-  const {isAnswered, isHide, notAnswered} = props
-            for (const category of dataMap){
-                if (category.id === 'Answered'){
-                    category.value = isAnswered
-                }else if (category.id === 'Inappropriate'){
-                    category.value = isHide
-                }
-                else if (category.id === 'Not Answered'){
-                    category.value = notAnswered
-                }
-            }
-        
-        
-    const totalValue = isAnswered + isHide + notAnswered;
+    // console.log('piechart: '+ JSON.stringify(props.data))
+    const {youtube, facebook, handsup} = props
+    for (const category of dataMap){
+        if (category.id === 'youtube'){
+            category.value = youtube
+        }else if (category.id === 'facebook'){
+            category.value = facebook
+        }
+        else if (category.id === 'handsup'){
+            category.value = handsup
+        }
+    }
+    const totalValue = youtube+facebook+handsup
     const data = dataMap
     return (
         <ResponsivePie
@@ -60,8 +59,7 @@ export const OverallQuestionsPieChart:React.FC<IProps> = (props) => {
         innerRadius={0.45}
         padAngle={0.6}
         cornerRadius={10}
-        colors={["rgb(144, 238, 144)","rgb(245, 101, 102)","rgb(236,106,15)"]}
-        // colors={["rgba(216, 44, 38,0.86)","#4267B2","rgba(30, 183, 197, 0.808)"]}
+        colors={["rgba(216, 44, 38,0.86)","#4267B2","rgba(30, 183, 197, 0.808)"]}
 
         radialLabelsSkipAngle={10}
         radialLabelsTextXOffset={6}
@@ -93,7 +91,7 @@ export const OverallQuestionsPieChart:React.FC<IProps> = (props) => {
                     {
                         on: 'hover',
                         style: {
-                            itemTextColor: '#000',
+                            itemTextColor: '#000'
                         }
                     }
                 ]
@@ -102,4 +100,3 @@ export const OverallQuestionsPieChart:React.FC<IProps> = (props) => {
     />
     )
 }
-
