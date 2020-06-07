@@ -65,6 +65,9 @@
     background-color: #fff;
     border-radius: 15px;
     min-width: 0px;
+    // position: absolute;
+    z-index: 0;
+    opacity: 0.99;
 }
 .views-chart-outer,.questions-from-chart-outer, .questions-pie-chart-outer{
     height: 500px;
