@@ -12,7 +12,7 @@ export function fetchReportViewsAction(views: IReportView[]){
         views
     }
 }
-export function fetchQuestionCountOfLatestXMeetings(questionsCount:{meetingId:number, count:number, meetingName:string}[] ){
+export function fetchQuestionCountOfLatestXMeetings(questionsCount:{meetingId:number, count:number, meetingName:string, youtubePeakViews:number,facebookPeakViews:number,handsupPeakViews:number,}[] ){
     return {
         type: '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS' as '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS',
         questionsCount

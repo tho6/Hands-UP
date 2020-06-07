@@ -9,6 +9,9 @@ export type questionsCountOfLatestMeetings = {
     meetingId:number,
     meetingName:string,
     count:number
+    youtubePeakViews:number, 
+    facebookPeakViews:number, 
+    handsupPeakViews:number, 
 }
 export type reportDataQuestionsBasicWithMeetingName = {
     meetingName:string,
