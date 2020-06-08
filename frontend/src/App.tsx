@@ -15,7 +15,6 @@ import YoutubeCallBack from './component/YoutubeCallBack';
 import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
-import { ViewsChartZoomable } from './component/ViewsChartZoomable';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -65,9 +64,6 @@ function App() {
           </Route>
           <Route path="/testing/:lastXMeetings" exact>
           {(isAuthenticated != null && <ReportOverall />)}
-          </Route>
-          <Route path="/zoom" exact>
-          {(isAuthenticated != null && <ViewsChartZoomable />)}
           </Route>
         </Switch>
 
