@@ -21,6 +21,7 @@ const ScrollTop: React.FC = () => {
       <div className="scroll-top-container d-flex">
         <div className={`scroll-top-item p-2 ${isShow?'show-item':'hide-item'}`}>
           <button
+          className='rs-button'
             onClick={() => {
               scroll.scrollToTop({ smooth: 'easeOutQuint' });
             }}

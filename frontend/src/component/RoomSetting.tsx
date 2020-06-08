@@ -15,7 +15,6 @@ interface IProps {
 
 const RoomSettingButton: React.FC<IProps> = (props) => {
   const { roomConfig, meetingId } = props;
-  console.log(roomConfig);
   const [formState, { text }] = useFormState({
     limit: `${roomConfig.questionLimit}`
   });
@@ -82,6 +81,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           </div>
           <div className="py-2">
             <button
+            className='room-button'
               onClick={() => {
                 dispatch(removeToken('facebook'));
                 setShowSetting(false);
@@ -97,7 +97,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
               setShowSetting(false);
             }}
           >
-            <button>Reset Youtube Platform</button>
+            <button className='room-button'>Reset Youtube Platform</button>
           </div>
           <div
             className="py-2"
@@ -106,7 +106,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
               setShowSetting(false);
             }}
           >
-            <button>Reset All Platform</button>
+            <button className='room-button'>Reset All Platform</button>
           </div>
         </div>
       )}

@@ -43,6 +43,7 @@ import FacebookModal from './FacebookModal';
 import RoomSettingButton from './RoomSetting';
 import { IRoomConfiguration } from '../models/IRoomInformation';
 import ScrollTop from './ScrollTop';
+import TextareaAutosize from 'react-textarea-autosize';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{ id: string; page: string }>();
   const meetingId = router.match.params.id;
@@ -74,6 +75,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) => rootState.roomsInformation.liveStatus[meetingId]
   );
   const [formState, { textarea }] = useFormState();
+  const [textState, setTextState] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
     true,
@@ -95,9 +97,9 @@ const QuestionPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
-/* Join and leave room (guest) */
+  /* Join and leave room (guest) */
   useEffect(() => {
-    if(!personInfo?.guestId) return
+    if (!personInfo?.guestId) return;
     const newQuestionListener = (question: IQuestion) => {
       dispatch(addedQuestion(question));
     };
@@ -122,7 +124,7 @@ const QuestionPage: React.FC = () => {
       const { guestId, questionId } = res;
       dispatch(successfullyRemoveVote(questionId, guestId));
     };
-    const answeredQuestionListener = (message:{questionId: number}) => {
+    const answeredQuestionListener = (message: { questionId: number }) => {
       dispatch(successfullyAnsweredQuestion(message.questionId));
     };
     const hideOrApprovedQuestionListener = (res: {
@@ -159,9 +161,14 @@ const QuestionPage: React.FC = () => {
     const peopleCountListener = (count: number) => {
       setPeopleCount(count);
     };
-    const updateRoomConfiguration = (res: {roomConfiguration:IRoomConfiguration, meetingId:number}) => {
-      const {meetingId, roomConfiguration} = res
-      dispatch(successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration));
+    const updateRoomConfiguration = (res: {
+      roomConfiguration: IRoomConfiguration;
+      meetingId: number;
+    }) => {
+      const { meetingId, roomConfiguration } = res;
+      dispatch(
+        successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration)
+      );
     };
     const leaveRoom = () => {
       socket.emit('leave_event', meetingId, personInfo.guestId);
@@ -276,11 +283,40 @@ const QuestionPage: React.FC = () => {
         return a.concat(b);
       })
       .filter((reply) => reply.isHide);
+const sendEvent = ()=>{
+  if (!textState.trim()) {
+    window.alert('Empty question is not allowed!');
+    return;
+  }
+  if (files?.length !== undefined && files.length > 3) {
+    window.alert(
+      'Maximum of three images for each question!'
+    );
+    setFiles(null);
+    return;
+  }
+  dispatch(
+    addQuestion(parseInt(meetingId), textState, files)
+  );
+  setTextState('');
+  setFiles(null);
+}
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
         <div className="d-flex">
-  <span className="position-relative">{isHost && <RoomSettingButton meetingId={parseInt(meetingId)} roomConfig={{canModerate:roomInformation?.canModerate, canUploadFile:roomInformation?.canUploadFile, questionLimit:roomInformation?.questionLimit}} />}</span>
+          <span className="position-relative">
+            {isHost && (
+              <RoomSettingButton
+                meetingId={parseInt(meetingId)}
+                roomConfig={{
+                  canModerate: roomInformation?.canModerate,
+                  canUploadFile: roomInformation?.canUploadFile,
+                  questionLimit: roomInformation?.questionLimit
+                }}
+              />
+            )}
+          </span>
           <span>{roomInformation?.name}</span>
           <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}
@@ -307,13 +343,9 @@ const QuestionPage: React.FC = () => {
               className="util-spacing"
               data-testid="facebook-live"
               onClick={() => {
-                if(liveStatus?.facebook === true){
+                if (liveStatus?.facebook === true) {
                   dispatch(
-                    toggleFacebookLiveStatus(
-                      parseInt(meetingId),
-                      false,
-                      'page'
-                    )
+                    toggleFacebookLiveStatus(parseInt(meetingId), false, 'page')
                   );
                   return;
                 }
@@ -353,11 +385,19 @@ const QuestionPage: React.FC = () => {
         <div className="d-flex text-area-container rounded shadow flex-wrap">
           <div className="flex-grow-1 p-2">
             {
-              <textarea
-                {...textarea('question')}
+              <TextareaAutosize
                 placeholder="What's on your mind?"
-                data-testid="textarea-new-question"
-              ></textarea>
+                value={textState}
+                onKeyDown={(e)=>{
+                  if(e.keyCode === 13 && !e.shiftKey){
+                    e.preventDefault();
+                    sendEvent();
+                  }
+                }}
+                onChange={(e) => {
+                  setTextState(e.target.value);
+                }}
+              />
             }
           </div>
           <div className="d-flex align-items-end">
@@ -369,26 +409,7 @@ const QuestionPage: React.FC = () => {
                   <div
                     className="util-spacing will-hover"
                     onClick={() => {
-                      if (!formState.values.question.trim()) {
-                        window.alert('Empty question is not allowed!');
-                        return;
-                      }
-                      if (files?.length !== undefined && files.length > 3) {
-                        window.alert(
-                          'Maximum of three images for each question!'
-                        );
-                        setFiles(null);
-                        return;
-                      }
-                      dispatch(
-                        addQuestion(
-                          parseInt(meetingId),
-                          formState.values.question,
-                          files
-                        )
-                      );
-                      formState.setField('question', '');
-                      setFiles(null);
+                      sendEvent();
                     }}
                   >
                     <i className="fas fa-paper-plane"></i>
@@ -448,39 +469,43 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
-        <div className='d-flex'>
-        {isHost && roomInformation?.canModerate && (
-          <div>
-            <button
-              className={`util-spacing rounded ${isQuestion[2] && 'is-active'}`}
-              data-testid="inappropriate-questions-tab"
-              onClick={() => {
-                setIsQuestion(inAppropriateQuestionActive);
-              }}
-            >
-              INAPPROPRIATE QUESTIONS{' '}
-              {questionsInAppropriate?.length > 0
-                ? `(${questionsInAppropriate.length})`
-                : ''}
-            </button>
-          </div>
-        )}
-        {isHost &&  roomInformation?.canModerate && (
-          <div>
-            <button
-              className={`util-spacing rounded ${isQuestion[3] && 'is-active'}`}
-              data-testid="inappropriate-replies-tab"
-              onClick={() => {
-                setIsQuestion(inAppropriateRepliesActive);
-              }}
-            >
-              INAPPROPRIATE REPLIES{' '}
-              {replyInAppropriate?.length > 0
-                ? `(${replyInAppropriate.length})`
-                : ''}
-            </button>
-          </div>
-        )}
+        <div className="d-flex">
+          {isHost && roomInformation?.canModerate && (
+            <div>
+              <button
+                className={`util-spacing rounded ${
+                  isQuestion[2] && 'is-active'
+                }`}
+                data-testid="inappropriate-questions-tab"
+                onClick={() => {
+                  setIsQuestion(inAppropriateQuestionActive);
+                }}
+              >
+                INAPPROPRIATE QUESTIONS{' '}
+                {questionsInAppropriate?.length > 0
+                  ? `(${questionsInAppropriate.length})`
+                  : ''}
+              </button>
+            </div>
+          )}
+          {isHost && roomInformation?.canModerate && (
+            <div>
+              <button
+                className={`util-spacing rounded ${
+                  isQuestion[3] && 'is-active'
+                }`}
+                data-testid="inappropriate-replies-tab"
+                onClick={() => {
+                  setIsQuestion(inAppropriateRepliesActive);
+                }}
+              >
+                INAPPROPRIATE REPLIES{' '}
+                {replyInAppropriate?.length > 0
+                  ? `(${replyInAppropriate.length})`
+                  : ''}
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div className="content-container p-2">
@@ -670,16 +695,16 @@ const QuestionPage: React.FC = () => {
         <FacebookModal
           title={'Where do you want to start your live broadcast?'}
           message={'Choose your platform'}
-          yes={(liveLoc:string,pageId:string='') => {
-                dispatch(
-                  toggleFacebookLiveStatus(
-                    parseInt(meetingId),
-                    true,
-                    liveLoc,
-                    liveLoc==='page'?pageId:''
-                  )
-                );
-                setFacebookModal(false);
+          yes={(liveLoc: string, pageId: string = '') => {
+            dispatch(
+              toggleFacebookLiveStatus(
+                parseInt(meetingId),
+                true,
+                liveLoc,
+                liveLoc === 'page' ? pageId : ''
+              )
+            );
+            setFacebookModal(false);
           }}
           no={() => {
             setFacebookModal(false);

@@ -20,6 +20,7 @@ import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
 import { PersonInfo } from '../redux/auth/reducers';
 import ImageContainer from './ImageContainer';
+import TextareaAutosize from 'react-textarea-autosize';
 
 export interface IQuestionProps {
   question: IQuestion;
@@ -34,6 +35,8 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [formState, { textarea }] = useFormState();
+  const [textState, setTextState] = useState('');
+  const [replyTextState, setReplyTextState] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyTextArea, setShowReplyTextArea] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
@@ -46,6 +49,53 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
   const questionContentBackUp = question.content;
+  const sendReply = ()=>{
+    if (!replyTextState.trim()) {
+      window.alert('Empty reply is not allowed!');
+      return;
+    }
+    dispatch(
+      addReplyToQuestion(question.id, replyTextState)
+    );
+    setReplyTextState('');
+    setShowReplyTextArea(false);
+  }
+  const sendEditedQuestion = ()=>{
+    if (!textState.trim()) {
+      window.alert('Empty question is no allowed!');
+      return;
+    }
+
+    if (files !== null) {
+      const totalImages =
+        files.length +
+        question.files.length -
+        deleteFiles.length;
+      if (totalImages > 3) {
+        window.alert(
+          'Maximum of 3 images are allowed in each question'
+        );
+        return;
+      }
+    }
+    if (
+      questionContentBackUp === textState &&
+      files === null &&
+      deleteFiles.length === 0
+    ) {
+      setIsEdit(false);
+      return;
+    }
+    dispatch(
+      editQuestion(
+        question.id,
+        textState,
+        deleteFiles,
+        files
+      )
+    );
+    setIsEdit(false);
+  }
   return (
     <div ref={ref}>
       <div className="mb-4 d-flex question-container">
@@ -53,10 +103,23 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
           <div className="d-flex question-content-area">
             <div className="content text-wrap mb-2">
               {isEdit ? (
-                <textarea
-                  className="mb-2 rounded"
-                  {...textarea('content')}
-                ></textarea>
+                  <TextareaAutosize
+                  placeholder="Editing your question..."
+                  value={textState}
+                  onKeyDown={(e)=>{
+                    if(e.keyCode === 13 && !e.shiftKey){
+                      e.preventDefault();
+                      sendEditedQuestion();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setTextState(e.target.value);
+                  }}
+                />
+                // <textarea
+                //   className="mb-2 rounded"
+                //   {...textarea('content')}
+                // ></textarea>
               ) : (
                 question.content
               )}
@@ -144,40 +207,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <div
                     className="util-spacing will-hover"
                     onClick={() => {
-                      if (!formState.values.content.trim()) {
-                        window.alert('Empty question is no allowed!');
-                        return;
-                      }
-
-                      if (files !== null) {
-                        const totalImages =
-                          files.length +
-                          question.files.length -
-                          deleteFiles.length;
-                        if (totalImages > 3) {
-                          window.alert(
-                            'Maximum of 3 images are allowed in each question'
-                          );
-                          return;
-                        }
-                      }
-                      if (
-                        questionContentBackUp === formState.values.content &&
-                        files === null &&
-                        deleteFiles.length === 0
-                      ) {
-                        setIsEdit(false);
-                        return;
-                      }
-                      dispatch(
-                        editQuestion(
-                          question.id,
-                          formState.values.content,
-                          deleteFiles,
-                          files
-                        )
-                      );
-                      setIsEdit(false);
+                      sendEditedQuestion();
                     }}
                   >
                     <i className="fas fa-cloud-upload-alt"></i>
@@ -220,7 +250,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <div
                     className="util-spacing will-hover"
                     onClick={() =>
-                      questionContentBackUp === formState.values.content &&
+                      questionContentBackUp === textState &&
                       files === null &&
                       deleteFiles.length === 0
                         ? setIsEdit(false)
@@ -235,7 +265,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 <div
                   className="util-spacing will-hover"
                   onClick={() => {
-                    formState.setField('content', question.content);
+                    setTextState(question.content);
                     setFiles(null);
                     setIsEdit(true);
                     setDeleteFiles([]);
@@ -264,24 +294,29 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
             <div className={`new-reply-area ${showReplyTextArea && 'show'}`}>
               <div className="text-left">Replying to this question</div>
               <div className="d-flex reply-body mb-4">
-                <textarea
+              <TextareaAutosize
+                placeholder="Your reply to this question."
+                value={replyTextState}
+                onKeyDown={(e)=>{
+                  if(e.keyCode === 13 && !e.shiftKey){
+                    e.preventDefault();
+                    sendReply();
+                  }
+                }}
+                onChange={(e) => {
+                  setReplyTextState(e.target.value);
+                }}
+              />
+                {/* <textarea
                   className="mr-2 rounded"
                   {...textarea('reply')}
                   placeholder="Your reply to this question."
-                ></textarea>
+                ></textarea> */}
                 <div className="align-self-end">
                   <span
                     className="mx-2 p-2 will-hover"
                     onClick={() => {
-                      if (!formState.values.reply.trim()) {
-                        window.alert('Empty reply is not allowed!');
-                        return;
-                      }
-                      dispatch(
-                        addReplyToQuestion(question.id, formState.values.reply)
-                      );
-                      formState.setField('reply', '');
-                      setShowReplyTextArea(false);
+                      sendReply();
                     }}
                   >
                     <i className="fas fa-paper-plane"></i>
@@ -289,11 +324,11 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <span
                     className="p-2 will-hover"
                     onClick={() => {
-                      if (formState.values.reply.trim()) {
+                      if (replyTextState.trim()) {
                         setShowCancelReplyModal(true);
                       } else {
                         setShowReplyTextArea(false);
-                        formState.setField('reply', '');
+                        setReplyTextState('');
                       }
                     }}
                   >
@@ -423,7 +458,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
             yes={() => {
               setShowCancelReplyModal(false);
               setShowReplyTextArea(false);
-              formState.setField('reply', '');
+              setReplyTextState('');
             }}
             no={() => {
               setShowCancelReplyModal(false);
