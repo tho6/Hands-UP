@@ -2,7 +2,10 @@
 
 
 
-
+.main-navbar-nav-move{
+    transform:translateX(-200px);
+  
+}
 a:hover{
     text-decoration: none;
 }
@@ -32,6 +35,7 @@ a:hover{
     opacity: 0.99;
 }
 .main-navbar-nav{
+    transition: all 0.2s;
     // padding-top: 1rem;
     top: 0;
     position: fixed;
@@ -70,14 +74,12 @@ a:hover{
         // position: absolute;
         // left: 31%;
     }
-
-
     .main-navbar-ul{
         display: none;
         z-index: 1500;
         padding-left: 0;
         list-style: none;
-        width: 100%;
+        width: 200px;
         // height: 100%;
         height: 100vh;
         display: flex;
@@ -92,9 +94,10 @@ a:hover{
         font-size: 1.2rem;
         position: absolute;
         right: -100vw;
+        top:0;
+        right:-200px;
         // transform: translateX(200%);
         // transition: transform 200ms ease-in-out;
-        transition: all 200ms ease-in-out;
 
         // padding: 1rem 1rem;
         
@@ -122,6 +125,7 @@ a:hover{
                 &:hover{
                     color: $SecondaryTextColor;
                 }
+                transition: none;
             }
             .activeLink{
                 color: $SecondaryTextColor;
@@ -158,10 +162,12 @@ a:hover{
         
     }
     .mainNavBarOpen{
-        right: 0%;
+        // right: 0%;
         display: flex;
         // background-color: rgb(225, 228, 228);
         background-color: #F4F4F4;
+        transition: all 200ms ease-in-out;
+
         // height: 100vh;
         // transform: translateX(0);
         
@@ -201,6 +207,7 @@ a:hover{
             position: relative;
             transform: translateX(0%);
             transition-property: none !important;
+            width:100%;
             // margin: 0;
             // justify-content: flex-start;
             .main-navbar-item{
@@ -236,6 +243,10 @@ a:hover{
         }
     }
 }
+.navbar-move{
+   transform: translateX(-200px);
+}
+
     // .main-nav{
     //     background-color: $BackgroundColor;
     //     color: black;
