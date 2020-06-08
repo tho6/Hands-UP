@@ -164,6 +164,7 @@ io.on('connection', socket => {
       if (!counter[idx].counting) {
         counter[idx].counting = true;
         setTimeout(() => {
+          if(!counter[idx]) return
           counter[idx].counting = false;
           // io.in(idx).emit('update-count', counter[idx].count);
           io.in(idx).emit('update-count', counter[idx].count.length);

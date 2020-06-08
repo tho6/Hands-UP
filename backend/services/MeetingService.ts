@@ -74,6 +74,7 @@ export class MeetingService {
     }
 
     async updateMeetingInRoom(id: number, roomConfiguration: IRoomConfiguration) {
+        // console.log(id, roomConfiguration)
         const { canModerate, canUploadFiles, questionLimit } = roomConfiguration;
         const sql = 'update meetings set (can_upload_file, can_moderate, question_limit) = (?, ?, ?) where id = ?;'
         const result = await this.knex.raw(sql, [canUploadFiles, canModerate, questionLimit, id]);

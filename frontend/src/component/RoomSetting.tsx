@@ -65,11 +65,13 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
                     isNaN(formState.values.limit)
                   )
                     return window.alert('Invaid limit!');
+                    
                   const updateRoomConfig = {
                     canUploadFiles,
                     canModerate,
                     questionLimit: formState.values.limit
                   };
+                  console.log(updateRoomConfig)
                   dispatch(updateRoom(meetingId, updateRoomConfig));
                   setShowSetting(false);
                 }}
