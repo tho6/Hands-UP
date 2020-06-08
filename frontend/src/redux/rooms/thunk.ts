@@ -4,10 +4,9 @@ import { IRoomConfiguration } from "../../models/IRoomInformation";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
-    return async (dispatch: ThunkDispatch) => {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
-            }); // GET + 'memos'
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
             const result = await res.json();
             if (result.status) {
                 dispatch(loadedRoomInformation(result.message));
@@ -21,12 +20,13 @@ export function fetchRoomInformation(meetingId: number) {
 }
 
 export function updateRoom(meetingId: number, roomConfiguration: IRoomConfiguration) {
-    return async (dispatch: ThunkDispatch) => {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/in/room/${meetingId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getState().auth.accessToken}`
                 },
                 body: JSON.stringify({ roomConfiguration })
             });
