@@ -448,6 +448,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
+        <div className='d-flex'>
         {isHost && roomInformation?.canModerate && (
           <div>
             <button
@@ -480,6 +481,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
         )}
+        </div>
       </div>
       <div className="content-container p-2">
         {isQuestion[0] && (

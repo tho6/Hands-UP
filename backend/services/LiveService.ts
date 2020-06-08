@@ -9,6 +9,7 @@ export class LiveService{
     //*** del fb token
     saveViews = async (meetingId:number, ytViews:number,fbViews:number, huViews:number)=>{
         try {
+            console.log(meetingId, ytViews,fbViews, huViews)
             const res = await this.knex.raw(/*SQL*/ `INSERT INTO views 
                                     (meeting_id, youtube, facebook, handsup)
                                     VALUES (?,?,?,?)
@@ -17,7 +18,8 @@ export class LiveService{
             if (!result) throw new Error('Failed to Save Views')
             return result
         } catch (error) {
-            console.log('[Live Service Error] ' + 'saveViews')
+            console.log(error);
+            console.log('[Live Service Error] ' + 'saveViews');
             // throw error
         }
         
