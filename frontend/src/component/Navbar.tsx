@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Navbar.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { logoutAccount } from '../redux/auth/thunk';
 import { NavLink } from 'react-router-dom';
+import { closeNav, openNav } from '../redux/mainNav/actions';
 
 
 export default function Navbar() {
@@ -11,31 +12,32 @@ export default function Navbar() {
     const userId = useSelector((state:RootState)=>state.auth.personInfo?.userId)
     // const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
     const guestId = useSelector((state:RootState)=>state.auth.personInfo?.guestId)
+    const isMainNavBarOpen = useSelector((state:RootState)=>state.mainNav.isOpen)
     const dispatch = useDispatch();
-    const [isMainNavBarOpen, setMainNavBar] = useState(false)
+    // const [isMainNavBarOpen, setMainNavBar] = useState(false)
     // const ulStyle = {justify-content: 123}
     return (
         <>
-        <nav className={isMainNavBarOpen?'main-navbar-nav':'setZIndex main-navbar-nav'}>
+        <nav className='main-navbar-nav'>
             <i className="fas fa-bars humbugger-toggler" onClick={()=>{
-                setMainNavBar(!isMainNavBarOpen)
+                isMainNavBarOpen?dispatch(closeNav()):dispatch(openNav())
             }}></i>
 
-                <NavLink to="/" className="link-text" id='logo-text'>
+                <NavLink to="/" className="link-text" id='logo-text' onClick={()=>dispatch(closeNav())}>
                     <img src={'/hand-logo.png'} alt="HANDS UP logo" />
                     HANDS UP
                 </NavLink>
             <ul className={isMainNavBarOpen?"mainNavBarOpen main-navbar-ul":"main-navbar-ul"}>
                 {userId && (<>
-                    <li className="main-navbar-item">
-                        <NavLink activeClassName='activeLink' to="/event">Event</NavLink>
+                    <li className="main-navbar-item hover-effect-navlink">
+                        <NavLink activeClassName='hover-effect-navlink' to="/event" onClick={()=>dispatch(closeNav())}>Event</NavLink>
                     </li>
-                    <li className="main-navbar-item"><NavLink activeClassName='activeLink' to="/report/past">Report</NavLink></li>
-                    <li className="main-navbar-item">
+                    <li className="main-navbar-item hover-effect-navlink "><NavLink activeClassName='hover-effect-navlink' to="/report/past" onClick={()=>dispatch(closeNav())}>Report</NavLink></li>
+                    <li className="main-navbar-item hover-effect-navlink">
                     {pic != null && <img src={pic} className='main-navbar-nav-personal-icon' alt="icon"/>}
                         <button className='logout-button' onClick={()=>{
                             dispatch(logoutAccount())
-                            setMainNavBar(false)
+                            dispatch(closeNav())
                             }}>Logout</button>
                     </li>
                 </>)}

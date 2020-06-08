@@ -14,6 +14,7 @@ import { Report } from './component/Report';
 import YoutubeCallBack from './component/YoutubeCallBack';
 import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
+import Navbar from './component/Navbar';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -32,6 +33,8 @@ function App() {
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   return (
+    <>
+    <Navbar />
     <div className="App">
         <Switch>
           <Route path="/" exact>
@@ -66,6 +69,7 @@ function App() {
       {/* <FacebookLogin /> */}
       
     </div>
+    </>
   );
 }
 

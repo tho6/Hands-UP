@@ -63,7 +63,7 @@ export function restoreLogin() {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const accessToken = getState().auth.accessToken
         const refreshToken = getState().auth.refreshToken
-        console.log('restore')
+        // console.log('restore')
         if (!accessToken || !refreshToken) {
             // dispatch(logout())
             dispatch(loginGuest())
@@ -82,10 +82,10 @@ export function restoreLogin() {
             // dispatch(logout())
             return
         }
-        console.log(result)
+        // console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
         dispatch(loginSuccess(accessToken, refreshToken))
-        console.log('got personInfo/n' + result.message.personInfo)
+        // console.log('got personInfo/n' + result.message.personInfo)
         return
     }
 }
@@ -98,7 +98,7 @@ export function checkToken() {
         if (!accessToken || !refreshToken) {
             // dispatch(logout())
             dispatch(loginGuest())
-            console.log('checktoken logout')
+            // console.log('checktoken logout')
             return
         }
         const accessTokenDecode: any = jwt.decode(accessToken)
@@ -124,13 +124,13 @@ export function checkToken() {
             localStorage.setItem('accessToken', result.message.accessToken)
             
             dispatch(loginSuccess(result.message.accessToken, refreshToken))
-            console.log('gened code')
+            // console.log('gened code')
         }
         if (expiryTimeLeft < refreshBuffer) {
             await genAccessCode()
-            console.log('gen immediately')
+            // console.log('gen immediately')
         } else {
-            console.log('gen else')
+            // console.log('gen else')
             const id = setTimeout(async () => {
                 await genAccessCode()
             }, expiryTimeLeft - refreshBuffer)

@@ -12,6 +12,8 @@ import { QuestionsPieChart } from './QuestionsPieChart';
 import { QuestionLikesRank } from './QuestionLikesRank';
 import { ReportPeakViews } from './ReportPeakViews';
 import { ReportTotalQuestions } from './ReportTotalQuestions';
+import { ReportSideDrawer } from './ReportSideDrawer';
+import { closeSideDrawer, openSideDrawer } from '../redux/mainNav/actions';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -39,66 +41,81 @@ export function Report() {
     
     const pastMeetingId = useSelector((state:RootState)=>{
         const arr = Object.keys(state.report.questionsByMeetingId).sort(function (a:string,b:string):number{
-            return parseInt(b) - parseInt(a)
+            return  parseInt(a) - parseInt(b)
         })
+        const idx = arr.indexOf(meetingId!)  <= 0 ? null:arr.indexOf(meetingId!) - 1
+        console.log(idx)
         console.log(arr)
-        return arr.indexOf(meetingId!) + 1 > arr.length -1 ? null:arr.indexOf(meetingId!) + 1
-        
+        if(idx){
+            console.log(arr[idx])
+        }
+        return idx !== null?arr[idx]:null
     })
+    console.log(pastMeetingId)
 
+    const pastQuestionsByMeeting = useSelector((state:RootState)=>state.report.questionsByMeetingId) 
     const pastQuestionsByMeetingId = useSelector((state:RootState)=>state.report.questionsByMeetingId[pastMeetingId!])
     const pastQuestions = useSelector((state:RootState)=>pastQuestionsByMeetingId?.map((id:number) => state.report.questions[id]))
     const pastViewsByMeetingId = useSelector((state:RootState)=>state.report.viewsByMeetingId[pastMeetingId!])
     const pastViews = useSelector((state:RootState)=>pastViewsByMeetingId?.map((id:number) => state.report.views[id]))
+    const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
+
     if (!questions && !views) {
         return (<div></div>);
     }
     console.log(meetingId)
     console.log(pastMeetingId)
-    // console.log(pastQuestions)
-    // console.log(pastViews)
+    console.log(pastQuestionsByMeeting)
+    console.log(pastQuestionsByMeetingId)
+    console.log(pastViews)
 
+    return (<>
+                <ReportSideDrawer />
+                <div className='report-container'>
+                    <div className={isSideDrawerOpen?'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-on':'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-off'} onClick={() => isSideDrawerOpen?dispatch(closeSideDrawer()):dispatch(openSideDrawer())}>
+                        <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
+                    </div>
+                    
+                    <header className='report-container-header-row'>
+                        <span className='report-container-header'>{questions? questions[0].meetingname:''}</span>
+                        <span className='report-container-secondary-header'>{questions? new Date(questions[0].meetingscheduletime).toLocaleString():''}</span>
+                    </header>
+                    {/* <Col md={1}> */}
+                    {/* <Toggler /> */}
+                    {/* <Backdrop open={isDrawerOpen}/> */}
+                    {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/> */}
 
-    return (
-        <div className='report-container'>
-            <header className='report-container-header-row'>
-                <span className='report-container-header'>{questions? questions[0].meetingname:''}</span>
-                <span className='report-container-secondary-header'>{questions? new Date(questions[0].meetingscheduletime).toLocaleString():''}</span>
-            </header>
-            {/* <Col md={1}> */}
-            {/* <Toggler /> */}
-            {/* <Backdrop open={isDrawerOpen}/> */}
-            {/* <ReportNavbar open = {isDrawerOpen} setDrawerOpen={setDrawerOpen}/> */}
-            <div className='report-desktop-first-row'>
-                <div className='report-snap-container'>
-                    <div className="report-peak-view-outer">
-                        <div className="report-header"><span>Peak Views</span></div>
-                        <ReportPeakViews data={views} pastData={pastViews}/>
+                    <div className='report-desktop-first-row'>
+                        <div className='report-snap-container'>
+                            <div className="report-peak-view-outer">
+                                <div className="report-header"><span>Peak Views</span></div>
+                                <ReportPeakViews data={views} pastData={pastViews}/>
+                            </div>
+                            <div className="report-total-questions-outer">
+                                <div className="report-header"><span>Total Questions</span></div>
+                                <ReportTotalQuestions data={questions} pastData={pastQuestions}/>
+                            </div>
+                        </div>
+                        <div className="views-chart-outer">
+                            <div className="report-header"><span>Views</span></div>
+                            <ViewsChart data={views}/>
+                        </div>
                     </div>
-                    <div className="report-total-questions-outer">
-                        <div className="report-header"><span>Total Questions</span></div>
-                        <ReportTotalQuestions data={questions} pastData={pastQuestions}/>
+                    <div className='report-desktop-second-row'>
+                        <div className="questions-from-chart-outer">
+                            <div className="report-header"><span>Your Questions From</span></div>
+                            <QuestionFromChart data={questions}/>
+                        </div>
+                        <div className="questions-pie-chart-outer">
+                            <div className="report-header"><span>Your Questions Analysis</span></div>
+                            <QuestionsPieChart data={questions}/>
+                        </div>
+                        <div className="question-likes-rank-outer">
+                            <div className="report-header"><span>Most Liked Questions</span></div>
+                            <QuestionLikesRank data={questions}/>
+                        </div>
                     </div>
                 </div>
-                <div className="views-chart-outer">
-                    <div className="report-header"><span>Views</span></div>
-                    <ViewsChart data={views}/>
-                </div>
-            </div>
-            <div className='report-desktop-second-row'>
-                <div className="questions-from-chart-outer">
-                    <div className="report-header"><span>Your Questions From</span></div>
-                    <QuestionFromChart data={questions}/>
-                </div>
-                <div className="questions-pie-chart-outer">
-                    <div className="report-header"><span>Your Questions Analysis</span></div>
-                    <QuestionsPieChart data={questions}/>
-                </div>
-                <div className="question-likes-rank-outer">
-                    <div className="report-header"><span>Most Liked Questions</span></div>
-                    <QuestionLikesRank data={questions}/>
-                </div>
-            </div>
-        </div>
+            </>
     )
 }
