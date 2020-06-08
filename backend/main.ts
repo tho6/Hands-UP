@@ -152,7 +152,8 @@ app.use('/rooms', guard, questionRouter.router());
 app.use('/meetings', userGuard, meetingRouter.router())
 
 /* Socket Io */
-let counter: { [id: string]: { count: number[], counting: boolean } } = {}
+
+let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean } } = {}
 io.on('connection', socket => {
   socket.on('join_event', (meetingId: number, guestId:number) => {
     console.log('join room:' + meetingId, 'GuestId'+guestId);
@@ -160,26 +161,29 @@ io.on('connection', socket => {
     socket.join(idx)
     if (counter[idx]) {
       // counter[idx].count += 1;
-      if(!counter[idx].count.includes(guestId)) counter[idx].count.push(guestId)
+      counter[idx].count[`${guestId}`] = true;
       if (!counter[idx].counting) {
         counter[idx].counting = true;
         setTimeout(() => {
+          if(!counter[idx]) return
           counter[idx].counting = false;
           // io.in(idx).emit('update-count', counter[idx].count);
-          io.in(idx).emit('update-count', counter[idx].count.length);
-          liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
+          io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
+          console.log(Object.keys(counter[idx].count).length)
+          liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
         }, 3000)
       }
     } else {
       // counter[idx] = { count: 1, counting: true };
-      counter[idx] = { count: [guestId], counting: true };
-      liveRouter.createViewsTimer(parseInt(idx));
+      counter[idx] = { count: {[`${guestId}`]:true}, counting: true };
+      liveRouter.createViewsTimer(meetingId);
       setTimeout(() => {
         if(!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
-        io.in(idx).emit('update-count', counter[idx].count.length);
-        liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
+        io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
+        console.log(counter[idx]?.count)
+        liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
       }, 3000)
     }
   });
@@ -189,10 +193,10 @@ io.on('connection', socket => {
     socket.leave(idx);
     if (!counter[idx]) return;
     // counter[idx].count -= 1;
-    counter[idx].count.splice(counter[idx].count.indexOf(guestId),1);
-    if(counter[idx].count.length === 0) {
+    delete counter[idx].count[`${guestId}`];
+    if(Object.keys(counter[idx].count).length === 0) {
       delete counter[idx];
-      liveRouter.removeViewsTimer(parseInt(idx));
+      liveRouter.removeViewsTimer(meetingId);
     }
     if (!counter[idx]) return;
     if (!counter[idx].counting) {
@@ -201,17 +205,17 @@ io.on('connection', socket => {
         if (!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
-        io.in(idx).emit('update-count', counter[idx].count.length);
-        liveRouter.updateHandsUpViewsCount(counter[idx].count.length,parseInt(idx));
+        io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
+        console.log(counter[idx]?.count)
+        console.log('Length:'+Object.keys(counter[idx].count).length)
+        liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
       }, 3000)
     }
   });
   socket.on('join-host', (userId:number)=>{
-    console.log('join host'+userId);
     socket.join('host:' + userId)
   })
   socket.on('leave-host', (userId:number)=>{
-    console.log('leave host'+userId);
     socket.leave('host:' + userId)
   })
 });

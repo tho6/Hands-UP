@@ -3,6 +3,9 @@ import { IQuestion } from '../models/IQuestion';
 import './question.scss';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
+import youtube_logo from '../reportIcon/youtube_icon.svg'
+import facebook_logo from '../reportIcon/facebook_icon.svg'
+import handsup_logo from '../reportIcon/handsup_icon.png'
 import {
   deleteQuestion,
   addReplyToQuestion,
@@ -21,7 +24,7 @@ import ImageContainer from './ImageContainer';
 export interface IQuestionProps {
   question: IQuestion;
   user: PersonInfo|null;
-  canUploadFiles: boolean;
+  canUploadFile: boolean;
   answering: boolean;
   isModerate: boolean;
   isHost:boolean
@@ -38,7 +41,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFiles, answering, isModerate, isHost } = props;
+  const { user, question, canUploadFile, answering, isModerate, isHost } = props;
   const canEdit = (user?.guestId === question.questioner.id) || isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
@@ -46,7 +49,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   return (
     <div ref={ref}>
       <div className="mb-4 d-flex question-container">
-        <div className="question flex-grow-1 p-2 p-lg-4">
+        <div className="question flex-grow-1 p-3 p-lg-4">
           <div className="d-flex question-content-area">
             <div className="content text-wrap mb-2">
               {isEdit ? (
@@ -61,7 +64,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
               new Date(question.updatedAt).getTime() !==
                 new Date(question.createdAt).getTime() && <span>[Edited]</span>}
             </div>
-            <div className="d-flex">
+            <div className="d-flex justify-content-end">
               {answering === true && (
                 <span className="util-spacing">
                   <i className="fas fa-microphone" data-testid="answering"></i>
@@ -101,8 +104,9 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 );
               })}
           </div>
-          <div className="d-flex justify-content-between util-container mb-2">
-            <div className="d-flex p-2">
+          <div className="d-flex justify-content-between util-container mb-2 mw-100">
+            <div className="d-flex p-2 flex-grow-1 justify-content-between">
+              <div className='d-flex'>
               <div
                 className="p-2 mx-sm-4 mx-lg-5 will-hover"
                 onClick={() => {
@@ -128,11 +132,13 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 <i className="far fa-comment"></i> [
                 {question.replies.filter((reply) => !reply.isHide).length}]
               </div>
-            </div>
-            <div className="d-flex p-2 flex-wrap">
-              <div className="to-center util-spacing">
+              </div>
+              <div className="to-center util-spacing text-word-break">
                 {question.questioner.id === user?.guestId?'You':question.questioner.name}
               </div>
+            </div>
+            <div className="d-flex p-2 flex-wrap justify-content-end">
+              
               {isEdit && (
                 <div className="d-flex">
                   <div
@@ -185,7 +191,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                     <i className="fas fa-trash-alt"></i>
                   </div>
                   <div>
-                    {canUploadFiles && (
+                    {canUploadFile && (
                       <div className="util-spacing will-hover">
                         <label htmlFor="img">
                           <i className="fas fa-camera" data-testid="camera"></i>{' '}
@@ -317,18 +323,21 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
         </div>
         <div className="d-flex flex-column justify-content-between">
           {question.platform.name === 'facebook' && (
-            <div className="util-spacing platform-icon">
-              <i className="fab fa-facebook fa-2x"></i>
+            // <div className="util-spacing platform-icon">
+            <div className="question-platform-icon util-spacing">
+              <img src={facebook_logo} alt="Logo" />
             </div>
           )}
           {question.platform.name === 'youtube' && (
-            <div className="util-spacing platform-icon">
-              <i className="fab fa-youtube fa-2x"></i>
+            // <div className="util-spacing platform-icon">
+            <div className="question-platform-icon util-spacing"> 
+                <img src={youtube_logo} alt="Logo" />
             </div>
           )}
           {question.platform.name === 'handsup' && (
-            <div className="util-spacing platform-icon">
-              <i className="far fa-hand-paper fa-2x"></i>
+            // <div className="util-spacing platform-icon">
+            <div className="question-platform-icon util-spacing">
+              <img src={handsup_logo} alt="Logo" />
             </div>
           )}
           <div>
@@ -340,7 +349,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   dispatch(approveOrHideQuestion(question.id, false));
                 }}
               >
-                <i className="far fa-check-circle fa-2x"></i>
+                <i className="far fa-check-circle fa-lg"></i>
               </div>
             )}
             {isHost &&
@@ -354,7 +363,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                     dispatch(answeredQuestion(question.id));
                   }}
                 >
-                  <i className="fab fa-angellist fa-2x"></i>
+                  <i className="fab fa-angellist fa-lg"></i>
                 </div>
               )}
             {isHost && !question.isHide && (
@@ -365,7 +374,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   dispatch(approveOrHideQuestion(question.id, true));
                 }}
               >
-                <i className="far fa-eye-slash fa-2x"></i>
+                <i className="far fa-eye-slash fa-lg"></i>
               </div>
             )}
             {isHost && question.isHide && (
@@ -376,7 +385,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   dispatch(approveOrHideQuestion(question.id, false));
                 }}
               >
-                <i className="far fa-eye fa-2x"></i>
+                <i className="far fa-eye fa-lg"></i>
               </div>
             )}
           </div>

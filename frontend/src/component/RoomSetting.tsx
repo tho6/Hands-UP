@@ -19,7 +19,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
   const [formState, { text }] = useFormState({
     limit: `${roomConfig.questionLimit}`
   });
-  const [canUploadFiles, setCanUpload] = useState(roomConfig.canUploadFiles);
+  const [canUploadFile, setCanUpload] = useState(roomConfig.canUploadFile);
   const [canModerate, setCanModerate] = useState(roomConfig.canModerate);
   if (formState) {
   }
@@ -41,9 +41,9 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
                 <i className="far fa-square"></i>
               )}
             </div>
-            <div className="pl-2" onClick={() => setCanUpload(!canUploadFiles)}>
+            <div className="pl-2" onClick={() => setCanUpload(!canUploadFile)}>
               Upload files{' '}
-              {canUploadFiles ? (
+              {canUploadFile ? (
                 <i className="far fa-check-square"></i>
               ) : (
                 <i className="far fa-square"></i>
@@ -55,7 +55,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
               Question Rate <input className="input-text" {...text('limit')} />
             </span>
             {(!formState.isPristine() ||
-              canUploadFiles !== roomConfig.canUploadFiles ||
+              canUploadFile !== roomConfig.canUploadFile ||
               canModerate !== roomConfig.canModerate) && (
               <button
                 className="room-update-save"
@@ -65,11 +65,13 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
                     isNaN(formState.values.limit)
                   )
                     return window.alert('Invaid limit!');
+                    
                   const updateRoomConfig = {
-                    canUploadFiles,
+                    canUploadFile,
                     canModerate,
                     questionLimit: formState.values.limit
                   };
+                  console.log(updateRoomConfig)
                   dispatch(updateRoom(meetingId, updateRoomConfig));
                   setShowSetting(false);
                 }}

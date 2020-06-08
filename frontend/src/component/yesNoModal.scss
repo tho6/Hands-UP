@@ -32,6 +32,15 @@
         @media only screen and (min-width: 768px) {
             min-width: 500px;
           }
+          @media only screen and (max-width: 768px) {
+            .confirm-container{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+          }
+        
     }
     button{
         border: none;
@@ -46,6 +55,9 @@
         &.confirm{
             background-color:#5DC5D0;
         }
+        @media only screen and (max-width: 768px) {
+            margin-bottom: 5px;
+          }
     }
 
 }

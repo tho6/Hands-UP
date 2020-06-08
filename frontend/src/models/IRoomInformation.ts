@@ -7,7 +7,7 @@ export interface IRoomInformation{
     code:string,
     is_live: boolean,
     canModerate: boolean,
-    canUploadFiles: boolean,
+    canUploadFile: boolean,
     questionLimit: number,
     url: string,
     createdAt: Date,
@@ -16,6 +16,6 @@ export interface IRoomInformation{
 }
 export interface IRoomConfiguration{
     canModerate:boolean;
-    canUploadFiles: boolean;
+    canUploadFile: boolean;
     questionLimit:number;
 }

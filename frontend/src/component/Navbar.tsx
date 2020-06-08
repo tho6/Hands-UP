@@ -29,10 +29,10 @@ export default function Navbar() {
     }, []);
     return (
         <>
-            <nav className='main-navbar-nav'>
-                <i className="fas fa-bars humbugger-toggler" onClick={() => {
-                    isMainNavBarOpen ? dispatch(closeNav()) : dispatch(openNav())
-                }}></i>
+        <nav className={`main-navbar-nav ${isMainNavBarOpen?'main-navbar-nav-move':''}`}>
+            <i className="fas fa-bars humbugger-toggler" onClick={()=>{
+                isMainNavBarOpen?dispatch(closeNav()):dispatch(openNav())
+            }}></i>
 
                 <NavLink to="/" className="link-text" id='logo-text' onClick={() => dispatch(closeNav())}>
                     <img src={'/hand-logo.png'} className={isShow ? 'main-nav-bar-logo-small' : 'main-nav-bar-logo-big'} alt="HANDS UP logo" />

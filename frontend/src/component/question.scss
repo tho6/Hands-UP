@@ -1,10 +1,28 @@
+@import './_variables.scss';
+
+.question-platform-icon{
+  // width: 10%;
+  height: 10%;
+  // max-width: 30px;
+  flex: 1;
+  // padding: 1rem;
+  // padding-left: 0.8rem;
+  min-width: 50px;
+  img{
+      width: 100%;
+      max-width: 30px;
+  }
+}
+
 $replyTextAreaMultiplier: 0.7;
 %button {
   border: none;
+  border-radius: 15px!important;
   &:focus {
     outline: none;
   }
-  background-color: #5CC5D0;
+  // background-color: #5CC5D0;
+  background-color: #efefef; //changed
 }
 %text-area {
   resize: none;
@@ -24,18 +42,19 @@ $replyTextAreaMultiplier: 0.7;
   }
 }
 %i {
+  color: rgba(36, 29, 29, 0.856);
   @media only screen and (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
   @media only screen and (max-width: 576px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   @media only screen and (min-width: 1024px) {
-    font-size: 1.8em;
+    font-size: 1.2em;
   }
 }
 %is-active {
-  border-bottom: 1px solid black;
+  // border-bottom: 1px solid black;
   box-shadow: 2px 2px 4px 5px #ccc;
   font-weight: bold;
   @media only screen and (max-width: 576px) {
@@ -59,8 +78,11 @@ $replyTextAreaMultiplier: 0.7;
   }
 }
 .question-page{
-  max-width: 1800px;
-  background-color: #EFEFEF;
+  // max-width: 1800px;
+  width: 100%;
+  // background-color: rgb(255,255,255);
+  background-color: rgb(255,255,255);
+
 }
 .question-moderation {
   &.bottom-border {
@@ -72,10 +94,49 @@ $replyTextAreaMultiplier: 0.7;
     &.is-active {
       @extend %is-active;
       border-bottom: none;
-      border-left: 1px solid black;
+      // border-left: 1px solid black; //changed
     }
+    
     background-color: transparent;
+    @media screen and (max-width: 981px){
+      // font-size: 0.8rem;
+    }
+    @media screen and (max-width: 981px){
+      width: 180px!important;
+    }
+    @media screen and (max-width: 981px){
+      flex: 1;
+    }
+      
+    @media screen and (max-width: 900px){
+      // display: flex;
+      // flex-wrap: wrap;
+      width: 150px!important;
+  
+    }
+    @media screen and (max-width: 850px){
+      font-size: 0.8rem;
+      width: 150px!important;
+    }
+    // margin-top: ;
   }
+  @media screen and (min-width: 850px){
+    display: block;
+    // flex-wrap: wrap;
+
+    // width: 120px!important;
+
+  }
+  @media screen and (max-width: 700px){
+    display: flex;
+    flex-wrap: wrap;
+
+    // width: 120px!important;
+
+  }
+
+  
+  // flex-direction: column;
 }
 .moderate-container {
   margin-top:2rem;
@@ -86,7 +147,7 @@ $replyTextAreaMultiplier: 0.7;
   }
 }
 .content-container{
-background-color: #EFEFEF;
+background-color: inherit;
 }
 .question-form {
   i {
@@ -100,10 +161,14 @@ background-color: #EFEFEF;
     max-width: 1300px;
     min-width: 300px;
     border: none;
-    background-color: #EFEFEF;
+    // background-color: #EFEFEF;
+    background-color: #fff;
     transition: height 0.2s;
+    padding: 0.3rem 0.6rem;
     &:focus{
+      
       height: 150px;
+      outline: #fff
     }
     //border-bottom: 1px solid #cccccc;
   }
@@ -114,10 +179,15 @@ background-color: #EFEFEF;
   @media only screen and (max-width: 576px) {
     padding:0px;
     margin:0.5rem;
+    width: 120px;
+    font-size: 0.8rem;
   }
   &.is-active {
     @extend %is-active;
+    background-color: rgba(30, 183, 197, 0.6); //changed
+
   }
+
 }
 .will-hover {
   transition: transform 0.2s ease-in-out;
@@ -132,6 +202,7 @@ background-color: #EFEFEF;
   padding: 0.5rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  text-align: center;
 
   @media only screen and (max-width: 576px) {
     margin-left: 0.2rem;
@@ -143,10 +214,13 @@ background-color: #EFEFEF;
   align-items: center;
   justify-content: center;
 }
-
+.text-word-break{
+  word-break: break-word;
+}
 .question {
-  border: solid 0px black;
+  border: solid 1px rgba(30, 183, 197, 0.9);;
   background-color: #FFF;
+  // background-color:#efefef;
   border-radius: 15px;
   @media only screen and (max-width: 600px) {
     max-width: 90%;
@@ -198,6 +272,7 @@ background-color: #EFEFEF;
     }
     textarea {
       @extend %text-area;
+      transition: height 0.2s;
       @media only screen and (min-width: 1024px) {
         width: 85%;
         max-width: 1000px;

@@ -16,8 +16,8 @@ const YesNoModal: React.FC<IYesNoModalProps> = (props) => {
 <div className='modal-container' onClick={(event)=>{event.stopPropagation()}}>
   <div className='modal-header'>{props.title}</div>
   <div className='modal-message p-2'>{props.message}</div>
-<div className='d-flex justify-content-end p-2'>
-  <div className='p-2'>
+<div className='d-flex justify-content-end p-2 confirm-container'>
+  <div className='p-2 confirm-container'>
   <button className='confirm mx-2 rounded-pill' onClick={props.yes}>Confirm</button>
   <button className='mx-2 rounded-pill cancel' onClick={props.no}>Cancel</button>
   </div>

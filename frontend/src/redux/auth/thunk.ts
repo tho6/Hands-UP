@@ -66,7 +66,7 @@ export function restoreLogin() {
         // console.log('restore')
         if (!accessToken || !refreshToken) {
             // dispatch(logout())
-            dispatch(loginGuest())
+            //dispatch(loginGuest())
             return
         }
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/current`, {
@@ -131,8 +131,10 @@ export function checkToken() {
             // console.log('gen immediately')
         } else {
             // console.log('gen else')
+
             const id = setTimeout(async () => {
                 await genAccessCode()
+                clearTimeout(id);
             }, expiryTimeLeft - refreshBuffer)
             timeOutId.push(id)
         }

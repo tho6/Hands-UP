@@ -74,9 +74,10 @@ export class MeetingService {
     }
 
     async updateMeetingInRoom(id: number, roomConfiguration: IRoomConfiguration) {
-        const { canModerate, canUploadFiles, questionLimit } = roomConfiguration;
+        // console.log(id, roomConfiguration)
+        const { canModerate, canUploadFile, questionLimit } = roomConfiguration;
         const sql = 'update meetings set (can_upload_file, can_moderate, question_limit) = (?, ?, ?) where id = ?;'
-        const result = await this.knex.raw(sql, [canUploadFiles, canModerate, questionLimit, id]);
+        const result = await this.knex.raw(sql, [canUploadFile, canModerate, questionLimit, id]);
         if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
         return true;
     }

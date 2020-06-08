@@ -79,7 +79,7 @@ jest.mock('react-redux', () => {
     code: '#string',
     is_live: true,
     canModerate: true,
-    canUploadFiles: true,
+    canUploadFile: true,
     questionLimit: 10,
     url:'url',
     createdAt:expect.anything(),
@@ -140,7 +140,7 @@ describe.skip('QuestionPage component', () => {
    // (Question as any as jest.Mock).mockReturnValue(<div>QuestionComponent</div>);
     // (Reply as any as  jest.Mock).mockReturnValue(<div>ReplyComponent</div>);
   });
-  //const props:IQuestionProps = {question, user: guest1, canUploadFiles:false, answering:false}
+  //const props:IQuestionProps = {question, user: guest1, canUploadFile:false, answering:false}
   describe('guest', () => {
     it('render QuestionPage component - contains textarea for new question, 2 question components', async () => {
       const debug = render(<QuestionPage />);
