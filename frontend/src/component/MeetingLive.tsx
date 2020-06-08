@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchMeetingLive } from '../redux/meetinglive/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meetinglive/reducers';
-// import Moment from 'react-moment';
+import moment from 'moment'
 // CSS
 import './MeetingLive.scss';
 import Button from 'react-bootstrap/Button';
@@ -33,7 +33,11 @@ export function MeetingLive() {
                             <div><b>{meeting.name}</b></div>
                             <div>Meeting code: {meeting.code}</div>
                             <div>Meeting url: {meeting.url}</div>
-                            <div>Meeting time: {meeting.date_time.toString()}</div>
+                            {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
+                            <div>Meeting time: {moment(meeting.date_time).format('MMMM Do YYYY, h:mm a')}</div>
+
+                            {/* moment().format('MMMM Do YYYY, h:mm:ss a'); */}
+
                             <div>Host by: {meeting.owner_id}</div>
                             <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
                         </Col>
