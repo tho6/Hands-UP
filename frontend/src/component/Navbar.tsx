@@ -18,7 +18,7 @@ export default function Navbar() {
     // const ulStyle = {justify-content: 123}
     return (
         <>
-        <nav className='main-navbar-nav'>
+        <nav className={`main-navbar-nav ${isMainNavBarOpen?'main-navbar-nav-move':''}`}>
             <i className="fas fa-bars humbugger-toggler" onClick={()=>{
                 isMainNavBarOpen?dispatch(closeNav()):dispatch(openNav())
             }}></i>

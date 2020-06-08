@@ -33,10 +33,11 @@ function App() {
   }, [dispatch, accessToken])
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
+  const isMove = useSelector((state:RootState)=>state.mainNav.isOpen)
   return (
     <>
     <Navbar />
-    <div className="App">
+    <div className={`App ${isMove?'navbar-move':''}`}>
         <Switch>
           <Route path="/" exact>
           <Home />

@@ -1,6 +1,7 @@
 @import './component/_variables.scss';
 .App {
   display: flex;
+  transition:all 0.2s;
   // height: 100;
   // margin-left: 4.5rem;
   // padding-left: 4.5rem;

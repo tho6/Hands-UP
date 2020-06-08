@@ -5,8 +5,8 @@ import './Home.scss'
 export default function Home() {
     return (
             <div>
-                <Container id='Home' className="background">
-                    <Row>
+                <div id='Home' className="background">
+                    <div className='d-flex'>
                         <Col md={5} className='headings'>
                             <h2>Grab comments from your Facebook & YouTube live streams at a glance.</h2>
                             <h4>Hands UP</h4>
@@ -16,8 +16,8 @@ export default function Home() {
                         <Col md={7}>
 
                         </Col>
-                    </Row>
-                </Container>
+                    </div>
+                </div>
             </div>
     )
 }
