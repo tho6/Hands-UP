@@ -15,7 +15,7 @@ describe('Question Reducer', () => {
             name: 'TestingRoom1',
             code: '#string',
             is_live: true,
-            canModerate: false, canUploadFiles: false, questionLimit: 10,
+            canModerate: false, canUploadFile: false, questionLimit: 10,
             url:'url',
             createdAt:expect.anything(),
             updatedAt:expect.anything(),
@@ -62,10 +62,10 @@ describe('Question Reducer', () => {
         });
     });
     // it("update room information", () => {
-    //     const roomConfiguration:IRoomConfiguration = {canModerate:true, canUploadFiles:true, question_limit:20}
+    //     const roomConfiguration:IRoomConfiguration = {canModerate:true, canUploadFile:true, question_limit:20}
     //     const finalState = roomsReducer(initialState, action.successfullyUpdatedRoomConfiguration(2,roomConfiguration));
     //     expect(finalState).toEqual({
-    //        roomsInformation:{2:{...roomInformation, canModerate:true,canUploadFiles:true,question_limit:20}}, token: null
+    //        roomsInformation:{2:{...roomInformation, canModerate:true,canUploadFile:true,question_limit:20}}, token: null
     //     });
     // });
 });

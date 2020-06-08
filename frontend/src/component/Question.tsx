@@ -21,7 +21,7 @@ import ImageContainer from './ImageContainer';
 export interface IQuestionProps {
   question: IQuestion;
   user: PersonInfo|null;
-  canUploadFiles: boolean;
+  canUploadFile: boolean;
   answering: boolean;
   isModerate: boolean;
   isHost:boolean
@@ -38,7 +38,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFiles, answering, isModerate, isHost } = props;
+  const { user, question, canUploadFile, answering, isModerate, isHost } = props;
   const canEdit = (user?.guestId === question.questioner.id) || isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
@@ -185,7 +185,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                     <i className="fas fa-trash-alt"></i>
                   </div>
                   <div>
-                    {canUploadFiles && (
+                    {canUploadFile && (
                       <div className="util-spacing will-hover">
                         <label htmlFor="img">
                           <i className="fas fa-camera" data-testid="camera"></i>{' '}
