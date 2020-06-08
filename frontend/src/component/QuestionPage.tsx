@@ -280,7 +280,7 @@ const QuestionPage: React.FC = () => {
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
         <div className="d-flex">
-  <span className="position-relative">{isHost && <RoomSettingButton meetingId={parseInt(meetingId)} roomConfig={{canModerate:roomInformation?.canModerate, canUploadFiles:roomInformation?.canUploadFiles, questionLimit:roomInformation?.questionLimit}} />}</span>
+  <span className="position-relative">{isHost && <RoomSettingButton meetingId={parseInt(meetingId)} roomConfig={{canModerate:roomInformation?.canModerate, canUploadFile:roomInformation?.canUploadFile, questionLimit:roomInformation?.questionLimit}} />}</span>
           <span>{roomInformation?.name}</span>
           <span className="px-2">
             <i className="fas fa-users"></i> {peopleCount}
@@ -394,7 +394,7 @@ const QuestionPage: React.FC = () => {
                     <i className="fas fa-paper-plane"></i>
                   </div>
                 )}
-                {roomInformation?.canUploadFiles && (
+                {roomInformation?.canUploadFile && (
                   <div className="util-spacing will-hover">
                     <label htmlFor="q-img" className="mb-0">
                       <i className="fas fa-camera"></i> (max:3):
@@ -529,7 +529,7 @@ const QuestionPage: React.FC = () => {
                       <Question
                         key={question.id}
                         user={personInfo}
-                        canUploadFiles={roomInformation?.canUploadFiles}
+                        canUploadFile={roomInformation?.canUploadFile}
                         question={question}
                         answering={
                           mostPopularQuestions[0].id === question.id
@@ -550,7 +550,7 @@ const QuestionPage: React.FC = () => {
                     <Question
                       key={question.id}
                       user={personInfo}
-                      canUploadFiles={roomInformation?.canUploadFiles}
+                      canUploadFile={roomInformation?.canUploadFile}
                       question={question}
                       answering={
                         mostPopularQuestions[0].id === question.id
@@ -570,7 +570,7 @@ const QuestionPage: React.FC = () => {
                       <Question
                         key={question.id}
                         user={personInfo}
-                        canUploadFiles={roomInformation?.canUploadFiles}
+                        canUploadFile={roomInformation?.canUploadFile}
                         question={question}
                         answering={false}
                         isModerate={false}
@@ -594,7 +594,7 @@ const QuestionPage: React.FC = () => {
                   <Question
                     key={`${question.id}`}
                     user={personInfo}
-                    canUploadFiles={roomInformation?.canUploadFiles}
+                    canUploadFile={roomInformation?.canUploadFile}
                     question={question}
                     answering={false}
                     isModerate={true}
@@ -623,7 +623,7 @@ const QuestionPage: React.FC = () => {
                   <Question
                     //key={`${question.id}`}
                     user={personInfo}
-                    canUploadFiles={roomInformation?.canUploadFiles}
+                    canUploadFile={roomInformation?.canUploadFile}
                     question={question}
                     answering={false}
                     isModerate={false}
