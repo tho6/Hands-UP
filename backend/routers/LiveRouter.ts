@@ -237,7 +237,7 @@ export class LiveRouter {
         const fetchYTTimer = setInterval(async () => {
             try {
                 console.log('fetch comments from Youtube');
-                console.log(this.eventSourceExistence[1].youtube);
+                console.log(this.eventSourceExistence[1]?.youtube);
                 const fetchLiveChat = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&part=authorDetails&${pageTokenString}key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {
@@ -248,7 +248,7 @@ export class LiveRouter {
                 const result = await fetchLiveChat.json();
                 console.log(result);
                 /* If access token expires in the middle of live broadcast */
-                if (result.error.code === 401) {
+                if (result.error?.code === 401) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {
