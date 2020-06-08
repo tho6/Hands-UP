@@ -10,7 +10,6 @@ import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-
 function Meetings() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -20,7 +19,7 @@ function Meetings() {
             <Container className="Container">
                 <Row>
                     <Col md="auto">
-                        <Button variant="success" className='create-meeting-btn' onClick={handleShow}><b>CREATE MEETING</b>
+                        <Button variant="success" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
                         </Button>{' '}
 
                         <Modal className="popup" show={show} onHide={handleClose} centered>

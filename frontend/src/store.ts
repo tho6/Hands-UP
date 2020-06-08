@@ -8,9 +8,10 @@ import { roomsReducer, RoomState } from './redux/rooms/reducers';
 import { RoomsActions } from './redux/rooms/actions';
 import { AuthState, authReducer } from './redux/auth/reducers';
 import { AuthActions } from './redux/auth/actions';
-import { MeetingPastActions } from './redux/meetingpast/action';
-import { MeetingPastState, MeetingPastReducer } from './redux/meetingpast/reducers';
-import { MeetingLiveState, MeetingLiveReducer } from './redux/meetinglive/reducers';
+// import { MeetingPastActions } from './redux/meetingpast/action';
+// import { MeetingPastState, MeetingPastReducer } from './redux/meetingpast/reducers';
+import { MeetingState, MeetingReducer } from './redux/meeting/reducers';
+import { MeetingActions } from './redux/meeting/action';
 import { ReportState, reportReducer } from './redux/report/reducers';
 import { ReportActions } from './redux/report/actions';
 import { MainNavActions } from './redux/mainNav/actions';
@@ -25,7 +26,7 @@ declare global {
 }
 // export type RootAction = QuestionsActions|RoomsActions|AuthActions;
 
-export type RootAction = AnyAction | QuestionsActions | RoomsActions | MeetingPastActions | ReportActions | AuthActions | MainNavActions; // this
+export type RootAction = AnyAction | QuestionsActions | RoomsActions | ReportActions | AuthActions | MainNavActions | MeetingActions; // this
 
 export type ThunkDispatch = OldThunkDispatch<RootState, null, RootAction>
 
@@ -36,8 +37,8 @@ export interface RootState {
   questions: QuestionState
   roomsInformation: RoomState
   router: RouterState
-  meetingsPast: MeetingPastState,
-  meetingsLive: MeetingLiveState,
+  // meetingsPast: MeetingPastState,
+  meetings: MeetingState,
   report: ReportState,
   mainNav: MainNavState
 }
@@ -48,8 +49,8 @@ const reducer = combineReducers<RootState>({
   questions: questionsReducer,
   roomsInformation: roomsReducer,
   router: connectRouter(history),
-  meetingsPast: MeetingPastReducer,
-  meetingsLive: MeetingLiveReducer,
+  // meetingsPast: MeetingPastReducer,
+  meetings: MeetingReducer,
   report: reportReducer,
   mainNav: mainNavReducer
 })

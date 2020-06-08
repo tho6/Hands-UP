@@ -8,6 +8,11 @@
     padding: 20px;
 }
 
+.meeting-live-btn{
+    border: none;
+    background-color: inherit;
+}
+
 .meetingLiveCard{
     background-color: $SecondaryTextColor;
     border: none;
@@ -41,4 +46,20 @@
 .fa-video{
     // color: #0D3A83;
     color: #ffffff;
+}
+
+#meeting-delete{
+    // width: 100px;
+    color: black;
+    // justify-content: space-between;;
+    margin: -15px 0px 0px 20px;
+}
+
+.meeting-relative-time{
+    margin: -20px 0px 20px -20px;
+    font-weight: bold;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    // padding:10px,10px,10px,10px
 }

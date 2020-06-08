@@ -13,7 +13,7 @@ export class MeetingRouter {
         router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
         router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
-        router.delete('/:id', this.deleteMeeting);
+        router.delete('/delete/:id', this.deleteMeeting);
         return router;
     }
 
@@ -30,8 +30,8 @@ export class MeetingRouter {
 
     getMeetingByUserId = async (req: Request, res: Response) => {
         try {
-            // const userId = req.personInfo?.userId!
-            const userId = 1 // change later
+            const userId = req.personInfo?.userId!
+            // const userId = 1 // change later
             const result = await this.meetingService.getMeetingByUserId(userId);
             res.status(200).json({ success: true, message: result });
             // return;
@@ -48,8 +48,8 @@ export class MeetingRouter {
             console.log(date_time);
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
-            // const userId = req.personInfo?.userId
-            const userId = 1 // change later
+            const userId = req.personInfo?.userId
+            // const userId = 1 // change later
             console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
             if (checkMeeting) {
@@ -70,14 +70,16 @@ export class MeetingRouter {
 
     editMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date_time, code, url, owner_id } = req.body;
             const meetingId = parseInt(req.params.id);
+            const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            if (!(meetingId in meetings)) return res.status(401).json({ message: "Not Own By You" })
+            const { name, date_time, code, url, owner_id } = req.body;
             if (isNaN(meetingId)) {
                 res.status(400).json({ message: "Meeting Id is not a number" })
                 return;
             }
             const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url, owner_id);
-            res.json({ result });
+            return res.json({ result });
         }
         catch (err) {
             console.log(err.message);
@@ -89,18 +91,21 @@ export class MeetingRouter {
     deleteMeeting = async (req: Request, res: Response) => {
         try {
             let meetingId = parseInt(req.params.id);
+            const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            if (!(meetingId in meetings)) return res.status(401).json({ message: "Not Own By You" })
             if (isNaN(meetingId)) {
                 res.status(400).json({ message: "Meeting Id is not a number" })
                 return;
             }
             const result = await this.meetingService.deleteMeeting(meetingId);
-            res.json({ result });
+            return res.json({ result });
         } catch (err) {
             console.log(err.message);
             res.json({ message: "Cannot delete meeting" });
             return;
         }
     }
+
     getMeetingById = async (req: Request, res: Response) => {
         try {
             const meetingInformation = await this.meetingService.getMeetingById(parseInt(req.params.id));
@@ -111,20 +116,21 @@ export class MeetingRouter {
             return;
         }
     }
+
     updateMeetingInRoom = async (req: Request, res: Response) => {
         try {
-            const roomConfiguration = {...req.body.roomConfiguration}
-            const isUpdate = await this.meetingService.updateMeetingInRoom(parseInt(req.params.id),roomConfiguration);
-            if(isUpdate){
-                this.io.in(`event:${req.params.id}`).emit('update-room-configuration', {meetingId:parseInt(req.params.id),roomConfiguration});
-                res.status(200).json({status:true, message:roomConfiguration});
+            const roomConfiguration = { ...req.body.roomConfiguration }
+            const isUpdate = await this.meetingService.updateMeetingInRoom(parseInt(req.params.id), roomConfiguration);
+            if (isUpdate) {
+                this.io.in(`event:${req.params.id}`).emit('update-room-configuration', { meetingId: parseInt(req.params.id), roomConfiguration });
+                res.status(200).json({ status: true, message: roomConfiguration });
                 return;
-            }else{
-                throw new Error('Unknown Error - Fail to update meeting in room!');       
+            } else {
+                throw new Error('Unknown Error - Fail to update meeting in room!');
             }
         } catch (err) {
             console.log(err.message);
-            res.status(404).json({status:false, message: err.message });
+            res.status(404).json({ status: false, message: err.message });
             return;
         }
     }

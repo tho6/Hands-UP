@@ -1,8 +1,5 @@
 @import './variables';
 
-
-
-
 a:hover{
     text-decoration: none;
 }
@@ -14,7 +11,17 @@ a:hover{
     margin-right: 1rem;
     min-width: 200px;;
     z-index: 1500;
-    
+}
+.main-nav-bar-logo-big{
+    transform: scale(2);
+    transition: transform 250ms ease-out;
+    padding-top: 8px;
+    padding-right: 2px;
+}
+.main-nav-bar-logo-small{
+    transform: scale(1.2);
+    padding-top: 8px;
+    transition: transform 250ms ease-out;
 }
 
 .main-navbar-nav::before{
