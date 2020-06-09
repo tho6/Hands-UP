@@ -30,8 +30,7 @@ export function authenticateUserToken(userService: UserService, guestService: Gu
                     guestId: info.guestId,
                     picture: userResult[0].picture
                 }
-                next()
-                return
+                return next()
             } catch (error) {
                 console.log(error)
                 return res.status(401).json({ success: false, message: "Unauthorized" })
@@ -107,3 +106,8 @@ export function checkThirdPartyPlatformToken(userService:UserService, platform:s
     }
 }
 
+export function adminGuard(req: Request, res: Response, next: NextFunction){
+    if (req.personInfo?.email?.split('@')[1] === 'tecky.io') return next()
+    else return res.status(403).json({success:false, message:"Admin Only"})
+    
+}
