@@ -139,7 +139,7 @@ describe('LiveRouter', () => {
        await liveRouter.checkYTLiveBroadcast(req, res)
        expect(res.json).toBeCalledTimes(1);
        expect(res.json).toBeCalledWith({ status: false, message:'You are not allowed to enable the youtube live comments in this meeting!', platform:true });
-       expect(res.status).toBeCalledWith(401);
+       expect(res.status).toBeCalledWith(403);
         
     })
     it('checkYoutubeLiveBroadcast - duplicate instance', async () => {
@@ -168,7 +168,7 @@ describe('LiveRouter', () => {
        await liveRouter.checkYTLiveBroadcast(req, res)
        expect(res.json).toBeCalledTimes(2);
         expect(res.json).toHaveBeenNthCalledWith(1,{ status: true, message: 'Start to fetch comments from Youtube' });
-     expect(res.json).toHaveBeenNthCalledWith(2,{ status: false, message: 'Fetch Youtube comment is already running, fail to create another instance!'});
+     expect(res.json).toHaveBeenNthCalledWith(2,{ status: false, message: 'Duplicate action!'});
         expect(res.status).toHaveBeenNthCalledWith(1,200);
      expect(res.status).toHaveBeenNthCalledWith(2,400);    
   
