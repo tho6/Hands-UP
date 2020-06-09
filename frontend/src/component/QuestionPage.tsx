@@ -313,7 +313,7 @@ useEffect(()=>{
   }else if (error === 'facebook-modal'){
       setFacebookModal(true);
   }
-},[error])
+},[error, dispatch])
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">

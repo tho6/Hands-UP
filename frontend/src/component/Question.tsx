@@ -15,7 +15,6 @@ import {
   approveOrHideQuestion,
   answeredQuestion
 } from '../redux/questions/thunk';
-import { useFormState } from 'react-use-form-state';
 import Collapse from 'react-bootstrap/Collapse';
 import Reply from './Reply';
 import { PersonInfo } from '../redux/auth/reducers';
@@ -34,7 +33,6 @@ export interface IQuestionProps {
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showImage, setShowImage] = useState(false);
-  const [formState, { textarea }] = useFormState();
   const [textState, setTextState] = useState('');
   const [replyTextState, setReplyTextState] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);

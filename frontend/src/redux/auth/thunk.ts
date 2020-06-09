@@ -134,7 +134,7 @@ export function checkToken() {
             // console.log('gen immediately')
         } else {
             // console.log('gen else')
-
+            console.log('set time out');
             const id = setTimeout(async () => {
                 await genAccessCode()
                 clearTimeout(id);
