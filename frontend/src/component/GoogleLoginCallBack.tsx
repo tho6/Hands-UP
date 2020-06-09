@@ -8,8 +8,8 @@ export default function GoogleLoginCallBack() {
     useEffect(()=>{
         const params = new URLSearchParams(window.location.search)
         dispatch(loginGoogle(params.get('code')!));
-        console.log(params.get('code')!)
-        dispatch(push('/'))
+        // console.log(params.get('code')!)
+        // dispatch(push('/'))
     }, [dispatch])
 
     return (
