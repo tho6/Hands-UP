@@ -12,6 +12,7 @@
     // background-image: url("/homepage-bg-test.jpg");
     // flex-direction: column;
     .home-background-headings{
+        max-width: 550px;
         display: flex;
         justify-content: center;
         text-align: center;
@@ -26,6 +27,7 @@
     
         h4 {
             font-family: $SecondaryFontStyle;
+            max-width: 500px;
             color: $PrimaryTextColor;
             font-weight: 400;
             margin-bottom: 1.5rem;
