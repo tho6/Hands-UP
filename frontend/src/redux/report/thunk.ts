@@ -12,6 +12,9 @@ export function fetchReportQuestions(meetingId: string | number[]){
         // const result =JSON.parse(resFetch)
         // console.log('fetch Report questions: ')
         // console.log(result.message)
+        if(!result.success){
+            return
+        }
         dispatch(fetchReportQuestionsAction(result.message))
     }
 }
@@ -25,6 +28,9 @@ export function fetchReportViews(meetingId: string | number[]){
             }});
         const result = await res.json()
         console.log(result)
+        if(!result.success){
+            return
+        }
         dispatch(fetchReportViewsAction(result.message))
     }
 }
