@@ -17,6 +17,10 @@ import { ReportActions } from './redux/report/actions';
 import { MainNavActions } from './redux/mainNav/actions';
 import { MainNavState, mainNavReducer } from './redux/mainNav/reducers';
 import logger from 'redux-logger';
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 declare global {
   /* tslint:disable:interface-name */
@@ -62,4 +66,8 @@ export const store = createStore(reducer,
     applyMiddleware(logger),
     applyMiddleware(routerMiddleware(history)),
     applyMiddleware(thunk),
+<<<<<<< Updated upstream
+=======
+    applyMiddleware(logger)
+>>>>>>> Stashed changes
   ));

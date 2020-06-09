@@ -7,6 +7,7 @@ export default function GoogleLoginCallBack() {
     const dispatch = useDispatch()
     useEffect(()=>{
         const params = new URLSearchParams(window.location.search)
+        console.log('dispatch to loginGoogle thunk')
         dispatch(loginGoogle(params.get('code')!));
         console.log(params.get('code')!)
         window.location.replace('/')
