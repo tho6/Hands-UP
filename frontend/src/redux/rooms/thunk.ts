@@ -67,7 +67,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 //change the counter at liveRouter to false
                 const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT' });
                 const result = await res.json();
-                if (!result.status) throw new Error(result.message);
+                if (!result.status) throw dispatch(message(true, result.message));
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
                 return;
             }
@@ -113,7 +113,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                         },
                     })
                 const result = await res.json();
-                if (!result.status) throw new Error(result.message);
+                if (!result.status) throw dispatch(message(true, result.message));
                 dispatch(successfullyToggleFacebookLiveStatus(meetingId, false));
                 return;
             }
