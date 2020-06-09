@@ -102,7 +102,7 @@ export function checkToken() {
             return
         }
         const accessTokenDecode: any = jwt.decode(accessToken)
-        const refreshBuffer = 5 * 1000
+        const refreshBuffer = 4 * 1000
         const expiryTimeLeft = accessTokenDecode?.exp * 1000 - new Date().getTime()
         console.log('expiryTimeLeft ' + expiryTimeLeft)
         const genAccessCode = async () => {

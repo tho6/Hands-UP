@@ -305,9 +305,13 @@ const sendEvent = ()=>{
   setFiles(null);
 }
 useEffect(()=>{
-  if (error) {
+  if (error==='youtube-error') {
     dispatch(message(true, 'You may try to reset platform'));
     // dispatch(push(`/room/${meetingId}/questions/main`));
+  }else if (error === 'facebook-error'){
+    dispatch(message(true, 'We need your permission'));
+  }else if (error === 'facebook-modal'){
+      setFacebookModal(true);
   }
 },[error])
   return (
@@ -358,7 +362,8 @@ useEffect(()=>{
                   );
                   return;
                 }
-                setFacebookModal(true);
+                const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+facebook-modal&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                window.location.replace(loginLocationWithPrompt);
               }}
             >
               <i className="fab fa-facebook-f fa-lg"></i>{' '}
@@ -727,7 +732,7 @@ useEffect(()=>{
           title={'Redirect to Google'}
           message={'Confirm to redirect to permission page'}
           yes={() => {
-            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
+            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
             window.location.replace(loginLocationWithPrompt)
           }}
           no={() => {

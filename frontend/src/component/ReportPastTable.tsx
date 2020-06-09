@@ -333,12 +333,12 @@ export function ReportPastTable() {
   const arrQuestions = Object.keys(questionsByMeetingId).sort(function (a: string, b: string): number {
     return parseInt(b) - parseInt(a)
   })
-
+  
   const rows: Data[] = [];
   // console.log(arrQuestions)
   // console.log(questionsByMeetingId)
-
-  if (Object.keys(views).length === 0 || Object.keys(questions).length === 0) {
+  console.log(questions)
+  if ( Object.keys(views).length === 0 || Object.keys(questions).length === 0) {
     return <div></div>
   } else {
     for (const id of arrQuestions) {
@@ -433,6 +433,8 @@ export function ReportPastTable() {
       ))
     }
   }
+  
+  console.log(rows)
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
