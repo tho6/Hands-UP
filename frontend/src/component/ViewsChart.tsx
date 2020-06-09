@@ -34,7 +34,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
       for (const platform of dataMap){
         console.log(baseDate)
         console.log(new Date(view.created_at).toLocaleString())
-        platform['data'].unshift({
+        platform['data'].push({
           x: (new Date(view.created_at).getTime() - baseDate.getTime())/1000 / 60,
           y: view[platform['id']]
         })
