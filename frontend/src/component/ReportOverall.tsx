@@ -139,7 +139,7 @@ const ReportOverall: React.FC = () => {
       {!loading && (
         <div className="report-container">
           Overall
-          <div className="text-left mb-4 d-flex sticky-container-top">
+          <div className="text-left mb-4 d-flex sticky-container-top report-button-container">
             <button
               className={`util-spacing will-hover rounded question-page-tab ${
                 lastXMeetings === 'all' && 'is-active'

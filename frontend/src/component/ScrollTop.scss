@@ -14,6 +14,22 @@
 
 .scroll-top-item{
   transition: all 0.5s;
+  button{
+    border: none;
+    border-radius: 15px!important;
+    &:focus {
+      outline: none;
+    }
+    @media only screen and (max-width: 576px) {
+      padding:5px;
+      font-size:0.6rem;
+    }
+    &:not(.room-update-save){
+      width: 205px;
+  }
+  border-radius: 15px;
+  background-color: #8AD4DC;
+  }
 }
 
 .scroll-top-item.show-item{

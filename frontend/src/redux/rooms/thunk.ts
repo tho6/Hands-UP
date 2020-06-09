@@ -1,13 +1,12 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus, message } from "./actions";
+import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus, message, googlePermissionModal } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
-    return async (dispatch: ThunkDispatch) => {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`, {
-            }); // GET + 'memos'
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${meetingId}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
             const result = await res.json();
             if (result.status) {
                 dispatch(loadedRoomInformation(result.message));
@@ -21,17 +20,18 @@ export function fetchRoomInformation(meetingId: number) {
 }
 
 export function updateRoom(meetingId: number, roomConfiguration: IRoomConfiguration) {
-    return async (dispatch: ThunkDispatch) => {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/in/room/${meetingId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getState().auth.accessToken}`
                 },
                 body: JSON.stringify({ roomConfiguration })
             });
             const result = await res.json();
-            dispatch(message(true, result.status ? 'Successfully Update Room Configuration' : 'Something went wrong! You may try again later.'));
+            dispatch(message(true, result.status ? 'Updated Room Configuration' : 'Something wrong! You may try again later.'));
         } catch (e) {
             window.alert(e.message);
         }
@@ -48,13 +48,18 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 } else {
                     window.alert(result.message);
                     if (res.status === 401) {
-                        if (result.platform || false) return window.alert('You have to log in to our platform first!');
+                        if (result.platform || false){
+                            dispatch(message(true, 'Unauthenticated, please log in first'));
+                            return 
+                        } 
                         const loginLocation = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
                         window.location.replace(loginLocation)
                     } else if (res.status === 403) {
-                        if (!window.confirm('Press OK to redirect to login page')) return;
-                        const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
-                        window.location.replace(loginLocationWithPrompt)
+                        if (result.platform || false) {
+                            dispatch(message(true, 'You are not host!'));
+                            return 
+                        }
+                        dispatch(googlePermissionModal(true));
                     }
                     return;
                 }
@@ -62,7 +67,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 //change the counter at liveRouter to false
                 const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT' });
                 const result = await res.json();
-                if (!result.status) throw new Error(result.message);
+                if (!result.status) throw dispatch(message(true, result.message));
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
                 return;
             }
@@ -108,7 +113,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                         },
                     })
                 const result = await res.json();
-                if (!result.status) throw new Error(result.message);
+                if (!result.status) throw dispatch(message(true, result.message));
                 dispatch(successfullyToggleFacebookLiveStatus(meetingId, false));
                 return;
             }
@@ -131,12 +136,12 @@ export function updateYoutubeRefreshToken(meetingId: number, code: string) {
                 body: JSON.stringify({ accessCode: encodeURIComponent(code) })
             });
             const result = await res.json();
-            if (!result.status) window.alert(result.message);
+            // if (!result.status) dispatch(message(true, result.message));
+            window.location.replace(`/room/${meetingId}/questions/main${result.status?'':'/err'}`);
         } catch (e) {
             window.alert(e.message);
-        } finally {
             window.location.replace(`/room/${meetingId}/questions/main`);
-        }
+        } 
     }
 }
 export function getLiveStatus(meetingId: number) {
@@ -147,7 +152,7 @@ export function getLiveStatus(meetingId: number) {
             if (result.status) {
                 dispatch(loadInitialLiveStatus(meetingId, result.message.facebook, result.message.youtube));
             } else {
-                window.alert(result.message);
+                dispatch(message(true, result.message))
             }
         } catch (e) {
             window.alert(e.message);

@@ -55,13 +55,20 @@ export function loadInitialLiveStatus(meetingId: number, facebook: boolean, yout
         meetingId
     }
 }
-export function message(status: boolean, message: string) {
+export function message(status: boolean, message: string, redirect?:string) {
     return {
         type: '@@ROOMS/MESSAGE' as '@@ROOMS/MESSAGE',
         status,
-        message
+        message,
+        redirect
+    }
+}
+export function googlePermissionModal(isShow: boolean) {
+    return {
+        type: '@@ROOMS/GOOGLE_PERMISSION_MODAL' as '@@ROOMS/GOOGLE_PERMISSION_MODAL',
+        isShow,
     }
 }
 // action types
 export type RoomsActions = ReturnType<typeof loadedRoomInformation> | ReturnType<typeof successfullyUpdatedRoomConfiguration> | ReturnType<typeof loggedInSuccessInRoom> | ReturnType<typeof setQuestionLimitState>
-    | ReturnType<typeof successfullyToggleYoutubeLiveStatus> | ReturnType<typeof loadInitialLiveStatus> | ReturnType<typeof successfullyToggleFacebookLiveStatus> | ReturnType<typeof message>;
+    | ReturnType<typeof successfullyToggleYoutubeLiveStatus> | ReturnType<typeof loadInitialLiveStatus> | ReturnType<typeof successfullyToggleFacebookLiveStatus> | ReturnType<typeof message> | ReturnType<typeof googlePermissionModal>;

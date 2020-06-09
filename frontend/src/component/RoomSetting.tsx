@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './RoomSetting.scss';
 import { useFormState } from 'react-use-form-state';
 import { IRoomConfiguration } from '../models/IRoomInformation';
-import Message from './Message';
 import { useDispatch } from 'react-redux';
 import { updateRoom, removeToken } from '../redux/rooms/thunk';
 
@@ -15,7 +14,6 @@ interface IProps {
 
 const RoomSettingButton: React.FC<IProps> = (props) => {
   const { roomConfig, meetingId } = props;
-  console.log(roomConfig);
   const [formState, { text }] = useFormState({
     limit: `${roomConfig.questionLimit}`
   });
@@ -27,7 +25,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
   const dispatch = useDispatch();
   return (
     <div>
-      <div onClick={() => setShowSetting(!showSetting)}>
+      <div className='will-hover pr-1' onClick={() => setShowSetting(!showSetting)}>
         <i className="fas fa-cog fa-lg"></i>
       </div>
       {showSetting && (
@@ -82,6 +80,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           </div>
           <div className="py-2">
             <button
+            className='room-button'
               onClick={() => {
                 dispatch(removeToken('facebook'));
                 setShowSetting(false);
@@ -97,7 +96,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
               setShowSetting(false);
             }}
           >
-            <button>Reset Youtube Platform</button>
+            <button className='room-button'>Reset Youtube Platform</button>
           </div>
           <div
             className="py-2"
@@ -106,11 +105,10 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
               setShowSetting(false);
             }}
           >
-            <button>Reset All Platform</button>
+            <button className='room-button'>Reset All Platform</button>
           </div>
         </div>
       )}
-      <Message />
     </div>
   );
 };

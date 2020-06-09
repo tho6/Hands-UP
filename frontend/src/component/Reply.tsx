@@ -9,7 +9,7 @@ import {
   hideOrDisplayReply
 } from '../redux/questions/thunk';
 import { PersonInfo } from '../redux/auth/reducers';
-
+import TextareaAutosize from 'react-textarea-autosize';
 export interface IReplyProps {
   reply: reply;
   user: PersonInfo|null;
@@ -19,22 +19,50 @@ export interface IReplyProps {
 
 const Reply: React.FC<IReplyProps> = (props) => {
   const { reply, user, meetingId, isHost } = props;
-  const [formState, { textarea }] = useFormState();
+  const [textState, setTextState] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCancelModal, setCancelModal] = useState(false);
   const canEdit = (reply.guestId === user?.guestId) || isHost;
   const dispatch = useDispatch();
   const backupValue = reply.content;
+  const sendEvent =()=>{
+    if (
+      backupValue !== textState &&
+      textState.trim()
+    ) {
+      dispatch(
+        editReply(user?.guestId!, reply.id, textState)
+      );
+      setIsEdit(false);
+    } else if (!textState.trim()) {
+      window.alert('Empty reply is not allowed!');
+    } else {
+      setIsEdit(false);
+    }
+  }
   return (
     <div className="reply mb-3">
       <div className="content pb-2 pt-2">
         {isEdit ? (
-          <textarea
-            data-testid="text-area"
-            className="mb-2 rounded"
-            {...textarea('edit')}
-          ></textarea>
+            <TextareaAutosize
+            placeholder="What's on your mind?"
+            value={textState}
+            onKeyDown={(e)=>{
+              if(e.keyCode === 13 && !e.shiftKey){
+                e.preventDefault();
+                sendEvent();
+              }
+            }}
+            onChange={(e) => {
+              setTextState(e.target.value);
+            }}
+          />
+          // <textarea
+          //   data-testid="text-area"
+          //   className="mb-2 rounded"
+          //   {...textarea('edit')}
+          // ></textarea>
         ) : (
           reply.content
         )}
@@ -43,12 +71,12 @@ const Reply: React.FC<IReplyProps> = (props) => {
         <span data-testid="edited-sign">[Edited]</span>
       )}
       <div className="d-flex justify-content-sm-end justify-content-start">
-        <div className="to-center util-spacing">{reply.guestName}</div>
+        <div className="to-center util-spacing text-word-break">{reply.guestName}</div>
         {canEdit && !isEdit && (
           <div
             className="util-spacing will-hover"
             onClick={() => {
-              formState.setField('edit', reply.content);
+              setTextState(reply.content);
               setIsEdit(true);
             }}
           >
@@ -60,19 +88,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
             <span
               className="util-spacing will-hover"
               onClick={() => {
-                if (
-                  backupValue !== formState.values.edit &&
-                  formState.values.edit.trim()
-                ) {
-                  dispatch(
-                    editReply(user?.guestId!, reply.id, formState.values.edit)
-                  );
-                  setIsEdit(false);
-                } else if (!formState.values.edit.trim()) {
-                  window.alert('Empty reply is not allowed!');
-                } else {
-                  setIsEdit(false);
-                }
+                sendEvent();
               }}
             >
               <i
@@ -91,7 +107,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
             <span
               className="util-spacing will-hover"
               onClick={() => {
-                formState.values.edit === reply.content
+                textState === reply.content
                   ? setIsEdit(false)
                   : setCancelModal(true);
               }}

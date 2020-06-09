@@ -1,13 +1,14 @@
 .message-box {
   position: fixed;
-  top: 20px;
+  top: 55px;
   left: -600px;
   transition: transform 0.9s ease;
   z-index: 99999;
-  background-color: #fff;
+  background-color: #8ad4dc;
+  box-shadow: 2px 2px 4px 5px #ccc;
   max-width: 600px;
   border-radius: 15px;
-  border: solid 1px #5dc5d0;
+  // border: solid 1px black;
   word-wrap: normal;
 }
 
@@ -15,3 +16,13 @@
   transform: translateX(650px);
 }
 
+@media only screen and (max-width:1024px){
+  .message-box{
+    font-size: 0.8rem;
+    max-width:80vw; 
+    box-shadow: 1px 1px 2px 2px #ccc;
+  }
+  .message-active {
+    transform: translate(625px);
+  }
+}
