@@ -150,7 +150,8 @@ app.use('/report', guard, reportRouter.router())
 app.use('/rooms', guard, questionRouter.router());
 // app.use(`${API_VERSION}/meetings`, meetingRouter.router())
 // app.use('/meetings', meetingRouter.router())
-app.use('/meetings', userGuard, meetingRouter.router())
+app.get('/meetings/:id', guard, meetingRouter.getMeetingById);
+app.use('/meetings', userGuard, meetingRouter.router());
 
 /* Socket Io */
 

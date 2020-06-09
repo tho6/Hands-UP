@@ -9,7 +9,7 @@ export class MeetingRouter {
         const router = express.Router();
         // router.get('/', this.getMeeting);
         router.get('/', this.getMeetingByUserId);
-        router.get('/:id', this.getMeetingById);
+        // router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/:id', this.editMeeting);
         router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);

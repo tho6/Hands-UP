@@ -8,14 +8,19 @@ export default function FacebookLoginCallBack() {
     
     useEffect(()=>{
         const params = new URLSearchParams(window.location.search)
-        const meetingId = params.get('state')
+        const state = params.get('state')
         if (params.get('error')) {
-            window.alert('We need your permission')
+            // window.alert('We need your permission');
+            const arr = state?.split(" ")!
+            dispatch(push(`/room/${arr[0]}/questions/main/facebook-error`))
+
         }else{
             dispatch(sendFacebookCode(params.get('code')!));
             console.log(params.get('code')!)
+            const arr = state?.split(" ")!
+            dispatch(push(`/room/${arr[0]}/questions/main/${arr[1]}`))
+            
         }
-        dispatch(push(`/room/${meetingId}/questions/main`))
 
     }, [dispatch])
 

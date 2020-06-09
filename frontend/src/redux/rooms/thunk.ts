@@ -11,7 +11,7 @@ export function fetchRoomInformation(meetingId: number) {
             if (result.status) {
                 dispatch(loadedRoomInformation(result.message));
             } else {
-                window.alert(result.message);
+                dispatch(message(true,result.message));
             }
         } catch (e) {
             window.alert(e.message);
@@ -46,7 +46,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 if (result.status) {
                     dispatch(successfullyToggleYoutubeLiveStatus(meetingId, true));
                 } else {
-                    window.alert(result.message);
+                    dispatch(message(true, result.message));
                     if (res.status === 401) {
                         if (result.platform || false){
                             dispatch(message(true, 'Unauthenticated, please log in first'));
@@ -95,7 +95,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                 if (result.success) {
                     dispatch(successfullyToggleFacebookLiveStatus(meetingId, true));
                 } else {
-                    window.alert(result.message);
+                    dispatch(message(true,result.message));
                     if (res.status === 401) {
                         const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
                         window.location.replace(loginLocationWithPrompt)
@@ -137,7 +137,7 @@ export function updateYoutubeRefreshToken(meetingId: number, code: string) {
             });
             const result = await res.json();
             // if (!result.status) dispatch(message(true, result.message));
-            window.location.replace(`/room/${meetingId}/questions/main${result.status?'':'/err'}`);
+            window.location.replace(`/room/${meetingId}/questions/main${result.status?'':'/youtube-error'}`);
         } catch (e) {
             window.alert(e.message);
             window.location.replace(`/room/${meetingId}/questions/main`);
