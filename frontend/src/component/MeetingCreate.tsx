@@ -25,13 +25,13 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                             <input className="textarea" {...text('name')} />
                             {formState.touched.name && formState.values.name === '' && <div className="formRemind">Please fill in the meeting name</div>}
                         </div>
-                        <div className="create-meeting-text">Meeting time{" "}
+                        <div className="create-meeting-text">Date and time{" "}
                             <input className="textarea"{...date('date')} />
                             <input className="textarea"{...time('time')} />
                             {formState.touched.date && formState.values.date === '' && <div className="formRemind">Please fill in the meeting date</div>}
                             {formState.touched.time && formState.values.time === '' && <div className="formRemind">Please fill in the meeting time</div>}
                         </div>
-                        <div className="create-meeting-text">Meeting code{" "}
+                        <div className="create-meeting-text">Code for this meeting{" "}
                             <input className="textarea"{...text('code')} />
                             {formState.touched.code && formState.values.code === '' && <div className="formRemind">Please fill in the meeting code</div>}
                         </div>

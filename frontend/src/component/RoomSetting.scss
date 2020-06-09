@@ -1,21 +1,31 @@
 @import './question.scss';
-button {
-  @extend %button;
-  @extend %button-font-size;
-  &:not(.room-update-save){
-    width: 205px;
-}
-border-radius: 15px;
-}
+
 .room-setting-container {
-    position: absolute;
+  button{
+    @extend %button;
+    @extend %button-font-size;
+    &:not(.room-update-save){
+      width: 205px;
+  }
+  border-radius: 15px;
+  background-color: #8AD4DC;
+  }
+  position: absolute;
   width: 270px;
   padding: 0.5rem;
-  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.904);
   border-radius: 15px;
   top:0px;
   left:30px;
   color:#5CC5D0;
+  button {
+    @extend %button;
+    @extend %button-font-size;
+    &:not(.room-update-save){
+      width: 205px;
+  }
+  border-radius: 15px;
+  }
 }
 .input-text {
   width: 50px;

@@ -159,7 +159,7 @@ export class LiveRouter {
             console.log(result)
             if (result.error) throw new Error(result['error_description']);
             const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
-            if (!isSaved) res.status(500).json({ status: false, message: 'Internal Error, fail to save token to database!' })
+            if (!isSaved) res.status(500).json({ status: false, message: '[Internal Error] Database Error' })
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
             console.log(result);
             return;
@@ -171,15 +171,15 @@ export class LiveRouter {
 
     }
     checkYTLiveBroadcast = async (req: Request, res: Response) => {
-        if (!req.youtubeRefreshToken) return res.status(401).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
+        if (!req.youtubeRefreshToken) return res.status(403).json({ status: false, message: 'Check live broadcast - No Refresh Token!' });
         if (!req.personInfo?.userId) return res.status(401).json({ status: false, message: 'Check live broadcast - You have to log in first!', platform: true });
         const hostId = await this.questionService.getRoomHostByMeetingId(parseInt(req.params.meetingId));
-        if (req.personInfo.userId !== hostId) return res.status(401).json({ status: false, message: 'You are not allowed to enable the youtube live comments in this meeting!', platform: true });
+        if (req.personInfo.userId !== hostId) return res.status(403).json({ status: false, message: 'You are not allowed to enable the youtube live comments in this meeting!', platform: true });
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
                 console.log('Fetch Youtube comment is already running, fail to create another instance!');
-                res.status(400).json({ status: false, message: 'Fetch Youtube comment is already running, fail to create another instance!' });
+                res.status(400).json({ status: false, message: 'Duplicate action!' });
                 return;
             }
             if (this.eventSourceExistence[`${req.params.meetingId}`] && !this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
@@ -189,10 +189,8 @@ export class LiveRouter {
             }
             //get access token check refresh token, may put this in guard
             const resultFromYT = await this.youtubeExchangeForAccessToken(req.youtubeRefreshToken);
-            if (!resultFromYT['access_token']) return res.status(401).json({ status: false, message: 'Expired/Invalid Refresh token, please log in again!' });
+            if (!resultFromYT['access_token']) return res.status(403).json({ status: false, message: 'Expired/Invalid Refresh token, please grant permission to us again.' });
             const accessToken = encodeURIComponent(resultFromYT['access_token']);
-            console.log('[accessToken]')
-            console.log(accessToken)
             //find live broadcast
             const fetchRes = await fetch(`https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&broadcastStatus=active&broadcastType=all&key=${process.env.YOUTUBE_API_KEY}`, {
                 method: "GET",
@@ -203,8 +201,7 @@ export class LiveRouter {
             });
             const result = await fetchRes.json();
             console.log('[Check Live Broadcast]');
-            console.log(result);
-            if (result.error) return res.status(result.error.code).json({ status: false, message: result.error.message });
+            if (result.error) return res.status(400).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
             const videoId = result.items[0].id;
@@ -237,7 +234,6 @@ export class LiveRouter {
         const fetchYTTimer = setInterval(async () => {
             try {
                 console.log('fetch comments from Youtube');
-                console.log(this.eventSourceExistence[1]?.youtube);
                 const fetchLiveChat = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&part=authorDetails&${pageTokenString}key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {

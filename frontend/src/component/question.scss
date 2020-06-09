@@ -27,6 +27,7 @@ $replyTextAreaMultiplier: 0.7;
 %text-area {
   resize: none;
   border: 1px solid black;
+  transition: height 0.2s;
 }
 %text-area-ninety-percent {
   height: 150px;
@@ -74,7 +75,7 @@ $replyTextAreaMultiplier: 0.7;
 %button-font-size{
   @media only screen and (max-width: 576px) {
     padding:5px;
-    font-size:0.6rem;
+    font-size:0.8rem;
   }
 }
 .question-page{
@@ -96,7 +97,9 @@ $replyTextAreaMultiplier: 0.7;
       border-bottom: none;
       // border-left: 1px solid black; //changed
     }
-    
+    &:hover:not(.is-active){
+      background-color: #EFEFEF;
+    }
     background-color: transparent;
     @media screen and (max-width: 981px){
       // font-size: 0.8rem;
@@ -119,6 +122,15 @@ $replyTextAreaMultiplier: 0.7;
       width: 150px!important;
     }
     // margin-top: ;
+    @media screen and (max-width: 768px){
+        width:140px!important;
+    }
+    @media screen and (max-width: 645px){
+        width:123px!important;
+    }
+    @media screen and (max-width: 576px){
+        width:120px!important;
+    }
   }
   @media screen and (min-width: 850px){
     display: block;
@@ -156,6 +168,7 @@ background-color: inherit;
 
   textarea {
     height:2rem;
+    max-height: 200px;
     @extend %text-area;
     width: 100%;
     max-width: 1300px;
@@ -163,11 +176,8 @@ background-color: inherit;
     border: none;
     // background-color: #EFEFEF;
     background-color: #fff;
-    transition: height 0.2s;
     padding: 0.3rem 0.6rem;
     &:focus{
-      
-      height: 150px;
       outline: #fff
     }
     //border-bottom: 1px solid #cccccc;
@@ -191,7 +201,7 @@ background-color: inherit;
 }
 .will-hover {
   transition: transform 0.2s ease-in-out;
-  &:hover {
+  &:hover:not(.is-active) {
     transform: scale(1.1);
     @media only screen and (max-width: 576px) {
       transform: scale(1);
@@ -207,6 +217,7 @@ background-color: inherit;
   @media only screen and (max-width: 576px) {
     margin-left: 0.2rem;
     margin-right: 0.2rem;
+    padding: 5px;
   }
 }
 .to-center {
@@ -232,6 +243,10 @@ background-color: inherit;
   }
   .content {
     @extend %content;
+    textarea{
+      transition: height 0.2s;
+      max-height: 200px;
+    }
   }
   .util-container {
     @media only screen and (max-width: 768px) {
@@ -272,19 +287,18 @@ background-color: inherit;
     }
     textarea {
       @extend %text-area;
-      transition: height 0.2s;
       @media only screen and (min-width: 1024px) {
         width: 85%;
         max-width: 1000px;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 1024px) {
         width: 80%;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 400px) {
         width: 85%;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
       }
     }
   }
@@ -310,15 +324,15 @@ background-color: inherit;
       @media only screen and (min-width: 1024px) {
         width: 85%;
         max-width: 1000px;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 1024px) {
         width: 85%;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
       }
       @media only screen and (max-width: 400px) {
         width: 85%;
-        height: 150px * $replyTextAreaMultiplier;
+        max-height: 200px * $replyTextAreaMultiplier;
         min-width: 200px;
       }
     }

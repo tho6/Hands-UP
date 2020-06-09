@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import './Message.scss'
 import { message } from '../redux/rooms/actions';
+import { push } from 'connected-react-router';
 
 const Message: React.FC = () => {
   const messageStatus = useSelector(
@@ -14,6 +15,7 @@ const Message: React.FC = () => {
       setTimeout(()=>{
         dispatch(message(false,messageStatus.message));
       },3000);
+      if(messageStatus.redirect) dispatch(push(messageStatus.redirect));
     }
   },[dispatch, messageStatus])
   return (

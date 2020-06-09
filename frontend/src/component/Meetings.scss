@@ -22,10 +22,14 @@
 
 .create-meeting-btn{
     font-family: $PrimaryFontStyle;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     border: none;
-    // width: 100px;
-    // height: 100px;
-    // border-radius: 50%;
+    z-index: 10;
 }
 
 .popup {
