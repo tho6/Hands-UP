@@ -25,7 +25,7 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
   const dispatch = useDispatch();
   return (
     <div>
-      <div onClick={() => setShowSetting(!showSetting)}>
+      <div className='will-hover pr-1' onClick={() => setShowSetting(!showSetting)}>
         <i className="fas fa-cog fa-lg"></i>
       </div>
       {showSetting && (

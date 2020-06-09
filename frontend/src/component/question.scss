@@ -97,7 +97,9 @@ $replyTextAreaMultiplier: 0.7;
       border-bottom: none;
       // border-left: 1px solid black; //changed
     }
-    
+    &:hover:not(.is-active){
+      background-color: #EFEFEF;
+    }
     background-color: transparent;
     @media screen and (max-width: 981px){
       // font-size: 0.8rem;
@@ -199,7 +201,7 @@ background-color: inherit;
 }
 .will-hover {
   transition: transform 0.2s ease-in-out;
-  &:hover {
+  &:hover:not(.is-active) {
     transform: scale(1.1);
     @media only screen and (max-width: 576px) {
       transform: scale(1);

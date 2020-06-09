@@ -349,7 +349,7 @@ useEffect(()=>{
         {isHost && (
           <div className="d-flex">
             <div
-              className="util-spacing"
+              className="util-spacing will-hover"
               data-testid="facebook-live"
               onClick={() => {
                 if (liveStatus?.facebook === true) {
@@ -370,7 +370,7 @@ useEffect(()=>{
             </div>
             <div
               data-testid="youtube-live"
-              className="util-spacing"
+              className="util-spacing will-hover"
               onClick={() => {
                 dispatch(
                   toggleYoutubeLiveStatus(
