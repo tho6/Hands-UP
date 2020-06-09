@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { reply } from '../models/IQuestion';
-import { useFormState } from 'react-use-form-state';
 import YesNoModal from './YesNoModal';
 import { useDispatch } from 'react-redux';
 import {
@@ -47,6 +46,7 @@ const Reply: React.FC<IReplyProps> = (props) => {
         {isEdit ? (
             <TextareaAutosize
             placeholder="What's on your mind?"
+            data-testid="text-area"
             value={textState}
             onKeyDown={(e)=>{
               if(e.keyCode === 13 && !e.shiftKey){
@@ -64,12 +64,14 @@ const Reply: React.FC<IReplyProps> = (props) => {
           //   {...textarea('edit')}
           // ></textarea>
         ) : (
-          reply.content
+          <div>
+          {reply.content} {(!isEdit) && (new Date(reply.createdAt).getTime() !== new Date(reply.updatedAt).getTime()) && (
+            <span data-testid="edited-sign">[Edited]</span>
+          )}
+          </div>
         )}
       </div>
-      {(!isEdit) && (new Date(reply.createdAt).getTime() !== new Date(reply.updatedAt).getTime()) && (
-        <span data-testid="edited-sign">[Edited]</span>
-      )}
+
       <div className="d-flex justify-content-sm-end justify-content-start">
         <div className="to-center util-spacing text-word-break">{reply.guestName}</div>
         {canEdit && !isEdit && (

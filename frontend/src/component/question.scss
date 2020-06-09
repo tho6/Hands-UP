@@ -31,6 +31,7 @@ $replyTextAreaMultiplier: 0.7;
 }
 %text-area-ninety-percent {
   // height: 150px;
+  border-radius: 10px;
   @media only screen and (min-width: 1024px) {
     width: 90%;
     max-width: 1200px;
