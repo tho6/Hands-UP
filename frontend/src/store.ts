@@ -16,7 +16,7 @@ import { ReportState, reportReducer } from './redux/report/reducers';
 import { ReportActions } from './redux/report/actions';
 import { MainNavActions } from './redux/mainNav/actions';
 import { MainNavState, mainNavReducer } from './redux/mainNav/reducers';
-
+import logger from 'redux-logger';
 
 declare global {
   /* tslint:disable:interface-name */
@@ -59,6 +59,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(reducer,
   composeEnhancers(
+    applyMiddleware(logger),
     applyMiddleware(routerMiddleware(history)),
-    applyMiddleware(thunk)
+    applyMiddleware(thunk),
   ));

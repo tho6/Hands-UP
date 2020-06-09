@@ -127,6 +127,7 @@ export class AuthRouter {
             const accessToken = await this.authService.getAccessTokenByRefreshToken(refreshToken)
             if (!accessToken) return res.status(401).json({ success: false, message: "Invalid Refresh Token" })
             jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
+                console.log(info)
                 const expiryTimeLeft = (info?.exp! * 1000 - new Date().getTime()) <= (10 * 1000)
                 if (err?.name == 'TokenExpiredError' || expiryTimeLeft) {
                     jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {

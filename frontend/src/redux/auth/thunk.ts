@@ -28,6 +28,7 @@ export function loginGuest() {
 
 export function loginGoogle(authCode: string) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        console.log('------------------------start')
         const accessToken = getState().auth.accessToken
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/loginGoogle`, {
             method: 'POST',
@@ -52,8 +53,9 @@ export function loginGoogle(authCode: string) {
             dispatch(loginSuccess(accessToken, refreshToken))
             dispatch(restoreLogin())
             // dispatch(restoreLogin())
+            console.log('------------------------end')
 
-            dispatch(push('/'))
+            //dispatch(push('/'))
         } else {
             window.alert(result.message)
             dispatch(loginFailed('Failed to login'))
@@ -136,6 +138,7 @@ export function checkToken() {
             // console.log('gen else')
 
             const id = setTimeout(async () => {
+                console.log('geting accessToken')
                 await genAccessCode()
                 dispatch(restoreLogin())
                 clearTimeout(id);

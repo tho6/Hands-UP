@@ -9,7 +9,8 @@ export default function GoogleLoginCallBack() {
         const params = new URLSearchParams(window.location.search)
         dispatch(loginGoogle(params.get('code')!));
         console.log(params.get('code')!)
-        dispatch(push('/'))
+        window.location.replace('/')
+        // dispatch(push('/'))
     }, [dispatch])
 
     return (
