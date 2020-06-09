@@ -39,6 +39,7 @@
     -o-transition: border 0.5s;
     border: solid 1px $SecondaryTextColor
 }
+
 .textarea:focus {
     border: solid 3px $SecondaryTextColor;	
 }
@@ -61,4 +62,6 @@
 
 .create-meeting-text {
     padding: 5px 0px 5px 0px;
+    text-align: justify;
+    text-justify: inter-character;
 }

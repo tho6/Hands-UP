@@ -71,8 +71,8 @@ export class MeetingRouter {
 
     editMeeting = async (req: Request, res: Response) => {
         try {
-            const meetingId = parseInt(req.params.id);
             const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            const meetingId = parseInt(req.params.id);
             if (!(meetingId in meetings)) return res.status(401).json({ message: "Not Own By You" })
             const { name, date_time, code, url, owner_id } = req.body;
             if (isNaN(meetingId)) {

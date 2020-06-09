@@ -19,7 +19,7 @@ const initialState: MeetingState = {
     2: { id: 2, name: "LiveMeeting2", date_time: new Date(), code: "NEW2", url: "url", owner_id: "Host2" }
 }
 
-export function MeetingReducer(state: MeetingState = initialState, action: MeetingActions): MeetingState {
+export function MeetingReducer(oldState: MeetingState = initialState, action: MeetingActions): MeetingState {
     // return produce(state, draftState => {
     switch (action.type) {
         case "@@MEETINGS/LOAD_MEETINGS":
@@ -31,12 +31,19 @@ export function MeetingReducer(state: MeetingState = initialState, action: Meeti
             }
             return newMeeting
         case '@@MEETINGS/DELETE_MEETINGS':
-            const newMeetingForDelete = { ...state }
+            const newMeetingForDelete = { ...oldState }
             delete newMeetingForDelete[action.meetingId]
             return newMeetingForDelete
+        // case '@@MEETINGS/EDIT_MEETINGS':
+        //     const newMeetingForEdit = oldState.meeting.slice();
+        //     newMeetingForEdit[action.meetingId].meetingId = action.meetingId
+        //     return {
+        //         ...oldState,
+        //         meeting: newMeetingForEdit
+        //     }
 
         default:
-            return state
+            return oldState
     }
     // })
 }

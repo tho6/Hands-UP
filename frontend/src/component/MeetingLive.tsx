@@ -35,14 +35,25 @@ export function MeetingLive() {
                         <Col>
                             <div className="meeting-relative-time">
                                 <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
-                                <button className='meeting-live-btn' onClick={() => {
+                                <span>
+                                <button className='meeting-live-edit-btn' onClick={() => {
                                     // dispatch(editMeeting(meeting.id))
                                 }}><i className="fas fa-cog" id="meeting-edit"></i>
                                 </button>
-                                <button className='meeting-live-btn' onClick={() => {
+                                <button className='meeting-live-del-btn' onClick={() => {
                                     dispatch(deleteMeeting(meeting.id))
                                 }}><i className="far fa-times-circle" id="meeting-delete"></i>
                                 </button>
+                                </span>
+                                {/* <button onClick={async () => {
+                                    await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/delete/${id}`, {
+                                        method: "DELETE"
+                                    },
+                                    )
+                                    fetchMeeting(0);
+                                    // (deletedMeetingAction(meeting.id))
+                                }} className='meeting-live-del-btn'><i className="far fa-times-circle" id="meeting-delete"></i>
+                                </button> */}
                             </div>
                         </Col>
                         <Row>

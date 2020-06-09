@@ -8,7 +8,12 @@
     padding: 20px;
 }
 
-.meeting-live-btn{
+.meeting-live-edit-btn{
+    border: none;
+    background-color: inherit;
+}
+
+.meeting-live-del-btn{
     border: none;
     background-color: inherit;
 }
@@ -52,16 +57,16 @@
     // width: 100px;
     color: black;
     // justify-content: space-between;;
-    margin: -15px 0px 0px 20px;
+    margin: -15px 0px 0px -5px;
 }
 
 #meeting-edit{
     color: black;
-    margin: -15px 0px 0px 20px;
+    margin: -15px 0px 0px -5px;
 }
 
 .meeting-relative-time{
-    margin: -20px 0px 20px -20px;
+    margin: -20px -20px 20px -20px;
     font-weight: bold;
     color: #ffffff;
     display: flex;

@@ -8,8 +8,6 @@ import { roomsReducer, RoomState } from './redux/rooms/reducers';
 import { RoomsActions } from './redux/rooms/actions';
 import { AuthState, authReducer } from './redux/auth/reducers';
 import { AuthActions } from './redux/auth/actions';
-// import { MeetingPastActions } from './redux/meetingpast/action';
-// import { MeetingPastState, MeetingPastReducer } from './redux/meetingpast/reducers';
 import { MeetingState, MeetingReducer } from './redux/meeting/reducers';
 import { MeetingActions } from './redux/meeting/action';
 import { ReportState, reportReducer } from './redux/report/reducers';
@@ -37,7 +35,6 @@ export interface RootState {
   questions: QuestionState
   roomsInformation: RoomState
   router: RouterState
-  // meetingsPast: MeetingPastState,
   meetings: MeetingState,
   report: ReportState,
   mainNav: MainNavState
@@ -49,7 +46,6 @@ const reducer = combineReducers<RootState>({
   questions: questionsReducer,
   roomsInformation: roomsReducer,
   router: connectRouter(history),
-  // meetingsPast: MeetingPastReducer,
   meetings: MeetingReducer,
   report: reportReducer,
   mainNav: mainNavReducer

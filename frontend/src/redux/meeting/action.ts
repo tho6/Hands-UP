@@ -14,4 +14,11 @@ export function deletedMeetingAction(meetingId: number) {
     }
 }
 
-export type MeetingActions = ReturnType<typeof loadMeetings> | ReturnType<typeof deletedMeetingAction>;
+export function editedMeetingAction(meetingId: number) {
+    return {
+        type: "@@MEETINGS/EDIT_MEETINGS" as "@@MEETINGS/EDIT_MEETINGS",
+        meetingId
+    }
+}
+
+export type MeetingActions = ReturnType<typeof loadMeetings> | ReturnType<typeof deletedMeetingAction> | ReturnType<typeof editedMeetingAction>;
