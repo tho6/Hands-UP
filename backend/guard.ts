@@ -30,6 +30,7 @@ export function authenticateUserToken(userService: UserService, guestService: Gu
                     guestId: info.guestId,
                     picture: userResult[0].picture
                 }
+                console.log(req.personInfo)
                 next()
                 return
             } catch (error) {

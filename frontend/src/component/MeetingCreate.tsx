@@ -7,6 +7,8 @@ import Container from 'react-bootstrap/Container'
 // import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 interface IProps {
     close: () => void
@@ -14,6 +16,7 @@ interface IProps {
 
 const CreateMeeting: React.FC<IProps> = (props) => {
     const [formState, { text, date, time, radio }] = useFormState();
+    const auth = useSelector((rootState:RootState)=>rootState.auth);
 
     return (
         <Container className="createForm">
@@ -60,6 +63,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json",
+                                        'Authorization': `Bearer ${auth.accessToken}`
                                     },
                                     body: JSON.stringify(formState.values)
                                 })

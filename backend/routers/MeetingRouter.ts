@@ -30,6 +30,7 @@ export class MeetingRouter {
 
     getMeetingByUserId = async (req: Request, res: Response) => {
         try {
+            console.log(req.personInfo?.userId)
             const userId = req.personInfo?.userId!
             // const userId = 1 // change later
             const result = await this.meetingService.getMeetingByUserId(userId);
@@ -51,9 +52,9 @@ export class MeetingRouter {
             const userId = req.personInfo?.userId
             // const userId = 1 // change later
             console.log(req.body.name);
-            const checkMeeting = await this.meetingService.getMeetingByMeetingName(name);
+            const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
-                res.status(400).json({ message: "Meeting name existed" });
+                res.status(400).json({ message: "Meeting code existed" });
                 return;
             }
             if (!userId) {

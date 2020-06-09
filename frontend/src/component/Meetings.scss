@@ -21,10 +21,12 @@
 }
 
 .create-meeting-btn{
+    background-color: rgba(30, 183, 197, 0.6);
+    // background-color: rgb(245, 101, 102);
     font-family: $PrimaryFontStyle;
     position: fixed;
     top: 80px;
-    right: 20px;
+    right: 30px;
     width: 100px;
     height: 100px;
     border-radius: 50%;
