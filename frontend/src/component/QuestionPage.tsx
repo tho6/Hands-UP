@@ -17,7 +17,6 @@ import {
 } from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
-import { useFormState } from 'react-use-form-state';
 import Reply from './Reply';
 import { socket } from '../socket';
 import {
@@ -37,17 +36,21 @@ import FlipMove from 'react-flip-move';
 import {
   successfullyToggleYoutubeLiveStatus,
   successfullyToggleFacebookLiveStatus,
-  successfullyUpdatedRoomConfiguration
+  successfullyUpdatedRoomConfiguration,
+  googlePermissionModal,
+  message
 } from '../redux/rooms/actions';
 import FacebookModal from './FacebookModal';
 import RoomSettingButton from './RoomSetting';
 import { IRoomConfiguration } from '../models/IRoomInformation';
 import ScrollTop from './ScrollTop';
 import TextareaAutosize from 'react-textarea-autosize';
+import YesNoModal from './YesNoModal';
 const QuestionPage: React.FC = () => {
-  const router = useReactRouter<{ id: string; page: string }>();
+  const router = useReactRouter<{ id: string; page: string; error?:string }>();
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
+  const error = router.match.params.error;
   const [peopleCount, setPeopleCount] = useState(0);
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
@@ -74,7 +77,7 @@ const QuestionPage: React.FC = () => {
   const liveStatus = useSelector(
     (rootState: RootState) => rootState.roomsInformation.liveStatus[meetingId]
   );
-  const [formState, { textarea }] = useFormState();
+  const showGooglePermissionModal = useSelector((rootState:RootState)=>rootState.roomsInformation.googlePermissionConfirmModal)
   const [textState, setTextState] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
@@ -216,7 +219,7 @@ const QuestionPage: React.FC = () => {
       );
     };
     const youtubeViewsStop = (msg: string) => {
-      window.alert(msg);
+      dispatch(message(true, msg));
     };
     const youtubeViewsUpdate = (views: string | number) => {
       setYoutubeViews(parseInt(`${views}`));
@@ -301,9 +304,15 @@ const sendEvent = ()=>{
   setTextState('');
   setFiles(null);
 }
+useEffect(()=>{
+  if (error) {
+    dispatch(message(true, 'You may try to reset platform'));
+    // dispatch(push(`/room/${meetingId}/questions/main`));
+  }
+},[error])
   return (
-    <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page">
-      <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center">
+    <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
+      <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
         <div className="d-flex">
           <span className="position-relative">
             {isHost && (
@@ -441,6 +450,7 @@ const sendEvent = ()=>{
         </div>
       </div>
       <div className="question-moderation bottom-border pb-3 d-flex mb-4">
+      <div className='d-flex'>
         <div>
           <button
             className={`util-spacing rounded ${isQuestion[0] && 'is-active'}`}
@@ -469,6 +479,7 @@ const sendEvent = ()=>{
             </button>
           </div>
         )}
+        </div>
         <div className="d-flex">
           {isHost && roomInformation?.canModerate && (
             <div>
@@ -708,6 +719,19 @@ const sendEvent = ()=>{
           }}
           no={() => {
             setFacebookModal(false);
+          }}
+        />
+      )}
+      {showGooglePermissionModal && (
+        <YesNoModal
+          title={'Redirect to Google'}
+          message={'Confirm to redirect to permission page'}
+          yes={() => {
+            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&prompt=force&response_type=code&access_type=offline`
+            window.location.replace(loginLocationWithPrompt)
+          }}
+          no={() => {
+            dispatch(googlePermissionModal(false));
           }}
         />
       )}

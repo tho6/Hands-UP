@@ -15,6 +15,7 @@ import YoutubeCallBack from './component/YoutubeCallBack';
 import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
+import Message from './component/Message';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -41,7 +42,7 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/room/:id/questions/:page/:fb?" exact>
+          <Route path="/room/:id/questions/:page/:error?" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>
@@ -66,7 +67,9 @@ function App() {
           {(isAuthenticated != null && <ReportOverall />)}
           </Route>
         </Switch>
-
+        <span>
+        <Message />
+        </span>
       {/* <FacebookLogin /> */}
       
     </div>

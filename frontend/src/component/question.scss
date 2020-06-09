@@ -75,7 +75,7 @@ $replyTextAreaMultiplier: 0.7;
 %button-font-size{
   @media only screen and (max-width: 576px) {
     padding:5px;
-    font-size:0.6rem;
+    font-size:0.8rem;
   }
 }
 .question-page{
@@ -120,6 +120,15 @@ $replyTextAreaMultiplier: 0.7;
       width: 150px!important;
     }
     // margin-top: ;
+    @media screen and (max-width: 768px){
+        width:140px!important;
+    }
+    @media screen and (max-width: 645px){
+        width:123px!important;
+    }
+    @media screen and (max-width: 576px){
+        width:120px!important;
+    }
   }
   @media screen and (min-width: 850px){
     display: block;
@@ -206,6 +215,7 @@ background-color: inherit;
   @media only screen and (max-width: 576px) {
     margin-left: 0.2rem;
     margin-right: 0.2rem;
+    padding: 5px;
   }
 }
 .to-center {

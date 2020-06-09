@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './RoomSetting.scss';
 import { useFormState } from 'react-use-form-state';
 import { IRoomConfiguration } from '../models/IRoomInformation';
-import Message from './Message';
 import { useDispatch } from 'react-redux';
 import { updateRoom, removeToken } from '../redux/rooms/thunk';
 
@@ -110,7 +109,6 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           </div>
         </div>
       )}
-      <Message />
     </div>
   );
 };

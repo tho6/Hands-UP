@@ -7,14 +7,16 @@ export interface RoomState {
     };
     questionLimitStatus: { [id: string]: { isChecking: boolean, count: number } };
     liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } };
-    message:{status:boolean, message:string}
+    message:{status:boolean, message:string, redirect?:string};
+    googlePermissionConfirmModal:boolean
 }
 
 const initialState: RoomState = {
     roomsInformation: {},
     questionLimitStatus: {},
     liveStatus: {},
-    message:{status:false, message:''}
+    message:{status:false, message:''},
+    googlePermissionConfirmModal:false
 }
 
 export const roomsReducer = /* reducer */ (oldState = initialState, action: RoomsActions) => {
@@ -97,9 +99,17 @@ export const roomsReducer = /* reducer */ (oldState = initialState, action: Room
             }
         case '@@ROOMS/MESSAGE':
             {
+
                 return {
                     ...oldState,
-                    message: {status:action.status, message:action.message}
+                    message: action.redirect?{status:action.status, message:action.message, redirect:action.redirect}:{status:action.status, message:action.message}
+                };
+            }
+        case '@@ROOMS/GOOGLE_PERMISSION_MODAL':
+            {
+                return {
+                    ...oldState,
+                    googlePermissionConfirmModal:action.isShow
                 };
             }
         default:
