@@ -16,6 +16,7 @@ export function loginGuest() {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
+            dispatch(restoreLogin())
             // dispatch(restoreLogin())
             // dispatch(push('/'))
         } else {
@@ -49,6 +50,7 @@ export function loginGoogle(authCode: string) {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
+            dispatch(restoreLogin())
             // dispatch(restoreLogin())
 
             dispatch(push('/'))
@@ -66,7 +68,7 @@ export function restoreLogin() {
         // console.log('restore')
         if (!accessToken || !refreshToken) {
             // dispatch(logout())
-            //dispatch(loginGuest())
+            dispatch(loginGuest())
             return
         }
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/current`, {
@@ -84,7 +86,7 @@ export function restoreLogin() {
         }
         // console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
-        dispatch(loginSuccess(accessToken, refreshToken))
+        // dispatch(loginSuccess(accessToken, refreshToken))
         // console.log('got personInfo/n' + result.message.personInfo)
         return
     }
@@ -97,12 +99,12 @@ export function checkToken() {
         
         if (!accessToken || !refreshToken) {
             // dispatch(logout())
-            dispatch(loginGuest())
+            //dispatch(loginGuest())
             // console.log('checktoken logout')
             return
         }
         const accessTokenDecode: any = jwt.decode(accessToken)
-        const refreshBuffer = 5 * 1000
+        const refreshBuffer = 10 * 1000
         const expiryTimeLeft = accessTokenDecode?.exp * 1000 - new Date().getTime()
         console.log('expiryTimeLeft ' + expiryTimeLeft)
         const genAccessCode = async () => {
@@ -126,14 +128,16 @@ export function checkToken() {
             dispatch(loginSuccess(result.message.accessToken, refreshToken))
             // console.log('gened code')
         }
-        if (expiryTimeLeft < refreshBuffer) {
+        if (expiryTimeLeft <= refreshBuffer) {
             await genAccessCode()
+            dispatch(restoreLogin())
             // console.log('gen immediately')
         } else {
             // console.log('gen else')
 
             const id = setTimeout(async () => {
                 await genAccessCode()
+                dispatch(restoreLogin())
                 clearTimeout(id);
             }, expiryTimeLeft - refreshBuffer)
             timeOutId.push(id)

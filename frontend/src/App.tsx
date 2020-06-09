@@ -26,11 +26,21 @@ function App() {
   //   dispatch(checkToken())
   //   console.log('app dispatch')
   // }, [dispatch,accessToken])
+  // useEffect(() => {
+  //   dispatch(checkToken())
+  //   dispatch(restoreLogin())
+  //   console.log('restore login')
+  // }, [dispatch, accessToken])
   useEffect(() => {
     dispatch(checkToken())
-    dispatch(restoreLogin())
+    // dispatch(restoreLogin())
     console.log('restore login')
   }, [dispatch, accessToken])
+  useEffect(() => {
+    // dispatch(checkToken())
+    dispatch(restoreLogin())
+    console.log('restore login')
+  }, [dispatch])
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   const isMove = useSelector((state:RootState)=>state.mainNav.isOpen)
