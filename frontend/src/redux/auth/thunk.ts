@@ -11,6 +11,9 @@ export function loginGuest() {
         })
         const result = await res.json()
         if (result.success) {
+            for (const id of timeOutId) {
+                clearTimeout(id)
+            }
             const accessToken = result.message.accessToken
             const refreshToken = result.message.refreshToken
             localStorage.setItem('accessToken', accessToken);
