@@ -19,11 +19,11 @@ export class MeetingService {
         }
     }
 
-    async getMeetingByMeetingName(name: string) {
+    async getMeetingByMeetingCode(code: string) {
         try {
             return (
-                await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`,
-                    [name]
+                await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE code = ?`,
+                    [code]
                 )
             ).rows[0] as IMeeting;
         } catch (error) {
@@ -33,10 +33,10 @@ export class MeetingService {
 
     async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number, question_limit: number, can_moderate: boolean, can_upload_file: boolean) {
         try {
-            let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`, [name]);
+            let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE code = ?`, [code]);
             console.log(check.rowCount);
             if (check.rows.length > 0) {
-                throw new Error("Duplicate meeting name");
+                throw new Error("Duplicate meeting code");
             }
             let result = await this.knex.raw(/*SQL*/`INSERT INTO meetings (name, date_time, code, url, owner_id, question_limit, can_moderate, can_upload_file) VALUES (?,?,?,?,?,?,?,?) RETURNING id`,
                 [

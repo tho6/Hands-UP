@@ -148,6 +148,7 @@ app.use('/live', guard, liveRouter.router())
 app.use('/report', guard, reportRouter.router())
 app.use('/rooms', guard, questionRouter.router());
 // app.use(`${API_VERSION}/meetings`, meetingRouter.router())
+// app.use('/meetings', meetingRouter.router())
 app.use('/meetings', userGuard, meetingRouter.router())
 
 /* Socket Io */

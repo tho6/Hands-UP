@@ -34,13 +34,13 @@ export function MeetingPast() {
                     return (<Card className="meetingPastCard">
                         <Card.Body>
                             <Row>
-                                <Col md={9}>
+                                <Col md={10}>
                                     <div><b>{meeting.name}</b></div>
                                     <div>{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
                                     <div>Code: {meeting.code}</div>
                                     <div>Host by: {meeting.owner_id}</div>
                                 </Col>
-                                <Col md={3}>
+                                <Col md={2}>
                                     <Row className="past-icon">
                                         <i className="far fa-calendar-alt fa-3x"></i>
                                     </Row>

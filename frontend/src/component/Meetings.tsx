@@ -19,7 +19,7 @@ function Meetings() {
             <Container className="Container">
                 <Row>
                     <Col md="auto">
-                        <Button variant="success" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
+                        <Button variant="danger" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
                         </Button>{' '}
 
                         <Modal className="popup" show={show} onHide={handleClose} centered>

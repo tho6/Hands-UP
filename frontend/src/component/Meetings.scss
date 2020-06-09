@@ -16,15 +16,17 @@
     left: -1rem;
 }
   
-.Container > div {
-    flex: 1;
-}
+// .Container > div {
+//     flex: 1;
+// }
 
 .create-meeting-btn{
+    // background-color: rgba(30, 183, 197, 0.6); // light blue
+    background-color: rgb(245, 101, 102); // pink
     font-family: $PrimaryFontStyle;
     position: fixed;
     top: 80px;
-    right: 20px;
+    right: 30px;
     width: 100px;
     height: 100px;
     border-radius: 50%;

@@ -36,6 +36,10 @@ export function MeetingLive() {
                             <div className="meeting-relative-time">
                                 <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
                                 <button className='meeting-live-btn' onClick={() => {
+                                    // dispatch(editMeeting(meeting.id))
+                                }}><i className="fas fa-cog" id="meeting-edit"></i>
+                                </button>
+                                <button className='meeting-live-btn' onClick={() => {
                                     dispatch(deleteMeeting(meeting.id))
                                 }}><i className="far fa-times-circle" id="meeting-delete"></i>
                                 </button>
