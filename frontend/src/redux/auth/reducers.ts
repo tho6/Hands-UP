@@ -73,7 +73,8 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
             }
             return {
                 ...state,
-                personInfo: newPeronInfo
+                personInfo: newPeronInfo,
+                isAuthenticated:true
             }
         default:
             return state

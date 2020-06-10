@@ -22,14 +22,8 @@ import Message from './component/Message';
 function App() {
   const dispatch = useDispatch()
   const accessToken = useSelector((state: RootState) => state.auth.accessToken)
-  // useEffect(() => {
-  //   dispatch(checkToken())
-  //   console.log('app dispatch')
-  // }, [dispatch,accessToken])
   useEffect(() => {
     dispatch(checkToken())
-    dispatch(restoreLogin())
-    console.log('restore login')
   }, [dispatch, accessToken])
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
