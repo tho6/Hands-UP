@@ -29,9 +29,9 @@ function Meetings() {
                         <Button variant="danger" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
                         </Button>{' '}
 
-                        <Modal className="popup" show={show} onHide={handleClose} centered>
+                        <Modal className="create-meeting-popup" show={show} onHide={handleClose} centered>
                             <Modal.Header className="modal-header" closeButton>
-                                <Modal.Title><h4>Create meeting</h4>
+                                <Modal.Title className="create-meeting-header"><h4>Create meeting</h4>
                                 </Modal.Title>
                             </Modal.Header>
                             <Modal.Body className="create-meeting-body">

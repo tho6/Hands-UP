@@ -41,7 +41,7 @@ export default function Navbar() {
                 <ul className={isMainNavBarOpen ? "mainNavBarOpen main-navbar-ul" : "main-navbar-ul"}>
                     {userId && (<>
                         <li className="main-navbar-item hover-effect-navlink">
-                            <NavLink activeClassName='hover-effect-navlink' to="/event" onClick={() => dispatch(closeNav())}>Event</NavLink>
+                            <NavLink activeClassName='hover-effect-navlink' to="/meetings" onClick={() => dispatch(closeNav())}>My Meetings</NavLink>
                         </li>
                         <li className="main-navbar-item hover-effect-navlink "><NavLink activeClassName='hover-effect-navlink' to="/report/past" onClick={() => dispatch(closeNav())}>Report</NavLink></li>
                         <li className="main-navbar-item hover-effect-navlink">

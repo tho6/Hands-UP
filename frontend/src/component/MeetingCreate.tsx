@@ -1,16 +1,11 @@
 import React from 'react';
 import { useFormState } from 'react-use-form-state';
+import { useDispatch } from 'react-redux';
+import { createMeeting } from '../redux/meeting/thunk';
+// import { RootState } from '../store';
 //CSS
 import './MeetingCreate.scss'
 import Button from 'react-bootstrap/Button';
-// import Container from 'react-bootstrap/Container'
-// import Row from 'react-bootstrap/Row'
-// import Col from 'react-bootstrap/Col'
-// import Form from 'react-bootstrap/Form'
-import { useDispatch } from 'react-redux';
-// import { RootState } from '../store';
-import { createMeeting } from '../redux/meeting/thunk';
-// import { Row } from 'react-bootstrap';
 
 interface IProps {
     close: () => void
@@ -68,16 +63,21 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Enable moderation</div>
                 <div className='create-meeting-input-answer'>
-                    <label><input {...radio('pre_can_moderate', 1)} />Yes</label>{" "}
-                    <label><input {...radio('pre_can_moderate', 0)} />No</label>
+                    <div className="create-meeting-yes-no">
+                        <label><input {...radio('pre_can_moderate', 1)} />Yes</label>
+                        <label><input {...radio('pre_can_moderate', 0)} />No</label>
+                    </div>
                     {formState.touched.can_moderate && formState.values.can_moderate === '' && <div className="formRemind">Please decide the meeting moderation setting</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Enable file attachments</div>
                 <div className='create-meeting-input-answer'>
-                    <label><input {...radio('pre_can_upload_file', 1)} />Yes</label>{" "}
-                    <label><input {...radio('pre_can_upload_file', 0)} />No</label>
+                    <div className="create-meeting-yes-no">
+
+                        <label><input {...radio('pre_can_upload_file', 1)} />Yes</label>
+                        <label><input {...radio('pre_can_upload_file', 0)} />No</label>
+                    </div>
                     {formState.touched.can_upload_file && formState.values.can_upload_file === '' && <div className="formRemind">Please decide the meeting upload feature setting</div>}
                 </div>
             </div>
