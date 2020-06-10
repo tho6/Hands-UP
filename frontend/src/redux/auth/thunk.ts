@@ -151,7 +151,7 @@ export function checkToken() {
                 await genAccessCode()
                 dispatch(restoreLogin())
                 clearTimeout(id);
-            }, 99999 - refreshBuffer)
+            }, expiryTimeLeft - refreshBuffer)
             timeOutId.push(id)
         }
     }
