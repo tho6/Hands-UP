@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MeetingLive } from './MeetingLive';
 import { MeetingPast } from './MeetingPast';
 import CreateMeeting from './MeetingCreate';
@@ -9,11 +9,18 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import { useDispatch } from 'react-redux';
+import { fetchMeeting } from '../redux/meeting/thunk';
 
 function Meetings() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchMeeting(0))
+    })
     return (
         <>
             <Container className="Container">
@@ -27,7 +34,7 @@ function Meetings() {
                                 <Modal.Title><h4>Create meeting</h4>
                                 </Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>
+                            <Modal.Body className="create-meeting-body">
                                 <CreateMeeting close={handleClose} />
                             </Modal.Body>
                         </Modal>

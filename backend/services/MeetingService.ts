@@ -53,7 +53,8 @@ export class MeetingService {
             console.log(result);
             return result.rows[0].id;
         } catch (error) {
-            throw error;
+            // throw error;
+            console.log(error)
         }
     }
 

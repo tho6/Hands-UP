@@ -11,7 +11,7 @@ export interface IMeeting {
 }
 
 export interface MeetingState {
-    [id: string]: IMeeting
+    [id: string]: IMeeting,
 }
 
 const initialState: MeetingState = {
@@ -25,7 +25,7 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
         case "@@MEETINGS/LOAD_MEETINGS":
             // if (action.meetings.length === 0) return state
             const newMeeting: MeetingState = {}
-            console.log(action.meetings)
+            // console.log(action.meetings)
             for (const meeting of action.meetings) {
                 newMeeting[meeting.id] = meeting
             }
@@ -34,35 +34,24 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
             const newMeetingForDelete = { ...oldState }
             delete newMeetingForDelete[action.meetingId]
             return newMeetingForDelete
+
+        // case '@@MEETINGS/CREATE_MEETINGS':
+        //     const newMeetingForCreate = {...oldState.meeting};
+        //         return {
+        //             ...oldState,
+        //             meeting: action.meeting
+        //         }
         // case '@@MEETINGS/EDIT_MEETINGS':
-        //     const newMeetingForEdit = oldState.meeting.slice();
-        //     newMeetingForEdit[action.meetingId].meetingId = action.meetingId
+        //     const newMeetingForEdit = { oldState.meeting }
+        //     const newContent = action.content;
+        //     newMeetingForEdit[action.i].content = newContent;
         //     return {
         //         ...oldState,
         //         meeting: newMeetingForEdit
         //     }
 
-        // case '@@MEETINGS/CREATE_MEETINGS':
-        //     {
-        //         const newMeetingForCreate = { ...oldState }
-        //         newMeeting[action.meetingId]=action.meetingId;
-        //         const newMeetingByMeetingId = { ...oldState.meetingByMeetingId };
-        //         const newArr =  oldState.meetingByMeetingId[action.question.meetingId]||[];
-        //         newArr.push(action.meetingId);
-        //         newMeetingByMeetingId[action.meetingId] = newArr
-
-        //         return {
-        //             ...oldState,
-        //             meetings: newMeeting,
-        //             meetingsByMeetingId: newMeetingByMeetingId
-        //         };
-        //     }
-
-
-
-
         default:
-            return oldState
+            return oldState;
     }
     // })
 }

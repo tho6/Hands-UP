@@ -17,8 +17,10 @@ import moment from 'moment';
 export function MeetingPast() {
     const meetings = useSelector((state: RootState) => state.meetings)
     // const dispatch = useDispatch();
+    // console.log(meetings)
     const arrMeetings = []
     for (const meetingId in meetings) {
+        // console.log(meetings[meetingId])
         const duration = (Date.now() - new Date(meetings[meetingId].date_time).getTime())
         if (duration >= 43200000) {
             arrMeetings.push(meetings[meetingId])
@@ -32,7 +34,7 @@ export function MeetingPast() {
             <h2 className="headline"><b>Past</b></h2>
             <div className="meetingPast-content">
                 {arrMeetings.map((meeting) => {
-                    return (<Card className="meetingPastCard">
+                    return (<Card key={meeting.id} className="meetingPastCard">
                         <Card.Body>
                             <Row>
                                 <Col md={10}>
