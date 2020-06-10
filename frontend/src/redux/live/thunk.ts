@@ -1,6 +1,8 @@
 import { RootState, ThunkDispatch } from "../../store"
+import { push } from "connected-react-router"
+import { message } from "../rooms/actions"
 
-export function sendFacebookCode(authCode: string){
+export function sendFacebookCode(authCode: string, meetingId:string, liveLoc:string, pageId?:string){
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/token`, {
             method: 'POST',
@@ -13,7 +15,11 @@ export function sendFacebookCode(authCode: string){
             })
         })
         const result = await res.json() //success =true?
-        console.log(result) // this
+        if(result.success === true){
+            dispatch(push(`/room/${meetingId}/questions/main/continue/${liveLoc}+${pageId==='no'?'':pageId}`))
+        }else{
+            dispatch(message(true, result.message));
+        }
 
     }
 }

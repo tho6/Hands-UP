@@ -21,6 +21,7 @@ export class LiveRouter {
         router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService, 'youtube'), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.put('/fb/comments/:meetingId([0-9]+)', this.stopGettingFacebookComments)
+        router.put('/fb/comments/:meetingId([0-9]+)/on', this.startGettingFacebookComments)
         router.get('/status/:meetingId', this.checkStatus)
         router.delete('/token/:platform', this.removeToken)
         return router
@@ -80,7 +81,10 @@ export class LiveRouter {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
-            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) {
+                this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+                return res.status(200).json({ success: true, message: "Connected to Facebook Comments Successfully" })
+            }
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
                 if (!this.eventSourceExistence[`${req.body.meetingId}`].facebook) return;
@@ -91,6 +95,7 @@ export class LiveRouter {
             const checkLiveStatus = setInterval(async () => {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=status&access_token=${accessToken}`)
                 const result = await fetchRes.json()
+                console.log('viewsCounterFB:'+viewsCounterFB)
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
                     console.log('live closed')
@@ -100,7 +105,7 @@ export class LiveRouter {
                 }
                 viewsCounterFB += 1;
                 if(viewsCounterFB ===4) {
-                    this.fetchFBViews;
+                    this.fetchFBViews(req.personInfo?.userId!,req.body.meetingId, liveVideoId, accessToken);
                     viewsCounterFB = 0;
                 }
             }, 5000)
@@ -131,10 +136,11 @@ export class LiveRouter {
                 res.status(500).json({ success: false, message: 'internal error' })
         }
     }
-    fetchFBViews = async (userId:number, meetingId:number, liveVideoId: string, accessToken: string) => {
+    fetchFBViews = async (userId:number, meetingId:number, liveVideoId: number, accessToken: string) => {
         try{
             const fetchViewRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=live_views&access_token=${accessToken}`)
             const liveViews = (await fetchViewRes.json()).live_views
+            console.log('facebook live views:'+liveViews);
             if(!this.viewsTimer[`${meetingId}`]) return;
             this.viewsTimer[`${meetingId}`].facebook = liveViews;
             this.io.in('host:' + userId).emit('facebook-views-update', liveViews);
@@ -313,9 +319,11 @@ export class LiveRouter {
     checkStatus = async (req: Request, res: Response) => {
         try {
             const meetingId = req.params.meetingId;
-            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
-            const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];
-            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false } });
+            console.log('checkLiveStatus');
+            console.log(this.eventSourceExistence[`${meetingId}`]);
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: null, youtube: false } });
+            const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];  
+            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook===undefined?null:facebook} });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
@@ -340,6 +348,18 @@ export class LiveRouter {
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
             this.eventSourceExistence[`${meetingId}`].facebook = false;
             return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from facebook' });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
+            return;
+        }
+    }
+    startGettingFacebookComments = async (req: Request, res: Response) => {
+        try {
+            const meetingId = req.params.meetingId;
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
+            this.eventSourceExistence[`${meetingId}`].facebook = true;
+            return res.status(200).json({ status: true, message: 'Successfully start fetching comments from facebook' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });

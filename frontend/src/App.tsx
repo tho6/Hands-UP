@@ -16,6 +16,7 @@ import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
 import Message from './component/Message';
+import { ZoomViewsChart } from './component/ZoomViewsChart';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -36,7 +37,7 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/room/:id/questions/:page/:error?" exact>
+          <Route path="/room/:id/questions/:page/:error?/:fbcontinue?" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route path="/testing/:lastXMeetings" exact>
           {(isAuthenticated != null && <ReportOverall />)}
+          </Route>
+          <Route path="/zoom" exact>
+          {(isAuthenticated != null && <ZoomViewsChart />)}
           </Route>
         </Switch>
         <span>

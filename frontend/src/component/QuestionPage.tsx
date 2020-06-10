@@ -13,7 +13,8 @@ import {
   fetchRoomInformation,
   toggleYoutubeLiveStatus,
   getLiveStatus,
-  toggleFacebookLiveStatus
+  toggleFacebookLiveStatus,
+  turnOnFacebookAgain
 } from '../redux/rooms/thunk';
 import { fetchQuestions, addQuestion } from '../redux/questions/thunk';
 import { push } from 'connected-react-router';
@@ -47,10 +48,11 @@ import ScrollTop from './ScrollTop';
 import TextareaAutosize from 'react-textarea-autosize';
 import YesNoModal from './YesNoModal';
 const QuestionPage: React.FC = () => {
-  const router = useReactRouter<{ id: string; page: string; error?:string }>();
+  const router = useReactRouter<{ id: string; page: string; error?:string; fbcontinue?:string }>();
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
   const error = router.match.params.error;
+  const fbcontinue = router.match.params.fbcontinue;
   const [peopleCount, setPeopleCount] = useState(0);
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
@@ -312,6 +314,12 @@ useEffect(()=>{
     dispatch(message(true, 'We need your permission'));
   }else if (error === 'facebook-modal'){
       setFacebookModal(true);
+  }else if (error === 'continue'){
+    console.log(fbcontinue);
+    const arr = fbcontinue?.split("+")!
+    console.log(arr);
+    if(arr[0]==='user')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0]));
+    if(arr[0]==='page')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0],arr[1]));
   }
 },[error, dispatch])
   return (
@@ -362,8 +370,13 @@ useEffect(()=>{
                   );
                   return;
                 }
-                const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+facebook-modal&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
-                window.location.replace(loginLocationWithPrompt);
+                if(liveStatus?.facebook === false){
+                  dispatch(turnOnFacebookAgain(parseInt(meetingId)));
+                  return;
+                }
+                setFacebookModal(true);
+                // const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+facebook-modal&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                // window.location.replace(loginLocationWithPrompt);
               }}
             >
               <i className="fab fa-facebook-f fa-lg"></i>{' '}

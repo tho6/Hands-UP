@@ -15,11 +15,10 @@ export default function FacebookLoginCallBack() {
             dispatch(push(`/room/${arr[0]}/questions/main/facebook-error`))
 
         }else{
-            dispatch(sendFacebookCode(params.get('code')!));
-            console.log(params.get('code')!)
             const arr = state?.split(" ")!
-            dispatch(push(`/room/${arr[0]}/questions/main/${arr[1]}`))
-            
+            dispatch(sendFacebookCode(params.get('code')!,arr[0],arr[1], arr[2]));
+            console.log(params.get('code')!)
+            // dispatch(push(`/room/${arr[0]}/questions/main/${arr[1]}`))      
         }
 
     }, [dispatch])
