@@ -47,7 +47,7 @@ export function successfullyToggleFacebookLiveStatus(meetingId: number, isFetch:
         meetingId
     }
 }
-export function loadInitialLiveStatus(meetingId: number, facebook: boolean, youtube: boolean) {
+export function loadInitialLiveStatus(meetingId: number, facebook: boolean|null, youtube: boolean) {
     return {
         type: '@@ROOMS/LOAD_INITIAL_LIVE_STATUS' as '@@ROOMS/LOAD_INITIAL_LIVE_STATUS',
         facebook,

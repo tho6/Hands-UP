@@ -36,7 +36,7 @@ function App() {
           <Route path="/" exact>
           <Home />
           </Route>
-          <Route path="/room/:id/questions/:page/:error?" exact>
+          <Route path="/room/:id/questions/:page/:error?/:fbcontinue?" exact>
           {(isAuthenticated != null &&<QuestionPage />)}
           </Route>
           <Route path="/meetings" exact>

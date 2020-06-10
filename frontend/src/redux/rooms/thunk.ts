@@ -98,7 +98,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                 } else {
                     dispatch(message(true,result.message));
                     if (res.status === 401) {
-                        const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                        const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+${liveLoc}+${liveLoc==='user'?'no':pageId}&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
                         window.location.replace(loginLocationWithPrompt)
                     }
                     return;
@@ -118,6 +118,30 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
                 dispatch(successfullyToggleFacebookLiveStatus(meetingId, false));
                 return;
             }
+        } catch (e) {
+            window.alert(e.message);
+            console.error(e);
+            return;
+        }
+    }
+}
+export function turnOnFacebookAgain(meetingId: number) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/fb/comments/${meetingId}/on`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getState().auth.accessToken}`
+                        }
+                    });
+                const result = await res.json();
+                if (result.success) {
+                    dispatch(successfullyToggleFacebookLiveStatus(meetingId, true));
+                } else {
+                    dispatch(message(true,result.message));
+                }
         } catch (e) {
             window.alert(e.message);
             console.error(e);

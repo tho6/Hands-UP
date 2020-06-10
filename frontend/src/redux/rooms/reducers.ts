@@ -6,7 +6,7 @@ export interface RoomState {
         [id: string]: IRoomInformation
     };
     questionLimitStatus: { [id: string]: { isChecking: boolean, count: number } };
-    liveStatus: { [id: string]: { facebook: boolean, youtube: boolean } };
+    liveStatus: { [id: string]: { facebook: boolean|null, youtube: boolean } };
     message:{status:boolean, message:string, redirect?:string};
     googlePermissionConfirmModal:boolean
 }
