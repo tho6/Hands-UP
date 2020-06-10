@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchMeeting, deleteMeeting } from '../redux/meeting/thunk';
+import { deleteMeeting } from '../redux/meeting/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meeting/reducers';
 import moment from 'moment'
@@ -22,38 +22,26 @@ export function MeetingLive() {
             arrMeetings.push(meetings[meetingId])
         }
     }
-    useEffect(() => {
-        dispatch(fetchMeeting(0))
-    }, [dispatch])
 
     return (
         <div>
             <h2 className="headline"><b>Current</b></h2>
             {arrMeetings.map((meeting) => {
-                return (<Card className="meetingLiveCard">
+                return (<Card key={meeting.id} className="meetingLiveCard">
                     <Card.Body>
                         <Col>
                             <div className="meeting-relative-time">
                                 <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
                                 <span>
-                                <button className='meeting-live-edit-btn' onClick={() => {
-                                    // dispatch(editMeeting(meeting.id))
-                                }}><i className="fas fa-cog" id="meeting-edit"></i>
-                                </button>
-                                <button className='meeting-live-del-btn' onClick={() => {
-                                    dispatch(deleteMeeting(meeting.id))
-                                }}><i className="far fa-times-circle" id="meeting-delete"></i>
-                                </button>
+                                    <button className='meeting-live-edit-btn' onClick={() => {
+                                        // dispatch(editMeeting(meeting.id))
+                                    }}><i className="fas fa-cog" id="meeting-edit"></i>
+                                    </button>
+                                    <button className='meeting-live-del-btn' onClick={() => {
+                                        dispatch(deleteMeeting(meeting.id))
+                                    }}><i className="far fa-times-circle" id="meeting-delete"></i>
+                                    </button>
                                 </span>
-                                {/* <button onClick={async () => {
-                                    await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/delete/${id}`, {
-                                        method: "DELETE"
-                                    },
-                                    )
-                                    fetchMeeting(0);
-                                    // (deletedMeetingAction(meeting.id))
-                                }} className='meeting-live-del-btn'><i className="far fa-times-circle" id="meeting-delete"></i>
-                                </button> */}
                             </div>
                         </Col>
                         <Row>

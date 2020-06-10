@@ -44,12 +44,13 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date, time, code, url, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
+            const { name, date, time, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
             const date_time = new Date(date + ' ' + time)
             console.log(date_time);
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
             const userId = req.personInfo?.userId
+            const fake_url = req.body.code;
             // const userId = 1 // change later
             console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
@@ -61,7 +62,7 @@ export class MeetingRouter {
             if (!userId) {
                 return res.status(400).json({ message: "UserId not found" });
             }
-            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, userId, question_limit, can_moderate, can_upload_file);
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, fake_url, userId, question_limit, can_moderate, can_upload_file);
             return res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);

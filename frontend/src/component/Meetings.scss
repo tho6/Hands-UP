@@ -38,6 +38,17 @@
     z-index: 10;
 }
 
-.popup {
+.create-meeting-popup {
     background-color: $SecondaryTextColor;
+    // padding: 0px;
+}
+
+.create-meeting-header{
+    text-align: center;
+}
+
+.create-meeting-body{
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
 }
