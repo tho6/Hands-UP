@@ -7,7 +7,7 @@ import Meetings from './component/Meetings';
 import GoogleLoginCallBack from './component/GoogleLoginCallBack';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState } from './store';
-import { checkToken, restoreLogin } from './redux/auth/thunk';
+import { checkToken } from './redux/auth/thunk';
 import FacebookLoginCallBack from './component/FacebookLoginCallBack';
 import Home from './component/Home';
 import { Report } from './component/Report';

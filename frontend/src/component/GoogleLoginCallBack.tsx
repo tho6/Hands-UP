@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginGoogle } from '../redux/auth/thunk'
-import { push } from 'connected-react-router'
 
 export default function GoogleLoginCallBack() {
     const dispatch = useDispatch()

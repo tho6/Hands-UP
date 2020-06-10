@@ -16,7 +16,7 @@ export default function Home() {
                     <span className="home-background-enter-button-div"><Button variant="info" className="home-background-enter-button">Enter</Button></span>
                 </div>
                 <div className="home-background-image-container">
-                    <img src='/test-bg.jpg' className="home-background-image"></img>
+                    <img src='/test-bg.jpg' alt='icon' className="home-background-image"></img>
                 </div>
             </div>
         </div>
