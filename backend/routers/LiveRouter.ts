@@ -80,7 +80,10 @@ export class LiveRouter {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
-            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) return this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) {
+                this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+                return res.status(200).json({ success: true, message: "Connected to Facebook Comments Successfully" })
+            }
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
                 if (!this.eventSourceExistence[`${req.body.meetingId}`].facebook) return;
@@ -91,6 +94,7 @@ export class LiveRouter {
             const checkLiveStatus = setInterval(async () => {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=status&access_token=${accessToken}`)
                 const result = await fetchRes.json()
+                console.log('viewsCounterFB:'+viewsCounterFB)
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
                     console.log('live closed')
@@ -314,8 +318,8 @@ export class LiveRouter {
         try {
             const meetingId = req.params.meetingId;
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
-            const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];
-            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false } });
+            const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];  
+            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false} });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
