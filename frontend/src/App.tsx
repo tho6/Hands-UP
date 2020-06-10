@@ -16,6 +16,7 @@ import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
 import Message from './component/Message';
+import { ZoomViewsChart } from './component/ZoomViewsChart';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -59,6 +60,9 @@ function App() {
           </Route>
           <Route path="/testing/:lastXMeetings" exact>
           {(isAuthenticated != null && <ReportOverall />)}
+          </Route>
+          <Route path="/zoom" exact>
+          {(isAuthenticated != null && <ZoomViewsChart />)}
           </Route>
         </Switch>
         <span>

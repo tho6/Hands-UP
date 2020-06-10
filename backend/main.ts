@@ -144,8 +144,8 @@ const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userGuard, adminGuard, userRouter.router())
 app.use('/guest', userGuard, adminGuard, guestRouter.router())
-app.use('/live', guard, liveRouter.router())
-app.use('/report', guard, reportRouter.router())
+app.use('/live', userGuard, liveRouter.router())
+app.use('/report', userGuard, reportRouter.router())
 app.use('/rooms', guard, questionRouter.router());
 // app.use(`${API_VERSION}/meetings`, meetingRouter.router())
 // app.use('/meetings', meetingRouter.router())

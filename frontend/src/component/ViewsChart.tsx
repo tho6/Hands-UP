@@ -72,6 +72,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
             legendOffset: -40,
             legendPosition: 'middle'
         }}
+        enableGridX={false}
         colors={["rgba(216, 44, 38,0.86)","#4267B2","rgba(30, 183, 197, 0.808)"]}
         lineWidth={6}
         pointSize={9}
@@ -81,7 +82,31 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
         pointLabel="y"
         pointLabelYOffset={-12}
         enableSlices="x"
-        useMesh={true}
+        useMesh={false}
+        sliceTooltip={({ slice }) => {
+          return (
+              <div
+                  style={{
+                      background: 'white',
+                      padding: '9px 12px',
+                      border: '1px solid #ccc',
+                  }}
+              >
+                  <div>x: {slice.id}</div>
+                  {slice.points.map(point => (
+                      <div
+                          key={point.id}
+                          style={{
+                              color: point.serieColor,
+                              padding: '3px 0',
+                          }}
+                      >
+                          <strong>{point.serieId}</strong> [{point.data.yFormatted}]
+                      </div>
+                  ))}
+              </div>
+          )
+      }}
         legends={[
             {
                 anchor: 'bottom-right',

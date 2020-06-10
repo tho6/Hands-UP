@@ -60,6 +60,7 @@ export class ReportService {
 
     getMeetingIdsById = async (id: number) => {
         try {
+            console.log(id)
             const result = await this.knex.raw(/*SQL*/`SELECT id from meetings WHERE owner_id = (?)`, [id])
             return result.rows
         } catch (error) {
