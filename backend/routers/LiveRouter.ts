@@ -105,7 +105,7 @@ export class LiveRouter {
                 }
                 viewsCounterFB += 1;
                 if(viewsCounterFB ===4) {
-                    this.fetchFBViews;
+                    this.fetchFBViews(req.personInfo?.userId!,req.body.meetingId, liveVideoId, accessToken);
                     viewsCounterFB = 0;
                 }
             }, 5000)
@@ -136,10 +136,11 @@ export class LiveRouter {
                 res.status(500).json({ success: false, message: 'internal error' })
         }
     }
-    fetchFBViews = async (userId:number, meetingId:number, liveVideoId: string, accessToken: string) => {
+    fetchFBViews = async (userId:number, meetingId:number, liveVideoId: number, accessToken: string) => {
         try{
             const fetchViewRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=live_views&access_token=${accessToken}`)
             const liveViews = (await fetchViewRes.json()).live_views
+            console.log('facebook live views:'+liveViews);
             if(!this.viewsTimer[`${meetingId}`]) return;
             this.viewsTimer[`${meetingId}`].facebook = liveViews;
             this.io.in('host:' + userId).emit('facebook-views-update', liveViews);
@@ -318,7 +319,9 @@ export class LiveRouter {
     checkStatus = async (req: Request, res: Response) => {
         try {
             const meetingId = req.params.meetingId;
-            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
+            console.log('checkLiveStatus');
+            console.log(this.eventSourceExistence[`${meetingId}`]);
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: null, youtube: false } });
             const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];  
             return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook===undefined?null:facebook} });
         } catch (e) {

@@ -66,7 +66,7 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 }
             } else {
                 //change the counter at liveRouter to false
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT' });
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } });
                 const result = await res.json();
                 if (!result.status) throw dispatch(message(true, result.message));
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
@@ -128,7 +128,7 @@ export function toggleFacebookLiveStatus(meetingId: number, isFetch: boolean, li
 export function turnOnFacebookAgain(meetingId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/fb/comments/${meetingId}/on`,
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/fb/comments/${meetingId}/on`,
                     {
                         method: 'PUT',
                         headers: {
@@ -137,7 +137,7 @@ export function turnOnFacebookAgain(meetingId: number) {
                         }
                     });
                 const result = await res.json();
-                if (result.success) {
+                if (result.status) {
                     dispatch(successfullyToggleFacebookLiveStatus(meetingId, true));
                 } else {
                     dispatch(message(true,result.message));

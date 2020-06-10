@@ -52,7 +52,7 @@ const QuestionPage: React.FC = () => {
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
   const error = router.match.params.error;
-  const fbcontinue = router.match.params.error;
+  const fbcontinue = router.match.params.fbcontinue;
   const [peopleCount, setPeopleCount] = useState(0);
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
@@ -316,7 +316,8 @@ useEffect(()=>{
       setFacebookModal(true);
   }else if (error === 'continue'){
     console.log(fbcontinue);
-    const arr = fbcontinue?.split(" ")!
+    const arr = fbcontinue?.split("+")!
+    console.log(arr);
     if(arr[0]==='user')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0]));
     if(arr[0]==='page')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0],arr[1]));
   }
