@@ -20,7 +20,7 @@ export function loginGuest() {
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
             dispatch(restoreLogin())
-            // dispatch(push('/'))
+            //dispatch(push('/'))
         } else {
             dispatch(loginFailed('Failed to login'))
         }
@@ -53,8 +53,8 @@ export function loginGoogle(authCode: string) {
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
             dispatch(restoreLogin())
-            // dispatch(push('/'));
-window.location.replace('/');
+            dispatch(push('/'));
+            // window.location.replace('/');
         } 
     }
 }
@@ -128,6 +128,7 @@ export function checkToken() {
                 await genAccessCode()
                 clearTimeout(id);
             }, expiryTimeLeft - refreshBuffer)
+            timeOutId.push(id)
         }
     }
 }
@@ -150,8 +151,11 @@ export function logoutAccount() {
         if (result.success) {
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')
+            dispatch(push('/'))
+            dispatch(loginGuest())
+            
             // dispatch(logout())
-window.location.replace('/');
+// window.location.replace('/');
             return
             // return window.alert(result.message)
         } else {
