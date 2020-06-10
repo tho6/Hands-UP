@@ -21,6 +21,7 @@ export class LiveRouter {
         router.get('/yt/comments/:meetingId([0-9]+)', checkThirdPartyPlatformToken(this.userService, 'youtube'), this.checkYTLiveBroadcast)
         router.put('/yt/comments/:meetingId([0-9]+)', this.stopGettingYoutubeComments)
         router.put('/fb/comments/:meetingId([0-9]+)', this.stopGettingFacebookComments)
+        router.put('/fb/comments/:meetingId([0-9]+)/on', this.startGettingFacebookComments)
         router.get('/status/:meetingId', this.checkStatus)
         router.delete('/token/:platform', this.removeToken)
         return router
@@ -319,7 +320,7 @@ export class LiveRouter {
             const meetingId = req.params.meetingId;
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: false, youtube: false } });
             const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];  
-            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook || false} });
+            return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook===undefined?null:facebook} });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
@@ -344,6 +345,18 @@ export class LiveRouter {
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
             this.eventSourceExistence[`${meetingId}`].facebook = false;
             return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from facebook' });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ status: false, message: e.message });
+            return;
+        }
+    }
+    startGettingFacebookComments = async (req: Request, res: Response) => {
+        try {
+            const meetingId = req.params.meetingId;
+            if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
+            this.eventSourceExistence[`${meetingId}`].facebook = true;
+            return res.status(200).json({ status: true, message: 'Successfully start fetching comments from facebook' });
         } catch (e) {
             console.error(e);
             res.status(500).json({ status: false, message: e.message });
