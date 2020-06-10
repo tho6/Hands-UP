@@ -1,6 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadedRoomInformation, successfullyToggleYoutubeLiveStatus, loadInitialLiveStatus, successfullyToggleFacebookLiveStatus, message, googlePermissionModal } from "./actions";
 import { IRoomConfiguration } from "../../models/IRoomInformation";
+import { push } from "connected-react-router";
 
 // Thunk Action
 export function fetchRoomInformation(meetingId: number) {
@@ -168,6 +169,21 @@ export function removeToken(platform: string) {
             });
             const result = await res.json();
             dispatch(message(true, result.status?'Successfully reset platform!':'Fail to reset platform! Try again Later.'))
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+}
+export function convertCodeToId(code: string) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/convert?code=${code}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
+            const result = await res.json();
+            if (result.status) {
+                dispatch(push(`/room/${result.message}/questions/main`));
+            } else {
+                dispatch(message(true,result.message));
+            }
         } catch (e) {
             window.alert(e.message);
         }

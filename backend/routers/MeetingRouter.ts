@@ -136,4 +136,16 @@ export class MeetingRouter {
             return;
         }
     }
+    convertCodeToId = async (req: Request, res: Response) => {
+        try {
+            if(typeof req.query.code !== typeof 'abc') return res.status(400).json({status:true, message:'Invalid param'});
+            const roomId = await this.meetingService.convertCodeToRoomId(req.query.code as string);
+                res.status(200).json({ status: true, message: roomId });
+                return;
+        } catch (err) {
+            console.log(err.message);
+            res.status(404).json({ status: false, message: 'Room not found!' });
+            return;
+        }
+    }
 }

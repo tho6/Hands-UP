@@ -81,4 +81,11 @@ export class MeetingService {
         if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
         return true;
     }
+    async convertCodeToRoomId(code:string) {
+        // console.log(id, roomConfiguration)
+        const sql = 'select id from meetings where code = ?'
+        const result = await this.knex.raw(sql, [code]);
+        if (result.rowCount !== 1) throw new Error('No room is found!');
+        return result.rows[0].id;
+    }
 }
