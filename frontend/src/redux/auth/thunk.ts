@@ -19,8 +19,8 @@ export function loginGuest() {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
-            // dispatch(restoreLogin())
-            // dispatch(push('/'))
+            dispatch(restoreLogin())
+            //dispatch(push('/'))
         } else {
             dispatch(loginFailed('Failed to login'))
         }
@@ -52,13 +52,10 @@ export function loginGoogle(authCode: string) {
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
-            // dispatch(restoreLogin())
-
-            dispatch(push('/'))
-        } else {
-            window.alert(result.message)
-            dispatch(loginFailed('Failed to login'))
-        }
+            dispatch(restoreLogin())
+            dispatch(push('/'));
+            // window.location.replace('/');
+        } 
     }
 }
 
@@ -68,8 +65,7 @@ export function restoreLogin() {
         const refreshToken = getState().auth.refreshToken
         // console.log('restore')
         if (!accessToken || !refreshToken) {
-            // dispatch(logout())
-            //dispatch(loginGuest())
+            window.alert('no tokenssssss')
             return
         }
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/current`, {
@@ -81,14 +77,11 @@ export function restoreLogin() {
         })
         const result = await res.json()
         if (!result.success) {
-            // window.alert(result.message)
+            window.alert(result.message)
             // dispatch(logout())
             return
         }
-        // console.log(result)
         dispatch(getPersonInfo(result.message.personInfo))
-        dispatch(loginSuccess(accessToken, refreshToken))
-        // console.log('got personInfo/n' + result.message.personInfo)
         return
     }
 }
@@ -99,13 +92,13 @@ export function checkToken() {
         const refreshToken = getState().auth.refreshToken
         
         if (!accessToken || !refreshToken) {
-            // dispatch(logout())
             dispatch(loginGuest())
-            // console.log('checktoken logout')
             return
         }
-        const accessTokenDecode: any = jwt.decode(accessToken)
-        const refreshBuffer = 4 * 1000
+        const accessTokenDecode: any = jwt.decode(accessToken);
+        console.log('accessTokenDecodes');
+        console.log(accessTokenDecode);
+        const refreshBuffer = 4 * 1000;
         const expiryTimeLeft = accessTokenDecode?.exp * 1000 - new Date().getTime()
         console.log('expiryTimeLeft ' + expiryTimeLeft)
         const genAccessCode = async () => {
@@ -125,16 +118,12 @@ export function checkToken() {
                 dispatch(loginGuest())
             }
             localStorage.setItem('accessToken', result.message.accessToken)
-            
             dispatch(loginSuccess(result.message.accessToken, refreshToken))
-            // console.log('gened code')
         }
         if (expiryTimeLeft < refreshBuffer) {
             await genAccessCode()
-            // console.log('gen immediately')
         } else {
-            // console.log('gen else')
-            console.log('set time out');
+           dispatch(restoreLogin());
             const id = setTimeout(async () => {
                 await genAccessCode()
                 clearTimeout(id);
@@ -148,9 +137,6 @@ export function logoutAccount() {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         const refreshToken = getState().auth.refreshToken
         // const accessToken = getState().auth.accessToken
-        for (const id of timeOutId) {
-            clearTimeout(id)
-        }
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/logout`, {
             method: 'DELETE',
             headers: {
@@ -163,11 +149,13 @@ export function logoutAccount() {
 
         const result = await res.json();
         if (result.success) {
-        //     // localStorage.removeItem('accessToken')
-        //     // localStorage.removeItem('refreshToken')
-            // dispatch(logout())
-            dispatch(loginGuest())
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
             dispatch(push('/'))
+            dispatch(loginGuest())
+            
+            // dispatch(logout())
+// window.location.replace('/');
             return
             // return window.alert(result.message)
         } else {

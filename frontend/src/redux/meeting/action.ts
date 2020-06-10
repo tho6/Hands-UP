@@ -7,18 +7,25 @@ export function loadMeetings(meetings: IMeeting[]) {
     }
 }
 
-export function deletedMeetingAction(meetingId: number) {
+export function deleteMeetingAction(meetingId: number) {
     return {
         type: "@@MEETINGS/DELETE_MEETINGS" as "@@MEETINGS/DELETE_MEETINGS",
         meetingId
     }
 }
 
-export function editedMeetingAction(meetingId: number) {
+export function editMeetingAction(meetingId: number) {
     return {
         type: "@@MEETINGS/EDIT_MEETINGS" as "@@MEETINGS/EDIT_MEETINGS",
         meetingId
     }
 }
 
-export type MeetingActions = ReturnType<typeof loadMeetings> | ReturnType<typeof deletedMeetingAction> | ReturnType<typeof editedMeetingAction>;
+export function createMeetingAction(meetingId: number) {
+    return {
+        type: "@@MEETINGS/CREATE_MEETINGS" as "@@MEETINGS/CREATE_MEETINGS",
+        meetingId
+    }
+}
+
+export type MeetingActions = ReturnType<typeof loadMeetings> | ReturnType<typeof deleteMeetingAction> | ReturnType<typeof editMeetingAction> | ReturnType<typeof createMeetingAction>;

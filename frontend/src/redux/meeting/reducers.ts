@@ -42,6 +42,25 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
         //         meeting: newMeetingForEdit
         //     }
 
+        // case '@@MEETINGS/CREATE_MEETINGS':
+        //     {
+        //         const newMeetingForCreate = { ...oldState }
+        //         newMeeting[action.meetingId]=action.meetingId;
+        //         const newMeetingByMeetingId = { ...oldState.meetingByMeetingId };
+        //         const newArr =  oldState.meetingByMeetingId[action.question.meetingId]||[];
+        //         newArr.push(action.meetingId);
+        //         newMeetingByMeetingId[action.meetingId] = newArr
+
+        //         return {
+        //             ...oldState,
+        //             meetings: newMeeting,
+        //             meetingsByMeetingId: newMeetingByMeetingId
+        //         };
+        //     }
+
+
+
+
         default:
             return oldState
     }

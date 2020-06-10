@@ -4,8 +4,7 @@ import Backdrop from './Backdrop'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { NavLink } from 'react-router-dom'
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import { inherits } from 'util'
+import { CSSTransition } from 'react-transition-group'
 
 export const ReportSideDrawer = () => {
     const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
@@ -16,7 +15,7 @@ export const ReportSideDrawer = () => {
     useEffect(() => {
         // if(!dropdownRef.current?.firstChild)
        setMenuHeight(dropdownRef.current?.firstChild!.offsetHeight)
-    }, [])
+    }, [dropdownRef])
   
     function calcHeight(el:any) {
       const height = el.offsetHeight;

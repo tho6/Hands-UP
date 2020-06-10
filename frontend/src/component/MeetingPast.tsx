@@ -1,6 +1,7 @@
 import React from 'react';
 // import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 // import { fetchMeetingPast } from '../redux/meetingpast/thunk';
 import { RootState } from '../store';
 // import { IMeetingPast } from '../redux/meetingpast/reducers';
@@ -15,7 +16,7 @@ import moment from 'moment';
 // const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
 export function MeetingPast() {
     const meetings = useSelector((state: RootState) => state.meetings)
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const arrMeetings = []
     for (const meetingId in meetings) {
         const duration = (Date.now() - new Date(meetings[meetingId].date_time).getTime())
