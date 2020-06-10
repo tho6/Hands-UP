@@ -171,7 +171,7 @@ export class LiveRouter {
             return;
         } catch (e) {
             console.log(e)
-            res.status(400).json({ status: false, message: 'Fail to Exchange Access and Refresh Token!' })
+            res.status(400).json({ status: false, message: 'You may need to remove our app on your google account and try again' })
             return;
         }
 
@@ -290,6 +290,19 @@ export class LiveRouter {
                 return;
             }
         }, 5000);
+        /* Silent refresh */
+        setTimeout(async()=>{
+            console.log('[Youtube] Silent Refresh')
+            this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
+            const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
+            if (!refreshResult['access_token']) {
+                /* io emit to toggle the button */
+                this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
+                return
+            }
+            const newAccessToken = encodeURIComponent(refreshResult['access_token']);
+            this.fetchYTComments(videoId, userId, liveChatId, meetingId, newAccessToken, refreshToken, pageTokenString);
+        }, 3400000);
         /* Let server knows the live function is operating in which room and on which platform */
         const temp = { ...this.eventSourceExistence[`${meetingId}`], youtube: true }
         this.eventSourceExistence[`${meetingId}`] = temp;
