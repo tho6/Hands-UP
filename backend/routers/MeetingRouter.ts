@@ -54,6 +54,7 @@ export class MeetingRouter {
             console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
+                console.log("Meeting code existed already")
                 res.status(400).json({ message: "Meeting code existed" });
                 return;
             }
