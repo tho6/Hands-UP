@@ -55,7 +55,7 @@ export default function Home() {
           </span>
         </div>
         <div className="home-background-image-container">
-          <img src="/test-bg.jpg" className="home-background-image"></img>
+          <img src="/test-bg.jpg" className="home-background-image" alt='background'></img>
         </div>
       </div>
     </div>
