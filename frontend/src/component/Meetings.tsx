@@ -11,7 +11,7 @@ import Modal from 'react-bootstrap/Modal'
 // import Col from 'react-bootstrap/Col'
 import { useDispatch } from 'react-redux';
 import { fetchMeeting } from '../redux/meeting/thunk';
-import { Divider } from '@material-ui/core';
+// import { Divider } from '@material-ui/core';
 
 function Meetings() {
     const [show, setShow] = useState(false);
@@ -25,21 +25,21 @@ function Meetings() {
     return (
         <>
             {/* <div className="meetings-container"> */}
+            <div>
                 <div>
-                    <div>
-                        <Button variant="danger" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
-                        </Button>{' '}
+                    <Button variant="danger" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
+                    </Button>{' '}
 
-                        <Modal className="create-meeting-popup" show={show} onHide={handleClose} centered>
-                            <Modal.Header className="modal-header" closeButton>
-                                <Modal.Title className="create-meeting-header"><h4>Create meeting</h4>
-                                </Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body className="create-meeting-body">
-                                <CreateMeeting close={handleClose} />
-                            </Modal.Body>
-                        </Modal>
-                    </div>
+                    <Modal className="create-meeting-popup" show={show} onHide={handleClose} centered>
+                        <Modal.Header className="modal-header" closeButton>
+                            <Modal.Title className="create-meeting-header"><h4>Create meeting</h4>
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="create-meeting-body">
+                            <CreateMeeting close={handleClose} />
+                        </Modal.Body>
+                    </Modal>
+                </div>
                 {/* </div> */}
                 <div className="meetings-container">
                     <div className="meeting-container-meeting-live"><MeetingLive /></div>
