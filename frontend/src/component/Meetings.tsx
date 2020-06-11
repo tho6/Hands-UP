@@ -4,13 +4,14 @@ import { MeetingPast } from './MeetingPast';
 import CreateMeeting from './MeetingCreate';
 // CSS
 import './Meetings.scss'
-import Container from 'react-bootstrap/Container'
+// import Container from 'react-bootstrap/Container'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+// import Row from 'react-bootstrap/Row'
+// import Col from 'react-bootstrap/Col'
 import { useDispatch } from 'react-redux';
 import { fetchMeeting } from '../redux/meeting/thunk';
+import { Divider } from '@material-ui/core';
 
 function Meetings() {
     const [show, setShow] = useState(false);
@@ -20,12 +21,12 @@ function Meetings() {
 
     useEffect(() => {
         dispatch(fetchMeeting(0))
-    })
+    }, [])
     return (
         <>
-            <Container className="Container">
-                <Row>
-                    <Col md="auto">
+            {/* <div className="meetings-container"> */}
+                <div>
+                    <div>
                         <Button variant="danger" className='create-meeting-btn' onClick={handleShow}><b>CREATE<br></br>MEETING</b>
                         </Button>{' '}
 
@@ -38,13 +39,13 @@ function Meetings() {
                                 <CreateMeeting close={handleClose} />
                             </Modal.Body>
                         </Modal>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col><MeetingLive /></Col>
-                    <Col><MeetingPast /></Col>
-                </Row>
-            </Container>
+                    </div>
+                {/* </div> */}
+                <div className="meetings-container">
+                    <div className="meeting-container-meeting-live"><MeetingLive /></div>
+                    <div className="meeting-container-meeting-past"><MeetingPast /></div>
+                </div>
+            </div>
         </>
     );
 }

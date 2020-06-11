@@ -60,10 +60,11 @@ export function deleteMeeting(meetingId: number) {
                 },
             })
             const result = await res.json();
-            if (!result.status) {
+            if (!result.success) {
                 window.alert(result.message);
             }
             dispatch(deleteMeetingAction(result.message))
+            // dispatch(fetchMeeting(0))
             return;
         } catch (err) {
             window.alert(err.message);

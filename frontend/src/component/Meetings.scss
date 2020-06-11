@@ -1,14 +1,22 @@
 @import './variables';
 
-.modal-header{
+.modal-header {
     padding: 15px 10px 0px 30px;
 }
 
-.Container {
+.meetings-container {
     display: flex;
     flex-direction: column;
-    margin-top: 50px;
-    height: 100vw;
+    padding: 20px 40px 0px 40px;
+    margin-top: 20px;
+    padding: 20px 0px 0px 0px;
+    // height: 100vw;
+    .meeting-container-meeting-live {
+        flex: 1;
+    }
+    .meeting-container-meeting-past {
+        flex: 1;
+    }
 }
 
 .h4 {
@@ -19,20 +27,17 @@
     // position: relative;
     // left: -1rem;
 }
-  
-// .Container > div {
-//     flex: 1;
-// }
 
-.create-meeting-btn{
+.create-meeting-btn {
     // background-color: rgba(30, 183, 197, 0.6); // light blue
     background-color: rgb(245, 101, 102); // pink
     font-family: $PrimaryFontStyle;
+    font-size: 12px;
     position: fixed;
-    top: 80px;
+    top: 60px;
     right: 30px;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     border: none;
     z-index: 10;
@@ -43,12 +48,38 @@
     // padding: 0px;
 }
 
-.create-meeting-header{
+.create-meeting-header {
     text-align: center;
 }
 
-.create-meeting-body{
+.create-meeting-body {
     display: flex;
     justify-content: center;
     padding: 10px 20px 10px 20px;
+}
+
+@media screen and (min-width: 500px) {
+    .create-meeting-btn {
+        // background-color: rgba(30, 183, 197, 0.6); // light blue
+        font-size: 16px;
+        top: 60px;
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .meetings-container {
+        display: flex;
+        flex-direction: row;
+        margin-top: 20px;
+        padding: 20px 40px 0px 40px;
+        // height: 100vw;
+        .meeting-container-meeting-live {
+            flex: 1;
+        }
+        .meeting-container-meeting-past {
+            flex: 1;
+        }
+    }
 }
