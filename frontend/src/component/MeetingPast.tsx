@@ -48,9 +48,6 @@ export function MeetingPast() {
                         <div className="meeting-past-content">
                             <div className="meeting-past-content-left">
                                 <div className="meeting-past-content-left-name">{meeting.name}</div>
-
-                                {/* <div><b>{meeting.name}</b></div> */}
-
                                 <div className="meeting-past-content-input">
                                     <div className="meeting-past-content-field">Date: </div>
                                     <div className="meeting-past-content-answer">{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
@@ -63,11 +60,6 @@ export function MeetingPast() {
                                     <div className="meeting-past-content-field">Host: </div>
                                     <div className="meeting-past-content-answer">{meeting.owner_id}</div>
                                 </div>
-
-
-                                {/* <div>{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div> */}
-                                {/* <div>Code: {meeting.code}</div> */}
-                                {/* <div>Host by: {meeting.owner_id}</div> */}
                             </div>
                             <div className="meeting-past-content-right">
                                 <i className="far fa-calendar-alt fa-3x"></i>
