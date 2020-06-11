@@ -95,10 +95,9 @@ export class LiveRouter {
             const checkLiveStatus = setInterval(async () => {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=status&access_token=${accessToken}`)
                 const result = await fetchRes.json()
-                console.log('viewsCounterFB:'+viewsCounterFB)
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
-                    console.log('live closed')
+                    console.log('[Facebook] live closed')
                     this.clearTimeIntervalAndTimer(checkLiveStatus, 'facebook', req.body.meetingId)
                     this.io.in('host:' + req.personInfo?.userId).emit('facebook-stop', 'stop facebook live comments');
                     return;
@@ -140,7 +139,6 @@ export class LiveRouter {
         try{
             const fetchViewRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=live_views&access_token=${accessToken}`)
             const liveViews = (await fetchViewRes.json()).live_views
-            console.log('facebook live views:'+liveViews);
             if(!this.viewsTimer[`${meetingId}`]) return;
             this.viewsTimer[`${meetingId}`].facebook = liveViews;
             this.io.in('host:' + userId).emit('facebook-views-update', liveViews);
@@ -161,13 +159,10 @@ export class LiveRouter {
                 body: bodyString,
             })
             const result = await fetchRes.json();
-            console.log('[Fetch YT refresh and access token]');
-            console.log(result)
             if (result.error) throw new Error(result['error_description']);
             const isSaved = await this.userService.saveYoutubeRefreshTokenByUserId(req.personInfo?.userId!, result['refresh_token']);
             if (!isSaved) res.status(500).json({ status: false, message: '[Internal Error] Database Error' })
             res.status(200).json({ status: true, message: 'Successfully Exchange Access and Refresh Token!' });
-            console.log(result);
             return;
         } catch (e) {
             console.log(e)
@@ -184,7 +179,7 @@ export class LiveRouter {
         try {
             //check instance
             if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
-                console.log('Fetch Youtube comment is already running, fail to create another instance!');
+                console.log('[Instance Duplicate] Stop starting new instance for fetching youtube comments');
                 res.status(400).json({ status: false, message: 'Duplicate action!' });
                 return;
             }
@@ -206,7 +201,6 @@ export class LiveRouter {
                 }
             });
             const result = await fetchRes.json();
-            console.log('[Check Live Broadcast]');
             if (result.error) return res.status(400).json({ status: false, message: result.error.message });
             if (result.pageInfo.totalResults !== 1) return res.status(404).json({ status: false, message: 'No LiveBroadCast on Youtube!' });
             const liveChatId = result.items[0].snippet.liveChatId;
@@ -227,7 +221,6 @@ export class LiveRouter {
         try {
             const question = await this.questionService.createQuestionFromPlatform(meetingId, message, platformId, name);
             this.io.in(`event:${question.meetingId}`).emit('create-question', question);
-            console.log(question);
         } catch (e) {
             console.error(e);
             return;
@@ -239,7 +232,6 @@ export class LiveRouter {
         let viewCounter = 0;
         const fetchYTTimer = setInterval(async () => {
             try {
-                console.log('fetch comments from Youtube');
                 const fetchLiveChat = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&part=authorDetails&${pageTokenString}key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {
@@ -248,7 +240,6 @@ export class LiveRouter {
                     }
                 });
                 const result = await fetchLiveChat.json();
-                console.log(result);
                 /* If access token expires in the middle of live broadcast */
                 if (result.error?.code === 401) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
@@ -264,7 +255,7 @@ export class LiveRouter {
                 }
                 /* Check if live broadcast ends */
                 if (result.offlineAt) {
-                    console.log('Youtube Live Chat ends')
+                    console.log('[Live Status] Youtube Live Chat ends')
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
                     return;
@@ -332,8 +323,6 @@ export class LiveRouter {
     checkStatus = async (req: Request, res: Response) => {
         try {
             const meetingId = req.params.meetingId;
-            console.log('checkLiveStatus');
-            console.log(this.eventSourceExistence[`${meetingId}`]);
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(200).json({ status: true, message: { facebook: null, youtube: false } });
             const { youtube, facebook } = this.eventSourceExistence[`${meetingId}`];  
             return res.status(200).json({ status: true, message: { youtube: youtube || false, facebook: facebook===undefined?null:facebook} });
@@ -396,7 +385,7 @@ export class LiveRouter {
                 const result = await fetchViewRes.json();
                 /* check liveBroadcast status */
                 if (!result.items[0].liveStreamingDetails.concurrentViewers) {
-                    console.log('Youtube live broadcast ends...')
+                    console.log('[Live Status] Youtube live broadcast ends...')
                     return;
                 }
                 const liveViews = result.items[0].liveStreamingDetails.concurrentViewers;
@@ -424,16 +413,13 @@ export class LiveRouter {
     }
     createViewsTimer = async (roomId: number) => {
         if (this.viewsTimer[`${roomId}`]) return;
-        console.log('[LiveRouter] create viewer timer for room:'+roomId);
         this.viewsTimer[`${roomId}`] = {timerIdx:null, youtube:0,facebook:0,handsup:0}
         this.viewsTimer[`${roomId}`].timerIdx = setInterval(async()=>{
             if (!this.viewsTimer[`${roomId}`]) return;
             const {youtube, facebook, handsup} = this.viewsTimer[`${roomId}`]
             try{ 
-                console.log('[LiveRouter][viewsTimer] youtube: '+youtube);
-                console.log('[LiveRouter][viewsTimer] facebook: '+facebook);
-                console.log('[LiveRouter][viewsTimer] handsup: '+handsup);
                 await this.liveService.saveViews(roomId, youtube,facebook, handsup)
+                console.log('[LiveRouter][viewsTimer] youtube: '+youtube+'facebook: '+facebook+'handsup: '+handsup);
             }catch(e){
                 this.removeViewsTimer(roomId);
                 this.createViewsTimer(roomId);
@@ -442,13 +428,11 @@ export class LiveRouter {
     }
     removeViewsTimer = async (roomId: number) => {
         if (!this.viewsTimer[`${roomId}`]) return;
-        console.log('[LiveRouter] Remove viewer timer');
         clearInterval(this.viewsTimer[`${roomId}`].timerIdx!);
         delete this.viewsTimer[`${roomId}`];
     }
     updateHandsUpViewsCount(count:number, meetingId:number){
         if(!this.viewsTimer[`${meetingId}`]) return;
-        console.log('updateHandsUpViews:'+count)
         this.viewsTimer[`${meetingId}`].handsup = count;
       }
 }
