@@ -1,5 +1,5 @@
 import { ResponsiveLine } from '@nivo/line'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { IReportView } from '../models/IReport'
 import './ViewsChart.scss'
 // make sure parent container have a defined height when using
@@ -11,41 +11,137 @@ import './ViewsChart.scss'
 
 export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
 
-  const dataMap = [{
-    "id": "youtube",
-    "color": "hsl(23, 70%, 50%)",
-    "data": []
-  },
-  {
-    "id": "facebook",
-    "color": "hsl(70, 70%, 50%)",
-    "data": []
-  },
-  {
-    "id": "handsup",
-    "color": ["hsl(185, 73.6%, 44.5%)"],
-    "data": []
-  }
-  ] as any
-  const views = props.data? [...props.data]:''
-  if (views){
-    const baseDate = new Date(views[0].created_at)
-    for (const view of views as any) {
-      for (const platform of dataMap){
-        console.log(baseDate)
-        console.log(new Date(view.created_at).toLocaleString())
-        platform['data'].push({
-          x: (new Date(view.created_at).getTime() - baseDate.getTime())/1000 / 60,
-          y: view[platform['id']]
-        })
-      }
+
+  const views = props.data? [...props.data]:null
+
+  const data = useMemo(() =>{
+    const dataMap:{id:'facebook'|'youtube'|'handsup', data:any[]}[]= [{
+      "id": "youtube",
+      // "color": "hsl(23, 70%, 50%)",
+      "data": []
+    },
+    {
+      "id": "facebook",
+      // "color": "hsl(70, 70%, 50%)",
+      "data": []
+    },
+    {
+      "id": "handsup",
+      //"color": "hsl(185, 73.6%, 44.5%)",
+      "data": []
     }
-  }else{
-    return <div></div>
-  }
-  console.log(dataMap)
-  // console.log('datamap: ' + JSON.stringify(dataMap))
-  const data = dataMap
+    ] 
+    // {x:number, y:number}
+    // if(!views) return
+    // const baseDate = new Date(views![0].created_at)
+    // const objMap = {} as any
+    // const arrbyMin = views?.map((dataObj:IReportView)=>{
+    //   const tempMin = Math.round(((new Date(dataObj.created_at).getTime() - baseDate.getTime())/1000)/60)
+    //   if (tempMin in objMap){
+    //     objMap[tempMin].push(dataObj)
+    //   }else{
+    //     objMap[tempMin] = [dataObj]
+    //   }
+    // })
+    // console.log(objMap)
+    // console.log(arrbyMin);
+    if(!views) return
+    const baseDate = new Date(views![0].created_at)
+    const dataArr = dataMap.map((elem:{id:string, data:{x:number, y:number}[]})=>{
+      const arr = views?.map((dataObj:IReportView)=>{
+        const idx = elem.id as 'facebook'|'youtube'|'handsup'
+        return{
+          y:dataObj[idx],
+          x:Math.round(((new Date(dataObj.created_at).getTime() - baseDate.getTime())/1000)/60)
+        }
+      })
+      return {...elem, data: arr}
+    })
+    const ytobj:any={};
+    const fbobj:any={};
+    const huobj:any={};
+    for(const data of dataArr){
+      if(!data) return ;
+      if(!data.data) return;
+      data.data.reduce((a,b)=>{
+        if(a.x===b.x){
+          if(data.id === 'youtube') ytobj[`${a.x}`] = (a.y + b.y)/2;
+          if(data.id === 'facebook') fbobj[`${a.x}`] = (a.y + b.y)/2;
+          if(data.id === 'handsup') huobj[`${a.x}`] = (a.y + b.y)/2;
+            return {x:b.x, y:(a.y + b.y)/2};
+        }
+        if(a.x===0){
+          if(data.id === 'youtube') ytobj[`${a.x}`] = (a.y)
+          if(data.id === 'facebook') fbobj[`${a.x}`] = (a.y)
+          if(data.id === 'handsup') huobj[`${a.x}`] = (a.y)
+            return b;
+        }
+        if(a.x!==b.x){
+          if(data.id === 'youtube') ytobj[`${b.x}`] = b.y
+          if(data.id === 'facebook') fbobj[`${b.x}`] = b.y
+          if(data.id === 'handsup') huobj[`${b.x}`] = b.y
+            return b
+        }
+        return b
+    })
+    if(data.id==='youtube'){
+      const tmp =[]
+      for(const key in ytobj){
+        tmp.push({x:parseInt(key), y:Math.floor(ytobj[key])})
+      }
+      dataArr[0].data = tmp;
+      console.log(tmp);
+    }
+    if(data.id==='facebook'){
+      const tmp =[]
+      for(const key in fbobj){
+        tmp.push({x:parseInt(key), y:Math.floor(fbobj[key])})
+      }
+      dataArr[1].data = tmp;
+      // console.log(tmp);
+    }
+    if(data.id==='handsup'){
+      const tmp =[]
+      for(const key in huobj){
+        tmp.push({x:parseInt(key), y:Math.floor(huobj[key])})
+      }
+      dataArr[2].data = tmp;
+      // console.log(tmp);
+    }
+    }
+
+    // for (const view of views as any) {
+    //   for (const platform of dataMap){
+    //     console.log(baseDate)
+    //     console.log(new Date(view.created_at).toLocaleString())
+    //     platform['data'].push({
+    //       x: ((new Date(view.created_at).getTime() - baseDate.getTime())/1000)/60,
+    //       y: view[platform['id']]
+    //     })
+    //     console.log(platform)
+    //   }
+    // }
+    return dataArr as any
+  },[views])
+  // if (views){
+  //   const baseDate = new Date(views[0].created_at)
+  //   for (const view of views as any) {
+  //     for (const platform of dataMap){
+  //       console.log(baseDate)
+  //       console.log(new Date(view.created_at).toLocaleString())
+  //       platform['data'].push({
+  //         x: ((new Date(view.created_at).getTime() - baseDate.getTime())/1000)/60,
+  //         y: view[platform['id']]
+  //       })
+  //     }
+  //   }
+  // }else{
+  //   return <div></div>
+  // }
+  if (!views) return <div></div>
+  // console.log(dataMap)
+  // // console.log('datamap: ' + JSON.stringify(dataMap))
+  // const data = dataMap
     
     return ( 
             <ResponsiveLine
@@ -54,15 +150,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
         curve="catmullRom"
         axisTop={null}
         axisRight={null}
-        axisBottom={{
-            orient: 'bottom',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'Minute',
-            legendOffset: 36,
-            legendPosition: 'middle'
-        }}
+        axisBottom={null}
         axisLeft={{
             orient: 'left',
             tickSize: 5,
@@ -92,7 +180,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
                       border: '1px solid #ccc',
                   }}
               >
-                  <div>x: {slice.id}</div>
+                  <div>Minute: {slice.points[0].data.xFormatted}</div>
                   {slice.points.map(point => (
                       <div
                           key={point.id}
@@ -101,7 +189,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
                               padding: '3px 0',
                           }}
                       >
-                          <strong>{point.serieId}</strong> [{point.data.yFormatted}]
+                          <strong>{point.serieId}</strong> {point.data.yFormatted}
                       </div>
                   ))}
               </div>
