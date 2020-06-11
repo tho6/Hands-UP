@@ -166,7 +166,6 @@ export function deleteReply(questionId: number, meetingId: number, replyId: numb
 }
 export function addVote(questionId: number) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
-        console.log('add');
         try {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rooms/questions/${questionId}/vote`, {
                 method: 'PUT',

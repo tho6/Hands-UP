@@ -31,7 +31,6 @@ export interface IQuestionProps {
   isModerate: boolean;
   isHost:boolean
 }
-const Element = Scroll.Element;
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showImage, setShowImage] = useState(false);
