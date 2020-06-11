@@ -78,7 +78,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
-  const isHost = personInfo?.userId === roomInformation?.ownerId;
+  const isHost = personInfo?.userId===undefined?false:personInfo?.userId === roomInformation?.ownerId;
   const questionLimitStatus = useSelector(
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
@@ -107,9 +107,10 @@ const QuestionPage: React.FC = () => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
+    console.log(isHost);
     if (!isHost) return;
     dispatch(getLiveStatus(parseInt(meetingId)));
-  }, [dispatch, meetingId]);
+  }, [dispatch, meetingId, isHost]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
