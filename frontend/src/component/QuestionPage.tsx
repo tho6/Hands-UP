@@ -47,8 +47,14 @@ import { IRoomConfiguration } from '../models/IRoomInformation';
 import ScrollTop from './ScrollTop';
 import TextareaAutosize from 'react-textarea-autosize';
 import YesNoModal from './YesNoModal';
+import { Button, Link } from 'react-scroll';
 const QuestionPage: React.FC = () => {
-  const router = useReactRouter<{ id: string; page: string; error?:string; fbcontinue?:string }>();
+  const router = useReactRouter<{
+    id: string;
+    page: string;
+    error?: string;
+    fbcontinue?: string;
+  }>();
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
   const error = router.match.params.error;
@@ -57,6 +63,7 @@ const QuestionPage: React.FC = () => {
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
   const [facebookModal, setFacebookModal] = useState(false);
+  const [isAnswering, setIsAnswering] = useState(0);
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
@@ -79,7 +86,10 @@ const QuestionPage: React.FC = () => {
   const liveStatus = useSelector(
     (rootState: RootState) => rootState.roomsInformation.liveStatus[meetingId]
   );
-  const showGooglePermissionModal = useSelector((rootState:RootState)=>rootState.roomsInformation.googlePermissionConfirmModal)
+  const showGooglePermissionModal = useSelector(
+    (rootState: RootState) =>
+      rootState.roomsInformation.googlePermissionConfirmModal
+  );
   const [textState, setTextState] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
@@ -97,6 +107,7 @@ const QuestionPage: React.FC = () => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
+    if (!isHost) return;
     dispatch(getLiveStatus(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
@@ -175,6 +186,9 @@ const QuestionPage: React.FC = () => {
         successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration)
       );
     };
+    const answering = (id: number) => {
+      setIsAnswering(id);
+    };
     const leaveRoom = () => {
       socket.emit('leave_event', meetingId, personInfo.guestId);
       socket.off('create-question', newQuestionListener);
@@ -189,8 +203,10 @@ const QuestionPage: React.FC = () => {
       socket.off('delete-reply', deleteReplyListener);
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
       socket.off('update-room-configuration', updateRoomConfiguration);
+      socket.off('answering', answering);
     };
     socket.emit('join_event', meetingId, personInfo.guestId);
+    socket.on('answering', answering);
     socket.on('create-question', newQuestionListener);
     socket.on('update-question', updateQuestionListener);
     socket.on('delete-question', deleteQuestionListener);
@@ -210,6 +226,11 @@ const QuestionPage: React.FC = () => {
       leaveRoom();
     };
   }, [dispatch, meetingId, personInfo]);
+  useEffect(() => {
+    if (!roomInformation?.ownerId) return;
+    if (isHost) return;
+    socket.emit('new-user-join', roomInformation.ownerId);
+  }, [roomInformation]);
   useEffect(() => {
     if (!isHost) return;
     const turnOffYoutubeLive = () => {
@@ -232,6 +253,9 @@ const QuestionPage: React.FC = () => {
     const facebookViewsUpdate = (views: string | number) => {
       setFacebookViews(parseInt(`${views}`));
     };
+    const newUserJoin = () => {
+      socket.emit('answering', parseInt(meetingId), isAnswering);
+    };
     const leaveHost = () => {
       if (!isHost) return;
       socket.emit('leave-host', personInfo?.userId);
@@ -241,6 +265,7 @@ const QuestionPage: React.FC = () => {
       socket.off('youtube-views-update', youtubeViewsUpdate);
       socket.off('facebook-views-stop', facebookViewsStop);
       socket.off('facebook-views-update', facebookViewsUpdate);
+      socket.off('new-user-join', newUserJoin);
     };
     socket.emit('join-host', personInfo?.userId);
     socket.on('youtube-stop', turnOffYoutubeLive);
@@ -249,12 +274,29 @@ const QuestionPage: React.FC = () => {
     socket.on('youtube-views-update', youtubeViewsUpdate);
     socket.on('facebook-views-stop', facebookViewsStop);
     socket.on('facebook-views-update', facebookViewsUpdate);
+    socket.on('new-user-join', newUserJoin);
     window.addEventListener('beforeunload', leaveHost);
     return () => {
       leaveHost();
       window.removeEventListener('beforeunload', leaveHost);
     };
   }, [personInfo, isHost, meetingId, dispatch]); // this
+  useEffect(() => {
+    if (!isHost) return;
+    const newUserJoin = () => {
+      socket.emit('answering', parseInt(meetingId), isAnswering);
+    };
+    const leaveHost = () => {
+      if (!isHost) return;
+      socket.off('new-user-join', newUserJoin);
+    };
+    socket.on('new-user-join', newUserJoin);
+    window.addEventListener('beforeunload', leaveHost);
+    return () => {
+      leaveHost();
+      window.removeEventListener('beforeunload', leaveHost);
+    };
+  }, [isHost, meetingId, isAnswering]); // this
 
   const mostPopularQuestions = questions
     ?.filter(
@@ -288,40 +330,38 @@ const QuestionPage: React.FC = () => {
         return a.concat(b);
       })
       .filter((reply) => reply.isHide);
-const sendEvent = ()=>{
-  if (!textState.trim()) {
-    window.alert('Empty question is not allowed!');
-    return;
-  }
-  if (files?.length !== undefined && files.length > 3) {
-    window.alert(
-      'Maximum of three images for each question!'
-    );
+  const sendEvent = () => {
+    if (!textState.trim()) {
+      window.alert('Empty question is not allowed!');
+      return;
+    }
+    if (files?.length !== undefined && files.length > 3) {
+      window.alert('Maximum of three images for each question!');
+      setFiles(null);
+      return;
+    }
+    dispatch(addQuestion(parseInt(meetingId), textState, files));
+    setTextState('');
     setFiles(null);
-    return;
-  }
-  dispatch(
-    addQuestion(parseInt(meetingId), textState, files)
-  );
-  setTextState('');
-  setFiles(null);
-}
-useEffect(()=>{
-  if (error==='youtube-error') {
-    dispatch(message(true, 'You may try to reset platform'));
-    // dispatch(push(`/room/${meetingId}/questions/main`));
-  }else if (error === 'facebook-error'){
-    dispatch(message(true, 'We need your permission'));
-  }else if (error === 'facebook-modal'){
+  };
+  useEffect(() => {
+    if (error === 'youtube-error') {
+      dispatch(message(true, 'You may try to reset platform'));
+      // dispatch(push(`/room/${meetingId}/questions/main`));
+    } else if (error === 'facebook-error') {
+      dispatch(message(true, 'We need your permission'));
+    } else if (error === 'facebook-modal') {
       setFacebookModal(true);
-  }else if (error === 'continue'){
-    console.log(fbcontinue);
-    const arr = fbcontinue?.split("+")!
-    console.log(arr);
-    if(arr[0]==='user')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0]));
-    if(arr[0]==='page')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0],arr[1]));
-  }
-},[error, dispatch, fbcontinue, meetingId])
+    } else if (error === 'continue') {
+      const arr = fbcontinue?.split('+')!;
+      if (arr[0] === 'user')
+        dispatch(toggleFacebookLiveStatus(parseInt(meetingId), true, arr[0]));
+      if (arr[0] === 'page')
+        dispatch(
+          toggleFacebookLiveStatus(parseInt(meetingId), true, arr[0], arr[1])
+        );
+    }
+  }, [error, dispatch, fbcontinue, meetingId]);
   return (
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
@@ -370,7 +410,7 @@ useEffect(()=>{
                   );
                   return;
                 }
-                if(liveStatus?.facebook === false){
+                if (liveStatus?.facebook === false) {
                   dispatch(turnOnFacebookAgain(parseInt(meetingId)));
                   return;
                 }
@@ -415,8 +455,8 @@ useEffect(()=>{
               <TextareaAutosize
                 placeholder="What's on your mind?"
                 value={textState}
-                onKeyDown={(e)=>{
-                  if(e.keyCode === 13 && !e.shiftKey){
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13 && !e.shiftKey) {
                     e.preventDefault();
                     sendEvent();
                   }
@@ -468,35 +508,37 @@ useEffect(()=>{
         </div>
       </div>
       <div className="question-moderation bottom-border pb-3 d-flex mb-4">
-      <div className='d-flex'>
-        <div>
-          <button
-            className={`util-spacing rounded ${isQuestion[0] && 'is-active'}`}
-            onClick={() => {
-              setIsQuestion(questionActive);
-            }}
-          >
-            QUESTIONS{' '}
-            {mostPopularQuestions?.length > 0
-              ? `(${mostPopularQuestions.length})`
-              : ''}
-          </button>
-        </div>
-        {roomInformation?.canModerate && isHost && (
-          <div data-testid="moderation-tab">
+        <div className="d-flex">
+          <div>
             <button
-              className={`util-spacing rounded ${isQuestion[1] && 'is-active'}`}
+              className={`util-spacing rounded ${isQuestion[0] && 'is-active'}`}
               onClick={() => {
-                setIsQuestion(moderateActive);
+                setIsQuestion(questionActive);
               }}
             >
-              MODERATION{' '}
-              {questionsNeedToBeApproved?.length > 0
-                ? `(${questionsNeedToBeApproved.length})`
+              QUESTIONS{' '}
+              {mostPopularQuestions?.length > 0
+                ? `(${mostPopularQuestions.length})`
                 : ''}
             </button>
           </div>
-        )}
+          {roomInformation?.canModerate && isHost && (
+            <div data-testid="moderation-tab">
+              <button
+                className={`util-spacing rounded ${
+                  isQuestion[1] && 'is-active'
+                }`}
+                onClick={() => {
+                  setIsQuestion(moderateActive);
+                }}
+              >
+                MODERATION{' '}
+                {questionsNeedToBeApproved?.length > 0
+                  ? `(${questionsNeedToBeApproved.length})`
+                  : ''}
+              </button>
+            </div>
+          )}
         </div>
         <div className="d-flex">
           {isHost && roomInformation?.canModerate && (
@@ -574,6 +616,21 @@ useEffect(()=>{
                   ? `(${answeredQuestions.length})`
                   : ''}
               </button>
+              {isAnswering !== 0 && (
+                <div className='mic-container'>
+                <Link
+                  className="util-spacing will-hover question-page-tab mic"
+                  to="answering"
+                  spy={true}
+                  smooth={true}
+                  duration={500}
+                  offset={-55}
+                  type={'button'}
+                >
+                  <i className="fas fa-microphone" data-testid="answering"></i>
+                </Link>
+                </div>
+              )}
             </div>
             <div>
               {page === 'main' && (
@@ -583,13 +640,9 @@ useEffect(()=>{
                       <Question
                         key={question.id}
                         user={personInfo}
+                        isAnswering={isAnswering === question.id}
                         canUploadFile={roomInformation?.canUploadFile}
                         question={question}
-                        answering={
-                          mostPopularQuestions[0].id === question.id
-                            ? true
-                            : false
-                        }
                         isModerate={false}
                         isHost={isHost}
                       />
@@ -604,13 +657,9 @@ useEffect(()=>{
                     <Question
                       key={question.id}
                       user={personInfo}
+                      isAnswering={isAnswering === question.id}
                       canUploadFile={roomInformation?.canUploadFile}
                       question={question}
-                      answering={
-                        mostPopularQuestions[0].id === question.id
-                          ? true
-                          : false
-                      }
                       isModerate={false}
                       isHost={isHost}
                     />
@@ -624,9 +673,9 @@ useEffect(()=>{
                       <Question
                         key={question.id}
                         user={personInfo}
+                        isAnswering={false}
                         canUploadFile={roomInformation?.canUploadFile}
                         question={question}
-                        answering={false}
                         isModerate={false}
                         isHost={isHost}
                       />
@@ -648,9 +697,9 @@ useEffect(()=>{
                   <Question
                     key={`${question.id}`}
                     user={personInfo}
+                    isAnswering={false}
                     canUploadFile={roomInformation?.canUploadFile}
                     question={question}
-                    answering={false}
                     isModerate={true}
                     isHost={isHost}
                   />
@@ -677,9 +726,9 @@ useEffect(()=>{
                   <Question
                     //key={`${question.id}`}
                     user={personInfo}
+                    isAnswering={false}
                     canUploadFile={roomInformation?.canUploadFile}
                     question={question}
-                    answering={false}
                     isModerate={false}
                     isHost={isHost}
                   />
@@ -745,8 +794,8 @@ useEffect(()=>{
           title={'Redirect to Google'}
           message={'Confirm to redirect to permission page'}
           yes={() => {
-            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
-            window.location.replace(loginLocationWithPrompt)
+            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`;
+            window.location.replace(loginLocationWithPrompt);
           }}
           no={() => {
             dispatch(googlePermissionModal(false));

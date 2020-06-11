@@ -157,10 +157,10 @@ app.use('/meetings', userGuard, meetingRouter.router());
 
 let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean } } = {}
 io.on('connection', socket => {
-  socket.on('join_event', (meetingId: number, guestId:number) => {
+  socket.on('join_event', (meetingId: number, guestId:number, userId:number) => {
     console.log('join room:' + meetingId, 'GuestId'+guestId);
     const idx = 'event:' + meetingId;
-    socket.join(idx)
+    socket.join(idx);
     if (counter[idx]) {
       // counter[idx].count += 1;
       counter[idx].count[`${guestId}`] = true;
@@ -219,6 +219,12 @@ io.on('connection', socket => {
   })
   socket.on('leave-host', (userId:number)=>{
     socket.leave('host:' + userId)
+  })
+  socket.on('answering', (meetingId:number, id:number)=>{
+    io.in('event:' + meetingId).emit('answering', id)
+  })
+  socket.on('new-user-join',(userId:number)=>{
+    io.in('host:' + userId).emit('new-user-join');
   })
 });
 

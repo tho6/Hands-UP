@@ -198,7 +198,26 @@ background-color: inherit;
     background-color: rgba(30, 183, 197, 0.6); //changed
 
   }
-
+  &.mic{
+    background-color: transparent;
+    animation: none;
+  }
+}
+.mic-container{
+  background-color: rgba(0, 0, 0, 0.150);
+  border-radius: 50%;
+  animation: glow 2s linear infinite alternate;
+}
+@keyframes glow {
+  0% { background-color: rgba(0, 0, 0, 0.05) }
+  25% { background-color: rgba(0, 0, 0, 0.1) }
+  50% { background-color: rgba(0, 0, 0, 0.15) }
+  75% { background-color: rgba(0, 0, 0, 0.2) }
+  100% { background-color: rgba(0, 0, 0, 0.2) }
+}
+.mic-container:hover{
+  background-color: rgba(0, 0, 0, 0.150);
+  border-radius: 50%;
 }
 .will-hover {
   transition: transform 0.2s ease-in-out;
@@ -229,6 +248,12 @@ background-color: inherit;
 .text-word-break{
   word-break: break-word;
 }
+#answering{
+  .question{
+    background-color:rgba(160, 144, 72, 0.452); //C58F5F //rgba(254, 141, 139, 0.425)
+    border: none;
+  }
+}
 .question {
   border: solid 1px rgba(30, 183, 197, 0.9);;
   background-color: #FFF;
@@ -244,6 +269,7 @@ background-color: inherit;
   }
   .content {
     @extend %content;
+    cursor: default;
     textarea{
       transition: height 0.2s;
       max-height: 200px;
