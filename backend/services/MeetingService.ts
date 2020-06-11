@@ -9,6 +9,16 @@ export class MeetingService {
     //     return result.rows as IMeeting[];
     // }
 
+    async checkMeetingId(id:number){
+        try {
+            const result = await this.knex.raw(/*SQL*/ `SELECT COUNT(*) FROM meetings WHERE id = ?`, [id])
+            return result.rows[0].count
+        } catch (error) {
+            console.log('[Meeting Service Error] ' + 'checkMeetingId')
+            throw error
+        }
+    }
+
     async getMeetingByUserId(id: number) {
         try {
             const result = await this.knex.raw(/*SQL*/`SELECT * from meetings WHERE owner_id = (?)`, [id])
@@ -64,7 +74,15 @@ export class MeetingService {
     }
 
     async deleteMeeting(id: number) {
-        return this.knex.raw(/*SQL*/`DELETE FROM meetings WHERE id = ?`, [id]);
+        try {
+            const deletedRows = await this.knex.raw(/*SQL*/`WITH deleted as (DELETE FROM meetings 
+                                        WHERE id = ?  RETURNING *) 
+                                        SELECT count(*) FROM deleted;`, [id]);
+            return parseInt(deletedRows.rows[0].count)
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
     }
 
     async getMeetingById(id: number) {

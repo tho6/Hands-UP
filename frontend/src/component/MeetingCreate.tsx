@@ -21,13 +21,13 @@ const CreateMeeting: React.FC<IProps> = (props) => {
     // }, [dispatch])
 
     return (
-        <div className="createForm">
+        <div className="create-form">
 
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Meeting name</div>
                 <div className='create-meeting-input-answer'>
                     <input className="input-area" {...text('name')} required />
-                    {formState.touched.name && formState.values.name === '' && <div className="formRemind">Please fill in the meeting name</div>}
+                    {formState.touched.name && formState.values.name === '' && <div className="form-remind">Please fill in the meeting name</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
@@ -35,15 +35,15 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                 <div className='create-meeting-input-answer'>
                     <input className="input-area"{...date('date')} required />
                     <input className="input-area"{...time('time')} required />
-                    {formState.touched.date && formState.values.date === '' && <div className="formRemind">Please fill in the meeting date</div>}
-                    {formState.touched.time && formState.values.time === '' && <div className="formRemind">Please fill in the meeting time</div>}
+                    {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
+                    {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Meeting code</div>
                 <div className='create-meeting-input-answer'>
                     <input className="input-area"{...text('code')} required />
-                    {formState.touched.code && formState.values.code === '' && <div className="formRemind">Please fill in the meeting code</div>}
+                    {formState.touched.code && formState.values.code === '' && <div className="form-remind">Please fill in the meeting code</div>}
                 </div>
             </div>
             {/* <div className="create-meeting-input">
@@ -57,7 +57,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                 <div className='create-meeting-field'>Question limit per person</div>
                 <div className='create-meeting-input-answer'>
                     <input className="input-area"{...text('question_limit')} required />
-                    {formState.touched.question_limit && formState.values.question_limit === '' && <div className="formRemind">Please set the question limit</div>}
+                    {formState.touched.question_limit && formState.values.question_limit === '' && <div className="form-remind">Please set the question limit</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
@@ -67,7 +67,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                         <label><input {...radio('pre_can_moderate', 1)} />Yes</label>
                         <label><input {...radio('pre_can_moderate', 0)} />No</label>
                     </div>
-                    {formState.touched.can_moderate && formState.values.can_moderate === '' && <div className="formRemind">Please decide the meeting moderation setting</div>}
+                    {formState.touched.can_moderate && formState.values.can_moderate === '' && <div className="form-remind">Please decide the meeting moderation setting</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
@@ -78,17 +78,17 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                         <label><input {...radio('pre_can_upload_file', 1)} />Yes</label>
                         <label><input {...radio('pre_can_upload_file', 0)} />No</label>
                     </div>
-                    {formState.touched.can_upload_file && formState.values.can_upload_file === '' && <div className="formRemind">Please decide the meeting upload feature setting</div>}
+                    {formState.touched.can_upload_file && formState.values.can_upload_file === '' && <div className="form-remind">Please decide the meeting upload feature setting</div>}
                 </div>
             </div>
-            <div className="createButtons">
-                <Button variant="info" className="createButtonColour" onClick={() => {
+            <div className="create-buttons">
+                <Button variant="info" className="create-button-colour" onClick={() => {
                     dispatch(createMeeting(formState.values))
                     // formState.clear
                     props.close()
                 }}><b>CREATE</b>
                 </Button>
-                <Button variant="secondary" className="resetButtonColour" onClick={formState.clear}>
+                <Button variant="secondary" className="reset-button-colour" onClick={formState.clear}>
                     RESET
                 </Button>
             </div>
