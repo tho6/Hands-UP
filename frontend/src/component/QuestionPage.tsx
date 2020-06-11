@@ -370,6 +370,7 @@ const QuestionPage: React.FC = () => {
     }
   }, [error, dispatch, fbcontinue, meetingId]);
   return (
+    <div className='d-flex align-items-center justify-content-center'>
     <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
       <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
         <div className="d-flex">
@@ -514,9 +515,9 @@ const QuestionPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="question-moderation bottom-border pb-3 d-flex mb-4">
-        <div className="d-flex">
-          <div>
+      <div className="question-moderation bottom-border d-flex mt-lg-5">
+        <div className="d-flex question-moderation-div">
+          <div className='question-moderation-div-div'> 
             <button
               className={`util-spacing rounded ${isQuestion[0] && 'is-active'}`}
               onClick={() => {
@@ -530,7 +531,7 @@ const QuestionPage: React.FC = () => {
             </button>
           </div>
           {roomInformation?.canModerate && isHost && (
-            <div data-testid="moderation-tab">
+            <div data-testid="moderation-tab" className='question-moderation-div-div'>
               <button
                 className={`util-spacing rounded ${
                   isQuestion[1] && 'is-active'
@@ -547,9 +548,9 @@ const QuestionPage: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="d-flex">
+        <div className="d-flex question-moderation-div">
           {isHost && roomInformation?.canModerate && (
-            <div>
+            <div className='question-moderation-div-div'>
               <button
                 className={`util-spacing rounded ${
                   isQuestion[2] && 'is-active'
@@ -567,7 +568,7 @@ const QuestionPage: React.FC = () => {
             </div>
           )}
           {isHost && roomInformation?.canModerate && (
-            <div>
+            <div className='question-moderation-div-div'>
               <button
                 className={`util-spacing rounded ${
                   isQuestion[3] && 'is-active'
@@ -589,7 +590,7 @@ const QuestionPage: React.FC = () => {
       <div className="content-container p-2">
         {isQuestion[0] && (
           <>
-            <div className="text-left mb-4 d-flex">
+            <div className="text-left mb-2 mb-lg-3 mt-lg-2 mb-xl-4 mt-xl-3 d-flex question-util-container">
               <button
                 className={`util-spacing will-hover rounded question-page-tab ${
                   page === 'main' && 'is-active'
@@ -624,9 +625,9 @@ const QuestionPage: React.FC = () => {
                   : ''}
               </button>
               {isAnswering !== 0 && (
-                <div className='mic-container'>
+                <div className='util-spacing mic-container'>
                 <Link
-                  className="util-spacing will-hover question-page-tab mic"
+                  className="will-hover"
                   to="answering"
                   spy={true}
                   smooth={true}
@@ -810,6 +811,7 @@ const QuestionPage: React.FC = () => {
         />
       )}
       <ScrollTop />
+    </div>
     </div>
   );
 };

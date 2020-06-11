@@ -171,7 +171,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
               })}
           </div>
           <div className="d-flex justify-content-between util-container mb-2 mw-100">
-            <div className="d-flex p-2 flex-grow-1 justify-content-between">
+            <div className="d-flex p-2 flex-grow-1 justify-content-between question-name-container">
               <div className='d-flex'>
               <div
                 className="p-2 mx-sm-4 mx-lg-5 will-hover"
