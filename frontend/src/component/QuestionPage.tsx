@@ -47,7 +47,7 @@ import { IRoomConfiguration } from '../models/IRoomInformation';
 import ScrollTop from './ScrollTop';
 import TextareaAutosize from 'react-textarea-autosize';
 import YesNoModal from './YesNoModal';
-import { Button, Link } from 'react-scroll';
+import {Link } from 'react-scroll';
 const QuestionPage: React.FC = () => {
   const router = useReactRouter<{
     id: string;
@@ -189,6 +189,11 @@ const QuestionPage: React.FC = () => {
     const answering = (id: number) => {
       setIsAnswering(id);
     };
+    const reconnect = ()=>{
+      console.log('[Reconnection] Reconnect to server');
+      dispatch(fetchRoomInformation(parseInt(meetingId)));
+      dispatch(fetchQuestions(parseInt(meetingId)));
+    }
     const leaveRoom = () => {
       socket.emit('leave_event', meetingId, personInfo.guestId);
       socket.off('create-question', newQuestionListener);
@@ -204,6 +209,7 @@ const QuestionPage: React.FC = () => {
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
       socket.off('update-room-configuration', updateRoomConfiguration);
       socket.off('answering', answering);
+      socket.off('re-connect', reconnect);
     };
     socket.emit('join_event', meetingId, personInfo.guestId);
     socket.on('answering', answering);
@@ -220,6 +226,7 @@ const QuestionPage: React.FC = () => {
     socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
     socket.on('update-count', peopleCountListener);
     socket.on('update-room-configuration', updateRoomConfiguration);
+    socket.on('re-connect', reconnect);
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
       window.removeEventListener('beforeunload', leaveRoom);
