@@ -17,6 +17,67 @@
 //         flex: 1;
 //     }
 // }
+.z-index-set-to-fifty{
+    z-index: 50;
+}
+
+.report-pop-table-outer{
+    position: fixed;
+    top:0px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    // width: 100vw;
+    // height: 100vh;
+}
+.report-modal{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    height:450px;
+    @media screen and (max-height: 600px){
+   height:400px;
+    }
+    @media screen and (max-height: 420px){
+        height:400px;
+    }
+    @media screen and (max-height: 420px){
+        height:250px;
+    }
+    // width:100%;
+    // height:80%;
+    min-width: 1024px;
+    overflow-y: auto;
+}
+.report-modal.show{
+    // transform: translateY(1300px);
+    transition: all 1s ease-out;
+    height:70%;
+    @media screen and (max-height: 420px){
+        top:80px;
+        height:300px;
+    }
+    @media screen and (max-height: 380px){
+        height:250px;
+        top:60px;
+    }
+    @media screen and (max-width: 1000px){
+        left:20px;
+    }
+}
+.report-modal.not-show{
+    // transform:translateY(-1000px);
+    top:-500px;
+    @media screen and (max-width: 330px){
+        left:20px;
+    }
+}
+
+
 .report-header::before{
     content: '';
     border-left: rgba(30, 183, 197, 0.808) 5px solid;
@@ -42,9 +103,13 @@
     padding-left: 0.8rem;
     padding-top: 0.8rem;
 }
+.report-container-pop-up-report-open{
+    overflow: hidden;
+    position: fixed;
+}
 .report-container{
     // z-index: -1;
-    padding-top: 1.8rem;
+    // padding-top: 1.8rem;
     padding-left: 0.2rem;
     padding-right: 0.2rem;
     margin: 0;
@@ -64,7 +129,7 @@
         }
     }
 }
-.report-peak-view-outer, .views-chart-outer, .questions-from-chart-outer, .questions-pie-chart-outer, .question-likes-rank-outer, .question-likes-rank-outer, .report-total-questions-outer{
+.report-pop-report-outer,.report-peak-view-outer, .views-chart-outer, .questions-from-chart-outer, .questions-pie-chart-outer, .question-likes-rank-outer, .question-likes-rank-outer, .report-total-questions-outer{
     margin: 0.8rem 0.8rem;
     padding: 1.2rem 1.2rem;
     background-color: #fff;
@@ -86,6 +151,16 @@
 // .report-container-side-drawer{
 //     position: fixed;
 // }
+.report-pop-report-outer{
+    // padding-top: 4rem;
+    position: relative;
+    @media screen and (max-height: 578px){
+        height:400px;
+    }
+    >div{
+        min-width: 1024px;
+    }
+}
 @media screen and (min-width: 330px){
     .report-container{
         padding-left: 0.2rem;

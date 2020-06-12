@@ -17,8 +17,9 @@ import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
 import Message from './component/Message';
 import { ZoomViewsChart } from './component/ZoomViewsChart';
-import { closeNav, openNav } from './redux/mainNav/actions';
+import { closeNav } from './redux/mainNav/actions';
 // import { getGuestIcon } from './redux/auth/actions';
+import UncontrolledLottie from './component/UncontrolledLottie';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -38,6 +39,7 @@ function App() {
     <Navbar />
     <div className={`App ${isMove?'navbar-move':''}`} onClick={()=>dispatch(closeNav())}>
         <Switch>
+          {isAuthenticated === null && <UncontrolledLottie />}
           <Route path="/" exact>
           <Home />
           </Route>
@@ -54,7 +56,7 @@ function App() {
           {(isAuthenticated != null &&<Report />)}
           </Route>
           <Route path="/googleLogin/callback" exact>
-          {(isAuthenticated != null &&<GoogleLoginCallBack />)}
+          {(isAuthenticated != null && <GoogleLoginCallBack />)}
           </Route>
           <Route path="/youtube/callback" exact>
           {(isAuthenticated != null &&<YoutubeCallBack />)}
@@ -62,12 +64,15 @@ function App() {
           <Route path="/facebookLogin/callback" exact>
           {(isAuthenticated != null &&<FacebookLoginCallBack />)}
           </Route>
-          <Route path="/testing/:lastXMeetings" exact>
+          <Route path="/report/overall/:lastXMeetings" exact>
           {(isAuthenticated != null && <ReportOverall />)}
           </Route>
           <Route path="/zoom" exact>
           {(isAuthenticated != null && <ZoomViewsChart />)}
           </Route>
+          {/* <Route path="/popup" exact>
+            <ReportPopTable />
+          </Route> */}
         </Switch>
         <span>
         <Message />

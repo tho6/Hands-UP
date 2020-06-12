@@ -1,8 +1,8 @@
 import React from 'react'
 import './Backdrop.scss'
-export default function Backdrop() {
+export const Backdrop:React.FC<{closeSideNav:()=>void}> = (props)=> {
     return (
-        <div className='backdrop'>
+        <div className='backdrop' onClick={()=>props.closeSideNav()}>
              
         </div>
     )
