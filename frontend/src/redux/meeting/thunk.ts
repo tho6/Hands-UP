@@ -1,6 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadMeetings, deleteMeetingAction } from "./action";
+import { loadMeetings, deleteMeetingAction, editMeetingAction, message } from "./action";
 import { StateValues } from "react-use-form-state";
+import { push } from "connected-react-router";
 // import { IMeetingLive } from "./reducers";
 
 export function fetchMeeting(meetingId: number) {
@@ -68,6 +69,58 @@ export function deleteMeeting(meetingId: number) {
             return;
         } catch (err) {
             window.alert(err.message);
+        }
+    }
+}
+
+// export function editMeeting(i: number, content: string) {
+//     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+//         try {
+//             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/edit/${i}`, {
+//                 method: 'PUT',
+//                 headers: {
+//                     'Authorization': `Bearer ${getState().auth.accessToken}`
+//                 },
+//             })
+//             const result = await res.json();
+//             if (!result.success) {
+//                 window.alert(result.message);
+//             }
+//             dispatch(editMeetingAction(content))
+//             // dispatch(fetchMeeting(0))
+//             return;
+//         } catch (err) {
+//             window.alert(err.message);
+//         }
+//     }
+// }
+
+// export function enterMeetingRoom(code: string) {
+//     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+//         try {
+//             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/${code}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } });
+//             const result = await res.json();
+//             if (result.status) {
+//                 dispatch(push(`/room/${result.message}/questions/main`));
+//             }
+//         } catch (e) {
+//             window.alert(e.message);
+//         }
+//     }
+// }
+
+export function convertCodeToId(code: string) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/convert?code=${code}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
+            const result = await res.json();
+            if (result.status) {
+                dispatch(push(`/room/${result.message}/questions/main`));
+            } else {
+                dispatch(message(true,result.message));
+            }
+        } catch (e) {
+            window.alert(e.message);
         }
     }
 }

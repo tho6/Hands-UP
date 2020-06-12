@@ -11,7 +11,7 @@ export class MeetingRouter {
         router.get('/', this.getMeetingByUserId);
         // router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
-        router.put('/:id', this.editMeeting);
+        router.put('/edit/:id', this.editMeeting);
         router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
         router.delete('/delete/:id', this.deleteMeeting);
         return router;
@@ -27,7 +27,7 @@ export class MeetingRouter {
     //         res.status(500).json({ message: "Meeting Router getMeeting error" });
     //     }
     // }
-    
+
     getMeetingByUserId = async (req: Request, res: Response) => {
         try {
             console.log(req.personInfo?.userId)
@@ -95,7 +95,7 @@ export class MeetingRouter {
     deleteMeeting = async (req: Request, res: Response) => {
         try {
             let meetingId = parseInt(req.params.id);
-            if (!meetingId || isNaN(meetingId)) return res.status(400).json({message: 'Invalid meetingId'})
+            if (!meetingId || isNaN(meetingId)) return res.status(400).json({ message: 'Invalid meetingId' })
             const hvMeeting = await this.meetingService.checkMeetingId(meetingId)
             console.log(hvMeeting)
             // const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
@@ -103,12 +103,12 @@ export class MeetingRouter {
             if (!hvMeeting) return res.status(401).json({ message: "Can't delete meeting. This meeting is not owned by you" })
             if (hvMeeting > 0) {
                 const deletedRows = await this.meetingService.deleteMeeting(meetingId);
-                if (deletedRows === 0 ) {
+                if (deletedRows === 0) {
                     return res.status(401).json({ message: "Can't delete meeting." })
-                }else{
+                } else {
                     return res.status(200).json({ success: true, message: meetingId });
                 }
-            }else{
+            } else {
                 return res.status(400).json({ message: "Meeting Id is not a number" })
             }
 
@@ -147,7 +147,7 @@ export class MeetingRouter {
             return;
         }
     }
-    
+
     convertCodeToId = async (req: Request, res: Response) => {
         try {
             if (typeof req.query.code !== typeof 'abc') return res.status(400).json({ status: true, message: 'Invalid param' });
