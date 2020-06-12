@@ -371,8 +371,7 @@ const QuestionPage: React.FC = () => {
     }
   }, [error, dispatch, fbcontinue, meetingId]);
   return (
-    <div className="d-flex align-items-center justify-content-center">
-      <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
+      <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5 question-page-container">
         <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
           <div className="d-flex">
             <span className="position-relative">
@@ -842,7 +841,6 @@ const QuestionPage: React.FC = () => {
         )}
         <ScrollTop />
       </div>
-    </div>
   );
 };
 

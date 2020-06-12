@@ -64,6 +64,9 @@ a:hover{
             color: transparent;
         }
     }
+    a{
+        align-self: center;
+    }
     img{
         border-radius: 2rem;
         height: 2.5rem;
@@ -73,6 +76,16 @@ a:hover{
         z-index: 1500;
     }
     .main-navbar-nav-personal-icon{
+        border-radius: 2rem;
+        height: 2rem;
+        margin: auto;
+        margin-bottom: 0.5rem;
+        vertical-align: middle;
+        margin: 0.5rem 0.25rem 0.25rem;
+        // position: absolute;
+        // left: 31%;
+    }
+    .main-navbar-nav-guest-icon{
         border-radius: 2rem;
         height: 2rem;
         margin: auto;
@@ -226,7 +239,12 @@ a:hover{
                 display: flex;
                 // justify-content: flex-end;
                 width: initial;
-                
+                .login-btn{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
                 .logout-btn{
                     // width: 20%;
                     a{
@@ -256,7 +274,11 @@ a:hover{
 .navbar-move{
    transform: translateX(-200px);
 }
-
+.edit-name-container{
+    input{
+        border: none;
+    }
+}
     // .main-nav{
     //     background-color: $BackgroundColor;
     //     color: black;

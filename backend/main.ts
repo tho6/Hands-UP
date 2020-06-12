@@ -143,6 +143,7 @@ app.use(bodyParser.json());
 const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userGuard, adminGuard, userRouter.router())
+app.put('/guest', guard, guestRouter.updateGuests);
 app.use('/guest', userGuard, adminGuard, guestRouter.router())
 app.use('/live', userGuard, liveRouter.router())
 app.use('/report', userGuard, reportRouter.router())

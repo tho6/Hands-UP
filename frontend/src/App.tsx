@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import QuestionPage from './component/QuestionPage';
 import { Route, Switch } from 'react-router-dom';
@@ -17,6 +17,8 @@ import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
 import Message from './component/Message';
 import { ZoomViewsChart } from './component/ZoomViewsChart';
+import { closeNav, openNav } from './redux/mainNav/actions';
+// import { getGuestIcon } from './redux/auth/actions';
 // import FacebookLogin from './component/FacebookLogin';
 // import FacebookLogin from './component/FacebookLogin';
 
@@ -26,13 +28,15 @@ function App() {
   useEffect(() => {
     dispatch(checkToken())
   }, [dispatch, accessToken])
+
   
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
-  const isMove = useSelector((state:RootState)=>state.mainNav.isOpen)
+  const isMove = useSelector((state:RootState)=>state.mainNav.isOpen);
+
   return (
     <>
     <Navbar />
-    <div className={`App ${isMove?'navbar-move':''}`}>
+    <div className={`App ${isMove?'navbar-move':''}`} onClick={()=>dispatch(closeNav())}>
         <Switch>
           <Route path="/" exact>
           <Home />

@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import './Navbar.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
-import { logoutAccount } from '../redux/auth/thunk';
+import { logoutAccount, changeGuestName } from '../redux/auth/thunk';
 import { NavLink } from 'react-router-dom';
 import { closeNav, openNav } from '../redux/mainNav/actions';
+import { message } from '../redux/rooms/actions';
 
 export default function Navbar() {
     const pic = useSelector((state: RootState) => state.auth.personInfo?.picture)
     const userId = useSelector((state: RootState) => state.auth.personInfo?.userId)
     // const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
     const guestId = useSelector((state: RootState) => state.auth.personInfo?.guestId)
+    const guestName = useSelector((state: RootState) => state.auth.personInfo?.userName)
     const isMainNavBarOpen = useSelector((state: RootState) => state.mainNav.isOpen)
     const dispatch = useDispatch();
     // const [isMainNavBarOpen, setMainNavBar] = useState(false)
     // const ulStyle = {justify-content: 123}
     const [isShow, setIsShow] = useState(false);
+    const [editName, setEditName] = useState(false);
+    const [gName, setGName] = useState('');
     useEffect(() => {
         const scrollHandler = () => {
             if (window.scrollY > 280) return setIsShow(true);
@@ -27,6 +31,10 @@ export default function Navbar() {
             window.removeEventListener('scroll', scrollHandler);
         };
     }, []);
+    useEffect(()=>{
+        if(!guestName) return;
+        setGName(guestName)
+    }, [guestName,setGName]);
     return (
         <>
         <nav className={`main-navbar-nav ${isMainNavBarOpen?'main-navbar-nav-move':''}`}>
@@ -45,17 +53,60 @@ export default function Navbar() {
                         </li>
                         <li className="main-navbar-item hover-effect-navlink "><NavLink activeClassName='hover-effect-navlink' to="/report/past" onClick={() => dispatch(closeNav())}>Report</NavLink></li>
                         <li className="main-navbar-item hover-effect-navlink">
-                            {pic != null && <img src={pic} className='main-navbar-nav-personal-icon' alt="icon" />}
+
+                            {pic != null && <div className='d-flex'>
+                                {editName?(<span className='d-flex edit-name-container shadow'><input autoFocus type="text" value={gName!} onChange={(e)=>{
+                                    if(e.target.value.length >20) return;
+                                    setGName(e.target.value)
+                                    }} onBlur={()=>setEditName(false)}/>
+                                <button className='home-background-enter-button btn btn-info' onMouseDown={()=>{
+                                    setEditName(false)
+                                    if(gName===guestName) return;
+                                    if(gName.trim().length===0){
+                                        dispatch(message(true, 'Name cannot be Empty!'))
+                                        return
+                                    }
+                                    dispatch(changeGuestName(guestId!, gName!)) 
+                                }}>Save</button>
+                                </span>):
+                                (<span onClick={()=>{
+                                    setEditName(true)
+                                    }}>{guestName}
+                                </span>)}
+                                    <img src={pic} className='main-navbar-nav-personal-icon' alt="icon" />
+                                </div>}
                             <button className='logout-button' onClick={() => {
                                 dispatch(logoutAccount())
                                 dispatch(closeNav())
+                                setEditName(false);
                             }}>Logout</button>
                         </li>
                     </>)}
                     {guestId && !userId &&
+                        <>
                         <li className="main-navbar-item login-btn">
+                            {pic != null && 
+                            (<div>
+                                {editName?(<span className='edit-name-container shadow'><input onBlur={(e)=>{
+                                    console.log(e)
+                                    setEditName(false)}} autoFocus type="text" value={gName!} onChange={(e)=>{
+                                        if(e.target.value.length >20) return;
+                                        setGName(e.target.value)}}/>
+                                <button className='home-background-enter-button btn btn-info' onMouseDown={()=>{
+                                    setEditName(false)
+                                    if(gName===guestName) return;
+                                    if(gName.trim().length===0){
+                                        dispatch(message(true, 'Name cannot be Empty!'))
+                                        return
+                                    }
+                                    dispatch(changeGuestName(guestId!, gName!)) 
+                                }}>Save</button>
+                                </span>):(<span onClick={()=>{setEditName(true)
+                                setEditName(true)}}>{guestName}</span>)}
+                                <img src={pic} className='main-navbar-nav-guest-icon' alt="icon" /></div>)}
                             <a href={`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`} rel="noopener noreferrer">Google Login</a>
                         </li>
+                        </>
                     }
                 </ul>
             </nav>
