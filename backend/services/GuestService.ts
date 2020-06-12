@@ -1,6 +1,7 @@
 import Knex from "knex";
 import { GuestForm } from "../models/GuestInterface";
-import { hashGuestName } from "../hash";
+// import { hashGuestName } from "../hash";
+import faker from 'faker';
 
 
 
@@ -10,9 +11,10 @@ export class GuestService {
     //create guests
     createGuest = async () => {
         try {
-            const maxIdResult = await this.knex.raw(/*SQL*/`SELECT max(id) FROM guests`)
-            const maxId = maxIdResult.rows[0].max
-            const name = await hashGuestName('guest'+maxId)
+            // const maxIdResult = await this.knex.raw(/*SQL*/`SELECT max(id) FROM guests`)
+            // const maxId = maxIdResult.rows[0].max
+            // const name = await hashGuestName('guest'+maxId)
+            const name = await faker.address.city();
             const result = await this.knex('guests').insert({
                 name
             }).returning('id')

@@ -38,6 +38,18 @@ export function getPersonInfo(personInfo: UserForm) {
         personInfo
     }
 }
+export function successfullyChangeGuestName(guestName: string) {
+    return {
+        type: '@@AUTH/EDIT_GUEST_NAME' as '@@AUTH/EDIT_GUEST_NAME',
+        guestName
+    }
+}
+
+export function getGuestIcon() {
+    return {
+        type: '@@AUTH/GET_GUEST_ICON' as '@@AUTH/GET_GUEST_ICON',
+    }
+}
 
 // export function loginGoogle() {
 //     return {
@@ -50,4 +62,6 @@ export type AuthActions = ReturnType<typeof loginSuccess> |
                             ReturnType<typeof logout> |
                             ReturnType<typeof loginFailed> |
                             ReturnType<typeof resetLoginMessage> |
-                            ReturnType<typeof getPersonInfo>
+                            ReturnType<typeof getPersonInfo> |
+                            ReturnType<typeof successfullyChangeGuestName>| 
+                            ReturnType<typeof getGuestIcon> 

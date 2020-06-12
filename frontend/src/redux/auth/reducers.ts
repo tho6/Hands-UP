@@ -1,4 +1,5 @@
 import { AuthActions } from "./actions";
+import faker from 'faker'
 export interface AuthState {
     accessToken: string | null | undefined
     refreshToken: string | null | undefined
@@ -19,7 +20,7 @@ export interface PersonInfo {
 const initialState: AuthState = {
     accessToken: localStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken'),
-    personInfo: null,
+    personInfo: {picture: faker.image.animals()} as PersonInfo,
     isAuthenticated: null,
     message: null
 }
@@ -66,7 +67,6 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
             } else {
                 newPeronInfo['userId'] = null
                 newPeronInfo['email'] = null
-                newPeronInfo['picture'] = '/icon/1.jpg'
                 newPeronInfo['userName'] = null
                 newPeronInfo['guestId'] = action.personInfo.id
                 newPeronInfo['userName'] = action.personInfo.name
@@ -76,6 +76,13 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
                 personInfo: newPeronInfo,
                 isAuthenticated:true
             }
+        case '@@AUTH/EDIT_GUEST_NAME':
+            return {
+                ...state,
+                personInfo: {...state.personInfo, userName:action.guestName} as PersonInfo
+            }
+        case '@@AUTH/GET_GUEST_ICON':
+            return {...state, personInfo:{...state.personInfo, picture: faker.image.avatar()} as PersonInfo}
         default:
             return state
     }
