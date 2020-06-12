@@ -1,7 +1,6 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadMeetings, deleteMeetingAction, editMeetingAction, message } from "./action";
+import { loadMeetings, deleteMeetingAction } from "./action";
 import { StateValues } from "react-use-form-state";
-import { push } from "connected-react-router";
 // import { IMeetingLive } from "./reducers";
 
 export function fetchMeeting(meetingId: number) {
@@ -79,8 +78,13 @@ export function deleteMeeting(meetingId: number) {
 //             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/edit/${i}`, {
 //                 method: 'PUT',
 //                 headers: {
-//                     'Authorization': `Bearer ${getState().auth.accessToken}`
+//                     'Authorization': `Bearer ${getState().auth.accessToken}`,
+//                     'Content-Type':'application/json'
 //                 },
+//                 body:{
+//                     content:content
+//                 }
+
 //             })
 //             const result = await res.json();
 //             if (!result.success) {
@@ -107,20 +111,4 @@ export function deleteMeeting(meetingId: number) {
 //             window.alert(e.message);
 //         }
 //     }
-// }
-
-export function convertCodeToId(code: string) {
-    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
-        try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/convert?code=${code}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
-            const result = await res.json();
-            if (result.status) {
-                dispatch(push(`/room/${result.message}/questions/main`));
-            } else {
-                dispatch(message(true,result.message));
-            }
-        } catch (e) {
-            window.alert(e.message);
-        }
-    }
-}
+// // }

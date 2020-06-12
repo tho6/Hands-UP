@@ -15,8 +15,8 @@ export interface MeetingState {
 }
 
 const initialState: MeetingState = {
-    1: { id: 1, name: "LiveMeeting1", date_time: new Date(), code: "NEW1", url: "url", owner_id: "Host1" },
-    2: { id: 2, name: "LiveMeeting2", date_time: new Date(), code: "NEW2", url: "url", owner_id: "Host2" }
+    // 1: { id: 1, name: "LiveMeeting1", date_time: new Date(), code: "NEW1", url: "url", owner_id: "Host1" },
+    // 2: { id: 2, name: "LiveMeeting2", date_time: new Date(), code: "NEW2", url: "url", owner_id: "Host2" }
 }
 
 export function MeetingReducer(oldState: MeetingState = initialState, action: MeetingActions): MeetingState {
@@ -35,13 +35,13 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
             delete newMeetingForDelete[action.meetingId]
             return newMeetingForDelete
         // case '@@MEETINGS/EDIT_MEETINGS':
-        //     const newMeetingForEdit = { ...oldState }
-        //     const newContent = action.content;
-        //     newMeetingForEdit[action.i].content = newContent;
-        //     return {
-        //         ...oldState,
-        //         meeting: newMeetingForEdit
-        //     }
+            // const newMeetingForEdit = { ...oldState }
+            // const newContent = action.content;
+            // newMeetingForEdit[action.i].content = newContent;
+            // return {
+            //     ...oldState,
+                // meeting: newMeetingForEdit
+            // }
         // case '@@MEETINGS/MESSAGE':
         //         return {
         //             ...oldState,
@@ -55,7 +55,7 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
         //             ...oldState,
         //             meeting: action.meeting
         //         }
-
+    
         default:
             return oldState;
     }

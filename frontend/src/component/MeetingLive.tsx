@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteMeeting, convertCodeToId } from '../redux/meeting/thunk';
+import { deleteMeeting } from '../redux/meeting/thunk';
 // import { editMeeting } from '../redux/meeting/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meeting/reducers';
@@ -8,7 +8,8 @@ import moment from 'moment'
 // CSS
 import './MeetingLive.scss';
 import Button from 'react-bootstrap/Button';
-import { message } from '../redux/meeting/action';
+import { Modal } from 'react-bootstrap';
+// import { message } from '../redux/meeting/action';
 // import Card from 'react-bootstrap/Card'
 // import Row from 'react-bootstrap/Row'
 // import Col from 'react-bootstrap/Col'
@@ -16,7 +17,10 @@ import { message } from '../redux/meeting/action';
 export function MeetingLive() {
     const meetings = useSelector((state: RootState) => state.meetings)
     // const [editing, setEditing] = useState<null | number>(null);
-    const [textValue, setTextValue] = useState('');
+    // const [textValue, setTextValue] = useState('');
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const dispatch = useDispatch();
     const arrMeetings = []
     for (const meetingId in meetings) {
@@ -50,10 +54,23 @@ export function MeetingLive() {
                                         dispatch(editMeeting(meeting.id))
                                     }}><i className="fas fa-cog" id="meeting-edit"></i>
                                     </button> */}
-                                <button className='meeting-live-del-btn' onClick={() => {
-                                    dispatch(deleteMeeting(meeting.id))
-                                }}><i className="far fa-times-circle" id="meeting-delete"></i>
+                                <button className='meeting-live-del-btn' onClick={handleShow}><i className="far fa-times-circle" id="meeting-delete"></i>
                                 </button>
+                                <Modal show={show} onHide={handleClose} centered>
+                                    <Modal.Header className="modal-header" closeButton>
+                                        <Modal.Title className="delete-meeting-header">Delete meeting</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body className="delete-meeting-body">Are you sure you want to delete? You can always modify your current meeting settings.</Modal.Body>
+                                    <Modal.Footer className="delete-meeting-function-btn">
+                                        <div className="delete-meeting-function-btn">
+                                            <Button variant="danger" className="delete-meeting-delete-btn" onClick={async () => {
+                                                dispatch(deleteMeeting(meeting.id))
+                                                handleClose()
+                                            }}>Yes</Button>
+                                            <Button variant="secondary" className="delete-meeting-go-back-btn" onClick={handleClose}>Go back</Button>
+                                        </div>
+                                    </Modal.Footer>
+                                </Modal>
                             </span>
                         </div>
                     </div>
@@ -68,12 +85,12 @@ export function MeetingLive() {
                                 <div className="meeting-live-content-answer">{meeting.code}</div>
                             </div>
                             <div className="meeting-live-content-input">
-                                <div className="meeting-live-content-field">Url </div>
-                                <div className="meeting-live-content-answer">{meeting.url}</div>
+                                <div className="meeting-live-content-field">Url: </div>
+                                <div className="meeting-live-content-answer">{process.env.REACT_APP_BACKEND_URL}/{meeting.id}/questions/main</div>
                             </div>
                             {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
                             <div className="meeting-live-content-input">
-                                <div className="meeting-live-content-field">Date & time: </div>
+                                <div className="meeting-live-content-field">Date: </div>
                                 <div className="meeting-live-content-answer">{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
                             </div>
                             <div className="meeting-live-content-input">
@@ -83,11 +100,7 @@ export function MeetingLive() {
                         </div>
                     </div>
                     <div className="meeting-live-join-btn"><Button onClick={() => {
-                        if (textValue.trim().length > 0) {
-                            dispatch(convertCodeToId(textValue));
-                        } else {
-                            dispatch(message(true, 'Meeting code cannot be empty!'));
-                        }
+                        // dispatch
                     }} variant="info" className="meeting-live-join-btn-green"><b>JOIN</b></Button></div>
                 </div>)
             })}
