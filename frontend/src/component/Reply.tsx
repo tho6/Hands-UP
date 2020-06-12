@@ -72,8 +72,8 @@ const Reply: React.FC<IReplyProps> = (props) => {
         )}
       </div>
 
-      <div className="d-flex justify-content-sm-end justify-content-start">
-        <div className="to-center util-spacing text-word-break">{reply.guestName}</div>
+      <div className="d-flex justify-content-sm-end justify-content-start edit-reply-container">
+        <div className="to-center util-spacing text-word-break reply-name">{reply.guestName}</div>
         {canEdit && !isEdit && (
           <div
             className="util-spacing will-hover"

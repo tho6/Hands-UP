@@ -1,6 +1,6 @@
 @import './_variables.scss';
 
-.createForm {
+.create-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -16,12 +16,12 @@
     //     font-family: $SecondaryFontStyle;
     //     color: $PrimaryTextColor;
     // }
-    .create-meeting-field{
+    .create-meeting-field {
         flex: 1;
     }
-    .create-meeting-input-answer{
+    .create-meeting-input-answer {
         flex: 1;
-        .create-meeting-yes-no{
+        .create-meeting-yes-no {
             display: flex;
             justify-content: space-evenly;
         }
@@ -31,12 +31,12 @@
 .create-meeting-input {
     padding: 0.3rem;
     // display: flex;
-    .create-meeting-field{
+    .create-meeting-field {
         padding-right: 10px;
     }
 }
 
-.formRemind {
+.form-remind {
     font-family: $PrimaryFontStyle;
     color: $ThirdTextColor;
     font-size: 10px;
@@ -65,20 +65,20 @@
     border: solid 3px $SecondaryTextColor;	
 }
 
-.createButtons {
+.create-buttons {
     display: flex;
     justify-content: center;
     // flex-direction: row;
 }
 
-.createButtonColour {
+.create-button-colour {
     background-color: $ThirdTextColor;
     border-radius: 5px;
     width: 180px;
     margin-right: 5px;
 }
 
-.resetButtonColour {
+.reset-button-colour {
     background-color: $PrimaryTextColor;
     border-radius: 5px;
 }
