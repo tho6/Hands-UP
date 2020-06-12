@@ -115,7 +115,8 @@ export function checkToken() {
             if (!result.success) {
                 // window.alert(result.message)
                 // dispatch(logout())
-                dispatch(loginGuest())
+                // dispatch(loginGuest())
+                window.location.replace(`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`)
             }
             localStorage.setItem('accessToken', result.message.accessToken)
             dispatch(loginSuccess(result.message.accessToken, refreshToken))

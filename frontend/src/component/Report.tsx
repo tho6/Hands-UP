@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 // import { ReportNavbar } from './ReportNavbar';
@@ -14,6 +14,9 @@ import { ReportPeakViews } from './ReportPeakViews';
 import { ReportTotalQuestions } from './ReportTotalQuestions';
 import { ReportSideDrawer } from './ReportSideDrawer';
 import { closeSideDrawer, openSideDrawer } from '../redux/mainNav/actions';
+import UncontrolledLottie from './UncontrolledLottie';
+import { ReportPopTable } from './ReportPopTable';
+import { Backdrop } from './Backdrop';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -24,6 +27,8 @@ import { closeSideDrawer, openSideDrawer } from '../redux/mainNav/actions';
 export function Report() {
     const dispatch = useDispatch();
     // const [isDrawerOpen, setDrawerOpen] = useState(false)
+    const [reportPop, setReportPop] = useState(false)
+    const [reportPopData, setReportPopData] = useState({} as {header:string, columns: string[], data:string[][]})
     const match = useRouteMatch<{loc?:string}>()
     const meetingId = match.params.loc
     // const meetingId = preMeetingId?.split(',')
@@ -61,7 +66,7 @@ export function Report() {
     const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
 
     if (!questions && !views) {
-        return (<div></div>);
+        return <UncontrolledLottie />;
     }
     console.log(meetingId)
     console.log(pastMeetingId)
@@ -71,7 +76,22 @@ export function Report() {
 
     return (<>
                 <ReportSideDrawer />
-                <div className='report-container'>
+                <div className={reportPop?'report-container report-container-pop-up-report-open':"report-container"}>
+                        {reportPop&&<Backdrop closeSideNav={()=>null}/>}
+                    <div onClick={()=>setReportPop(false)} className={reportPop?"report-pop-table-outer z-index-set-to-fifty":""}>
+                    <>
+                        <div onClick={(e)=>e.stopPropagation()} className={`report-modal ${reportPop?'show':'not-show'} z-index-set-to-fifty`}>
+                            {/* <div className="report-pop-report-outer"> */}
+                                <div>
+                                <div className="report-header"><span></span></div>
+                                <ReportPopTable reportPopData={reportPopData}/>
+                                </div>
+                     
+                                {/* </div> */}
+                        
+                        </div>
+                        </>
+                    </div>
                     <div className={isSideDrawerOpen?'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-on':'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-off'} onClick={() => isSideDrawerOpen?dispatch(closeSideDrawer()):dispatch(openSideDrawer())}>
                         <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
                     </div>
@@ -104,11 +124,11 @@ export function Report() {
                     <div className='report-desktop-second-row'>
                         <div className="questions-from-chart-outer">
                             <div className="report-header"><span>Your Questions From</span></div>
-                            <QuestionFromChart data={questions}/>
+                            <QuestionFromChart setReportPopData={(data)=>setReportPopData(data)} setReportPopOpen={()=>setReportPop(true)} data={questions}/>
                         </div>
                         <div className="questions-pie-chart-outer">
                             <div className="report-header"><span>Your Questions Analysis</span></div>
-                            <QuestionsPieChart data={questions}/>
+                            <QuestionsPieChart setReportPopData={(data)=>setReportPopData(data)} setReportPopOpen={()=>setReportPop(true)} data={questions}/>
                         </div>
                         <div className="question-likes-rank-outer">
                             <div className="report-header"><span>Most Liked Questions</span></div>
