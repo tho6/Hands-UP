@@ -36,10 +36,10 @@ export function MeetingPast() {
                 {arrMeetings.map((meeting) => {
                     return (<div key={meeting.id} className="meeting-past-card">
                         <div className="meeting-function-btn">
-                            <button className='meeting-live-edit-btn' onClick={() => {
+                            {/* <button className='meeting-live-edit-btn' onClick={() => {
                                 // dispatch(editMeeting(meeting.id))
                             }}><i className="fas fa-cog" id="meeting-edit"></i>
-                            </button>
+                            </button> */}
                             <button className='meeting-live-del-btn' onClick={() => {
                                 dispatch(deleteMeeting(meeting.id))
                             }}><i className="far fa-times-circle" id="meeting-delete"></i>

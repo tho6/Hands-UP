@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteMeeting } from '../redux/meeting/thunk';
+import { deleteMeeting, convertCodeToId } from '../redux/meeting/thunk';
+// import { editMeeting } from '../redux/meeting/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meeting/reducers';
 import moment from 'moment'
 // CSS
 import './MeetingLive.scss';
 import Button from 'react-bootstrap/Button';
+import { message } from '../redux/meeting/action';
 // import Card from 'react-bootstrap/Card'
 // import Row from 'react-bootstrap/Row'
 // import Col from 'react-bootstrap/Col'
 
 export function MeetingLive() {
     const meetings = useSelector((state: RootState) => state.meetings)
+    // const [editing, setEditing] = useState<null | number>(null);
+    const [textValue, setTextValue] = useState('');
     const dispatch = useDispatch();
     const arrMeetings = []
     for (const meetingId in meetings) {
@@ -28,47 +32,63 @@ export function MeetingLive() {
             <h2 className="meeting-live-header">Current</h2>
             {arrMeetings.map((meeting) => {
                 return (<div key={meeting.id} className="meeting-live-card">
-                        <div>
-                            <div className="meeting-due-function-btn">
-                                <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
-                                <span>
-                                    <button className='meeting-live-edit-btn' onClick={() => {
-                                        // dispatch(editMeeting(meeting.id))
+                    <div>
+                        <div className="meeting-due-function-btn">
+                            <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
+                            <span>
+
+                                {/*             
+              {editing === i ? <textarea {...textarea('content')} onBlur={async () => {
+                dispatch(editMeeting(meeting.id))
+                setEditing(null);
+              }}></textarea> : memo.content} */}
+
+
+
+
+                                {/* <button className='meeting-live-edit-btn' onClick={() => {
+                                        dispatch(editMeeting(meeting.id))
                                     }}><i className="fas fa-cog" id="meeting-edit"></i>
-                                    </button>
-                                    <button className='meeting-live-del-btn' onClick={() => {
-                                        dispatch(deleteMeeting(meeting.id))
-                                    }}><i className="far fa-times-circle" id="meeting-delete"></i>
-                                    </button>
-                                </span>
+                                    </button> */}
+                                <button className='meeting-live-del-btn' onClick={() => {
+                                    dispatch(deleteMeeting(meeting.id))
+                                }}><i className="far fa-times-circle" id="meeting-delete"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="meeting-live-content">
+                        <div className="meeting-live-content-left">
+                            <i className="fas fa-video fa-3x"></i>
+                        </div>
+                        <div className="meeting-live-content-right">
+                            <div className="meeting-live-content-right-name">{meeting.name}</div>
+                            <div className="meeting-live-content-input">
+                                <div className="meeting-live-content-field">Code: </div>
+                                <div className="meeting-live-content-answer">{meeting.code}</div>
+                            </div>
+                            <div className="meeting-live-content-input">
+                                <div className="meeting-live-content-field">Url </div>
+                                <div className="meeting-live-content-answer">{meeting.url}</div>
+                            </div>
+                            {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
+                            <div className="meeting-live-content-input">
+                                <div className="meeting-live-content-field">Date & time: </div>
+                                <div className="meeting-live-content-answer">{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
+                            </div>
+                            <div className="meeting-live-content-input">
+                                <div className="meeting-live-content-field">Host: </div>
+                                <div className="meeting-live-content-answer">{meeting.owner_id}</div>
                             </div>
                         </div>
-                        <div className="meeting-live-content">
-                            <div className="meeting-live-content-left">
-                                <i className="fas fa-video fa-3x"></i>
-                            </div>
-                            <div className="meeting-live-content-right">
-                                <div className="meeting-live-content-right-name">{meeting.name}</div>
-                                <div className="meeting-live-content-input">
-                                    <div className="meeting-live-content-field">Code: </div>
-                                    <div className="meeting-live-content-answer">{meeting.code}</div>
-                                </div>
-                                <div className="meeting-live-content-input">
-                                    <div className="meeting-live-content-field">Url </div>
-                                    <div className="meeting-live-content-answer">{meeting.url}</div>
-                                </div>
-                                {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
-                                <div className="meeting-live-content-input">
-                                    <div className="meeting-live-content-field">Date & time: </div>
-                                    <div className="meeting-live-content-answer">{moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
-                                </div>
-                                <div className="meeting-live-content-input">
-                                    <div className="meeting-live-content-field">Host: </div>
-                                    <div className="meeting-live-content-answer">{meeting.owner_id}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="meeting-live-join-btn"><Button variant="info" className="meeting-live-join-btn-green"><b>JOIN</b></Button>{' '}</div>  
+                    </div>
+                    <div className="meeting-live-join-btn"><Button onClick={() => {
+                        if (textValue.trim().length > 0) {
+                            dispatch(convertCodeToId(textValue));
+                        } else {
+                            dispatch(message(true, 'Meeting code cannot be empty!'));
+                        }
+                    }} variant="info" className="meeting-live-join-btn-green"><b>JOIN</b></Button></div>
                 </div>)
             })}
         </div>

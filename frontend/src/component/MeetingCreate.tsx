@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormState } from 'react-use-form-state';
 import { useDispatch } from 'react-redux';
 import { createMeeting } from '../redux/meeting/thunk';
+import DatePicker from "react-datepicker";
+import { addDays } from 'date-fns'
 // import { RootState } from '../store';
 //CSS
 import './MeetingCreate.scss'
 import Button from 'react-bootstrap/Button';
+import "react-datepicker/dist/react-datepicker.css";
 
 interface IProps {
     close: () => void
 }
 
 const CreateMeeting: React.FC<IProps> = (props) => {
-    const [formState, { text, date, time, radio }] = useFormState();
+    const [formState, { text, date, time, radio, raw }] = useFormState({ date: new Date() });
     // const auth = useSelector((rootState: RootState) => rootState.auth);
+    const [startDate, setStartDate] = useState({} as Date);
     const dispatch = useDispatch();
 
     // useEffect(() => {
@@ -33,7 +37,28 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Date and time</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area"{...date('date')} required />
+                    {/* <input className="input-area"{...date('date')} required /> */}
+
+                {/* <input className="input-area"> */}
+
+                {/* <DatePicker
+                    {...raw({name: 'date',
+                    onChange: date => date.toString();
+                    })}
+                    
+                    value={new Date(formState.date)}
+                />
+
+ */}
+
+
+                    <DatePicker {...raw('date')} 
+                        selected={startDate}
+                        onChange={date => setStartDate(date as Date)}
+                        minDate={new Date()}
+                        maxDate={addDays(new Date(), 30)}
+                        placeholderText="Select a date between today and 30 days in the future"
+                    />
                     <input className="input-area"{...time('time')} required />
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
                     {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}

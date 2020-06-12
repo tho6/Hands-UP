@@ -9,7 +9,7 @@ export class MeetingService {
     //     return result.rows as IMeeting[];
     // }
 
-    async checkMeetingId(id:number){
+    async checkMeetingId(id: number) {
         try {
             const result = await this.knex.raw(/*SQL*/ `SELECT COUNT(*) FROM meetings WHERE id = ?`, [id])
             return result.rows[0].count
@@ -100,7 +100,7 @@ export class MeetingService {
         if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
         return true;
     }
-    async convertCodeToRoomId(code:string) {
+    async convertCodeToRoomId(code: string) {
         // console.log(id, roomConfiguration)
         const sql = 'select id from meetings where code = ?'
         const result = await this.knex.raw(sql, [code]);

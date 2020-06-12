@@ -34,6 +34,20 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
             const newMeetingForDelete = { ...oldState }
             delete newMeetingForDelete[action.meetingId]
             return newMeetingForDelete
+        // case '@@MEETINGS/EDIT_MEETINGS':
+        //     const newMeetingForEdit = { ...oldState }
+        //     const newContent = action.content;
+        //     newMeetingForEdit[action.i].content = newContent;
+        //     return {
+        //         ...oldState,
+        //         meeting: newMeetingForEdit
+        //     }
+        // case '@@MEETINGS/MESSAGE':
+        //         return {
+        //             ...oldState,
+        //             message: action.redirect?{status:action.status, message:action.message, redirect:action.redirect}:{status:action.status, message:action.message}
+        //         };
+        //     }
 
         // case '@@MEETINGS/CREATE_MEETINGS':
         //     const newMeetingForCreate = {...oldState.meeting};
@@ -41,14 +55,6 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
         //             ...oldState,
         //             meeting: action.meeting
         //         }
-        // case '@@MEETINGS/EDIT_MEETINGS':
-        //     const newMeetingForEdit = { oldState.meeting }
-        //     const newContent = action.content;
-        //     newMeetingForEdit[action.i].content = newContent;
-        //     return {
-        //         ...oldState,
-        //         meeting: newMeetingForEdit
-        //     }
 
         default:
             return oldState;
