@@ -121,6 +121,39 @@
     }
 }
 
+
+
+.delete-meeting-past-popup{
+    background-color: $SecondaryTextColor;
+}
+
+.delete-meeting-past-header{
+    text-align: center;
+}
+
+.delete-meeting-past-body{
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
+}
+
+.delete-meeting-past-function-btn{
+    display: flex;
+    justify-content: center;
+}
+
+.delete-meeting-past-delete-btn {
+    background-color: rgb(245, 101, 102); // pink
+    border-radius: 5px;
+    margin-right: 5px;
+}
+.delete-meeting-past-go-back-btn{
+    background-color: $PrimaryTextColor;
+    border-radius: 5px;
+    // width: 180px;
+}
+
+
 @media screen and (min-width: 1000px){ // iPad
     .meeting-past-container {
         justify-content: space-between;

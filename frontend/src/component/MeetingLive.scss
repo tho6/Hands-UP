@@ -101,12 +101,43 @@
     display: flex;
     flex-direction: row;
     .meeting-live-content-field {
-        flex: 1.5;
+        flex: 1;
         padding-right: 5px;
     }
     .meeting-live-content-answer {
-        flex: 3;
+        flex: 6;
     }
+}
+
+
+.delete-meeting-popup{
+    background-color: $SecondaryTextColor;
+}
+
+.delete-meeting-header{
+    text-align: center;
+}
+
+.delete-meeting-body{
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
+}
+
+.delete-meeting-function-btn{
+    display: flex;
+    justify-content: center;
+}
+
+.delete-meeting-delete-btn {
+    background-color: rgb(245, 101, 102); // pink
+    border-radius: 5px;
+    margin-right: 5px;
+}
+.delete-meeting-go-back-btn{
+    background-color: $PrimaryTextColor;
+    border-radius: 5px;
+    // width: 180px;
 }
 
 @media screen and (min-width: 500px){

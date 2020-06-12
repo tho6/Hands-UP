@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // import { fetchMeetingPast } from '../redux/meetingpast/thunk';
@@ -12,10 +12,14 @@ import Button from 'react-bootstrap/Button';
 // import Row from 'react-bootstrap/Row'
 // import Col from 'react-bootstrap/Col'
 import moment from 'moment';
+import { Modal } from 'react-bootstrap';
 
 // const MeetingPastCard: React.FC<{ meeting: IMeetingPast }> = (props) => {
 export function MeetingPast() {
     const meetings = useSelector((state: RootState) => state.meetings)
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const dispatch = useDispatch();
     // console.log(meetings)
     const arrMeetings = []
@@ -40,10 +44,23 @@ export function MeetingPast() {
                                 // dispatch(editMeeting(meeting.id))
                             }}><i className="fas fa-cog" id="meeting-edit"></i>
                             </button> */}
-                            <button className='meeting-live-del-btn' onClick={() => {
-                                dispatch(deleteMeeting(meeting.id))
-                            }}><i className="far fa-times-circle" id="meeting-delete"></i>
+                            <button className='meeting-live-del-btn' onClick={handleShow}><i className="far fa-times-circle" id="meeting-delete"></i>
                             </button>
+                            <Modal show={show} onHide={handleClose} centered>
+                                <Modal.Header className="modal-header" closeButton>
+                                    <Modal.Title className="delete-meeting-past-header">Delete past meeting</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className="delete-meeting-past-body">Are you sure you want to delete? You can't undo this action.</Modal.Body>
+                                <Modal.Footer className="delete-meeting-past-function-btn">
+                                    <div className="delete-meeting-past-function-btn">
+                                        <Button variant="danger" className="delete-meeting-delete-btn" onClick={async () => {
+                                            dispatch(deleteMeeting(meeting.id))
+                                            handleClose()
+                                        }}>Yes</Button>
+                                        <Button variant="secondary" className="delete-meeting-go-back-btn" onClick={handleClose}>Go back</Button>
+                                    </div>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                         <div className="meeting-past-content">
                             <div className="meeting-past-content-left">
