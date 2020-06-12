@@ -100,6 +100,13 @@ export class MeetingService {
         if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
         return true;
     }
+    async editMeeting(meetingId: number, name:string, code:string, dateTime:Date) {
+        // console.log(id, roomConfiguration)
+        const sql = 'update meetings set (name, code, date_time) = (?, ?, ?) where id = ?;'
+        const result = await this.knex.raw(sql, [name, code, dateTime, meetingId]);
+        if (result.rowCount !== 1) throw new Error('No meeting is found!Fail to edit room!');
+        return true;
+    }
     async convertCodeToRoomId(code: string) {
         // console.log(id, roomConfiguration)
         const sql = 'select id from meetings where code = ?'

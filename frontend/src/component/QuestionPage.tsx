@@ -238,7 +238,7 @@ const QuestionPage: React.FC = () => {
     if (!roomInformation?.ownerId) return;
     if (isHost) return;
     socket.emit('new-user-join', roomInformation.ownerId);
-  }, [roomInformation]);
+  }, [roomInformation, isHost]);
   useEffect(() => {
     if (!isHost) return;
     const turnOffYoutubeLive = () => {
@@ -288,7 +288,7 @@ const QuestionPage: React.FC = () => {
       leaveHost();
       window.removeEventListener('beforeunload', leaveHost);
     };
-  }, [personInfo, isHost, meetingId, dispatch]); // this
+  }, [personInfo, isHost, meetingId, dispatch, isAnswering]); // this
   useEffect(() => {
     if (!isHost) return;
     const newUserJoin = () => {

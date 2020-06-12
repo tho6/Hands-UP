@@ -34,14 +34,12 @@ export function MeetingReducer(oldState: MeetingState = initialState, action: Me
             const newMeetingForDelete = { ...oldState }
             delete newMeetingForDelete[action.meetingId]
             return newMeetingForDelete
-        // case '@@MEETINGS/EDIT_MEETINGS':
-            // const newMeetingForEdit = { ...oldState }
-            // const newContent = action.content;
-            // newMeetingForEdit[action.i].content = newContent;
-            // return {
-            //     ...oldState,
-                // meeting: newMeetingForEdit
-            // }
+        case '@@MEETINGS/EDIT_MEETINGS':
+            const newMeetingContent = {...oldState[`${action.meetingId}`], name:action.name, code:action.code, date_time:action.dateTime}
+            return {
+                ...oldState,
+                [`${action.meetingId}`]:newMeetingContent
+            }
         // case '@@MEETINGS/MESSAGE':
         //         return {
         //             ...oldState,
