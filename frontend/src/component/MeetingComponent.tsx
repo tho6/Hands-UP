@@ -25,12 +25,12 @@ export const MeetingComponent:React.FC<IProps> =  (props) =>{
     const dispatch = useDispatch();
     const {meeting} = props;
     const [formState, {text, date, time}] = useFormState();
-    useEffect(()=>{
+
         formState.setField('name', meeting.name);
         formState.setField('code', meeting.code);
         formState.setField('date', new Date(meeting.date_time).toLocaleDateString('en-CA'));
         formState.setField('time', new Date(meeting.date_time).toLocaleTimeString('it-IT'));
-    }, [meeting])
+
   return (
       <>
     <div className="meeting-live-card">
