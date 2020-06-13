@@ -57,6 +57,7 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-chartjs-2": "^2.9.0",
+    "react-clipboard.js": "^2.0.16",
     "react-datepicker": "^3.0.0",
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
