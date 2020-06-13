@@ -11,7 +11,7 @@ export class MeetingRouter {
         router.get('/', this.getMeetingByUserId);
         router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
-        // router.put('/edit/:id', this.editMeeting);
+        router.put('/edit/:id', this.editMeeting);
         // router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
         router.delete('/delete/:id', this.deleteMeeting);
         return router;
@@ -71,39 +71,36 @@ export class MeetingRouter {
         }
     }
 
-    // editMeeting = async (req: Request, res: Response) => {
-    //     try {
+    editMeeting = async (req: Request, res: Response) => {
+        try {
+            const meetingId = parseInt(req.params.id);
+            if (!meetingId || isNaN(meetingId)) return res.status(400).json({ message: 'Invalid meetingId' })
+            const hvMeeting = await this.meetingService.checkMeetingId(meetingId)
+            console.log(hvMeeting)
+            // const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            // console.log(meetings)
+            if (!hvMeeting) return res.status(401).json({ message: "Can't Edit meeting. This meeting is not owned by you" })
+            if (hvMeeting > 0) {
+            const meeting = await this.meetingService.getMeetingById(meetingId);
+            if (meeting.ownerId !== req.personInfo?.userId) return res.status(401).json({ message: "Can't edit meeting. This meeting is not owned by you" })
+            const { name, dateTime, code } = req.body;
+            if (isNaN(meetingId)) {
+                res.status(400).json({ message: "Meeting Id is not a number" })
+                return;
+            }
+            await this.meetingService.editMeeting(parseInt(req.params.id), name, code, dateTime);
+            return res.status(200).json({status:true});
+        }
+        return res.status(500).json({status:false});
+    }
+        catch (err) {
+            console.log(err.message);
+            res.json({ message: "Can't edit meeting" });
+            return;
+        }
+    
+    }
 
-    //         let meetingId = parseInt(req.params.id);
-    //         if (!meetingId || isNaN(meetingId)) return res.status(400).json({ message: 'Invalid meetingId' })
-    //         const hvMeeting = await this.meetingService.checkMeetingId(meetingId)
-    //         console.log(hvMeeting)
-    //         // const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
-    //         // console.log(meetings)
-    //         if (!hvMeeting) return res.status(401).json({ message: "Can't delete meeting. This meeting is not owned by you" })
-    //         if (hvMeeting > 0) {
-
-
-
-
-    //         const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
-    //         const meetingId = parseInt(req.params.id);
-    //         if (!(meetingId in meetings)) return res.status(401).json({ message: "Can't edit meeting. This meeting is not owned by you" })
-    //         const { name, date_time, code, owner_id } = req.body;
-    //         const fake_url = req.body.code;
-    //         if (isNaN(meetingId)) {
-    //             res.status(400).json({ message: "Meeting Id is not a number" })
-    //             return;
-    //         }
-    //         const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, fake_url, owner_id);
-    //         return res.json({ result });
-    //     }
-    //     catch (err) {
-    //         console.log(err.message);
-    //         res.json({ message: "Can't edit meeting" });
-    //         return;
-    //     }
-    // }
 
     deleteMeeting = async (req: Request, res: Response) => {
         try {

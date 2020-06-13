@@ -1,6 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
-import { loadMeetings, deleteMeetingAction } from "./action";
+import { loadMeetings, deleteMeetingAction, editMeetingAction } from "./action";
 import { StateValues } from "react-use-form-state";
+import { message } from "../rooms/actions";
 // import { IMeetingLive } from "./reducers";
 
 export function fetchMeeting(meetingId: number) {
@@ -72,32 +73,30 @@ export function deleteMeeting(meetingId: number) {
     }
 }
 
-// export function editMeeting(i: number, content: string) {
-//     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
-//         try {
-//             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/edit/${i}`, {
-//                 method: 'PUT',
-//                 headers: {
-//                     'Authorization': `Bearer ${getState().auth.accessToken}`,
-//                     'Content-Type':'application/json'
-//                 },
-//                 body:{
-//                     content:content
-//                 }
+export function editMeeting(meetingId: number, name: string, code:string, dateTime:Date) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/edit/${meetingId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${getState().auth.accessToken}`,
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({name, code, dateTime})
 
-//             })
-//             const result = await res.json();
-//             if (!result.success) {
-//                 window.alert(result.message);
-//             }
-//             dispatch(editMeetingAction(content))
-//             // dispatch(fetchMeeting(0))
-//             return;
-//         } catch (err) {
-//             window.alert(err.message);
-//         }
-//     }
-// }
+            })
+            const result = await res.json();
+            if (!result.status) {
+                dispatch(message(true, result.message));
+                return;
+            }
+            dispatch(editMeetingAction(meetingId, code, dateTime ,name))
+            return;
+        } catch (err) {
+            window.alert(err.message);
+        }
+    }
+}
 
 // export function enterMeetingRoom(code: string) {
 //     return async (dispatch: ThunkDispatch, getState: () => RootState) => {

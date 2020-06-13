@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { IQuestion } from '../models/IQuestion';
 import './question.scss';
 import YesNoModal from './YesNoModal';
@@ -21,7 +21,7 @@ import { PersonInfo } from '../redux/auth/reducers';
 import ImageContainer from './ImageContainer';
 import TextareaAutosize from 'react-textarea-autosize';
 import { socket } from '../socket';
-import * as Scroll from 'react-scroll';
+
 
 export interface IQuestionProps {
   question: IQuestion;

@@ -100,6 +100,7 @@
 .meeting-live-content-input{
     display: flex;
     flex-direction: row;
+    margin-top: 1rem;
     .meeting-live-content-field {
         flex: 1;
         padding-right: 5px;
@@ -150,4 +151,11 @@
             color: #ffffff;
             }
         }
+}
+
+.meeting-text-area{
+    resize: none;
+    border: none;
+    border-radius: 10px;
+
 }

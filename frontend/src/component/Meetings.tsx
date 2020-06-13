@@ -21,7 +21,7 @@ function Meetings() {
 
     useEffect(() => {
         dispatch(fetchMeeting(0))
-    }, [])
+    }, [dispatch])
     return (
         <>
             {/* <div className="meetings-container"> */}
