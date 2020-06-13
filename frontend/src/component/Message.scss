@@ -1,13 +1,16 @@
+@import './_variables';
+
 .message-box {
   position: fixed;
-  top: 55px;
+  top: 60px;
   left: -600px;
   transition: transform 0.9s ease;
   z-index: 99999;
   background-color: #8ad4dc;
-  box-shadow: 2px 2px 4px 5px #ccc;
+  background-color: rgba(30, 183, 197, 0.4);
+  box-shadow: 0px 2px 3px 2px #ccc;
   max-width: 600px;
-  border-radius: 15px;
+  border-radius: 5px;
   // border: solid 1px black;
   word-wrap: normal;
 }
@@ -20,7 +23,7 @@
   .message-box{
     font-size: 0.8rem;
     max-width:80vw; 
-    box-shadow: 1px 1px 2px 2px #ccc;
+    box-shadow: 0px 1px 2px 1px #ccc;
   }
   .message-active {
     transform: translate(625px);

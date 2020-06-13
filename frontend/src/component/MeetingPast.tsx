@@ -83,8 +83,11 @@ export function MeetingPast() {
                             </div>
                         </div>
                         <div className="meeting-live-view-btn">
-                            <Button variant="secondary" className="meeting-live-view-btn">VIEW</Button>{' '}
+                            <Button variant="secondary" className="meeting-live-view-btn" href="/{meeting.id}/questions/main">VIEW</Button>{' '},
                         </div>
+                        {/* <div className="meeting-live-view-btn">
+                            <Button variant="secondary" className="meeting-live-view-btn">VIEW</Button>{' '}
+                        </div> */}
                     </div>)
                 })}
             </div>
