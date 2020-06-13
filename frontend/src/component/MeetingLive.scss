@@ -103,16 +103,18 @@
     .meeting-live-content-field {
         flex: 1;
         padding-right: 5px;
+        padding-top: 12px;
     }
     .meeting-live-content-answer {
         flex: 6;
+        padding-top: 12px;
     }
 }
 
 
-.delete-meeting-popup{
-    background-color: $SecondaryTextColor;
-}
+// .delete-meeting-popup{
+//     background-color: $SecondaryTextColor;
+// }
 
 .delete-meeting-header{
     text-align: center;

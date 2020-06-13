@@ -115,15 +115,17 @@
     .meeting-past-content-field {
         flex: 1.5;
         padding-right: 5px;
+        padding-top: 8px;
     }
     .meeting-past-content-answer {
         flex: 3;
+        padding-top: 8px;
     }
 }
 
-.delete-meeting-past-popup{
-    // background-color: $SecondaryTextColor;
-}
+// .delete-meeting-past-popup{
+//     background-color: $SecondaryTextColor;
+// }
 
 .delete-meeting-past-header{
     text-align: center;
@@ -145,12 +147,12 @@
     border-radius: 5px;
     margin-right: 5px;
 }
+
 .delete-meeting-past-go-back-btn{
     background-color: $PrimaryTextColor;
     border-radius: 5px;
     // width: 180px;
 }
-
 
 @media screen and (min-width: 1000px){ // iPad
     .meeting-past-container {
