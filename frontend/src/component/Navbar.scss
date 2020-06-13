@@ -42,6 +42,9 @@ a:hover{
     box-shadow: 10px 14px 11px -13px rgba(173,173,173,0.71);
     opacity: 0.99;
 }
+.main-nav-popover{
+    z-index: 1501;
+}
 .main-navbar-nav{
     transition: all 0.2s;
     // padding-top: 1rem;

@@ -2,6 +2,7 @@ import { ThunkDispatch, RootState } from "../../store";
 import { loadMeetings, deleteMeetingAction, editMeetingAction } from "./action";
 import { StateValues } from "react-use-form-state";
 import { message } from "../rooms/actions";
+import { deleteReportMeeting } from "../report/actions";
 // import { IMeetingLive } from "./reducers";
 
 export function fetchMeeting(meetingId: number) {
@@ -65,6 +66,7 @@ export function deleteMeeting(meetingId: number) {
                 window.alert(result.message);
             }
             dispatch(deleteMeetingAction(result.message))
+            dispatch(deleteReportMeeting(result.message))
             // dispatch(fetchMeeting(0))
             return;
         } catch (err) {

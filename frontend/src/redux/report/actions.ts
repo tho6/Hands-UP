@@ -18,5 +18,11 @@ export function fetchQuestionCountOfLatestXMeetings(questionsCount:{meetingId:nu
         questionsCount
     }
 }
+export function deleteReportMeeting(meetingId:number){
+    return {
+        type: '@@REPORT/DELETE_MEETINGS' as '@@REPORT/DELETE_MEETINGS',
+        meetingId
+    }
+}
 
-export type ReportActions = ReturnType<typeof fetchReportQuestionsAction> | ReturnType<typeof fetchReportViewsAction> | ReturnType<typeof fetchQuestionCountOfLatestXMeetings>
+export type ReportActions = ReturnType<typeof fetchReportQuestionsAction> | ReturnType<typeof fetchReportViewsAction> | ReturnType<typeof fetchQuestionCountOfLatestXMeetings> | ReturnType<typeof deleteReportMeeting>

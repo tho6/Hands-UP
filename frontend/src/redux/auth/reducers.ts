@@ -20,7 +20,7 @@ export interface PersonInfo {
 const initialState: AuthState = {
     accessToken: localStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken'),
-    personInfo: {picture: faker.image.animals()} as PersonInfo,
+    personInfo: {picture:`/icon/${Math.floor(Math.random() * 15) + 1 }.jpg`} as PersonInfo,
     isAuthenticated: null,
     message: null
 }
@@ -82,7 +82,7 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
                 personInfo: {...state.personInfo, userName:action.guestName} as PersonInfo
             }
         case '@@AUTH/GET_GUEST_ICON':
-            return {...state, personInfo:{...state.personInfo, picture: faker.image.avatar()} as PersonInfo}
+            return {...state, personInfo:{...state.personInfo, picture:`/icon/${Math.floor(Math.random() * 15) + 1 }.jpg`} as PersonInfo}
         default:
             return state
     }

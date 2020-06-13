@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -25,6 +25,8 @@ import { RootState } from '../store';
 import { IPeakViews } from '../models/IReport';
 import UncontrolledLottie from './UncontrolledLottie';
 import { TextField } from '@material-ui/core';
+import { deleteMeeting } from '../redux/meeting/thunk';
+import { Modal,Button } from 'react-bootstrap';
 
 
 interface Data {
@@ -79,6 +81,22 @@ function createData(
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (orderBy === 'scheduleTime' || orderBy === 'createdAt'){
+    //@ts-ignore
+    const aTime = new Date(a[orderBy]).getTime()
+    //@ts-ignore
+    const bTime = new Date(b[orderBy]).getTime()
+    // console.log(a[orderBy])
+    // console.log(aTime)
+    if (bTime < aTime) {
+      return -1;
+    }
+    if (bTime > aTime) {
+      return 1;
+    }
+    return 0;
+  }
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -215,14 +233,39 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  handleSelected: ()=>void;
   fn:(s:string)=>void;
+  selectedItems: any
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { numSelected, fn } = props;
-
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const dispatch = useDispatch()
   return (
+    <>
+    <Modal show={show} onHide={handleClose} centered>
+            <Modal.Header className="modal-header" closeButton={true}>
+                <Modal.Title className="delete-meeting-header">Delete meeting</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="delete-meeting-body">Are you sure you want to delete? You can always modify your current meeting settings.</Modal.Body>
+            <Modal.Footer className="delete-meeting-function-btn">
+                <div className="delete-meeting-function-btn">
+                    <Button variant="danger" className="delete-meeting-delete-btn" onClick={async () => {
+                        for (const meetingId of props.selectedItems){
+                          dispatch(deleteMeeting(meetingId))
+                          
+                        }
+                        props.handleSelected()
+                        handleClose()
+                    }}>Yes</Button>
+                    <Button variant="secondary" className="delete-meeting-go-back-btn" onClick={handleClose}>Go back</Button>
+                </div>
+            </Modal.Footer>
+          </Modal>
     <Toolbar
       className={clsx(classes.root, {
         [classes.highlight]: numSelected > 0,
@@ -239,7 +282,9 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" onClick={()=>{
+            setShow(true)
+          }}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -249,6 +294,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 </form>
         )}
     </Toolbar>
+    </>
   );
 };
 
@@ -323,11 +369,9 @@ export function ReportPastTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchKey, setSearchKey] = React.useState('');
+
   const dispatch = useDispatch()
-  useEffect(() => {
-    dispatch(fetchReportQuestions('all'))
-    dispatch(fetchReportViews('all'))
-  }, [dispatch])
+ 
 
   const questions = useSelector((state: RootState) => state.report.questions)
   const views = useSelector((state: RootState) => state.report.views)
@@ -336,6 +380,10 @@ export function ReportPastTable() {
   const arrQuestions = Object.keys(questionsByMeetingId).sort(function (a: string, b: string): number {
     return parseInt(b) - parseInt(a)
   })
+  useEffect(() => {
+    dispatch(fetchReportQuestions('all'))
+    dispatch(fetchReportViews('all'))
+  }, [dispatch])
   
   let rows: Data[] = [];
   // console.log(arrQuestions)
@@ -421,7 +469,7 @@ export function ReportPastTable() {
       }
       rows.push(createData(parseInt(meetingId),
         meetingName,
-        new Date(meetingscheduletime).toLocaleString(),
+        new Date(meetingscheduletime).toLocaleString("en"),
         totalQuestions,
         dataMap.filter(el => el.id === 'Answered')[0].value,
         dataMap.filter(el => el.id === 'Not Answered')[0].value,
@@ -432,7 +480,7 @@ export function ReportPastTable() {
         objViewsMap['handsup'].latestViews!,
         objViewsMap['youtube'].latestViews!,
         objViewsMap['facebook'].latestViews!,
-        new Date(meetingcreatedat).toLocaleString()
+        new Date(meetingcreatedat).toLocaleString("en")
       ))
     }
   }
@@ -499,9 +547,11 @@ export function ReportPastTable() {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
   // console.log(rows)
   return (
+    <>
+    
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} fn={(e)=>setSearchKey(e)} />
+        <EnhancedTableToolbar handleSelected={()=>setSelected([])} selectedItems={selected} numSelected={selected.length} fn={(e)=>setSearchKey(e)} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -590,5 +640,6 @@ export function ReportPastTable() {
         
       />
     </div>
+    </>
   );
 }

@@ -8,17 +8,22 @@ import {
 } from '../redux/report/thunk';
 import { push } from 'connected-react-router';
 import { ReportOverallLineChart } from './ReportOverallLineChart';
-import Loading from './Loading';
+// import Loading from './Loading';
 import { OverallQuestionsPieChart } from './OverallQuestionPieChart';
 import './ReportOverall.scss';
 import { OverallQuestionDistributionPieChart } from './OverallQuestionDistributionPieChart';
 import { OverallPeakViewBarChart } from './OverallPeakViewBarChart';
+import UncontrolledLottie from './UncontrolledLottie';
+import { ReportSideDrawer } from './ReportSideDrawer';
+import { closeSideDrawer, openSideDrawer } from '../redux/mainNav/actions';
+
 //import Example from './testChart';
 
 const ReportOverall: React.FC = () => {
   const router = useReactRouter<{ lastXMeetings: string }>();
   const lastXMeetings = router.match.params.lastXMeetings;
   const dispatch = useDispatch();
+  const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
   const questionByMeetingIds = useSelector(
     (rootState: RootState) => rootState.report.questionsByMeetingId
   );
@@ -135,10 +140,17 @@ const ReportOverall: React.FC = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {loading && <UncontrolledLottie />}
       {!loading && (
+        <>
+          <ReportSideDrawer />
         <div className="report-container">
-          Overall
+        <div className={isSideDrawerOpen?'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-on':'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-off'} onClick={() => isSideDrawerOpen?dispatch(closeSideDrawer()):dispatch(openSideDrawer())}>
+            <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
+        </div>
+          <header className='report-container-header-row'>
+              <span className='report-container-header report-overall-header'>Overall</span>
+          </header>
           <div className="text-left mb-4 d-flex sticky-container-top report-button-container">
             <button
               className={`util-spacing will-hover rounded question-page-tab ${
@@ -181,7 +193,7 @@ const ReportOverall: React.FC = () => {
               Last 15 meetings
             </button>
           </div>
-          <div className="d-flex">
+          <div className="d-flex flex-wrap">
             <div className="report-peak-view-outer flex-grow-1">
               <div className="report-header">
                 <span>Meetings</span>
@@ -262,6 +274,7 @@ const ReportOverall: React.FC = () => {
             <OverallPeakViewBarChart data={barCharData} range={lastXMeetings}/>
           </div>}
         </div>
+        </>
       )}{' '}
     </>
   );

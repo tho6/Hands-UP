@@ -207,10 +207,10 @@ export class AuthRouter {
                     if (info.hasOwnProperty('userId')) {
                         const result = (await this.userService.getUserById([info.userId!]))[0]
                         console.log(info.guestId);
-                        // const guestResult = (await this.guestService.getGuestById([info.guestId!]))[0].name
-                        // console.log(guestResult);
+                        const guestResult = (await this.guestService.getGuestById([info.guestId!]))[0].name
+                        console.log(guestResult);
                         const { googleId, ...personInfo } = result
-                        return res.status(200).json({ success: true, message: { personInfo: {...personInfo,name:result.name, guestId: info.guestId}}})
+                        return res.status(200).json({ success: true, message: { personInfo: {...personInfo,name:guestResult, guestId: info.guestId}}})
 
                     } else {
                         const personInfo = (await this.guestService.getGuestById([info.guestId!]))[0]
