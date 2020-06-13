@@ -30,6 +30,7 @@ export interface IQuestionProps {
   canUploadFile: boolean;
   isModerate: boolean;
   isHost:boolean
+  addLikes?:()=>void;
 }
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -43,7 +44,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFile, isModerate, isHost, isAnswering } = props;
+  const { user, question, canUploadFile, isModerate, isHost, isAnswering, addLikes } = props;
   const canEdit = (user?.guestId === question.questioner.id) || isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
@@ -180,6 +181,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                     (isLike
                       ? dispatch(removeVote(question.id))
                       : dispatch(addVote(question.id)));
+                    if(addLikes) addLikes();
                 }}
               >
                 {isLike ? (
