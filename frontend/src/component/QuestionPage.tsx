@@ -656,12 +656,14 @@ const QuestionPage: React.FC = () => {
               </div>
               <div>
                 {page === 'main' && (
+                  // <div className='question-flip-container'>
                   <div style={{ position: 'relative' }}>
                     <FlipMove>
-                      {mostPopularQuestions?.map((question) => {
+                      {mostPopularQuestions?.map((question, i) => {
                         return (
                           <Question
-                            key={question.id}
+                            // key={question.id}
+                            key={i}
                             user={personInfo}
                             isAnswering={isAnswering === question.id}
                             canUploadFile={roomInformation?.canUploadFile}
@@ -673,6 +675,7 @@ const QuestionPage: React.FC = () => {
                       })}
                     </FlipMove>
                   </div>
+                  // </div>
                 )}
 
                 {page === 'latest' && (

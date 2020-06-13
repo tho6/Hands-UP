@@ -172,9 +172,10 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
           <div className="d-flex justify-content-between util-container mb-2 mw-100">
             <div className="d-flex p-2 flex-grow-1 justify-content-between question-name-container">
               <div className='d-flex'>
-              <div
+              <span
                 className="p-2 mx-sm-4 mx-lg-5 will-hover"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   user?.guestId &&
                     (isLike
                       ? dispatch(removeVote(question.id))
@@ -187,7 +188,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <i className="far fa-thumbs-up"></i>
                 )}{' '}
                 {question.likes.length}
-              </div>
+              </span>
               <div
                 className="p-2 ml-sm-4 ml-lg-5 will-hover"
                 onClick={() =>
