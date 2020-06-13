@@ -41,7 +41,8 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                     <div className="meeting-due-function-btn">
                         <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
                         <span>
-                            {!isEdit && <>
+                            {/* {!isEdit && <> */}
+                            {!isEdit && <>{moment(meeting.date_time).format('D MMM YYYY h:mma')}
                                 <button className='meeting-live-edit-btn' onClick={() => {
                                     //dispatch(editMeeting(meeting.id))
                                     setIsEdit(true);
