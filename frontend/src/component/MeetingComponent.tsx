@@ -52,7 +52,7 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                             {isEdit && <><button className='meeting-live-save-btn-active' onClick={() => {
                                 const { date, time, code, name } = formState.values;
                                 if (meeting.code !== code || meeting.name !== name || `${date}` !== `${new Date(meeting.date_time).toLocaleDateString('en-CA')}` || `${time}` !== `${new Date(meeting.date_time).toLocaleTimeString('it-IT')}`) {
-                                    const tmp = new Date(`${formState.values.date} ${formState.values.time} GMT-8:00`);
+                                    const tmp = new Date(`${formState.values.date} ${formState.values.time} GMT+8:00`);
                                     dispatch(editMeeting(meeting.id, formState.values.name, formState.values.code, tmp));
                                 }
                                 setIsEdit(false);
