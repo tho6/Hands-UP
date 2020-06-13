@@ -49,17 +49,17 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                                 </button>
                                 <button className='meeting-live-del-btn' onClick={handleShow}><i className="far fa-times-circle" id="meeting-delete"></i></button>
                             </>}
-                            {isEdit && <><button className='meeting-live-edit-btn' onClick={() => {
+                            {isEdit && <><button className='meeting-live-save-btn-active' onClick={() => {
                                 const { date, time, code, name } = formState.values;
                                 if (meeting.code !== code || meeting.name !== name || `${date}` !== `${new Date(meeting.date_time).toLocaleDateString('en-CA')}` || `${time}` !== `${new Date(meeting.date_time).toLocaleTimeString('it-IT')}`) {
-                                    const tmp = new Date(`${formState.values.date} ${formState.values.time} GMT+8:00`);
+                                    const tmp = new Date(`${formState.values.date} ${formState.values.time}`);
                                     dispatch(editMeeting(meeting.id, formState.values.name, formState.values.code, tmp));
                                 }
                                 setIsEdit(false);
                                 formState.reset();
                             }}>Save
                     </button>
-                                <button className='meeting-live-edit-btn' onClick={() => {
+                                <button className='meeting-live-cancel-btn-active' onClick={() => {
                                     const { date, time, code, name } = formState.values;
                                     if (meeting.code !== code || meeting.name !== name || `${date}` !== `${new Date(meeting.date_time).toLocaleDateString('en-CA')}` || `${time}` !== `${new Date(meeting.date_time).toLocaleTimeString('it-IT')}`) {
                                         setShowYesNoModal(true);
@@ -116,10 +116,10 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                                 {!isEdit && <>{moment(meeting.date_time).format('D MMM YYYY h:mma')}</>}
                             </div>
                         </div>
-                        <div className="meeting-live-content-input">
+                        {/* <div className="meeting-live-content-input">
                             <div className="meeting-live-content-field">Host: </div>
                             <div className="meeting-live-content-answer">{meeting.owner_id}</div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="meeting-live-join-btn">

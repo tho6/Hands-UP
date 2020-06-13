@@ -73,10 +73,10 @@ export function MeetingPast() {
                                     <div className="meeting-past-content-field">Code: </div>
                                     <div className="meeting-past-content-answer">{meeting.code}</div>
                                 </div>
-                                <div className="meeting-past-content-input">
+                                {/* <div className="meeting-past-content-input">
                                     <div className="meeting-past-content-field">Host: </div>
                                     <div className="meeting-past-content-answer">{meeting.owner_id}</div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="meeting-past-content-right">
                                 <i className="far fa-calendar-alt fa-3x"></i>
