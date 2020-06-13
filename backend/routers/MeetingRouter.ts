@@ -11,7 +11,7 @@ export class MeetingRouter {
         router.get('/', this.getMeetingByUserId);
         // router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
-        router.put('/:id', this.editMeeting);
+        router.put('/edit/:id', this.editMeeting);
         router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
         router.delete('/delete/:id', this.deleteMeeting);
         return router;
