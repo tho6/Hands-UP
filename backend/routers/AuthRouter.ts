@@ -52,7 +52,6 @@ export class AuthRouter {
                 try {
                     const authCode = req.body.authCode
 
-                    console.log(authCode)
                     //take profile is ok since it includes sub (unique id) NO NEED OpenId
                     const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
                         method: "POST",
@@ -206,9 +205,9 @@ export class AuthRouter {
                 try {
                     if (info.hasOwnProperty('userId')) {
                         const result = (await this.userService.getUserById([info.userId!]))[0]
-                        console.log(info.guestId);
+                        // console.log(info.guestId);
                         const guestResult = (await this.guestService.getGuestById([info.guestId!]))[0].name
-                        console.log(guestResult);
+                        // console.log(guestResult);
                         const { googleId, ...personInfo } = result
                         return res.status(200).json({ success: true, message: { personInfo: {...personInfo,name:guestResult, guestId: info.guestId}}})
 

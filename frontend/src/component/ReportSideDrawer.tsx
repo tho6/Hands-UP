@@ -33,7 +33,7 @@ export const ReportSideDrawer = () => {
     useEffect(() => {
         dispatch(fetchMeeting(0))
         dispatch(closeSideDrawer())
-    }, [])
+    }, [dispatch])
 
     return (
         <div className={isSideDrawerOpen?'report-side-drawer-navbar-container-on report-side-drawer-navbar-container':'report-side-drawer-navbar-container report-side-drawer-navbar-container-off'}>

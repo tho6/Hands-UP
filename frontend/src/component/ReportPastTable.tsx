@@ -243,7 +243,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const { numSelected, fn } = props;
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const dispatch = useDispatch()
   return (
     <>

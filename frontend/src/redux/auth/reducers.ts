@@ -1,5 +1,4 @@
 import { AuthActions } from "./actions";
-import faker from 'faker'
 export interface AuthState {
     accessToken: string | null | undefined
     refreshToken: string | null | undefined

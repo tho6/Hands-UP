@@ -6,7 +6,7 @@ import { logoutAccount, changeGuestName } from '../redux/auth/thunk';
 import { NavLink } from 'react-router-dom';
 import { closeNav, openNav } from '../redux/mainNav/actions';
 import { message } from '../redux/rooms/actions';
-import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default function Navbar() {
     const pic = useSelector((state: RootState) => state.auth.personInfo?.picture)
