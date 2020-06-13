@@ -68,6 +68,16 @@ export const reportReducer = (oldState: ReportState = initialState,action:Report
                 ...oldState,
                 questionsCountOfLatestMeetings: action.questionsCount
             };
+        case '@@REPORT/DELETE_MEETINGS':
+            const newQuestionsByMeetingIdforDel = {...oldState.questionsByMeetingId}
+            const newViewsByMeetingIdforDel = {...oldState.viewsByMeetingId}
+            delete newQuestionsByMeetingIdforDel[`${action.meetingId}`]
+            delete newViewsByMeetingIdforDel[`${action.meetingId}`]
+            return {
+                ...oldState,
+                questionsByMeetingId: newQuestionsByMeetingIdforDel,
+                viewsByMeetingId: newViewsByMeetingIdforDel
+            }
         
         default:
             return oldState;

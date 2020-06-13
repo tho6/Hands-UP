@@ -84,7 +84,7 @@ export function Report() {
                             {/* <div className="report-pop-report-outer"> */}
                                 <div>
                                 <div className="report-header"><span></span></div>
-                                <ReportPopTable reportPopData={reportPopData}/>
+                                    <ReportPopTable reportPopData={reportPopData}/>
                                 </div>
                      
                                 {/* </div> */}

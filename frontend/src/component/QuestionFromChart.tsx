@@ -106,7 +106,6 @@ export const QuestionFromChart:React.FC<{setReportPopData:(data:{header:string, 
                     props.setReportPopData({header: 'Facebook', columns: reportPopCol, data:tempData})
                     console.log('facebook')
                     props.setReportPopOpen()
-
                     break
             }
         }}

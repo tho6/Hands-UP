@@ -6,6 +6,7 @@ import { RootState } from '../store'
 import { NavLink } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import { closeSideDrawer } from '../redux/mainNav/actions'
+import { fetchMeeting } from '../redux/meeting/thunk'
 
 export const ReportSideDrawer = () => {
     const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
@@ -29,6 +30,10 @@ export const ReportSideDrawer = () => {
       const height = el.offsetHeight;
       setMenuHeight(height);
     }
+    useEffect(() => {
+        dispatch(fetchMeeting(0))
+        dispatch(closeSideDrawer())
+    }, [dispatch])
 
     return (
         <div className={isSideDrawerOpen?'report-side-drawer-navbar-container-on report-side-drawer-navbar-container':'report-side-drawer-navbar-container report-side-drawer-navbar-container-off'}>
