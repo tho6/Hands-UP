@@ -2,66 +2,80 @@ import { ReportActions } from "./actions";
 import { IReportQuestion, IReportView } from "../../models/IReport";
 
 
-export interface ReportState{
-    questions:{
-        [id:string]:IReportQuestion
+export interface ReportState {
+    questions: {
+        [id: string]: IReportQuestion
     },
-    questionsByMeetingId:{
+    questionsByMeetingId: {
         [meetingId: string]: number[]
     },
-    views:{
-        [id:string]:IReportView
+    views: {
+        [id: string]: IReportView
     },
-    viewsByMeetingId:{
+    viewsByMeetingId: {
         [meetingId: string]: number[]
     },
-    questionsCountOfLatestMeetings:{meetingId:number, count:number, meetingName:string, youtubePeakViews:number, facebookPeakViews:number, handsupPeakViews:number}[]
+    questionsCountOfLatestMeetings: { meetingId: number, count: number, meetingName: string, youtubePeakViews: number, facebookPeakViews: number, handsupPeakViews: number }[]
 }
 
 const initialState = {
-    questions:{},
-    questionsByMeetingId:{},
-    views:{},
-    viewsByMeetingId:{},
-    questionsCountOfLatestMeetings:[]
+    questions: {},
+    questionsByMeetingId: {},
+    views: {},
+    viewsByMeetingId: {},
+    questionsCountOfLatestMeetings: []
 }
 
-export const reportReducer = (oldState: ReportState = initialState,action:ReportActions): ReportState => {
+export const reportReducer = (oldState: ReportState = initialState, action: ReportActions): ReportState => {
     switch (action.type) {
         case '@@REPORT/LOADED_QUESTIONS':
             // console.log(action.questions)
-            const newQuestions = {...oldState.questions}
-            const newQuestionsByMeetingId = {...oldState.questionsByMeetingId}
+            const quesMap = {} as any
+            const newQuestions = { ...oldState.questions }
+            const newQuestionsByMeetingId = { ...oldState.questionsByMeetingId }
             for (let question of action.questions) {
                 newQuestions[question.id] = question
-                if (question.meetingid in newQuestionsByMeetingId){
+                if (question.meetingid in newQuestionsByMeetingId && question.meetingid in quesMap) {
                     newQuestionsByMeetingId[question.meetingid].push(question.id)
-                }else{
+
+                } else if (question.meetingid in newQuestionsByMeetingId && !(question.meetingid in quesMap)) {
+                    quesMap[question.meetingid] = true
+                    newQuestionsByMeetingId[question.meetingid] = [question.id]
+                }
+                else {
+                    quesMap[question.meetingid] = true
                     newQuestionsByMeetingId[question.meetingid] = [question.id]
                 }
             }
-            
+
             return {
                 ...oldState,
                 questions: newQuestions,
                 questionsByMeetingId: newQuestionsByMeetingId
             };
         case '@@REPORT/LOADED_VIEWS':
-            const newViews = {...oldState.views} as any
-            const neViewsByMeetingId = {...oldState.viewsByMeetingId} as any
+            const viewMap = {} as any
+            const newViews = { ...oldState.views }
+            const newViewsByMeetingId = { ...oldState.viewsByMeetingId }
             for (let view of action.views) {
                 newViews[view.id] = view
-                if (view.meetingid in neViewsByMeetingId){
-                    neViewsByMeetingId[view.meetingid].push(view.id)
-                }else{
-                    neViewsByMeetingId[view.meetingid] = [view.id]
+                if (view.meetingid in newViewsByMeetingId && view.meetingid in viewMap) {
+                    newViewsByMeetingId[view.meetingid].push(view.id)
+
+                } else if (view.meetingid in newViewsByMeetingId && !(view.meetingid in viewMap)) {
+                    viewMap[view.meetingid] = true
+                    newViewsByMeetingId[view.meetingid] = [view.id]
+                }
+                else {
+                    viewMap[view.meetingid] = true
+                    newViewsByMeetingId[view.meetingid] = [view.id]
                 }
             }
-            
+
             return {
                 ...oldState,
                 views: newViews,
-                viewsByMeetingId: neViewsByMeetingId
+                viewsByMeetingId: newViewsByMeetingId
             };
         case '@@REPORT/LOADED_COUNT_LATEST_QUESTIONS':
             return {
@@ -69,8 +83,8 @@ export const reportReducer = (oldState: ReportState = initialState,action:Report
                 questionsCountOfLatestMeetings: action.questionsCount
             };
         case '@@REPORT/DELETE_MEETINGS':
-            const newQuestionsByMeetingIdforDel = {...oldState.questionsByMeetingId}
-            const newViewsByMeetingIdforDel = {...oldState.viewsByMeetingId}
+            const newQuestionsByMeetingIdforDel = { ...oldState.questionsByMeetingId }
+            const newViewsByMeetingIdforDel = { ...oldState.viewsByMeetingId }
             delete newQuestionsByMeetingIdforDel[`${action.meetingId}`]
             delete newViewsByMeetingIdforDel[`${action.meetingId}`]
             return {
@@ -78,7 +92,7 @@ export const reportReducer = (oldState: ReportState = initialState,action:Report
                 questionsByMeetingId: newQuestionsByMeetingIdforDel,
                 viewsByMeetingId: newViewsByMeetingIdforDel
             }
-        
+
         default:
             return oldState;
     }

@@ -23,7 +23,7 @@ export const ReportPopTable:React.FC<{reportPopData: {header:string, columns:str
     
     const options = {
       // filterType: "checkbox" as 'checkbox',
-      responsive: 'scrollMaxHeight' as 'scrollMaxHeight',
+      responsive: 'scrollFullHeight' as 'scrollFullHeight',
       selectableRows:'none' as 'none'
       // selectableRowsHideCheckboxes:false,
       // selectableRowsOnClick:false,
@@ -32,7 +32,8 @@ export const ReportPopTable:React.FC<{reportPopData: {header:string, columns:str
     return (
       <>
         <MUIDataTable
-        title={questions.header + ' Questions'}
+        
+        title={questions.header}
         data={questions.data}
         columns={columns}
         options={options}

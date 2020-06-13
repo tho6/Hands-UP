@@ -65,7 +65,7 @@ export const ReportSideDrawer = () => {
                         <div className='report-side-drawer-secondary'>
                             <NavLink className='report-side-drawer-item hover-effect-navlink' to='#' onClick={()=>setActiveMenu('main')}><i className="far fa-arrow-alt-circle-left"></i><span>Back</span></NavLink>
                             {meetings.map(el=>{
-                                return (<NavLink className='hover-effect-navlink' to={`/report/${el.id}`}><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-tachometer-alt"></i><span>{el.name}</span></li></NavLink>)
+                                return (<NavLink onClick={()=>dispatch(closeSideDrawer())} className='hover-effect-navlink' to={`/report/${el.id}`}><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-tachometer-alt"></i><span>{el.name}</span></li></NavLink>)
                             })}
                             {/* <NavLink className='hover-effect-navlink' to='#'><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-tachometer-alt"></i><span>1</span></li></NavLink>
                             <NavLink className='hover-effect-navlink' to='#'><li className="report-side-drawer-item hover-effect-navlink"><i className="fas fa-chart-line"></i><span>2</span></li></NavLink> */}

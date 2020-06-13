@@ -83,6 +83,10 @@ $speed: 500ms;
         font-size: $navSize*0.8;
     }
 }
+.no-data-toggle-btn{
+  position: absolute;
+  top: 3rem;
+}
 
 .report-side-drawer-toggle-button-on{
     transform: translateX(130px) rotate(180deg);

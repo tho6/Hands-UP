@@ -16,7 +16,6 @@ import ReportOverall from './component/ReportOverall';
 import {ReportPast} from './component/ReportPast'
 import Navbar from './component/Navbar';
 import Message from './component/Message';
-import { ZoomViewsChart } from './component/ZoomViewsChart';
 import { closeNav } from './redux/mainNav/actions';
 // import { getGuestIcon } from './redux/auth/actions';
 import UncontrolledLottie from './component/UncontrolledLottie';
@@ -66,9 +65,6 @@ function App() {
           </Route>
           <Route path="/report/overall/:lastXMeetings" exact>
           {(isAuthenticated != null && <ReportOverall />)}
-          </Route>
-          <Route path="/zoom" exact>
-          {(isAuthenticated != null && <ZoomViewsChart />)}
           </Route>
           {/* <Route path="/popup" exact>
             <ReportPopTable />
