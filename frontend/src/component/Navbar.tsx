@@ -108,7 +108,7 @@ export default function Navbar() {
                                     key='bottom'
                                     placement='bottom'
                                     overlay={
-                                        <Popover className='main-nav' id={`popover-positioned-bottom`}>
+                                        <Popover className='main-nav-popover' id={`popover-positioned-bottom`}>
                                         <Popover.Title as="h3">Edit Name</Popover.Title>
                                         <Popover.Content>
                                                     <input  autoFocus type="text" value={gName!} onChange={(e) => {

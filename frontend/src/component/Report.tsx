@@ -14,9 +14,9 @@ import { ReportPeakViews } from './ReportPeakViews';
 import { ReportTotalQuestions } from './ReportTotalQuestions';
 import { ReportSideDrawer } from './ReportSideDrawer';
 import { closeSideDrawer, openSideDrawer } from '../redux/mainNav/actions';
-import UncontrolledLottie from './UncontrolledLottie';
 import { ReportPopTable } from './ReportPopTable';
 import { Backdrop } from './Backdrop';
+import NoDataLottie from './NoDataLottie';
 
 // created_at: "2020-06-20T02:00:00.000Z"
 // facebook: 3
@@ -66,7 +66,13 @@ export function Report() {
     const isSideDrawerOpen = useSelector((state:RootState)=>state.mainNav.isSideDrawerOpen)
 
     if (!questions && !views) {
-        return <UncontrolledLottie />;
+        return (<div style={{backgroundColor:"#EFEFEF"}}>
+        <ReportSideDrawer />
+        <div className={isSideDrawerOpen?'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-on no-data-toggle-btn':'report-side-drawer-navbar-toggle-button report-side-drawer-toggle-button-off no-data-toggle-btn'} onClick={() => isSideDrawerOpen?dispatch(closeSideDrawer()):dispatch(openSideDrawer())}>
+            <i className="fas fa-angle-right report-side-drawer-navbar-icon"></i>
+        </div>
+        <NoDataLottie />
+        </div>)
     }
     console.log(meetingId)
     console.log(pastMeetingId)
@@ -83,7 +89,7 @@ export function Report() {
                         <div onClick={(e)=>e.stopPropagation()} className={`report-modal ${reportPop?'show':'not-show'} z-index-set-to-fifty`}>
                             {/* <div className="report-pop-report-outer"> */}
                                 <div>
-                                <div className="report-header"><span></span></div>
+                                
                                     <ReportPopTable reportPopData={reportPopData}/>
                                 </div>
                      

@@ -89,21 +89,21 @@ export const QuestionFromChart:React.FC<{setReportPopData:(data:{header:string, 
                 case 'youtube':
                     const ytPlatformData = questions.filter(el=>el.platformname==='youtube')
                     tempData = processData(ytPlatformData)
-                    props.setReportPopData({header: 'Youtube', columns: reportPopCol, data: tempData})
+                    props.setReportPopData({header: 'Youtube Questions', columns: reportPopCol, data: tempData})
                     console.log('youtube')
                     props.setReportPopOpen()
                     break
                 case 'handsup':
                     const huPlatformData = questions.filter(el=>el.platformname==='handsup')
                     tempData = processData(huPlatformData)
-                    props.setReportPopData({header: 'HandsUP', columns: reportPopCol,data: tempData})
+                    props.setReportPopData({header: 'HandsUP Questions', columns: reportPopCol,data: tempData})
                     console.log('handsup')
                     props.setReportPopOpen()
                     break
                 case 'facebook':
                     const fbPlatformData = questions.filter(el=>el.platformname==='facebook')
                     tempData = processData(fbPlatformData)
-                    props.setReportPopData({header: 'Facebook', columns: reportPopCol, data:tempData})
+                    props.setReportPopData({header: 'Facebook Questions', columns: reportPopCol, data:tempData})
                     console.log('facebook')
                     props.setReportPopOpen()
                     break

@@ -25,7 +25,7 @@ import { RootState } from '../store';
 import { IPeakViews } from '../models/IReport';
 import UncontrolledLottie from './UncontrolledLottie';
 import { TextField } from '@material-ui/core';
-import { deleteMeeting } from '../redux/meeting/thunk';
+import { deleteMeeting, fetchMeeting } from '../redux/meeting/thunk';
 import { Modal,Button } from 'react-bootstrap';
 
 
@@ -371,17 +371,22 @@ export function ReportPastTable() {
 
   const dispatch = useDispatch()
  
-
+  const meetings = useSelector((state:RootState)=>state.meetings)
   const questions = useSelector((state: RootState) => state.report.questions)
   const views = useSelector((state: RootState) => state.report.views)
   const questionsByMeetingId = (useSelector((state: RootState) => state.report.questionsByMeetingId))
   const viewsByMeetingId = useSelector((state: RootState) => state.report.viewsByMeetingId)
-  const arrQuestions = Object.keys(questionsByMeetingId).sort(function (a: string, b: string): number {
+  const arrQuestions = Object.keys(meetings).sort(function (a: string, b: string): number {
     return parseInt(b) - parseInt(a)
   })
+  // const arrQuestions = Object.keys(questionsByMeetingId).sort(function (a: string, b: string): number {
+  //   return parseInt(b) - parseInt(a)
+  // })
+
   useEffect(() => {
     dispatch(fetchReportQuestions('all'))
     dispatch(fetchReportViews('all'))
+    dispatch(fetchMeeting(0))
   }, [dispatch])
   
   let rows: Data[] = [];
@@ -393,6 +398,25 @@ export function ReportPastTable() {
   } else {
     for (const id of arrQuestions) {
       const meetingViews = viewsByMeetingId[id]?.map((i: number) => views[i])
+      const totalQuestions = questionsByMeetingId[id]?.length
+      if (!totalQuestions)  {
+         (rows.push(createData(parseInt(id),
+        meetings[id].name,
+        new Date(meetings[id].date_time).toLocaleString("en"),
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        'Nan',
+      )))
+      continue
+      }
       const dataMap = [{
         "id": "Answered",
         "value": 0,
@@ -429,10 +453,10 @@ export function ReportPastTable() {
       }
 
       const meetingId = id
-      const totalQuestions = questionsByMeetingId[id].length
+      // const totalQuestions = questionsByMeetingId[id]?.length
       const meetingscheduletime = questions[questionsByMeetingId[id][0]].meetingscheduletime
       const meetingName = questions[questionsByMeetingId[id][0]].meetingname
-      const meetingcreatedat = questions[questionsByMeetingId[id][0]].meetingcreatedat
+      const meetingcreatedat = questions[questionsByMeetingId[id][0]]?.meetingcreatedat
       for (const qId of questionsByMeetingId[id]) {
         for (const category of dataMap) {
           if (questions[qId].isanswered && !questions[qId].ishide && category.id === 'Answered') {
