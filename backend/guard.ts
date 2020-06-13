@@ -81,13 +81,13 @@ export function checkThirdPartyPlatformToken(userService:UserService, platform:s
                 switch(platform){
                     case 'facebook':
                         const fbToken = await userService.getFacebookTokenByUserId(req.personInfo.userId);
-                        console.log(fbToken);
+                        // console.log(fbToken);
                         if(!fbToken) return res.status(401).json({status:false, message:'No token found in DB, redirecting to login page'})
                         req.facebookToken = fbToken;
                         break;
                     case 'youtube':
                        const refreshToken = await userService.getYoutubeRefreshTokenByUserId(req.personInfo.userId);
-                       console.log(refreshToken)
+                    //    console.log(refreshToken)
                        if(!refreshToken) return res.status(403).json({status:false, message:'No refresh token found in DB, redirecting to login page'})
                        req.youtubeRefreshToken = refreshToken;
                         break;
