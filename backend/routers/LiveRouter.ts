@@ -183,7 +183,7 @@ export class LiveRouter {
                 res.status(400).json({ status: false, message: 'Duplicate action!' });
                 return;
             }
-            if (this.eventSourceExistence[`${req.params.meetingId}`] && !this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube===false) {
                 this.eventSourceExistence[`${req.params.meetingId}`].youtube = true;
                 res.status(200).json({ status: true, message: 'Continue fetching comments from Youtube' });
                 return;
@@ -241,7 +241,7 @@ export class LiveRouter {
                 });
                 const result = await fetchLiveChat.json();
                 /* If access token expires in the middle of live broadcast */
-                if (result.error?.code === 401) {
+                if (result.error?.code === 401 || fetchLiveChat.status!==200) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {

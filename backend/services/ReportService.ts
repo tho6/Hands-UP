@@ -80,7 +80,7 @@ export class ReportService {
         return result.rows
     }
     getQuestionsCountOfLatestXMeetings = async (numberOfMeetings:number, userId:number):Promise<questionsCountOfLatestMeetings[]> =>{
-        const sql = `SELECT name as "meetingName", questions.meeting_id as "meetingId", COUNT(questions.meeting_id), max(youtube) as "youtubePeakViews", max(facebook) as "facebookPeakViews", max(handsup) as "handsupPeakViews" FROM  questions INNER JOIN meetings ON questions.meeting_id = meetings.id INNER JOIN views ON questions.meeting_id = views.meeting_id WHERE owner_id = ? AND questions.meeting_id IN (SELECT id from meetings ORDER BY id DESC) GROUP BY questions.meeting_id, meetings.name  LIMIT ?;`;
+        const sql = `SELECT name as "meetingName", questions.meeting_id as "meetingId", COUNT(questions.meeting_id), COALESCE(max(youtube),0) as "youtubePeakViews", COALESCE(max(facebook),0) as "facebookPeakViews", COALESCE(max(handsup),0) as "handsupPeakViews" FROM  questions RIGHT JOIN meetings ON questions.meeting_id = meetings.id LEFT JOIN views ON meetings.id = views.meeting_id   WHERE meetings.id IN (SELECT id from meetings WHERE owner_id = ? ORDER BY id DESC LIMIT ?) GROUP BY (questions.meeting_id, meetings.name);`;
         const result = await this.knex.raw(sql, [userId, numberOfMeetings]);
         return result.rows
     }
