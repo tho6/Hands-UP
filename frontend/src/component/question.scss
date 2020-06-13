@@ -452,6 +452,7 @@ $replyTextAreaMultiplier: 0.7;
 .question-page-container {
   @media only screen and (min-width: 2000px) {
     display: flex;
+    flex-direction: column;
     justify-content: center;
   }
 }
