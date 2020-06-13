@@ -145,7 +145,7 @@ const ReportOverall: React.FC = () => {
                 lastXMeetings === 'all' && 'is-active'
               }`}
               onClick={() => {
-                dispatch(push(`/testing/all`));
+                dispatch(push(`/report/overall/all`));
               }}
             >
               All
@@ -155,7 +155,7 @@ const ReportOverall: React.FC = () => {
                 lastXMeetings === '5' && 'is-active'
               }`}
               onClick={() => {
-                dispatch(push(`/testing/5`));
+                dispatch(push(`/report/overall/5`));
               }}
             >
               Last 5 Meetings
@@ -165,7 +165,7 @@ const ReportOverall: React.FC = () => {
                 lastXMeetings === '10' && 'is-active'
               }`}
               onClick={() => {
-                dispatch(push(`/testing/10`));
+                dispatch(push(`/report/overall/10`));
               }}
             >
               Last 10 Meetings
@@ -175,7 +175,7 @@ const ReportOverall: React.FC = () => {
                 lastXMeetings === '15' && 'is-active'
               }`}
               onClick={() => {
-                dispatch(push(`/testing/15`));
+                dispatch(push(`/report/overall/15`));
               }}
             >
               Last 15 meetings

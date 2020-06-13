@@ -9,7 +9,6 @@ export class LiveService{
     //*** del fb token
     saveViews = async (meetingId:number, ytViews:number,fbViews:number, huViews:number)=>{
         try {
-            console.log(meetingId, ytViews,fbViews, huViews)
             const res = await this.knex.raw(/*SQL*/ `INSERT INTO views 
                                     (meeting_id, youtube, facebook, handsup)
                                     VALUES (?,?,?,?)

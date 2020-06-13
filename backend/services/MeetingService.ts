@@ -9,6 +9,16 @@ export class MeetingService {
     //     return result.rows as IMeeting[];
     // }
 
+    async checkMeetingId(id: number) {
+        try {
+            const result = await this.knex.raw(/*SQL*/ `SELECT COUNT(*) FROM meetings WHERE id = ?`, [id])
+            return result.rows[0].count
+        } catch (error) {
+            console.log('[Meeting Service Error] ' + 'checkMeetingId')
+            throw error
+        }
+    }
+
     async getMeetingByUserId(id: number) {
         try {
             const result = await this.knex.raw(/*SQL*/`SELECT * from meetings WHERE owner_id = (?)`, [id])
@@ -53,17 +63,26 @@ export class MeetingService {
             console.log(result);
             return result.rows[0].id;
         } catch (error) {
-            throw error;
+            // throw error;
+            console.log(error)
         }
     }
 
-    async editMeeting(id: number, name: string, date_time: Date, code: string, url: string, owner_id: number) { // or use name??
-        return this.knex.raw(/*SQL*/`UPDATE meetings SET name = ?,date_time = ?,code = ?,url = ?,owner_id = ? WHERE id = ?`, [name, date_time, code, url, owner_id, id]);
-        // console.log(name);
-    }
+    // async editMeeting(id: number, name: string, date_time: Date, code: string, url: string, owner_id: number) { // or use name??
+    //     return this.knex.raw(/*SQL*/`UPDATE meetings SET name = ?,date_time = ?,code = ?,url = ?,owner_id = ? WHERE id = ?`, [name, date_time, code, url, owner_id, id]);
+    //     // console.log(name);
+    // }
 
     async deleteMeeting(id: number) {
-        return this.knex.raw(/*SQL*/`DELETE FROM meetings WHERE id = ?`, [id]);
+        try {
+            const deletedRows = await this.knex.raw(/*SQL*/`WITH deleted as (DELETE FROM meetings 
+                                        WHERE id = ?  RETURNING *) 
+                                        SELECT count(*) FROM deleted;`, [id]);
+            return parseInt(deletedRows.rows[0].count)
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
     }
 
     async getMeetingById(id: number) {
@@ -81,7 +100,14 @@ export class MeetingService {
         if (result.rowCount !== 1) throw new Error('No meeting is found!/Fail to update room configuration!');
         return true;
     }
-    async convertCodeToRoomId(code:string) {
+    async editMeeting(meetingId: number, name:string, code:string, dateTime:Date) {
+        // console.log(id, roomConfiguration)
+        const sql = 'update meetings set (name, code, date_time) = (?, ?, ?) where id = ?;'
+        const result = await this.knex.raw(sql, [name, code, dateTime, meetingId]);
+        if (result.rowCount !== 1) throw new Error('No meeting is found!Fail to edit room!');
+        return true;
+    }
+    async convertCodeToRoomId(code: string) {
         // console.log(id, roomConfiguration)
         const sql = 'select id from meetings where code = ?'
         const result = await this.knex.raw(sql, [code]);

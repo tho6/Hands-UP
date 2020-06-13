@@ -143,6 +143,7 @@ app.use(bodyParser.json());
 const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
 app.use('/user', userGuard, adminGuard, userRouter.router())
+app.put('/guest', guard, guestRouter.updateGuests);
 app.use('/guest', userGuard, adminGuard, guestRouter.router())
 app.use('/live', userGuard, liveRouter.router())
 app.use('/report', userGuard, reportRouter.router())
@@ -155,15 +156,20 @@ app.use('/meetings', userGuard, meetingRouter.router());
 
 /* Socket Io */
 
-let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean } } = {}
+let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean }} = {}
+
 io.on('connection', socket => {
+  let isAdd = false;
   socket.on('join_event', (meetingId: number, guestId:number) => {
-    console.log('join room:' + meetingId, 'GuestId'+guestId);
     const idx = 'event:' + meetingId;
-    socket.join(idx)
+    socket.join(idx);
     if (counter[idx]) {
       // counter[idx].count += 1;
-      counter[idx].count[`${guestId}`] = true;
+      if(counter[idx].count[`${socket.id}`]){ //guesttId
+        io.to(socket.id).emit('re-connect');
+        console.log('[Reconnect] Client Reconnect to server!')
+      }
+      counter[idx].count[`${socket.id}`] = true; //guestId
       if (!counter[idx].counting) {
         counter[idx].counting = true;
         setTimeout(() => {
@@ -171,31 +177,39 @@ io.on('connection', socket => {
           counter[idx].counting = false;
           // io.in(idx).emit('update-count', counter[idx].count);
           io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-          console.log(Object.keys(counter[idx].count).length)
           liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
         }, 3000)
       }
     } else {
       // counter[idx] = { count: 1, counting: true };
-      counter[idx] = { count: {[`${guestId}`]:true}, counting: true };
+      counter[idx] = { count: {[`${socket.id}`]:true}, counting: true }; //guestId
       liveRouter.createViewsTimer(meetingId);
       setTimeout(() => {
         if(!counter[idx]) return;
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-        console.log(counter[idx]?.count)
         liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
       }, 3000)
     }
+    if(isAdd===false){
+      socket.on('disconnect',()=>{
+        if(!counter[idx]) return;
+        delete counter[idx].count[`${socket.id}`];
+        if(Object.keys(counter[idx].count).length === 0) {
+          delete counter[idx];
+          liveRouter.removeViewsTimer(meetingId);
+        }
+      })
+      isAdd = true;
+    }
   });
   socket.on('leave_event', (meetingId: number, guestId:number) => {
-    console.log('leave room:' + meetingId, 'GuestId'+guestId);
     const idx = 'event:' + meetingId;
     socket.leave(idx);
     if (!counter[idx]) return;
     // counter[idx].count -= 1;
-    delete counter[idx].count[`${guestId}`];
+    delete counter[idx].count[`${socket.id}`]; //guestId
     if(Object.keys(counter[idx].count).length === 0) {
       delete counter[idx];
       liveRouter.removeViewsTimer(meetingId);
@@ -208,8 +222,6 @@ io.on('connection', socket => {
         counter[idx].counting = false;
         // io.in(idx).emit('update-count', counter[idx].count);
         io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-        console.log(counter[idx]?.count)
-        console.log('Length:'+Object.keys(counter[idx].count).length)
         liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
       }, 3000)
     }
@@ -219,6 +231,12 @@ io.on('connection', socket => {
   })
   socket.on('leave-host', (userId:number)=>{
     socket.leave('host:' + userId)
+  })
+  socket.on('answering', (meetingId:number, id:number)=>{
+    io.in('event:' + meetingId).emit('answering', id)
+  })
+  socket.on('new-user-join',(userId:number)=>{
+    io.in('host:' + userId).emit('new-user-join');
   })
 });
 

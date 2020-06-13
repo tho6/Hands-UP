@@ -65,6 +65,7 @@ export class GuestRouter {
     //update guests
     updateGuests = async (req: Request, res: Response) => {
         try {
+            console.log(req.body.updateForms);
             const updateForms:GuestForm[] = req.body.updateForms
             if (!updateForms) return res.status(400).json({success: false, message: 'UpdateForm is not found'})
             const updatedGuestsRows = await this.guestService.updateGuestById(updateForms)

@@ -1,30 +1,50 @@
 @import './_variables.scss';
 
-.createForm {
+.create-form {
     display: flex;
     flex-direction: column;
-    // flex-wrap: wrap;
-    // border: $SecondaryTextColor 1px solid;
-    text-align: center;
-    // padding: 80px 50px 80px 50px;
-    // margin: 0px 200px 0px 200px;
-    border-radius: 5px;
+    justify-content: center;
+    // // flex-direction: row;
+    // // flex-wrap: wrap;
+    // // border: $SecondaryTextColor 1px solid;
+    // text-align: center;
+    // // padding: 80px 50px 80px 50px;
+    // // margin: 0px 200px 0px 200px;
+    // border-radius: 5px;
 
     // h4 {
     //     font-family: $SecondaryFontStyle;
     //     color: $PrimaryTextColor;
     // }
+    .create-meeting-field {
+        flex: 1;
+    }
+    .create-meeting-input-answer {
+        flex: 1;
+        .create-meeting-yes-no {
+            display: flex;
+            justify-content: space-evenly;
+        }
+    }
 }
 
-.formRemind {
+.create-meeting-input {
+    padding: 0.3rem;
+    // display: flex;
+    .create-meeting-field {
+        padding-right: 10px;
+    }
+}
+
+.form-remind {
     font-family: $PrimaryFontStyle;
     color: $ThirdTextColor;
     font-size: 10px;
     font-weight: bold;
-    text-align: center;
+    // text-align: center;
 }
 
-.textarea {
+.input-area {
     border: black;
     resize: none;
     -webkit-border-radius: 5px;
@@ -45,26 +65,33 @@
     border: solid 3px $SecondaryTextColor;	
 }
 
-.createButtons {
+.create-buttons {
     display: flex;
     justify-content: center;
-    flex-direction: row;
+    // flex-direction: row;
 }
 
-.createButtonColour {
+.create-button-colour {
     background-color: $ThirdTextColor;
     border-radius: 5px;
     width: 180px;
     margin-right: 5px;
 }
 
-.resetButtonColour {
+.reset-button-colour {
     background-color: $PrimaryTextColor;
     border-radius: 5px;
 }
 
 .create-meeting-text {
-    padding: 5px 0px 5px 0px;
+    padding: 5px;
     text-align: justify;
     text-justify: inter-word;
+}
+
+@media screen and (min-width: 500px){
+    .create-meeting-input {
+    padding: 0.3rem;
+    display: flex;
+    }
 }

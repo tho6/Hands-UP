@@ -1,77 +1,36 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchMeeting, deleteMeeting } from '../redux/meeting/thunk';
+import React from 'react';
+import { useSelector } from 'react-redux';
+// import { editMeeting } from '../redux/meeting/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meeting/reducers';
-import moment from 'moment'
 // CSS
 import './MeetingLive.scss';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import { MeetingComponent } from './MeetingComponent';
+// import { message } from '../redux/meeting/action';
+// import Card from 'react-bootstrap/Card'
+// import Row from 'react-bootstrap/Row'
+// import Col from 'react-bootstrap/Col'
 
 export function MeetingLive() {
     const meetings = useSelector((state: RootState) => state.meetings)
-    const dispatch = useDispatch();
+    // const [editing, setEditing] = useState<null | number>(null);
+    // const [textValue, setTextValue] = useState('');
     const arrMeetings = []
     for (const meetingId in meetings) {
         const duration = (Date.now() - new Date(meetings[meetingId].date_time).getTime())
         // console.log(duration)
-        if (duration < 43200000) {
+        if (duration < 600000) { // 10mins
+            // if (duration < 43200000) { // 12hrs
             arrMeetings.push(meetings[meetingId])
         }
     }
-    useEffect(() => {
-        dispatch(fetchMeeting(0))
-    }, [dispatch])
-
     return (
-        <div>
-            <h2 className="headline"><b>Current</b></h2>
+        <div className="meeting-live-container">
+            <h2 className="meeting-live-header">Current</h2>
             {arrMeetings.map((meeting) => {
-                return (<Card className="meetingLiveCard">
-                    <Card.Body>
-                        <Col>
-                            <div className="meeting-relative-time">
-                                <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
-                                <span>
-                                <button className='meeting-live-edit-btn' onClick={() => {
-                                    // dispatch(editMeeting(meeting.id))
-                                }}><i className="fas fa-cog" id="meeting-edit"></i>
-                                </button>
-                                <button className='meeting-live-del-btn' onClick={() => {
-                                    dispatch(deleteMeeting(meeting.id))
-                                }}><i className="far fa-times-circle" id="meeting-delete"></i>
-                                </button>
-                                </span>
-                                {/* <button onClick={async () => {
-                                    await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/delete/${id}`, {
-                                        method: "DELETE"
-                                    },
-                                    )
-                                    fetchMeeting(0);
-                                    // (deletedMeetingAction(meeting.id))
-                                }} className='meeting-live-del-btn'><i className="far fa-times-circle" id="meeting-delete"></i>
-                                </button> */}
-                            </div>
-                        </Col>
-                        <Row>
-                            <Col md={3}>
-                                <div className="liveIcon"><i className="fas fa-video fa-3x"></i></div>
-                            </Col>
-                            <Col md={9}>
-                                <div><b>{meeting.name}</b></div>
-                                <div>Code: {meeting.code}</div>
-                                <div>Url: {meeting.url}</div>
-                                {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
-                                <div>Date and time: {moment(meeting.date_time).format('D MMM YYYY h:mma')}</div>
-                                <div>Host by: {meeting.owner_id}</div>
-                                <div className="joinButton"><Button variant="info" className="joinButtonGreen"><b>JOIN</b></Button>{' '}</div>
-                            </Col>
-                        </Row>
-                    </Card.Body>
-                </Card>)
+                return (
+                    <MeetingComponent key={meeting.id} meeting={meeting} />
+                )
             })}
         </div>
     );

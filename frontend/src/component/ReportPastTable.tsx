@@ -18,11 +18,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
+// import FilterListIcon from '@material-ui/icons/FilterList';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 import { RootState } from '../store';
 import { IPeakViews } from '../models/IReport';
+import UncontrolledLottie from './UncontrolledLottie';
+import { TextField } from '@material-ui/core';
+
 
 interface Data {
   meetingId: number,
@@ -212,11 +215,12 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  fn:(s:string)=>void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, fn } = props;
 
   return (
     <Toolbar
@@ -240,11 +244,9 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           </IconButton>
         </Tooltip>
       ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
+<form className={classes.root} noValidate autoComplete="off">
+  <TextField id="standard-basic" label="Search" onChange={(e)=>fn(e.target.value)}/>
+</form>
         )}
     </Toolbar>
   );
@@ -314,12 +316,13 @@ const GreenSwitch: any = withStyles({
 
 export function ReportPastTable() {
   const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('scheduleTime');
+  const [order, setOrder] = React.useState<Order>('desc');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('meetingId');
   const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [searchKey, setSearchKey] = React.useState('');
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchReportQuestions('all'))
@@ -334,12 +337,12 @@ export function ReportPastTable() {
     return parseInt(b) - parseInt(a)
   })
   
-  const rows: Data[] = [];
+  let rows: Data[] = [];
   // console.log(arrQuestions)
   // console.log(questionsByMeetingId)
   console.log(questions)
   if ( Object.keys(views).length === 0 || Object.keys(questions).length === 0) {
-    return <div></div>
+    return <UncontrolledLottie />
   } else {
     for (const id of arrQuestions) {
       const meetingViews = viewsByMeetingId[id]?.map((i: number) => views[i])
@@ -385,11 +388,11 @@ export function ReportPastTable() {
       const meetingcreatedat = questions[questionsByMeetingId[id][0]].meetingcreatedat
       for (const qId of questionsByMeetingId[id]) {
         for (const category of dataMap) {
-          if (questions[qId].isanswered && category.id === 'Answered') {
+          if (questions[qId].isanswered && !questions[qId].ishide && category.id === 'Answered') {
             category.value += 1
             break;
           }
-          if (!questions[qId].isanswered && questions[qId].ishide && category.id === 'Inappropriate') {
+          if (questions[qId].ishide && category.id === 'Inappropriate') {
             category.value += 1
             break
           }
@@ -434,7 +437,15 @@ export function ReportPastTable() {
     }
   }
   
+  console.log(searchKey);
+  if(searchKey.trim().length!==0){
+    const temp = rows.filter(elem=>elem.meetingName.toLowerCase().includes(searchKey));
+    console.log(temp);
+    rows = temp;
+  }
   console.log(rows)
+
+
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -490,13 +501,15 @@ export function ReportPastTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} fn={(e)=>setSearchKey(e)} />
         <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
             aria-label="enhanced table"
+
+            
           >
             <EnhancedTableHead
               classes={classes}
@@ -574,6 +587,7 @@ export function ReportPastTable() {
       <FormControlLabel
         control={<GreenSwitch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
+        
       />
     </div>
   );

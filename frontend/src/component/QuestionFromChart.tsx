@@ -2,7 +2,17 @@ import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
 import { IReportQuestion } from '../models/IReport';
 import './QuestionFromChart.scss'
-export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
+// import { ReportPopTable } from './ReportPopTable';
+
+function processData(arr: IReportQuestion[]):string[][]{
+    const processedDT = arr.map((question,idx) => {
+        return [`${idx+1}`, question.questioncontent?question.questioncontent:'', 
+        question.questionlikes?question.questionlikes:'', question.isanswered?'Answered':'Not Answered']
+
+    })
+    return processedDT
+}
+export const QuestionFromChart:React.FC<{setReportPopData:(data:{header:string, columns:string[], data:string[][]})=>void, setReportPopOpen:()=>void,data:IReportQuestion[]}> = (props) => {
     const theme = {
         labels:{
             text:{
@@ -70,7 +80,36 @@ export const QuestionFromChart:React.FC<{data:IReportQuestion[]}> = (props) => {
         motionStiffness={90}
         motionDamping={15}
         theme={theme}
-        
+        onClick={(e)=>{
+            console.log(e)
+            const reportPopCol = ['ID', 'Question Content', 'Question Likes', 'Answer Status']
+            // const values = ['questioncontent','questionlikes','isanswered']
+            let tempData = []
+            switch(e.id){
+                case 'youtube':
+                    const ytPlatformData = questions.filter(el=>el.platformname==='youtube')
+                    tempData = processData(ytPlatformData)
+                    props.setReportPopData({header: 'Youtube', columns: reportPopCol, data: tempData})
+                    console.log('youtube')
+                    props.setReportPopOpen()
+                    break
+                case 'handsup':
+                    const huPlatformData = questions.filter(el=>el.platformname==='handsup')
+                    tempData = processData(huPlatformData)
+                    props.setReportPopData({header: 'HandsUP', columns: reportPopCol,data: tempData})
+                    console.log('handsup')
+                    props.setReportPopOpen()
+                    break
+                case 'facebook':
+                    const fbPlatformData = questions.filter(el=>el.platformname==='facebook')
+                    tempData = processData(fbPlatformData)
+                    props.setReportPopData({header: 'Facebook', columns: reportPopCol, data:tempData})
+                    console.log('facebook')
+                    props.setReportPopOpen()
+
+                    break
+            }
+        }}
         legends={[
             {
                 anchor: 'bottom-right',

@@ -47,8 +47,14 @@ import { IRoomConfiguration } from '../models/IRoomInformation';
 import ScrollTop from './ScrollTop';
 import TextareaAutosize from 'react-textarea-autosize';
 import YesNoModal from './YesNoModal';
+import { Link } from 'react-scroll';
 const QuestionPage: React.FC = () => {
-  const router = useReactRouter<{ id: string; page: string; error?:string; fbcontinue?:string }>();
+  const router = useReactRouter<{
+    id: string;
+    page: string;
+    error?: string;
+    fbcontinue?: string;
+  }>();
   const meetingId = router.match.params.id;
   const page = router.match.params.page;
   const error = router.match.params.error;
@@ -57,6 +63,7 @@ const QuestionPage: React.FC = () => {
   const [youtubeViews, setYoutubeViews] = useState(0);
   const [facebookViews, setFacebookViews] = useState(0);
   const [facebookModal, setFacebookModal] = useState(false);
+  const [isAnswering, setIsAnswering] = useState(0);
   const questionIds = useSelector(
     (rootState: RootState) =>
       rootState.questions.questionsByMeetingId[meetingId]
@@ -71,7 +78,7 @@ const QuestionPage: React.FC = () => {
     (rootState: RootState) =>
       rootState.roomsInformation.roomsInformation[meetingId]
   );
-  const isHost = personInfo?.userId === roomInformation?.ownerId;
+  const isHost = personInfo?.userId===undefined?false:personInfo?.userId === roomInformation?.ownerId;
   const questionLimitStatus = useSelector(
     (rootState: RootState) =>
       rootState.roomsInformation.questionLimitStatus[meetingId]
@@ -79,7 +86,10 @@ const QuestionPage: React.FC = () => {
   const liveStatus = useSelector(
     (rootState: RootState) => rootState.roomsInformation.liveStatus[meetingId]
   );
-  const showGooglePermissionModal = useSelector((rootState:RootState)=>rootState.roomsInformation.googlePermissionConfirmModal)
+  const showGooglePermissionModal = useSelector(
+    (rootState: RootState) =>
+      rootState.roomsInformation.googlePermissionConfirmModal
+  );
   const [textState, setTextState] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
   const [isQuestion, setIsQuestion] = useState<boolean[]>([
@@ -97,8 +107,10 @@ const QuestionPage: React.FC = () => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
+    console.log(isHost);
+    if (!isHost) return;
     dispatch(getLiveStatus(parseInt(meetingId)));
-  }, [dispatch, meetingId]);
+  }, [dispatch, meetingId, isHost]);
   useEffect(() => {
     dispatch(fetchQuestions(parseInt(meetingId)));
   }, [dispatch, meetingId]);
@@ -175,6 +187,14 @@ const QuestionPage: React.FC = () => {
         successfullyUpdatedRoomConfiguration(meetingId, roomConfiguration)
       );
     };
+    const answering = (id: number) => {
+      setIsAnswering(id);
+    };
+    const reconnect = () => {
+      console.log('[Reconnection] Reconnect to server');
+      dispatch(fetchRoomInformation(parseInt(meetingId)));
+      dispatch(fetchQuestions(parseInt(meetingId)));
+    };
     const leaveRoom = () => {
       socket.emit('leave_event', meetingId, personInfo.guestId);
       socket.off('create-question', newQuestionListener);
@@ -189,8 +209,11 @@ const QuestionPage: React.FC = () => {
       socket.off('delete-reply', deleteReplyListener);
       socket.off('hideOrNotHide-reply', hideOrNotReplyListener);
       socket.off('update-room-configuration', updateRoomConfiguration);
+      socket.off('answering', answering);
+      socket.off('re-connect', reconnect);
     };
     socket.emit('join_event', meetingId, personInfo.guestId);
+    socket.on('answering', answering);
     socket.on('create-question', newQuestionListener);
     socket.on('update-question', updateQuestionListener);
     socket.on('delete-question', deleteQuestionListener);
@@ -204,12 +227,18 @@ const QuestionPage: React.FC = () => {
     socket.on('hideOrNotHide-reply', hideOrNotReplyListener);
     socket.on('update-count', peopleCountListener);
     socket.on('update-room-configuration', updateRoomConfiguration);
+    socket.on('re-connect', reconnect);
     window.addEventListener('beforeunload', leaveRoom);
     return () => {
       window.removeEventListener('beforeunload', leaveRoom);
       leaveRoom();
     };
   }, [dispatch, meetingId, personInfo]);
+  useEffect(() => {
+    if (!roomInformation?.ownerId) return;
+    if (isHost) return;
+    socket.emit('new-user-join', roomInformation.ownerId);
+  }, [roomInformation, isHost]);
   useEffect(() => {
     if (!isHost) return;
     const turnOffYoutubeLive = () => {
@@ -227,10 +256,13 @@ const QuestionPage: React.FC = () => {
       setYoutubeViews(parseInt(`${views}`));
     };
     const facebookViewsStop = (msg: string) => {
-      window.alert(msg);
+      dispatch(message(true, msg));
     };
     const facebookViewsUpdate = (views: string | number) => {
       setFacebookViews(parseInt(`${views}`));
+    };
+    const newUserJoin = () => {
+      socket.emit('answering', parseInt(meetingId), isAnswering);
     };
     const leaveHost = () => {
       if (!isHost) return;
@@ -241,6 +273,7 @@ const QuestionPage: React.FC = () => {
       socket.off('youtube-views-update', youtubeViewsUpdate);
       socket.off('facebook-views-stop', facebookViewsStop);
       socket.off('facebook-views-update', facebookViewsUpdate);
+      socket.off('new-user-join', newUserJoin);
     };
     socket.emit('join-host', personInfo?.userId);
     socket.on('youtube-stop', turnOffYoutubeLive);
@@ -249,12 +282,29 @@ const QuestionPage: React.FC = () => {
     socket.on('youtube-views-update', youtubeViewsUpdate);
     socket.on('facebook-views-stop', facebookViewsStop);
     socket.on('facebook-views-update', facebookViewsUpdate);
+    socket.on('new-user-join', newUserJoin);
     window.addEventListener('beforeunload', leaveHost);
     return () => {
       leaveHost();
       window.removeEventListener('beforeunload', leaveHost);
     };
-  }, [personInfo, isHost, meetingId, dispatch]); // this
+  }, [personInfo, isHost, meetingId, dispatch, isAnswering]); // this
+  useEffect(() => {
+    if (!isHost) return;
+    const newUserJoin = () => {
+      socket.emit('answering', parseInt(meetingId), isAnswering);
+    };
+    const leaveHost = () => {
+      if (!isHost) return;
+      socket.off('new-user-join', newUserJoin);
+    };
+    socket.on('new-user-join', newUserJoin);
+    window.addEventListener('beforeunload', leaveHost);
+    return () => {
+      leaveHost();
+      window.removeEventListener('beforeunload', leaveHost);
+    };
+  }, [isHost, meetingId, isAnswering]); // this
 
   const mostPopularQuestions = questions
     ?.filter(
@@ -288,473 +338,512 @@ const QuestionPage: React.FC = () => {
         return a.concat(b);
       })
       .filter((reply) => reply.isHide);
-const sendEvent = ()=>{
-  if (!textState.trim()) {
-    window.alert('Empty question is not allowed!');
-    return;
-  }
-  if (files?.length !== undefined && files.length > 3) {
-    window.alert(
-      'Maximum of three images for each question!'
-    );
+  const sendEvent = () => {
+    if (!textState.trim()) {
+      window.alert('Empty question is not allowed!');
+      return;
+    }
+    if (files?.length !== undefined && files.length > 3) {
+      window.alert('Maximum of three images for each question!');
+      setFiles(null);
+      return;
+    }
+    dispatch(addQuestion(parseInt(meetingId), textState, files));
+    setTextState('');
     setFiles(null);
-    return;
-  }
-  dispatch(
-    addQuestion(parseInt(meetingId), textState, files)
-  );
-  setTextState('');
-  setFiles(null);
-}
-useEffect(()=>{
-  if (error==='youtube-error') {
-    dispatch(message(true, 'You may try to reset platform'));
-    // dispatch(push(`/room/${meetingId}/questions/main`));
-  }else if (error === 'facebook-error'){
-    dispatch(message(true, 'We need your permission'));
-  }else if (error === 'facebook-modal'){
+  };
+  useEffect(() => {
+    if (error === 'youtube-error') {
+      dispatch(message(true, 'You may try to reset platform'));
+      // dispatch(push(`/room/${meetingId}/questions/main`));
+    } else if (error === 'facebook-error') {
+      dispatch(message(true, 'We need your permission'));
+    } else if (error === 'facebook-modal') {
       setFacebookModal(true);
-  }else if (error === 'continue'){
-    console.log(fbcontinue);
-    const arr = fbcontinue?.split("+")!
-    console.log(arr);
-    if(arr[0]==='user')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0]));
-    if(arr[0]==='page')  dispatch(toggleFacebookLiveStatus(parseInt(meetingId),true,arr[0],arr[1]));
-  }
-},[error, dispatch])
+    } else if (error === 'continue') {
+      const arr = fbcontinue?.split('+')!;
+      if (arr[0] === 'user')
+        dispatch(toggleFacebookLiveStatus(parseInt(meetingId), true, arr[0]));
+      if (arr[0] === 'page')
+        dispatch(
+          toggleFacebookLiveStatus(parseInt(meetingId), true, arr[0], arr[1])
+        );
+    }
+  }, [error, dispatch, fbcontinue, meetingId]);
   return (
-    <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5">
-      <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
-        <div className="d-flex">
-          <span className="position-relative">
-            {isHost && (
-              <RoomSettingButton
-                meetingId={parseInt(meetingId)}
-                roomConfig={{
-                  canModerate: roomInformation?.canModerate,
-                  canUploadFile: roomInformation?.canUploadFile,
-                  questionLimit: roomInformation?.questionLimit
-                }}
-              />
-            )}
-          </span>
-          <span>{roomInformation?.name}</span>
-          <span className="px-2">
-            <i className="fas fa-users"></i> {peopleCount}
-          </span>
-          {isHost && liveStatus?.facebook && (
-            <span className="px-2">
-              <i className="fab fa-facebook-f"></i> {facebookViews}
-            </span>
-          )}
-          {isHost && liveStatus?.youtube && (
-            <span className="px-2">
-              <i className="fab fa-youtube"></i> {youtubeViews}
-            </span>
-          )}
-        </div>
-        {isHost === false && roomInformation?.canModerate && (
-          <div data-testid="moderation-count">
-            Moderation: {questionsNeedToBeApproved?.length}
-          </div>
-        )}
-        {isHost && (
+      <div className="p-1 p-sm-2 p-md-3 p-lg-4 p-xl-5 question-page mt-5 question-page-container">
+        <div className="meeting-information d-flex justify-content-sm-between flex-wrap mb-4 align-items-center mt-5 mt-sm-4 mt-mid-3 mt-lg-2 mt-xl-1">
           <div className="d-flex">
-            <div
-              className="util-spacing will-hover"
-              data-testid="facebook-live"
-              onClick={() => {
-                if (liveStatus?.facebook === true) {
-                  dispatch(
-                    toggleFacebookLiveStatus(parseInt(meetingId), false, 'page')
-                  );
-                  return;
-                }
-                if(liveStatus?.facebook === false){
-                  dispatch(turnOnFacebookAgain(parseInt(meetingId)));
-                  return;
-                }
-                setFacebookModal(true);
-                // const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+facebook-modal&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
-                // window.location.replace(loginLocationWithPrompt);
-              }}
-            >
-              <i className="fab fa-facebook-f fa-lg"></i>{' '}
-              {liveStatus?.facebook ? (
-                <i className="fas fa-toggle-on fa-lg"></i>
-              ) : (
-                <i className="fas fa-toggle-off fa-lg"></i>
+            <span className="position-relative">
+              {isHost && (
+                <RoomSettingButton
+                  meetingId={parseInt(meetingId)}
+                  roomConfig={{
+                    canModerate: roomInformation?.canModerate,
+                    canUploadFile: roomInformation?.canUploadFile,
+                    questionLimit: roomInformation?.questionLimit
+                  }}
+                />
               )}
-            </div>
-            <div
-              data-testid="youtube-live"
-              className="util-spacing will-hover"
-              onClick={() => {
-                dispatch(
-                  toggleYoutubeLiveStatus(
-                    parseInt(meetingId),
-                    liveStatus?.youtube ? false : true
-                  )
-                );
-              }}
-            >
-              <i className="fab fa-youtube-square fa-lg"></i>{' '}
-              {liveStatus?.youtube ? (
-                <i className="fas fa-toggle-on fa-lg"></i>
-              ) : (
-                <i className="fas fa-toggle-off fa-lg"></i>
-              )}
-            </div>
+            </span>
+            <span>{roomInformation?.name}</span>
+            <span className="px-2">
+              <i className="fas fa-users"></i> {peopleCount}
+            </span>
+            {isHost && liveStatus?.facebook && (
+              <span className="px-2">
+                <i className="fab fa-facebook-f"></i> {facebookViews}
+              </span>
+            )}
+            {isHost && liveStatus?.youtube && (
+              <span className="px-2">
+                <i className="fab fa-youtube"></i> {youtubeViews}
+              </span>
+            )}
           </div>
-        )}
-      </div>
-      <div className="question-form text-left mb-4">
-        <div className="d-flex text-area-container rounded shadow flex-wrap">
-          <div className="flex-grow-1 p-2">
-            {
-              <TextareaAutosize
-                placeholder="What's on your mind?"
-                value={textState}
-                onKeyDown={(e)=>{
-                  if(e.keyCode === 13 && !e.shiftKey){
-                    e.preventDefault();
-                    sendEvent();
-                  }
-                }}
-                onChange={(e) => {
-                  setTextState(e.target.value);
-                }}
-              />
-            }
-          </div>
-          <div className="d-flex align-items-end">
-            {
-              <>
-                {!(
-                  questionLimitStatus?.count >= roomInformation?.questionLimit
-                ) && (
-                  <div
-                    className="util-spacing will-hover"
-                    onClick={() => {
-                      sendEvent();
-                    }}
-                  >
-                    <i className="fas fa-paper-plane"></i>
-                  </div>
-                )}
-                {roomInformation?.canUploadFile && (
-                  <div className="util-spacing will-hover">
-                    <label htmlFor="q-img" className="mb-0">
-                      <i className="fas fa-camera"></i> (max:3):
-                    </label>
-                    {files == null
-                      ? 'No files'
-                      : `${files.length} ${
-                          files.length > 1 ? 'files' : 'file'
-                        }`}
-                    <input
-                      className="d-none"
-                      id="q-img"
-                      type="file"
-                      onChange={(event) => setFiles(event.currentTarget.files)}
-                      multiple
-                      accept="image/*"
-                    />
-                  </div>
-                )}
-              </>
-            }
-          </div>
-        </div>
-      </div>
-      <div className="question-moderation bottom-border pb-3 d-flex mb-4">
-      <div className='d-flex'>
-        <div>
-          <button
-            className={`util-spacing rounded ${isQuestion[0] && 'is-active'}`}
-            onClick={() => {
-              setIsQuestion(questionActive);
-            }}
-          >
-            QUESTIONS{' '}
-            {mostPopularQuestions?.length > 0
-              ? `(${mostPopularQuestions.length})`
-              : ''}
-          </button>
-        </div>
-        {roomInformation?.canModerate && isHost && (
-          <div data-testid="moderation-tab">
-            <button
-              className={`util-spacing rounded ${isQuestion[1] && 'is-active'}`}
-              onClick={() => {
-                setIsQuestion(moderateActive);
-              }}
-            >
-              MODERATION{' '}
-              {questionsNeedToBeApproved?.length > 0
-                ? `(${questionsNeedToBeApproved.length})`
-                : ''}
-            </button>
-          </div>
-        )}
-        </div>
-        <div className="d-flex">
-          {isHost && roomInformation?.canModerate && (
-            <div>
-              <button
-                className={`util-spacing rounded ${
-                  isQuestion[2] && 'is-active'
-                }`}
-                data-testid="inappropriate-questions-tab"
-                onClick={() => {
-                  setIsQuestion(inAppropriateQuestionActive);
-                }}
-              >
-                INAPPROPRIATE QUESTIONS{' '}
-                {questionsInAppropriate?.length > 0
-                  ? `(${questionsInAppropriate.length})`
-                  : ''}
-              </button>
+          {isHost === false && roomInformation?.canModerate && (
+            <div data-testid="moderation-count">
+              Moderation: {questionsNeedToBeApproved?.length}
             </div>
           )}
-          {isHost && roomInformation?.canModerate && (
-            <div>
-              <button
-                className={`util-spacing rounded ${
-                  isQuestion[3] && 'is-active'
-                }`}
-                data-testid="inappropriate-replies-tab"
+          {isHost && (
+            <div className="d-flex">
+              <div
+                className="util-spacing will-hover"
+                data-testid="facebook-live"
                 onClick={() => {
-                  setIsQuestion(inAppropriateRepliesActive);
-                }}
-              >
-                INAPPROPRIATE REPLIES{' '}
-                {replyInAppropriate?.length > 0
-                  ? `(${replyInAppropriate.length})`
-                  : ''}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="content-container p-2">
-        {isQuestion[0] && (
-          <>
-            <div className="text-left mb-4 d-flex">
-              <button
-                className={`util-spacing will-hover rounded question-page-tab ${
-                  page === 'main' && 'is-active'
-                }`}
-                onClick={() => {
-                  dispatch(push(`/room/${meetingId}/questions/main`));
-                }}
-              >
-                Most Popular
-              </button>
-              <button
-                className={`util-spacing will-hover rounded question-page-tab ${
-                  page === 'latest' && 'is-active'
-                }`}
-                onClick={() => {
-                  dispatch(push(`/room/${meetingId}/questions/latest`));
-                }}
-              >
-                Latest
-              </button>
-              <button
-                className={`util-spacing will-hover rounded question-page-tab ${
-                  page === 'answered' && 'is-active'
-                }`}
-                onClick={() => {
-                  dispatch(push(`/room/${meetingId}/questions/answered`));
-                }}
-              >
-                Answered{' '}
-                {answeredQuestions?.length > 0
-                  ? `(${answeredQuestions.length})`
-                  : ''}
-              </button>
-            </div>
-            <div>
-              {page === 'main' && (
-                <FlipMove>
-                  {mostPopularQuestions?.map((question) => {
-                    return (
-                      <Question
-                        key={question.id}
-                        user={personInfo}
-                        canUploadFile={roomInformation?.canUploadFile}
-                        question={question}
-                        answering={
-                          mostPopularQuestions[0].id === question.id
-                            ? true
-                            : false
-                        }
-                        isModerate={false}
-                        isHost={isHost}
-                      />
+                  if (liveStatus?.facebook === true) {
+                    dispatch(
+                      toggleFacebookLiveStatus(
+                        parseInt(meetingId),
+                        false,
+                        'page'
+                      )
                     );
-                  })}
-                </FlipMove>
-              )}
+                    return;
+                  }
+                  if (liveStatus?.facebook === false) {
+                    dispatch(turnOnFacebookAgain(parseInt(meetingId)));
+                    return;
+                  }
+                  setFacebookModal(true);
+                  // const loginLocationWithPrompt = `https://www.facebook.com/v7.0/dialog/oauth?client_id=${process.env.REACT_APP_FACEBOOK_CLIENT_ID}&display=page&redirect_uri=${process.env.REACT_APP_FACEBOOK_REDIRECT_URL}&state=${meetingId}+facebook-modal&scope=user_videos,pages_read_engagement,pages_read_user_content,pages_show_list`
+                  // window.location.replace(loginLocationWithPrompt);
+                }}
+              >
+                <i className="fab fa-facebook-f fa-lg"></i>{' '}
+                {liveStatus?.facebook ? (
+                  <i className="fas fa-toggle-on fa-lg"></i>
+                ) : (
+                  <i className="fas fa-toggle-off fa-lg"></i>
+                )}
+              </div>
+              <div
+                data-testid="youtube-live"
+                className="util-spacing will-hover"
+                onClick={() => {
+                  dispatch(
+                    toggleYoutubeLiveStatus(
+                      parseInt(meetingId),
+                      liveStatus?.youtube ? false : true
+                    )
+                  );
+                }}
+              >
+                <i className="fab fa-youtube-square fa-lg"></i>{' '}
+                {liveStatus?.youtube ? (
+                  <i className="fas fa-toggle-on fa-lg"></i>
+                ) : (
+                  <i className="fas fa-toggle-off fa-lg"></i>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="question-form text-left mb-4">
+          <div className="d-flex text-area-container rounded shadow flex-wrap">
+            <div className="flex-grow-1 p-2">
+              {
+                <TextareaAutosize
+                  placeholder="What's on your mind?"
+                  value={textState}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13 && !e.shiftKey) {
+                      e.preventDefault();
+                      sendEvent();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setTextState(e.target.value);
+                  }}
+                />
+              }
+            </div>
+            <div className="d-flex align-items-end">
+              {
+                <>
+                  {!(
+                    questionLimitStatus?.count >= roomInformation?.questionLimit
+                  ) && (
+                    <div
+                      className="util-spacing will-hover"
+                      onClick={() => {
+                        sendEvent();
+                      }}
+                    >
+                      <i className="fas fa-paper-plane"></i>
+                    </div>
+                  )}
+                  {roomInformation?.canUploadFile && (
+                    <div className="util-spacing will-hover">
+                      <label htmlFor="q-img" className="mb-0">
+                        <i className="fas fa-camera"></i> (max:3):
+                      </label>
+                      {files == null
+                        ? 'No files'
+                        : `${files.length} ${
+                            files.length > 1 ? 'files' : 'file'
+                          }`}
+                      <input
+                        className="d-none"
+                        id="q-img"
+                        type="file"
+                        onChange={(event) =>
+                          setFiles(event.currentTarget.files)
+                        }
+                        multiple
+                        accept="image/*"
+                      />
+                    </div>
+                  )}
+                </>
+              }
+            </div>
+          </div>
+        </div>
+        <div className="question-moderation bottom-border d-flex mt-lg-5">
+          <div className="d-flex question-moderation-div">
+            <div className="question-moderation-div-div">
+              <button
+                className={`util-spacing rounded ${
+                  isQuestion[0] && 'is-active'
+                }`}
+                onClick={() => {
+                  setIsQuestion(questionActive);
+                }}
+              >
+                QUESTIONS{' '}
+                {mostPopularQuestions?.length > 0
+                  ? `(${mostPopularQuestions.length})`
+                  : ''}
+              </button>
+            </div>
+            {roomInformation?.canModerate && isHost && (
+              <div
+                data-testid="moderation-tab"
+                className="question-moderation-div-div"
+              >
+                <button
+                  className={`util-spacing rounded ${
+                    isQuestion[1] && 'is-active'
+                  }`}
+                  onClick={() => {
+                    setIsQuestion(moderateActive);
+                  }}
+                >
+                  MODERATION{' '}
+                  {questionsNeedToBeApproved?.length > 0
+                    ? `(${questionsNeedToBeApproved.length})`
+                    : ''}
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="d-flex question-moderation-div">
+            {isHost && roomInformation?.canModerate && (
+              <div className="question-moderation-div-div">
+                <button
+                  className={`util-spacing rounded ${
+                    isQuestion[2] && 'is-active'
+                  }`}
+                  data-testid="inappropriate-questions-tab"
+                  onClick={() => {
+                    setIsQuestion(inAppropriateQuestionActive);
+                  }}
+                >
+                  INAPPROPRIATE QUESTIONS{' '}
+                  {questionsInAppropriate?.length > 0
+                    ? `(${questionsInAppropriate.length})`
+                    : ''}
+                </button>
+              </div>
+            )}
+            {isHost && roomInformation?.canModerate && (
+              <div className="question-moderation-div-div">
+                <button
+                  className={`util-spacing rounded ${
+                    isQuestion[3] && 'is-active'
+                  }`}
+                  data-testid="inappropriate-replies-tab"
+                  onClick={() => {
+                    setIsQuestion(inAppropriateRepliesActive);
+                  }}
+                >
+                  INAPPROPRIATE REPLIES{' '}
+                  {replyInAppropriate?.length > 0
+                    ? `(${replyInAppropriate.length})`
+                    : ''}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="content-container p-2">
+          {isQuestion[0] && (
+            <>
+              <div className="text-left mb-2 mb-lg-3 mt-lg-2 mb-xl-4 mt-xl-3 d-flex question-util-container">
+                <button
+                  className={`util-spacing will-hover rounded question-page-tab ${
+                    page === 'main' && 'is-active'
+                  }`}
+                  onClick={() => {
+                    dispatch(push(`/room/${meetingId}/questions/main`));
+                  }}
+                >
+                  Most Popular
+                </button>
+                <button
+                  className={`util-spacing will-hover rounded question-page-tab ${
+                    page === 'latest' && 'is-active'
+                  }`}
+                  onClick={() => {
+                    dispatch(push(`/room/${meetingId}/questions/latest`));
+                  }}
+                >
+                  Latest
+                </button>
+                <button
+                  className={`util-spacing will-hover rounded question-page-tab ${
+                    page === 'answered' && 'is-active'
+                  }`}
+                  onClick={() => {
+                    dispatch(push(`/room/${meetingId}/questions/answered`));
+                  }}
+                >
+                  Answered{' '}
+                  {answeredQuestions?.length > 0
+                    ? `(${answeredQuestions.length})`
+                    : ''}
+                </button>
+                {isAnswering !== 0 && (
+                  <div className="util-spacing mic-container">
+                    <Link
+                      className="will-hover"
+                      to="answering"
+                      spy={true}
+                      smooth={true}
+                      duration={500}
+                      offset={-55}
+                      type={'button'}
+                    >
+                      <i
+                        className="fas fa-microphone"
+                        data-testid="answering"
+                      ></i>
+                    </Link>
+                  </div>
+                )}
+              </div>
+              <div>
+                {page === 'main' && (
+                  // <div className='question-flip-container'>
+                  <div style={{ position: 'relative' }}>
+                    <FlipMove>
+                      {mostPopularQuestions?.map((question, i) => {
+                        return (
+                          <Question
+                            // key={question.id}
+                            key={i}
+                            user={personInfo}
+                            isAnswering={isAnswering === question.id}
+                            canUploadFile={roomInformation?.canUploadFile}
+                            question={question}
+                            isModerate={false}
+                            isHost={isHost}
+                          />
+                        );
+                      })}
+                    </FlipMove>
+                  </div>
+                  // </div>
+                )}
 
-              {page === 'latest' &&
-                latestQuestions?.map((question) => {
-                  return (
+                {page === 'latest' && (
+                  <div style={{ position: 'relative' }}>
+                    <FlipMove>
+                      {latestQuestions?.map((question) => {
+                        return (
+                          <Question
+                            key={question.id}
+                            user={personInfo}
+                            isAnswering={isAnswering === question.id}
+                            canUploadFile={roomInformation?.canUploadFile}
+                            question={question}
+                            isModerate={false}
+                            isHost={isHost}
+                          />
+                        );
+                      })}
+                    </FlipMove>
+                  </div>
+                )}
+                {page === 'answered' && (
+                  <div style={{ position: 'relative' }}>
+                    <FlipMove>
+                      {answeredQuestions?.map((question, i) => {
+                        return (
+                          !question.isHide &&
+                          question.isAnswered && (
+                            <Question
+                              key={question.id}
+                              user={personInfo}
+                              isAnswering={false}
+                              canUploadFile={roomInformation?.canUploadFile}
+                              question={question}
+                              isModerate={false}
+                              isHost={isHost}
+                            />
+                          )
+                        );
+                      })}
+                    </FlipMove>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          {roomInformation?.canModerate &&
+            isQuestion[1] &&
+            (questionsNeedToBeApproved?.length > 0 ? (
+              questionsNeedToBeApproved.map((question) => {
+                return (
+                  <div
+                    key={`c-${question.id}`}
+                    className="moderate-container"
+                    data-testid="moderate-questions"
+                  >
                     <Question
-                      key={question.id}
+                      key={`${question.id}`}
                       user={personInfo}
+                      isAnswering={false}
                       canUploadFile={roomInformation?.canUploadFile}
                       question={question}
-                      answering={
-                        mostPopularQuestions[0].id === question.id
-                          ? true
-                          : false
-                      }
+                      isModerate={true}
+                      isHost={isHost}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div
+                className="moderate-container"
+                data-testid="no-moderate-questions"
+              >
+                No questions need to be approved
+              </div>
+            ))}
+          {isQuestion[2] &&
+            (questionsInAppropriate.length > 0 ? (
+              questionsInAppropriate.map((question) => {
+                return (
+                  <div
+                    className="moderate-container"
+                    data-testid="moderate-questions"
+                    key={question.id}
+                  >
+                    <Question
+                      //key={`${question.id}`}
+                      user={personInfo}
+                      isAnswering={false}
+                      canUploadFile={roomInformation?.canUploadFile}
+                      question={question}
                       isModerate={false}
                       isHost={isHost}
                     />
-                  );
-                })}
-              {page === 'answered' &&
-                answeredQuestions?.map((question, i) => {
-                  return (
-                    !question.isHide &&
-                    question.isAnswered && (
-                      <Question
-                        key={question.id}
-                        user={personInfo}
-                        canUploadFile={roomInformation?.canUploadFile}
-                        question={question}
-                        answering={false}
-                        isModerate={false}
-                        isHost={isHost}
-                      />
-                    )
-                  );
-                })}
-            </div>
-          </>
+                  </div>
+                );
+              })
+            ) : (
+              <div
+                className="moderate-container"
+                data-testid="no-moderate-questions"
+              >
+                No Inappropriate questions
+              </div>
+            ))}
+          {isQuestion[3] &&
+            (replyInAppropriate.length > 0 ? (
+              replyInAppropriate.map((reply) => {
+                return (
+                  <div
+                    key={`r-${reply.id}`}
+                    className="moderate-container"
+                    data-testid="moderate-questions"
+                  >
+                    <Reply
+                      key={reply.id}
+                      reply={reply}
+                      user={personInfo}
+                      meetingId={parseInt(meetingId)}
+                      isHost={isHost}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div
+                className="moderate-container"
+                data-testid="no-moderate-questions"
+              >
+                No Inappropriate replies
+              </div>
+            ))}
+        </div>
+        {facebookModal && (
+          <FacebookModal
+            title={'Where do you want to start your live broadcast?'}
+            message={'Choose your platform'}
+            yes={(liveLoc: string, pageId: string = '') => {
+              dispatch(
+                toggleFacebookLiveStatus(
+                  parseInt(meetingId),
+                  true,
+                  liveLoc,
+                  liveLoc === 'page' ? pageId : ''
+                )
+              );
+              setFacebookModal(false);
+            }}
+            no={() => {
+              setFacebookModal(false);
+            }}
+          />
         )}
-        {roomInformation?.canModerate &&
-          isQuestion[1] &&
-          (questionsNeedToBeApproved?.length > 0 ? (
-            questionsNeedToBeApproved.map((question) => {
-              return (
-                <div
-                  className="moderate-container"
-                  data-testid="moderate-questions"
-                >
-                  <Question
-                    key={`${question.id}`}
-                    user={personInfo}
-                    canUploadFile={roomInformation?.canUploadFile}
-                    question={question}
-                    answering={false}
-                    isModerate={true}
-                    isHost={isHost}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <div
-              className="moderate-container"
-              data-testid="no-moderate-questions"
-            >
-              No questions need to be approved
-            </div>
-          ))}
-        {isQuestion[2] &&
-          (questionsInAppropriate.length > 0 ? (
-            questionsInAppropriate.map((question) => {
-              return (
-                <div
-                  className="moderate-container"
-                  data-testid="moderate-questions"
-                  key={question.id}
-                >
-                  <Question
-                    //key={`${question.id}`}
-                    user={personInfo}
-                    canUploadFile={roomInformation?.canUploadFile}
-                    question={question}
-                    answering={false}
-                    isModerate={false}
-                    isHost={isHost}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <div
-              className="moderate-container"
-              data-testid="no-moderate-questions"
-            >
-              No Inappropriate questions
-            </div>
-          ))}
-        {isQuestion[3] &&
-          (replyInAppropriate.length > 0 ? (
-            replyInAppropriate.map((reply) => {
-              return (
-                <div
-                  className="moderate-container"
-                  data-testid="moderate-questions"
-                >
-                  <Reply
-                    reply={reply}
-                    user={personInfo}
-                    meetingId={parseInt(meetingId)}
-                    isHost={isHost}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <div
-              className="moderate-container"
-              data-testid="no-moderate-questions"
-            >
-              No Inappropriate replies
-            </div>
-          ))}
+        {showGooglePermissionModal && (
+          <YesNoModal
+            title={'Redirect to Google'}
+            message={'Confirm to redirect to permission page'}
+            yes={() => {
+              const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`;
+              window.location.replace(loginLocationWithPrompt);
+            }}
+            no={() => {
+              dispatch(googlePermissionModal(false));
+            }}
+          />
+        )}
+        <ScrollTop />
       </div>
-      {facebookModal && (
-        <FacebookModal
-          title={'Where do you want to start your live broadcast?'}
-          message={'Choose your platform'}
-          yes={(liveLoc: string, pageId: string = '') => {
-            dispatch(
-              toggleFacebookLiveStatus(
-                parseInt(meetingId),
-                true,
-                liveLoc,
-                liveLoc === 'page' ? pageId : ''
-              )
-            );
-            setFacebookModal(false);
-          }}
-          no={() => {
-            setFacebookModal(false);
-          }}
-        />
-      )}
-      {showGooglePermissionModal && (
-        <YesNoModal
-          title={'Redirect to Google'}
-          message={'Confirm to redirect to permission page'}
-          yes={() => {
-            const loginLocationWithPrompt = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_YOUTUBE_REDIRECT_URL}&scope=https://www.googleapis.com/auth/youtube.readonly&state=${meetingId}&response_type=code&access_type=offline`
-            window.location.replace(loginLocationWithPrompt)
-          }}
-          no={() => {
-            dispatch(googlePermissionModal(false));
-          }}
-        />
-      )}
-      <ScrollTop />
-    </div>
   );
 };
 

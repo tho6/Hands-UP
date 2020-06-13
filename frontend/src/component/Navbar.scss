@@ -50,6 +50,11 @@ a:hover{
     width: 100%;
     // height: 100vh;
     z-index:1500;
+    button{
+        &:focus{
+            outline: none;
+        }
+    }
     .humbugger-toggler{
         margin-top: 0.6rem;
         position: absolute;
@@ -63,6 +68,9 @@ a:hover{
             -webkit-background-clip: text;
             color: transparent;
         }
+    }
+    a{
+        align-self: center;
     }
     img{
         border-radius: 2rem;
@@ -78,7 +86,17 @@ a:hover{
         margin: auto;
         margin-bottom: 0.5rem;
         vertical-align: middle;
-        margin: 0 0.25rem;
+        margin: 0.5rem 0.25rem 0.25rem;
+        // position: absolute;
+        // left: 31%;
+    }
+    .main-navbar-nav-guest-icon{
+        border-radius: 2rem;
+        height: 2rem;
+        margin: auto;
+        margin-bottom: 0.5rem;
+        vertical-align: middle;
+        margin: 0.5rem 0.25rem 0.25rem;
         // position: absolute;
         // left: 31%;
     }
@@ -86,6 +104,7 @@ a:hover{
         display: none;
         z-index: 1500;
         padding-left: 0;
+        padding-top: 8px;
         list-style: none;
         width: 200px;
         // height: 100%;
@@ -150,6 +169,7 @@ a:hover{
                 width: 100%;
                 color: rgb(96, 108, 108);
                 font-weight: 800;
+                padding-top: 8px;
                 // background-color: $SecondaryTextColor;
                 text-align: center;
                 &:hover{
@@ -224,7 +244,12 @@ a:hover{
                 display: flex;
                 // justify-content: flex-end;
                 width: initial;
-                
+                .login-btn{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
                 .logout-btn{
                     // width: 20%;
                     a{
@@ -254,7 +279,11 @@ a:hover{
 .navbar-move{
    transform: translateX(-200px);
 }
-
+.edit-name-container{
+    input{
+        border: none;
+    }
+}
     // .main-nav{
     //     background-color: $BackgroundColor;
     //     color: black;

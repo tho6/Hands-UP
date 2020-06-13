@@ -2,7 +2,16 @@ import React from 'react'
 import { ResponsivePie } from '@nivo/pie'
 import { IReportQuestion } from '../models/IReport';
 import './QuestionsPieChart.scss'
-export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
+
+function processData(arr: IReportQuestion[]):string[][]{
+    const processedDT = arr.map((question,idx) => {
+        return [`${idx+1}`, question.questioncontent?question.questioncontent:'', 
+        question.questionlikes?question.questionlikes:'', question.platformname?question.platformname:'']
+    })
+    return processedDT
+}
+
+export const QuestionsPieChart:React.FC<{setReportPopData:(data:{header:string, columns:string[], data:string[][]})=>void, setReportPopOpen:()=>void,data:IReportQuestion[]}> = (props) => {
     const theme = {
         labels:{
             text:{
@@ -20,29 +29,26 @@ export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
         "id": "Answered",
         "label": "Answered",
         "value": 0,
-        "color": "hsl(212, 70%, 50%)"
     },
     {
         "id": "Not Answered",
         "label": "Not Answered",
         "value": 0,
-        "color": "hsl(346, 70%, 50%)"
     },
     {
         "id": "Inappropriate",
         "label": "Inappropriate",
         "value": 0,
-        "color": "hsl(346, 70%, 50%)"
     }]
     const questions = props.data? [...props.data]:''
     if (questions){
         for (const question of questions){
             for (const category of dataMap){
-                if (question.isanswered && category.id === 'Answered'){
+                if (question.isanswered && !question.ishide && category.id === 'Answered'){
                     category.value += 1
                     break;
                 }
-                if (!question.isanswered && question.ishide && category.id === 'Inappropriate'){
+                if (question.ishide && category.id === 'Inappropriate'){
                     category.value += 1
                     break
                 }
@@ -83,7 +89,31 @@ export const QuestionsPieChart:React.FC<{data:IReportQuestion[]}> = (props) => {
         motionStiffness={90}
         motionDamping={15}
         theme={theme}
-        
+        onClick={(e)=>{
+            console.log(e)
+            const reportPopCol = ['ID', 'Question Content', 'Question Likes', 'Platform Name']
+            let tempData = []
+            switch(e.id){
+                case 'Answered':
+                    const answeredData = questions.filter(el=>(el.isanswered && !el.ishide))
+                    tempData = processData(answeredData)
+                    props.setReportPopData({header: 'Answered Questions', columns: reportPopCol, data: tempData})
+                    props.setReportPopOpen()
+                    break
+                case 'Inappropriate':
+                    const inappropriateData = questions.filter(el=>el.ishide)
+                    tempData = processData(inappropriateData)
+                    props.setReportPopData({header: 'Inappropriate Questions', columns: reportPopCol,data: tempData})
+                    props.setReportPopOpen()
+                    break
+                case 'Not Answered':
+                    const notAnsweredData = questions.filter(el=>!el.isanswered && !el.ishide)
+                    tempData = processData(notAnsweredData)
+                    props.setReportPopData({header: 'Not Answered Questions', columns: reportPopCol, data:tempData})
+                    props.setReportPopOpen()
+                    break
+            }
+        }}
         legends={[
             {
                 anchor: 'bottom-right',

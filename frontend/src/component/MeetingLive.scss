@@ -1,11 +1,12 @@
 @import '../component/_variables.scss';
 
-.headline {
+.meeting-live-header {
     font-family: $SecondaryFontStyle;
-    text-align: right;
+    font-weight: bold;
+    color: $PrimaryTextColor;
     display: flex;
     justify-content: left;
-    padding: 20px;
+    padding: 30px 0px 0px 25px ;
 }
 
 .meeting-live-edit-btn{
@@ -18,39 +19,66 @@
     background-color: inherit;
 }
 
-.meetingLiveCard{
+.meeting-live-container{
+    justify-content: center;
+}
+
+.meeting-live-card{
+    justify-content: center;
     background-color: $SecondaryTextColor;
     border: none;
     border-radius: 10px;
     box-shadow: 0 8px 6px -3px #e5e3e3;
     padding: 20px;
-    margin: 0px 50px 20px 10px;
+    margin: 25px;
+    &:hover {
+        transform: translate(0,-3px);
+        box-shadow: 0px 32px 25px -15px #e5e3e3;
+    }
+    button{
+        &:focus{
+            outline: none;
+        }
+    }
 }
 
-.meetingLiveCard:hover {
-    transform: translate(0,-3px);
-    box-shadow: 0px 32px 25px -15px #e5e3e3;
+.meeting-live-content{
+    display: flex;
+    flex-direction: row;
+    .meeting-live-content-left{
+        flex: 1;
+        padding-right: 15px;
+    }
+    .meeting-live-content-right{
+        flex: 3;
+    }
+    .fa-video{
+    // color: #0D3A83;
+    color: #ffffff;
+    // font-size: 40px;
+    display: flex;
+    justify-content: center;
+    }
+    .meeting-live-content-right-name{ // THIS
+        font-weight: bold;
+        font-size: 20px;
+    }
 }
 
-.joinButton {
+.meeting-live-join-btn {
     display: flex;
     justify-content: flex-end;
+    // margin-top: 20px;
 }
 
-.joinButtonGreen{
+.meeting-live-join-btn-green{
     background-color: $ThirdTextColor;
+    font-weight: bold;
     border: none;
     border-radius: 5px;
     width: 100px;
-}
-
-.liveIcon{
-    width: 100px;
-}
-
-.fa-video{
-    // color: #0D3A83;
-    color: #ffffff;
+    // align-items: center;
+    // height: 30px;
 }
 
 #meeting-delete{
@@ -65,11 +93,101 @@
     margin: -15px 0px 0px -5px;
 }
 
-.meeting-relative-time{
-    margin: -20px -20px 20px -20px;
+.meeting-due-function-btn {
+    margin: -10px -20px 20px -20px;
     font-weight: bold;
     color: #ffffff;
     display: flex;
     justify-content: space-between;
-    // padding:10px,10px,10px,10px
+    padding: 10px 20px 0px 20px;
+}
+
+.meeting-live-content-input{
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    .meeting-live-content-field {
+        flex: 1;
+        padding-right: 5px;
+        // padding-top: 5px;
+    }
+    .meeting-live-content-answer {
+    flex: 6;
+    word-break: break-all;
+        // padding-top: 5px;
+    }
+}
+
+
+// .delete-meeting-popup{
+//     background-color: $SecondaryTextColor;
+// }
+
+.delete-meeting-header{
+    text-align: center;
+}
+
+.delete-meeting-body{
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
+}
+
+.delete-meeting-function-btn{
+    display: flex;
+    justify-content: center;
+}
+
+.delete-meeting-delete-btn {
+    background-color: rgb(245, 101, 102); // pink
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.delete-meeting-go-back-btn{
+    background-color: $PrimaryTextColor;
+    border-radius: 5px;
+    // width: 180px;
+}
+
+@media screen and (min-width: 500px){
+        .meeting-live-icon{
+            width: 100px;
+            .fa-video{
+            // color: #0D3A83;
+            color: #ffffff;
+            }
+        }
+}
+
+.meeting-text-area{
+    resize: none;
+    border: none;
+    border-radius: 10px;
+
+}
+
+// MeetingComponent
+.meeting-live-content-copy-to-clipboard {
+    display: flex;
+    justify-content: center;
+    // padding-bottom: -1rem;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 15px;
+    .meeting-live-content-copy-to-clipboard-btn {
+    background-color: #ffffff;
+    box-shadow: 0px 1px 2px 1px #cccccc;
+    font-size: 8px;
+    border-radius: 5px;
+    border: none;
+    }
+}
+
+.meeting-live-content-copy-to-clipboard-btn:active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
 }

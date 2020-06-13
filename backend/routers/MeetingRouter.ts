@@ -9,7 +9,7 @@ export class MeetingRouter {
         const router = express.Router();
         // router.get('/', this.getMeeting);
         router.get('/', this.getMeetingByUserId);
-        // router.get('/:id', this.getMeetingById);
+        router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/edit/:id', this.editMeeting);
         router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
@@ -44,12 +44,13 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date, time, code, url, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
+            const { name, date, time, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
             const date_time = new Date(date + ' ' + time)
-            console.log(date_time);
+            // console.log(date_time);
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
             const userId = req.personInfo?.userId
+            const fake_url = req.body.code;
             // const userId = 1 // change later
             console.log(req.body.name);
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
@@ -61,49 +62,69 @@ export class MeetingRouter {
             if (!userId) {
                 return res.status(400).json({ message: "UserId not found" });
             }
-            const meetingId = await this.meetingService.createMeeting(name, date_time, code, url, userId, question_limit, can_moderate, can_upload_file);
+            const meetingId = await this.meetingService.createMeeting(name, date_time, code, fake_url, userId, question_limit, can_moderate, can_upload_file);
             return res.json({ meeting_id: meetingId });
         } catch (err) {
             console.log(err.message);
-            res.json({ message: "Cannot create meeting" });
+            res.json({ message: "Can't create meeting" });
             return;
         }
     }
 
     editMeeting = async (req: Request, res: Response) => {
         try {
-            const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
             const meetingId = parseInt(req.params.id);
-            if (!(meetingId in meetings)) return res.status(401).json({ message: "Not Own By You" })
-            const { name, date_time, code, url, owner_id } = req.body;
+            if (!meetingId || isNaN(meetingId)) return res.status(400).json({ message: 'Invalid meetingId' })
+            const hvMeeting = await this.meetingService.checkMeetingId(meetingId)
+            console.log(hvMeeting)
+            // const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            // console.log(meetings)
+            if (!hvMeeting) return res.status(401).json({ message: "Can't Edit meeting. This meeting is not owned by you" })
+            if (hvMeeting > 0) {
+            const meeting = await this.meetingService.getMeetingById(meetingId);
+            if (meeting.ownerId !== req.personInfo?.userId) return res.status(401).json({ message: "Can't edit meeting. This meeting is not owned by you" })
+            const { name, dateTime, code } = req.body;
             if (isNaN(meetingId)) {
                 res.status(400).json({ message: "Meeting Id is not a number" })
                 return;
             }
-            const result = await this.meetingService.editMeeting(meetingId, name, date_time, code, url, owner_id);
-            return res.json({ result });
+            await this.meetingService.editMeeting(parseInt(req.params.id), name, code, dateTime);
+            return res.status(200).json({status:true});
         }
+        return res.status(500).json({status:false});
+    }
         catch (err) {
             console.log(err.message);
-            res.json({ message: "Cannot edit meeting" });
+            res.json({ message: "Can't edit meeting" });
             return;
         }
+    
     }
+
 
     deleteMeeting = async (req: Request, res: Response) => {
         try {
             let meetingId = parseInt(req.params.id);
-            const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
-            if (!(meetingId in meetings)) return res.status(401).json({ message: "Not Own By You" })
-            if (isNaN(meetingId)) {
-                res.status(400).json({ message: "Meeting Id is not a number" })
-                return;
+            if (!meetingId || isNaN(meetingId)) return res.status(400).json({ message: 'Invalid meetingId' })
+            const hvMeeting = await this.meetingService.checkMeetingId(meetingId)
+            console.log(hvMeeting)
+            // const meetings = await this.meetingService.getMeetingByUserId(req.personInfo?.userId!);
+            // console.log(meetings)
+            if (!hvMeeting) return res.status(401).json({ message: "Can't delete meeting. This meeting is not owned by you" })
+            if (hvMeeting > 0) {
+                const deletedRows = await this.meetingService.deleteMeeting(meetingId);
+                if (deletedRows === 0) {
+                    return res.status(401).json({ message: "Can't delete meeting." })
+                } else {
+                    return res.status(200).json({ success: true, message: meetingId });
+                }
+            } else {
+                return res.status(400).json({ message: "Meeting Id is not a number" })
             }
-            const result = await this.meetingService.deleteMeeting(meetingId);
-            return res.json({ result });
+
         } catch (err) {
             console.log(err.message);
-            res.json({ message: "Cannot delete meeting" });
+            res.json({ message: "Can't delete meeting" });
             return;
         }
     }
@@ -136,12 +157,13 @@ export class MeetingRouter {
             return;
         }
     }
+
     convertCodeToId = async (req: Request, res: Response) => {
         try {
-            if(typeof req.query.code !== typeof 'abc') return res.status(400).json({status:true, message:'Invalid param'});
+            if (typeof req.query.code !== typeof 'abc') return res.status(400).json({ status: true, message: 'Invalid param' });
             const roomId = await this.meetingService.convertCodeToRoomId(req.query.code as string);
-                res.status(200).json({ status: true, message: roomId });
-                return;
+            res.status(200).json({ status: true, message: roomId });
+            return;
         } catch (err) {
             console.log(err.message);
             res.status(404).json({ status: false, message: 'Room not found!' });

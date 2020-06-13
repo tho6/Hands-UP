@@ -124,33 +124,48 @@ export class AuthRouter {
         try {
             if (!req.body.refreshToken) return res.status(401).json({ success: false, message: 'No Refresh Token' })
             const refreshToken = req.body.refreshToken
-            const accessToken = await this.authService.getAccessTokenByRefreshToken(refreshToken)
-            if (!accessToken) return res.status(401).json({ success: false, message: "Invalid Refresh Token" })
-            jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
-                const expiryTimeLeft = (info?.exp! * 1000 - new Date().getTime()) < (5 * 1000)
-                if (err?.name == 'TokenExpiredError' || expiryTimeLeft) {
-                    jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
-                        //TokenExpiredError
-                        if (err) return res.status(401).json({ success: false, message: "Invalid Token" })
-                        try {
-                            const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
-                            const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
-                            if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
-                            return res.status(200).json({ success: true, message: { accessToken: accessToken } })
-                        } catch (error) {
-                            console.log(error)
-                            return error.name == 'RangeError' ?
-                                res.status(400).json({ success: false, message: error.message }) :
-                                res.status(500).json({ success: false, message: 'internal error' })
-                        }
-                    })
-                    return;
+            // const accessToken = await this.authService.getAccessTokenByRefreshToken(refreshToken)
+            // if (!accessToken) return res.status(401).json({ success: false, message: "Invalid Refresh Token" })
+            // jwt.verify(accessToken, this.accessTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
+            //     const expiryTimeLeft = (info?.exp! * 1000 - new Date().getTime()) < (5 * 1000)
+            //     if (err?.name == 'TokenExpiredError' || expiryTimeLeft) {
+            //         jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] }, async (err, info: TokenInfo) => {
+            //             //TokenExpiredError
+            //             if (err) return res.status(401).json({ success: false, message: "Invalid Token" })
+            //             try {
+            //                 const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
+            //                 const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
+            //                 if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
+            //                 return res.status(200).json({ success: true, message: { accessToken: accessToken } })
+            //             } catch (error) {
+            //                 console.log(error)
+            //                 return error.name == 'RangeError' ?
+            //                     res.status(400).json({ success: false, message: error.message }) :
+            //                     res.status(500).json({ success: false, message: 'internal error' })
+            //             }
+            //         })
+            //         return;
 
-                } else {
-                    await this.authService.deleteRefreshToken(refreshToken)
-                    return res.status(401).json({ success: false, message: "Potential Threat" })
+            //     } else {
+            //         await this.authService.deleteRefreshToken(refreshToken)
+            //         return res.status(401).json({ success: false, message: "Potential Threat" })
+            //     }
+
+            // })
+            jwt.verify(refreshToken, this.refreshTokenPublicKey, { algorithms: ["RS256"] },async (err, info: TokenInfo) => {
+                //             //TokenExpiredError
+                if (err) return res.status(401).json({success:false, message:"Invalid Refresh Token"})
+                try {
+                    const accessToken = this.generateAccessToken(info.userId ? { userId: info.userId, guestId: info.guestId } : { guestId: info.guestId })
+                    const updatedRows = await this.authService.updateAccessToken(refreshToken, accessToken)
+                    if (updatedRows <= 0) return res.status(500).json({ success: false, message: "Failed to Generate New Access Token" })
+                    return res.status(200).json({ success: true, message: { accessToken: accessToken } })
+                } catch (error) {
+                    console.log(error)
+                    return error.name == 'RangeError' ?
+                        res.status(400).json({ success: false, message: error.message }) :
+                        res.status(500).json({ success: false, message: 'internal error' })
                 }
-
             })
             return;
         } catch (error) {
@@ -191,8 +206,11 @@ export class AuthRouter {
                 try {
                     if (info.hasOwnProperty('userId')) {
                         const result = (await this.userService.getUserById([info.userId!]))[0]
+                        console.log(info.guestId);
+                        // const guestResult = (await this.guestService.getGuestById([info.guestId!]))[0].name
+                        // console.log(guestResult);
                         const { googleId, ...personInfo } = result
-                        return res.status(200).json({ success: true, message: { personInfo: {...personInfo, guestId: info.guestId}}})
+                        return res.status(200).json({ success: true, message: { personInfo: {...personInfo,name:result.name, guestId: info.guestId}}})
 
                     } else {
                         const personInfo = (await this.guestService.getGuestById([info.guestId!]))[0]

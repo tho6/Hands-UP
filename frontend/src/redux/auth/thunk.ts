@@ -1,8 +1,9 @@
 import { ThunkDispatch } from "../../store";
-import { loginSuccess, loginFailed, getPersonInfo } from "./actions";
+import { loginSuccess, loginFailed, getPersonInfo, successfullyChangeGuestName, getGuestIcon } from "./actions";
 import { push } from "connected-react-router";
 import { RootState } from '../../store'
 import jwt from 'jsonwebtoken'
+import { message } from "../rooms/actions";
 const timeOutId: Array<any> = []
 export function loginGuest() {
     return async (dispatch: ThunkDispatch) => {
@@ -20,6 +21,9 @@ export function loginGuest() {
             localStorage.setItem('refreshToken', refreshToken);
             dispatch(loginSuccess(accessToken, refreshToken))
             dispatch(restoreLogin())
+            // const guestIcon = faker.image.food()
+            // localStorage.setItem('guestIcon', guestIcon)
+            // dispatch(getGuestIcon(guestIcon))
             //dispatch(push('/'))
         } else {
             dispatch(loginFailed('Failed to login'))
@@ -51,8 +55,8 @@ export function loginGoogle(authCode: string) {
             const refreshToken = result.message.refreshToken
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
-            dispatch(loginSuccess(accessToken, refreshToken))
-            dispatch(restoreLogin())
+            dispatch(loginSuccess(accessToken, refreshToken));
+            dispatch(restoreLogin());
             dispatch(push('/'));
             // window.location.replace('/');
         } 
@@ -81,7 +85,7 @@ export function restoreLogin() {
             // dispatch(logout())
             return
         }
-        dispatch(getPersonInfo(result.message.personInfo))
+        dispatch(getPersonInfo(result.message.personInfo));
         return
     }
 }
@@ -115,7 +119,8 @@ export function checkToken() {
             if (!result.success) {
                 // window.alert(result.message)
                 // dispatch(logout())
-                dispatch(loginGuest())
+                // dispatch(loginGuest())
+                window.location.replace(`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`)
             }
             localStorage.setItem('accessToken', result.message.accessToken)
             dispatch(loginSuccess(result.message.accessToken, refreshToken))
@@ -140,7 +145,7 @@ export function logoutAccount() {
         const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/logout`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 refreshToken
@@ -151,6 +156,7 @@ export function logoutAccount() {
         if (result.success) {
             localStorage.removeItem('accessToken')
             localStorage.removeItem('refreshToken')
+            dispatch(getGuestIcon());
             dispatch(push('/'))
             dispatch(loginGuest())
             
@@ -163,3 +169,24 @@ export function logoutAccount() {
         }
     }
 }
+export function changeGuestName(guestId:number, guestName:string) {
+    return async (dispatch: ThunkDispatch, getState: () => RootState) => {
+        const accessToken = getState().auth.accessToken
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/guest/`, {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${accessToken}`
+            },
+            body:JSON.stringify({updateForms:[{id:guestId, name:guestName}]})
+        })
+        const result = await res.json()
+        if (result.success) {
+            dispatch(successfullyChangeGuestName(guestName))
+        } else {
+            dispatch(message(true, result.message))
+        }
+
+    }
+}
+

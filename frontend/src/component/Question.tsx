@@ -20,16 +20,17 @@ import Reply from './Reply';
 import { PersonInfo } from '../redux/auth/reducers';
 import ImageContainer from './ImageContainer';
 import TextareaAutosize from 'react-textarea-autosize';
+import { socket } from '../socket';
+
 
 export interface IQuestionProps {
   question: IQuestion;
   user: PersonInfo|null;
+  isAnswering:boolean;
   canUploadFile: boolean;
-  answering: boolean;
   isModerate: boolean;
   isHost:boolean
 }
-
 const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [isEdit, setIsEdit] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -42,7 +43,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
   const [showCancelReplyModal, setShowCancelReplyModal] = useState(false);
   const [files, setFiles] = useState<FileList | null>(null);
   const [deleteFiles, setDeleteFiles] = useState<number[]>([]);
-  const { user, question, canUploadFile, answering, isModerate, isHost } = props;
+  const { user, question, canUploadFile, isModerate, isHost, isAnswering } = props;
   const canEdit = (user?.guestId === question.questioner.id) || isHost;
   const isLike = question.likes.findIndex((id) => id === user?.guestId) !== -1;
   const dispatch = useDispatch();
@@ -95,10 +96,13 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
     setIsEdit(false);
   }
   return (
-    <div ref={ref}>
+    <div ref={ref} id={`${isAnswering && 'answering'}`}>
       <div className="mb-4 d-flex question-container">
         <div className="question flex-grow-1 p-3 p-lg-4">
-          <div className="d-flex question-content-area">
+          <div onDoubleClick={()=>{
+            if(!isHost) return;
+            socket.emit('answering', question.meetingId, isAnswering?0:question.id);
+            }} className="d-flex question-content-area">
             <div className="content text-wrap mb-2">
               {isEdit ? (
                   <TextareaAutosize
@@ -126,7 +130,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 new Date(question.createdAt).getTime() && <span>[Edited]</span>}
             </div>
             <div className="d-flex justify-content-end">
-              {answering === true && (
+              {isAnswering === true && !question.isAnswered && !question.isHide &&(
                 <span className="util-spacing">
                   <i className="fas fa-microphone" data-testid="answering"></i>
                 </span>
@@ -166,11 +170,12 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
               })}
           </div>
           <div className="d-flex justify-content-between util-container mb-2 mw-100">
-            <div className="d-flex p-2 flex-grow-1 justify-content-between">
+            <div className="d-flex p-2 flex-grow-1 justify-content-between question-name-container">
               <div className='d-flex'>
-              <div
+              <span
                 className="p-2 mx-sm-4 mx-lg-5 will-hover"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   user?.guestId &&
                     (isLike
                       ? dispatch(removeVote(question.id))
@@ -183,7 +188,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   <i className="far fa-thumbs-up"></i>
                 )}{' '}
                 {question.likes.length}
-              </div>
+              </span>
               <div
                 className="p-2 ml-sm-4 ml-lg-5 will-hover"
                 onClick={() =>
@@ -214,6 +219,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                     className="util-spacing will-hover"
                     onClick={() => {
                       setShowDeleteModal(true);
+                      if(isAnswering) socket.emit('answering',question.meetingId, 0);
                     }}
                   >
                     <i className="fas fa-trash-alt"></i>
@@ -394,6 +400,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                   className="util-spacing will-hover"
                   onClick={() => {
                     dispatch(answeredQuestion(question.id));
+                    if(isAnswering) socket.emit('answering',question.meetingId, 0)
                   }}
                 >
                   <i className="fab fa-angellist fa-lg"></i>
@@ -405,6 +412,7 @@ const Question: React.FC<IQuestionProps> = forwardRef((props, ref: any) => {
                 className="util-spacing will-hover"
                 onClick={() => {
                   dispatch(approveOrHideQuestion(question.id, true));
+                  if(isAnswering) socket.emit('answering',question.meetingId, 0)
                 }}
               >
                 <i className="far fa-eye-slash fa-lg"></i>

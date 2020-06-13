@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginGoogle } from '../redux/auth/thunk'
+import UncontrolledLottie from './UncontrolledLottie'
 
 export default function GoogleLoginCallBack() {
     const dispatch = useDispatch()
@@ -15,9 +16,8 @@ export default function GoogleLoginCallBack() {
     }, [dispatch])
 
     return (
-        <div>
-            google login callback page
-            
-        </div>
+        <>
+        <UncontrolledLottie />
+        </>
     )
 }
