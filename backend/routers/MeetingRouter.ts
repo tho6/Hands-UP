@@ -45,7 +45,8 @@ export class MeetingRouter {
     createMeeting = async (req: Request, res: Response) => {
         try {
             const { name, date, time, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
-            const date_time = new Date(date + ' ' + time)
+            const tmp = new Date(date + ' ' + time)
+            const date_time = new Date(tmp.toLocaleString('en-US', { timeZone: 'Asia/HongKong' }))
             // console.log(date_time);
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
