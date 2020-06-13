@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteMeeting, editMeeting } from '../redux/meeting/thunk';
+// import { fetchMeeting } from '../redux/meeting/thunk';
 // import { editMeeting } from '../redux/meeting/thunk';
 // import { IMeetingLive } from '../redux/meeting/reducers';
 import moment from 'moment'
@@ -11,6 +12,7 @@ import { Modal } from 'react-bootstrap';
 import { IMeeting } from '../redux/meeting/reducers';
 import { useFormState } from 'react-use-form-state';
 import YesNoModal from './YesNoModal';
+import Clipboard from 'react-clipboard.js';
 
 export interface IProps {
     meeting: IMeeting
@@ -26,11 +28,12 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
     const { meeting } = props;
     const [formState, { text, date, time }] = useFormState();
 
-    formState.setField('name', meeting.name);
-    formState.setField('code', meeting.code);
-    formState.setField('date', new Date(meeting.date_time).toLocaleDateString('en-CA'));
-    formState.setField('time', new Date(meeting.date_time).toLocaleTimeString('it-IT'));
-
+    useEffect(() => {
+        formState.setField('name', meeting.name);
+        formState.setField('code', meeting.code);
+        formState.setField('date', new Date(meeting.date_time).toLocaleDateString('en-CA'));
+        formState.setField('time', new Date(meeting.date_time).toLocaleTimeString('it-IT'));
+    }, [formState, meeting])
     return (
         <>
             <div className="meeting-live-card">
@@ -96,7 +99,9 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                         </div>
                         <div className="meeting-live-content-input">
                             <div className="meeting-live-content-field">Url: </div>
-                            <div className="meeting-live-content-answer">{process.env.REACT_APP_BACKEND_URL}/{meeting.id}/questions/main</div>
+                            <div className="meeting-live-content-answer">{process.env.REACT_APP_FRONTEND_URL}/room/{meeting.id}/questions/main</div>
+                            <div className="meeting-live-content-copy-to-clipboard">
+                            <Clipboard className="meeting-live-content-copy-to-clipboard-btn" data-clipboard-text={`${process.env.REACT_APP_FRONTEND_URL}/room/${meeting.id}/questions/main`}>Copy</Clipboard></div>
                         </div>
                         {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
                         <div className="meeting-live-content-input">
@@ -118,11 +123,8 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                     </div>
                 </div>
                 <div className="meeting-live-join-btn">
-                    <Button variant="info" className="meeting-live-join-btn-green" href="/{meeting.id}/questions/main">JOIN</Button>{' '},
-    </div>
-                {/* <div className="meeting-live-join-btn"><Button onClick={() => {
-                    // dispatch
-                }} variant="info" className="meeting-live-join-btn-green"><b>JOIN</b></Button></div> */}
+                    <Button variant="info" className="meeting-live-join-btn-green" href={`/room/${meeting.id}/questions/main`}>JOIN</Button>
+                </div>
             </div>
             {showYesNoModal && <YesNoModal title={'Discard changes?'} message={'Are you sure you want to discard the changes?'} yes={() => {
                 formState.reset();

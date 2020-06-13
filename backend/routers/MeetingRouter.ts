@@ -12,7 +12,7 @@ export class MeetingRouter {
         router.get('/:id', this.getMeetingById);
         router.post('/create', this.createMeeting);
         router.put('/edit/:id', this.editMeeting);
-        // router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
+        router.put('/in/room/:id([0-9]+)', this.updateMeetingInRoom);
         router.delete('/delete/:id', this.deleteMeeting);
         return router;
     }
@@ -46,7 +46,7 @@ export class MeetingRouter {
         try {
             const { name, date, time, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
             const date_time = new Date(date + ' ' + time)
-            console.log(date_time);
+            // console.log(date_time);
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
             const userId = req.personInfo?.userId

@@ -46,6 +46,11 @@
 .create-meeting-popup {
     background-color: $SecondaryTextColor;
     // padding: 0px;
+    button{
+        &:focus{
+            outline: none;
+        }
+    }
 }
 
 .create-meeting-header {

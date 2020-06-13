@@ -35,6 +35,11 @@
         transform: translate(0,-3px);
         box-shadow: 0px 32px 25px -15px #e5e3e3;
     }
+    button{
+        &:focus{
+            outline: none;
+        }
+    }
 }
 
 .meeting-live-content{
@@ -42,7 +47,7 @@
     flex-direction: row;
     .meeting-live-content-left{
         flex: 1;
-        padding-right: 10px;
+        padding-right: 15px;
     }
     .meeting-live-content-right{
         flex: 3;
@@ -104,11 +109,12 @@
     .meeting-live-content-field {
         flex: 1;
         padding-right: 5px;
-        padding-top: 12px;
+        // padding-top: 5px;
     }
     .meeting-live-content-answer {
-        flex: 6;
-        padding-top: 12px;
+    flex: 6;
+    word-break: break-all;
+        // padding-top: 5px;
     }
 }
 
@@ -137,6 +143,7 @@
     border-radius: 5px;
     margin-right: 5px;
 }
+
 .delete-meeting-go-back-btn{
     background-color: $PrimaryTextColor;
     border-radius: 5px;
@@ -158,4 +165,29 @@
     border: none;
     border-radius: 10px;
 
+}
+
+// MeetingComponent
+.meeting-live-content-copy-to-clipboard {
+    display: flex;
+    justify-content: center;
+    // padding-bottom: -1rem;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 15px;
+    .meeting-live-content-copy-to-clipboard-btn {
+    background-color: #ffffff;
+    box-shadow: 0px 1px 2px 1px #cccccc;
+    font-size: 8px;
+    border-radius: 5px;
+    border: none;
+    }
+}
+
+.meeting-live-content-copy-to-clipboard-btn:active {
+    background: #e5e5e5;
+    -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+       -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+            box-shadow: inset 0px 0px 5px #c1c1c1;
+     outline: none;
 }

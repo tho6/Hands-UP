@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 // import { editMeeting } from '../redux/meeting/thunk';
 import { RootState } from '../store';
 // import { IMeetingLive } from '../redux/meeting/reducers';
