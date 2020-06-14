@@ -183,7 +183,7 @@ export class LiveRouter {
                 res.status(400).json({ status: false, message: 'Duplicate action!' });
                 return;
             }
-            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube===false) {
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && !this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
                 this.eventSourceExistence[`${req.params.meetingId}`].youtube = true;
                 res.status(200).json({ status: true, message: 'Continue fetching comments from Youtube' });
                 return;
