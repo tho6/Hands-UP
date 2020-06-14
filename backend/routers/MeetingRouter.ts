@@ -33,6 +33,7 @@ export class MeetingRouter {
             const userId = req.personInfo?.userId!
             // const userId = 1 // change later
             const result = await this.meetingService.getMeetingByUserId(userId);
+            console.log(result)
             res.status(200).json({ success: true, message: result });
             // return;
         } catch (err) {

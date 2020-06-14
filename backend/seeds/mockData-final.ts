@@ -1,11 +1,11 @@
 import * as Knex from "knex";
 import faker from 'faker';
 
-const numberOfMeeting = 500;
-const numberOfGuests = 5000;
-const numberOfQuestions = 5000;
-const numberOfReplies = 500;
-const numberOfViewsRecord = 10000;  //assume 1 event last for 1 hour --> 3 * 60 * 500 but not allowed
+const numberOfMeeting = 80;
+const numberOfGuests = 200;
+const numberOfQuestions = 1300;
+const numberOfReplies = 600;
+const numberOfViewsRecord = 7500;  //assume 1 event last for 1 hour --> 3 * 60 * 500 but not allowed
 export async function seed(knex: Knex): Promise<any> {
     // Deletes ALL existing entries
     const trx = await knex.transaction();
@@ -16,7 +16,7 @@ export async function seed(knex: Knex): Promise<any> {
         await trx.raw(/*sql*/ `TRUNCATE questions RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE platforms RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE meetings RESTART IDENTITY CASCADE`);
-        await trx.raw(/*sql*/ `TRUNCATE tokens RESTART IDENTITY CASCADE`);
+        // await trx.raw(/*sql*/ `TRUNCATE tokens RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE guests RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE users RESTART IDENTITY CASCADE`);
         await trx.raw(/*sql*/ `TRUNCATE views RESTART IDENTITY CASCADE`);
@@ -54,18 +54,7 @@ export async function seed(knex: Knex): Promise<any> {
         }
         await trx("guests").insert(guestData);
         /* Insert tokens */
-        await trx("tokens").insert([{
-            refresh_token: "token1",
-            access_token: "atoken1"
-        },
-        {
-            refresh_token: "token2",
-            access_token: "atoken2"
-        },
-        {
-            refresh_token: "token3",
-            access_token: "atoken3"
-        }])
+       
         /* Insert meetings */
         const meetingData = [];
         for(let i =0; i<numberOfMeeting; i++){
