@@ -1,11 +1,11 @@
 import * as Knex from "knex";
 import faker from 'faker';
 
-const numberOfMeeting = 20;
-const numberOfGuests = 70;
-const numberOfQuestions = 500;
-const numberOfReplies = 250;
-const numberOfViewsRecord = 5000;  //assume 1 event last for 1 hour --> 3 * 60 * 500 but not allowed
+const numberOfMeeting = 80;
+const numberOfGuests = 200;
+const numberOfQuestions = 1300;
+const numberOfReplies = 600;
+const numberOfViewsRecord = 7500;  //assume 1 event last for 1 hour --> 3 * 60 * 500 but not allowed
 export async function seed(knex: Knex): Promise<any> {
     // Deletes ALL existing entries
     const trx = await knex.transaction();
