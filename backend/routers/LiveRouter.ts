@@ -241,7 +241,7 @@ export class LiveRouter {
                 });
                 const result = await fetchLiveChat.json();
                 /* If access token expires in the middle of live broadcast */
-                if (result.error?.code === 401 || fetchLiveChat.status!==200) {
+                if (result.error) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {
