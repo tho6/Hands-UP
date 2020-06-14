@@ -102,7 +102,7 @@ export function checkToken() {
         const accessTokenDecode: any = jwt.decode(accessToken);
         console.log('accessTokenDecodes');
         console.log(accessTokenDecode);
-        const refreshBuffer = 4 * 1000;
+        const refreshBuffer = 30 * 1000;
         const expiryTimeLeft = accessTokenDecode?.exp * 1000 - new Date().getTime()
         console.log('expiryTimeLeft ' + expiryTimeLeft)
         const genAccessCode = async () => {
@@ -121,6 +121,8 @@ export function checkToken() {
                 // dispatch(logout())
                 // return window.location.replace(`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`)
                 // dispatch(logout())
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
                 window.location.replace('/')
                 // dispatch(loginGuest())
                 

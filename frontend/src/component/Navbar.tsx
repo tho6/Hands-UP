@@ -52,7 +52,7 @@ export default function Navbar() {
                         <li className="main-navbar-item hover-effect-navlink">
                             <NavLink activeClassName='hover-effect-navlink' to="/meetings" onClick={() => dispatch(closeNav())}>My Meetings</NavLink>
                         </li>
-                        <li className="main-navbar-item hover-effect-navlink "><NavLink activeClassName='hover-effect-navlink' to="/report/past" onClick={() => dispatch(closeNav())}>Report</NavLink></li>
+                        <li className="main-navbar-item hover-effect-navlink "><NavLink activeClassName='hover-effect-navlink' to="/report/overall/all" onClick={() => dispatch(closeNav())}>Report</NavLink></li>
                         <li className="main-navbar-item hover-effect-navlink">
 
                              

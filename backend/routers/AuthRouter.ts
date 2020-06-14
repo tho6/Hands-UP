@@ -34,10 +34,10 @@ export class AuthRouter {
         return router
     }
     private generateAccessToken = (payload: TokenInfo) => {
-        return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '15s', algorithm: 'RS256' })
+        return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '3h', algorithm: 'RS256' })
     }
     private generateRefreshToken = (payload: TokenInfo) => {
-        return jwt.sign(payload, this.refreshTokenPrivateKey, { expiresIn: '30d', algorithm: 'RS256' })
+        return jwt.sign(payload, this.refreshTokenPrivateKey, { expiresIn: '1y', algorithm: 'RS256' })
     }
 
     private loginGoogle = async (req: Request, res: Response) => {
