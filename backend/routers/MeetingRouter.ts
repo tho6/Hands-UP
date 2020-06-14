@@ -1,7 +1,6 @@
 import express from 'express'
 import { Request, Response } from 'express'
 import { MeetingService } from '../services/MeetingService';
-
 export class MeetingRouter {
     constructor(private meetingService: MeetingService, private io: SocketIO.Server) { }
 
@@ -44,16 +43,16 @@ export class MeetingRouter {
 
     createMeeting = async (req: Request, res: Response) => {
         try {
-            const { name, date, time, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body;
-            const tmp = new Date(date + ' ' + time)
-            const date_time = new Date(tmp.toLocaleString('en-US', { timeZone: 'Asia/HongKong' }))
-            // console.log(date_time);
+            const { name, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body.meetingContent;
+            const date_time = req.body.datetime
+            console.log(date_time)
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
             const userId = req.personInfo?.userId
-            const fake_url = req.body.code;
+            const fake_url = req.body.meetingContent.code;
             // const userId = 1 // change later
-            console.log(req.body.name);
+            // console.log(req.body.name);
+            console.log(code)
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
                 console.log("Meeting code existed already")

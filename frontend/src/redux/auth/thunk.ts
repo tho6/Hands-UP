@@ -1,5 +1,5 @@
 import { ThunkDispatch } from "../../store";
-import { loginSuccess, loginFailed, getPersonInfo, successfullyChangeGuestName, getGuestIcon, logout } from "./actions";
+import { loginSuccess, loginFailed, getPersonInfo, successfullyChangeGuestName, getGuestIcon } from "./actions";
 import { push } from "connected-react-router";
 import { RootState } from '../../store'
 import jwt from 'jsonwebtoken'
@@ -119,9 +119,12 @@ export function checkToken() {
             if (!result.success) {
                 // window.alert(result.message)
                 // dispatch(logout())
-                // dispatch(loginGuest())
                 // return window.location.replace(`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&scope=profile+email&redirect_uri=${process.env.REACT_APP_GOOGLE_REDIRECT_URL}`)
-                dispatch(logout())
+                // dispatch(logout())
+                window.location.replace('/')
+                // dispatch(loginGuest())
+                
+                // dispatch(push('/'))
                 return
             }
             localStorage.setItem('accessToken', result.message.accessToken)
