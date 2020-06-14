@@ -183,7 +183,8 @@ export class LiveRouter {
                 res.status(400).json({ status: false, message: 'Duplicate action!' });
                 return;
             }
-            if (this.eventSourceExistence[`${req.params.meetingId}`] && !this.eventSourceExistence[`${req.params.meetingId}`].youtube) {
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].youtube===false) {
+                console.log('[Youtube] turn event Existence to true!')
                 this.eventSourceExistence[`${req.params.meetingId}`].youtube = true;
                 res.status(200).json({ status: true, message: 'Continue fetching comments from Youtube' });
                 return;
@@ -245,6 +246,10 @@ export class LiveRouter {
                 /* If access token expires in the middle of live broadcast */
                 if (result.error) {
                     this.clearTimeIntervalAndTimer(fetchYTTimer, 'youtube', meetingId);
+                    if(result.error.code === 404){
+                        this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
+                        return
+                    }
                     const refreshResult = await this.youtubeExchangeForAccessToken(refreshToken);
                     if (!refreshResult['access_token']) {
                         /* io emit to toggle the button */
@@ -282,7 +287,7 @@ export class LiveRouter {
                 this.io.in('host:' + userId).emit('youtube-stop', 'stop youtube live comments');
                 return;
             }
-        }, 5000);
+        }, 10000);
         /* Silent refresh */
         // setTimeout(async()=>{
         //     console.log('[Youtube] Silent Refresh')
@@ -303,12 +308,14 @@ export class LiveRouter {
     clearTimeIntervalAndTimer = (timer: NodeJS.Timeout, platform: string, meetingId: number) => {
         clearInterval(timer);
         /* Check if only one platform is using the live function, if yes then delete the whole key, otherwise, delete only the platform key */
-        if (Object.keys(this.eventSourceExistence[`${meetingId}`]).length === 1) {
-            delete this.eventSourceExistence[`${meetingId}`];
-            return
+        if(this.eventSourceExistence[`${meetingId}`]){
+            if (Object.keys(this.eventSourceExistence[`${meetingId}`]).length === 1) {
+                delete this.eventSourceExistence[`${meetingId}`];
+                return
+            }
+            delete this.eventSourceExistence[`${meetingId}`][`${platform}`];
+            return;
         }
-        delete this.eventSourceExistence[`${meetingId}`][`${platform}`];
-        return;
     }
     youtubeExchangeForAccessToken = async (refreshToken: string) => {
         const bodyString = 'client_id=' + process.env.GOOGLE_CLIENT_ID + '&client_secret=' + process.env.GOOGLE_CLIENT_SECRET + '&refresh_token=' + encodeURIComponent(refreshToken) + '&grant_type=refresh_token';
@@ -338,7 +345,7 @@ export class LiveRouter {
         try {
             const meetingId = req.params.meetingId;
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
-            this.eventSourceExistence[`${meetingId}`].youtube = false;
+            if(this.eventSourceExistence[`${meetingId}`].youtube === true) this.eventSourceExistence[`${meetingId}`].youtube = false;
             return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from youtube' });
         } catch (e) {
             console.error(e);
@@ -350,7 +357,7 @@ export class LiveRouter {
         try {
             const meetingId = req.params.meetingId;
             if (!this.eventSourceExistence[`${meetingId}`]) return res.status(400).json({ status: false, message: 'Timer not found, make sure the meetingId is correct!' });
-            this.eventSourceExistence[`${meetingId}`].facebook = false;
+            if(this.eventSourceExistence[`${meetingId}`].facebook === true) this.eventSourceExistence[`${meetingId}`].facebook = false;
             return res.status(200).json({ status: true, message: 'Successfully stop fetching comments from facebook' });
         } catch (e) {
             console.error(e);

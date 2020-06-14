@@ -68,7 +68,10 @@ export function toggleYoutubeLiveStatus(meetingId: number, isFetch: boolean) {
                 //change the counter at liveRouter to false
                 const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/live/yt/comments/${meetingId}`, { method: 'PUT', headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } });
                 const result = await res.json();
-                if (!result.status) throw dispatch(message(true, result.message));
+                // if (!result.status) throw dispatch(message(true, result.message));
+                if (!result.status){
+                    dispatch(message(true, result.message));
+                }
                 dispatch(successfullyToggleYoutubeLiveStatus(meetingId, false));
                 return;
             }
