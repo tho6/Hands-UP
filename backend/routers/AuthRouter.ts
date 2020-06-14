@@ -34,10 +34,10 @@ export class AuthRouter {
         return router
     }
     private generateAccessToken = (payload: TokenInfo) => {
-        return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '15s', algorithm: 'RS256' })
+        return jwt.sign(payload, this.accessTokenPrivateKey, { expiresIn: '3h', algorithm: 'RS256' })
     }
     private generateRefreshToken = (payload: TokenInfo) => {
-        return jwt.sign(payload, this.refreshTokenPrivateKey, { expiresIn: '30d', algorithm: 'RS256' })
+        return jwt.sign(payload, this.refreshTokenPrivateKey, { expiresIn: '1y', algorithm: 'RS256' })
     }
 
     private loginGoogle = async (req: Request, res: Response) => {
@@ -51,7 +51,7 @@ export class AuthRouter {
                 if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
                 try {
                     const authCode = req.body.authCode
-
+                    console.log(authCode);
                     //take profile is ok since it includes sub (unique id) NO NEED OpenId
                     const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
                         method: "POST",
@@ -69,6 +69,7 @@ export class AuthRouter {
                     )
 
                     const result = await fetchRes.json()
+                    console.log(result);
                     if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
 
                     const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
