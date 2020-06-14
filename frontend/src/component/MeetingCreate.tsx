@@ -82,7 +82,9 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             </div>
             <div className="create-buttons">
                 <Button variant="info" className="create-button-colour" onClick={() => {
-                    dispatch(createMeeting(formState.values))
+                    const tmp = new Date(`${formState.values.date} ${formState.values.time}`);
+                    console.log(tmp)
+                    dispatch(createMeeting(formState.values,tmp))
                     // formState.clear
                     props.close()
                 }}><b>CREATE</b>

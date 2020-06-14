@@ -23,7 +23,7 @@ export function fetchMeeting(meetingId: number) {
     }
 }
 
-export function createMeeting(meetingContent: StateValues<any>) {
+export function createMeeting(meetingContent: StateValues<any>, datetime: Date) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             console.log(meetingContent)
@@ -33,7 +33,7 @@ export function createMeeting(meetingContent: StateValues<any>) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getState().auth.accessToken}`
                 },
-                body: JSON.stringify(meetingContent)
+                body: JSON.stringify({meetingContent,datetime})
             })
             const result = await res.json();
             if (!result.meeting_id) {
