@@ -54,18 +54,7 @@ export async function seed(knex: Knex): Promise<any> {
         }
         await trx("guests").insert(guestData);
         /* Insert tokens */
-        await trx("tokens").insert([{
-            refresh_token: "token1",
-            access_token: "atoken1"
-        },
-        {
-            refresh_token: "token2",
-            access_token: "atoken2"
-        },
-        {
-            refresh_token: "token3",
-            access_token: "atoken3"
-        }])
+       
         /* Insert meetings */
         const meetingData = [];
         for(let i =0; i<numberOfMeeting; i++){
