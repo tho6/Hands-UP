@@ -69,6 +69,7 @@ export class AuthRouter {
                     )
 
                     const result = await fetchRes.json()
+                    console.log(result);
                     if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
 
                     const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
