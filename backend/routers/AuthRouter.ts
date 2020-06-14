@@ -51,7 +51,7 @@ export class AuthRouter {
                 if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
                 try {
                     const authCode = req.body.authCode
-
+                    console.log(authCode);
                     //take profile is ok since it includes sub (unique id) NO NEED OpenId
                     const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
                         method: "POST",
