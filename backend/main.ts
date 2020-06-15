@@ -21,7 +21,7 @@ import { MeetingService } from "./services/MeetingService";
 import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
 import http from 'http';
-import { authenticateToken, authenticateUserToken , adminGuard} from "./guard";
+import { authenticateToken, authenticateUserToken } from "./guard";
 import { ReportRouter } from "./routers/ReportRouter";
 import { ReportService } from "./services/ReportService";
 import multerS3 from "multer-s3";
@@ -142,9 +142,9 @@ app.use(bodyParser.json());
 //@ts-ignore
 const API_VERSION = "/api/v1";
 app.use('/auth', authRouter.router())
-app.use('/user', userGuard, adminGuard, userRouter.router())
+app.use('/user', userGuard, userRouter.router())
 app.put('/guest', guard, guestRouter.updateGuests);
-app.use('/guest', userGuard, adminGuard, guestRouter.router())
+app.use('/guest', userGuard, guestRouter.router())
 app.use('/live', userGuard, liveRouter.router())
 app.use('/report', userGuard, reportRouter.router())
 app.use('/rooms', guard, questionRouter.router());
