@@ -69,16 +69,16 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
           // if(data.id === 'youtube') ytobj[`${a.x}`] = (a.y + b.y)/2;
           // if(data.id === 'facebook') fbobj[`${a.x}`] = (a.y + b.y)/2;
           // if(data.id === 'handsup') huobj[`${a.x}`] = (a.y + b.y)/2;
-            return {x:b.x, y:a.y + b.y, count:idx+1};
+            return {x:b.x, y:a.y + b.y, count:a.count+1};
         }
         if(a.x!==b.x){
-          if(data.id === 'youtube') ytobj[`${b.x}`] = a.y/a.count
-          if(data.id === 'facebook') fbobj[`${b.x}`] = a.y/a.count
-          if(data.id === 'handsup') huobj[`${b.x}`] = a.y/a.count
+          if(data.id === 'youtube') ytobj[`${a.x}`] = a.y/a.count
+          if(data.id === 'facebook') fbobj[`${a.x}`] = a.y/a.count
+          if(data.id === 'handsup') huobj[`${a.x}`] = a.y/a.count
             return b
         }
         return {x:a.x, y:a.y, count:1}
-    })
+    },{x:0,y:0,count:0})
     if(data.id==='youtube'){
       const tmp =[]
       for(const key in ytobj){
