@@ -14,7 +14,7 @@ export default function Home() {
         <div className="home-background-headings">
           <div className="home-background-headings-head">
             <h2>
-              Change the way you run Q&A sessions. Easily integrate Facebook & YouTube live streams.
+              Change the way you run Q&A sessions. Easily integrate with Facebook & YouTube live streams.
             </h2>
             <h4>Hands UP is the tool you need to make meetings more interactive.</h4>
             <h6>Join NOW!</h6>
