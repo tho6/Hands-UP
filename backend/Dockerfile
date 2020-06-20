@@ -4,5 +4,4 @@ COPY . .
 EXPOSE 8080
 CMD yarn install && \ 
     yarn knex migrate:latest &&\
-    yarn knex seed:run --specific mockData-final.ts &&\
     node index.js
