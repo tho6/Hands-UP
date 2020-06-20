@@ -81,9 +81,20 @@ export class LiveRouter {
                 return res.status(400).json({ success: false, message: "No live is on facebook" })
             }
             liveVideoId = liveVideos[0].id
-            if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) {
-                this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
-                return res.status(200).json({ success: true, message: "Connected to Facebook Comments Successfully" })
+            // if (this.eventSourceExistence[`${req.body.meetingId}`]?.facebook === false) {
+            //     this.eventSourceExistence[`${req.body.meetingId}`].facebook = true;
+            //     return res.status(200).json({ success: true, message: "Connected to Facebook Comments Successfully" })
+            // }
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].facebook) {
+                console.log('[Instance Duplicate] Stop starting new instance for fetching facebook comments');
+                res.status(400).json({ status: false, message: 'Duplicate action!' });
+                return;
+            }
+            if (this.eventSourceExistence[`${req.params.meetingId}`] && this.eventSourceExistence[`${req.params.meetingId}`].facebook===false) {
+                console.log('[Facebook] turn event Existence to true!')
+                this.eventSourceExistence[`${req.params.meetingId}`].facebook = true;
+                res.status(200).json({ status: true, message: 'Continue fetching comments from Facebook' });
+                return;
             }
             const fetchCommentsRes = new EventSource(`https://streaming-graph.facebook.com/${liveVideoId}/live_comments?access_token=${accessToken}&fields=created_time,from{name},message`, { withCredentials: true })
             fetchCommentsRes.onmessage = async (event) => {
