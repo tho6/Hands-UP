@@ -14,6 +14,7 @@ export default function YoutubeCallBack() {
         }
         if(params.get('error')){
             window.alert('Redirecting back to the room!');
+            // dispatch(replace(`/room/${meetingId}/questions/main`));
             window.location.replace(`/room/${meetingId}/questions/main`);
             return;
         }

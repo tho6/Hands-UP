@@ -74,7 +74,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
         if(a.x!==b.x){
           if(data.id === 'youtube') ytobj[`${a.x}`] = a.y/a.count
           if(data.id === 'facebook') fbobj[`${a.x}`] = a.y/a.count
-          if(data.id === 'handsup') huobj[`${a.x}`] = a.y/a.count
+          if(data.id === 'handsup') huobj[a.x] = a.y/a.count // this
             return b
         }
         return {x:a.x, y:a.y, count:1}

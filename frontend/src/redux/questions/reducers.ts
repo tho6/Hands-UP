@@ -54,6 +54,13 @@ export const questionsReducer = /* reducer */ (oldState = initialState, action: 
         case '@@QUESTIONS/UPDATE_QUESTION':
             {
                 const newQuestions = { ...oldState.questions };
+                // newQuestions[action.questionId] = {
+                //     ...newQuestions[action.questionId],
+                //     content: action.content,
+                //     files: action.files,
+                //     updatedAt: action.updatedAt,
+                //     isApproved: action.isApproved
+                // }
                 newQuestions[action.questionId].content = action.content;
                 //const newFiles = [...oldState.questions[action.questionId].files].filter(file => !action.deleteFilesId.includes(file.id));
                 const newFiles = action.files

@@ -17,10 +17,7 @@ export const ReportTotalQuestions: React.FC<{data:IReportQuestion[], pastData: I
     }
     if (currentData && pastData){
         for (const platform of arrMap){
-            objMap[platform]['latestQuestions'] = currentData.map( el => (el.platformname === platform))
-                                            .reduce( function(a, b) {
-                                                return b?a+1:a
-                                            }, 0 )
+            objMap[platform]['latestQuestions'] = currentData.filter( el => (el.platformname === platform)).length // this
             objMap[platform]['previousQuestions'] = pastData.map( el => el.platformname === platform )
                                             .reduce( function(a, b) {
                                                 return b?a+1:a

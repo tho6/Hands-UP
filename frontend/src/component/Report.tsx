@@ -48,6 +48,7 @@ export function Report() {
         const arr = Object.keys(state.report.questionsByMeetingId).sort(function (a:string,b:string):number{
             return  parseInt(a) - parseInt(b)
         })
+        // need comment for others to understand why `<= 0`
         const idx = arr.indexOf(meetingId!)  <= 0 ? null:arr.indexOf(meetingId!) - 1
         console.log(idx)
         console.log(arr)

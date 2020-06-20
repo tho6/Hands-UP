@@ -26,6 +26,8 @@ export function MeetingPast() {
     for (const meetingId in meetings) {
         // console.log(meetings[meetingId])
         const duration = (Date.now() - new Date(meetings[meetingId].date_time).getTime())
+
+        // 12 hours or above
         if (duration >= 43200000) {
             arrMeetings.push(meetings[meetingId])
         }

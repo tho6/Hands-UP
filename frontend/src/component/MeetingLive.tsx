@@ -19,8 +19,8 @@ export function MeetingLive() {
     for (const meetingId in meetings) {
         const duration = (Date.now() - new Date(meetings[meetingId].date_time).getTime())
         // console.log(duration)
-        if (duration < 600000) { // 10mins
-            // if (duration < 43200000) { // 12hrs
+        // if (duration < 600000) { // 10mins
+        if (duration < 43200000) { // 12hrs
             arrMeetings.push(meetings[meetingId])
         }
     }

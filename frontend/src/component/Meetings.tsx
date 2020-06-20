@@ -15,7 +15,7 @@ import { fetchMeeting } from '../redux/meeting/thunk';
 
 function Meetings() {
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
+    const handleClose = React.useCallback(() => setShow(false), [setShow]);
     const handleShow = () => setShow(true);
     const dispatch = useDispatch();
 

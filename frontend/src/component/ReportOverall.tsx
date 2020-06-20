@@ -135,7 +135,10 @@ const ReportOverall: React.FC = () => {
     });
   }
   useEffect(() => {
-    setTimeout(() => setLoading(false), 400);
+    const timer = setTimeout(() => setLoading(false), 400);
+    return () => {
+      clearTimeout(timer)
+    }
   }, []);
 
   return (

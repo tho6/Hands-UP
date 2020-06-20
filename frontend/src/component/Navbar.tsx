@@ -80,12 +80,12 @@ export default function Navbar() {
                                                         }
                                                         dispatch(changeGuestName(guestId!, gName!))
                                                     }}>Save
-                                                    </button>                                        
+                                                    </button>   
                                         </Popover.Content>
                                         </Popover>
                                     }
                                     >
-                                        {pic && <div><img src={pic} className='main-navbar-nav-guest-icon' alt="icon" onClick={() => (setEditName(!editName))} /></div>}
+                                        {pic ? <div><img src={pic} className='main-navbar-nav-guest-icon' alt="icon" onClick={() => (setEditName(!editName))} /></div> : <div></div>}
                                     </OverlayTrigger>
                                 
                             <button className='logout-button' onClick={() => {
@@ -125,12 +125,12 @@ export default function Navbar() {
                                                         }
                                                         dispatch(changeGuestName(guestId!, gName!))
                                                     }}>Save
-                                                    </button>                                        
+                                                    </button>  
                                         </Popover.Content>
                                         </Popover>
                                     }
                                     >
-                                        {pic && <div><img src={pic} className='main-navbar-nav-guest-icon' alt="icon" onClick={() => (setEditName(!editName))} /></div>}
+                                        {pic ? <div><img src={pic} className='main-navbar-nav-guest-icon' alt="icon" onClick={() => (setEditName(!editName))} /></div> : <div></div>}
                                     </OverlayTrigger>
                                 
                                 </>

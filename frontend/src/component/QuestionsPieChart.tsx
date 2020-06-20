@@ -11,7 +11,7 @@ function processData(arr: IReportQuestion[]):string[][]{
     return processedDT
 }
 
-export const QuestionsPieChart:React.FC<{setReportPopData:(data:{header:string, columns:string[], data:string[][]})=>void, setReportPopOpen:()=>void,data:IReportQuestion[]}> = (props) => {
+export const QuestionsPieChart:React.FC<{setReportPopData:(data:{header:string, columns:string[], data:string[][]})=>void, setReportPopOpen:()=>void,data:readonly IReportQuestion[]}> = (props) => {
     const theme = {
         labels:{
             text:{
@@ -24,7 +24,7 @@ export const QuestionsPieChart:React.FC<{setReportPopData:(data:{header:string, 
             }
         }
       };
-    
+      
     const dataMap = [{
         "id": "Answered",
         "label": "Answered",
