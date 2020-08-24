@@ -100,11 +100,11 @@ export function checkToken() {
             return
         }
         const accessTokenDecode: any = jwt.decode(accessToken);
-        console.log('accessTokenDecodes');
-        console.log(accessTokenDecode);
+        // console.log('accessTokenDecodes');
+        // console.log(accessTokenDecode);
         const refreshBuffer = 30 * 1000;
         const expiryTimeLeft = accessTokenDecode?.exp * 1000 - new Date().getTime()
-        console.log('expiryTimeLeft ' + expiryTimeLeft)
+        // console.log('expiryTimeLeft ' + expiryTimeLeft)
         const genAccessCode = async () => {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/token`, {
                 method: 'POST',

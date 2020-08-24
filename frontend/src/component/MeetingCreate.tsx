@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormState } from 'react-use-form-state';
 import { useDispatch } from 'react-redux';
 import { createMeeting } from '../redux/meeting/thunk';
@@ -6,9 +6,10 @@ import { createMeeting } from '../redux/meeting/thunk';
 //CSS
 import './MeetingCreate.scss'
 import Button from 'react-bootstrap/Button';
-// import 'react-dates/initialize';
-// import { SingleDatePicker } from 'react-dates';
-// import 'react-dates/lib/css/_datepicker.css';
+import 'react-dates/initialize';
+import { SingleDatePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import moment from 'moment';
 
 interface IProps {
     close: () => void
@@ -16,6 +17,8 @@ interface IProps {
 
 const CreateMeeting: React.FC<IProps> = (props) => {
     const [formState, { text, date, time, radio }] = useFormState();
+    const [data, setData] = useState<{date: moment.Moment | null}>({date:null})
+    const [focused, setFocus] = useState<{focused:boolean|null}>({focused:false})
     // const auth = useSelector((rootState: RootState) => rootState.auth);
     const dispatch = useDispatch();
     // useEffect(() => {
@@ -35,14 +38,14 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Date and time</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area"{...date('date')} required />
-                    {/* <SingleDatePicker
-                        date={this.state.date} // momentPropTypes.momentObj or null
-                        onDateChange={date => this.setState({ date })} // PropTypes.func.isRequired
-                        focused={this.state.focused} // PropTypes.bool
-                        onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
+                    {/* <input className="input-area"{...date('date')} required /> */}
+                    <SingleDatePicker
+                        date={data.date} // momentPropTypes.momentObj or null
+                        onDateChange={date => setData({ date })} // PropTypes.func.isRequired
+                        focused={focused.focused} // PropTypes.bool
+                        onFocusChange={({ focused }) => setFocus({ focused })} // PropTypes.func.isRequired
                         id="your_unique_id" // PropTypes.string.isRequired,
-                        /> */}
+                        />
                     <input className="input-area"{...time('time')} required />
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
                     {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}
@@ -91,7 +94,8 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             </div>
             <div className="create-buttons">
                 <Button variant="info" className="create-button-colour" onClick={() => {
-                    const tmp = new Date(`${formState.values.date} ${formState.values.time}`);
+                    const tmp = new Date(`${data.date?.format('YYYY-MM-DD')} ${formState.values.time}`);
+                    console.log(data.date?.format('YYYY-MM-DD'));
                     console.log(tmp)
                     dispatch(createMeeting(formState.values,tmp))
                     // formState.clear

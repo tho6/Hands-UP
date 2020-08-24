@@ -1,10 +1,10 @@
 image: node:12
 
 stages:
-  - server-testing
-  - server-build
-  - server-deploy
-  - react-testing
+  # - server-testing
+  # - server-build
+  # - server-deploy
+  # - react-testing
   - react-build
   - react-deploy
 
