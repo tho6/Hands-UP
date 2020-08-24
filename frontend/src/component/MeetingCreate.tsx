@@ -6,6 +6,9 @@ import { createMeeting } from '../redux/meeting/thunk';
 //CSS
 import './MeetingCreate.scss'
 import Button from 'react-bootstrap/Button';
+// import 'react-dates/initialize';
+// import { SingleDatePicker } from 'react-dates';
+// import 'react-dates/lib/css/_datepicker.css';
 
 interface IProps {
     close: () => void
@@ -15,7 +18,6 @@ const CreateMeeting: React.FC<IProps> = (props) => {
     const [formState, { text, date, time, radio }] = useFormState();
     // const auth = useSelector((rootState: RootState) => rootState.auth);
     const dispatch = useDispatch();
-
     // useEffect(() => {
     //     dispatch(createMeeting())
     // }, [dispatch])
@@ -34,6 +36,13 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                 <div className='create-meeting-field'>Date and time</div>
                 <div className='create-meeting-input-answer'>
                     <input className="input-area"{...date('date')} required />
+                    {/* <SingleDatePicker
+                        date={this.state.date} // momentPropTypes.momentObj or null
+                        onDateChange={date => this.setState({ date })} // PropTypes.func.isRequired
+                        focused={this.state.focused} // PropTypes.bool
+                        onFocusChange={({ focused }) => this.setState({ focused })} // PropTypes.func.isRequired
+                        id="your_unique_id" // PropTypes.string.isRequired,
+                        /> */}
                     <input className="input-area"{...time('time')} required />
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
                     {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}

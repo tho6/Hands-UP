@@ -97,7 +97,7 @@ $headerFontSize:1.6rem;
     }
 }
 
-@media screen and (min-width: 550px) {
+@media screen and (min-width: 1000px) { // updated from 550px
     .home-background {
         flex-direction: row;
         .home-background-headings {
@@ -119,7 +119,7 @@ $headerFontSize:1.6rem;
     }
 }
 
-@media screen and (min-width: 550px) {
+@media screen and (min-width: 1000px) { // updated from 550px
         .home-background-image-container {
         width: 15%;
         display: flex;

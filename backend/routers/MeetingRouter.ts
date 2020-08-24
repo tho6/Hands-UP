@@ -57,11 +57,11 @@ export class MeetingRouter {
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
                 console.log("Meeting code existed already")
-                res.status(400).json({ message: "Meeting code existed" });
+                res.json({ message: "Meeting code existed" });
                 return;
             }
             if (!userId) {
-                return res.status(400).json({ message: "UserId not found" });
+                return res.json({ message: "UserId not found" });
             }
             const meetingId = await this.meetingService.createMeeting(name, date_time, code, fake_url, userId, question_limit, can_moderate, can_upload_file);
             return res.json({ meeting_id: meetingId });
