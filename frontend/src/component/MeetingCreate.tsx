@@ -18,8 +18,8 @@ interface IProps {
 const CreateMeeting: React.FC<IProps> = (props) => {
     const [formState, { text, time, radio }] = useFormState();
     // const [formState, { text, date, time, radio }] = useFormState();
-    const [data, setData] = useState<{date: moment.Moment | null}>({date:null})
-    const [focused, setFocus] = useState<{focused:boolean|null}>({focused:false})
+    const [data, setData] = useState<{ date: moment.Moment | null }>({ date: null })
+    const [focused, setFocus] = useState<{ focused: boolean | null }>({ focused: false })
     // const auth = useSelector((rootState: RootState) => rootState.auth);
     const dispatch = useDispatch();
     // useEffect(() => {
@@ -46,7 +46,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                         focused={focused.focused} // PropTypes.bool
                         onFocusChange={({ focused }) => setFocus({ focused })} // PropTypes.func.isRequired
                         id="your_unique_id" // PropTypes.string.isRequired,
-                        />
+                    />
                     <input className="input-area"{...time('time')} required />
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
                     {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}
@@ -98,7 +98,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                     const tmp = new Date(`${data.date?.format('YYYY-MM-DD')} ${formState.values.time}`);
                     console.log(data.date?.format('YYYY-MM-DD'));
                     console.log(tmp)
-                    dispatch(createMeeting(formState.values,tmp))
+                    dispatch(createMeeting(formState.values, tmp))
                     // formState.clear
                     props.close()
                 }}><b>CREATE</b>
