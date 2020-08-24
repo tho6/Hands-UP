@@ -16,7 +16,8 @@ interface IProps {
 }
 
 const CreateMeeting: React.FC<IProps> = (props) => {
-    const [formState, { text, date, time, radio }] = useFormState();
+    const [formState, { text, time, radio }] = useFormState();
+    // const [formState, { text, date, time, radio }] = useFormState();
     const [data, setData] = useState<{date: moment.Moment | null}>({date:null})
     const [focused, setFocus] = useState<{focused:boolean|null}>({focused:false})
     // const auth = useSelector((rootState: RootState) => rootState.auth);
