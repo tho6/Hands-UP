@@ -46,7 +46,7 @@ export class MeetingRouter {
         try {
             const { name, code, question_limit, pre_can_moderate, pre_can_upload_file } = req.body.meetingContent;
             const date_time = req.body.datetime
-            console.log(date_time)
+            // console.log(date_time)
             const can_moderate = pre_can_moderate === '1' ? true : false
             const can_upload_file = pre_can_upload_file === '1' ? true : false
             const userId = req.personInfo?.userId
@@ -54,12 +54,12 @@ export class MeetingRouter {
             // const userId = 1 // change later
             // console.log(req.body.name);
             if (!name|| !code|| !question_limit|| !pre_can_moderate|| !pre_can_upload_file) {
-                const arr=[];
-                for(const key in req.body.meetingContent){
-                    if(req.body.meetingContent[key].length === 0) arr.push(key);
-                }
+                // const arr=[];
+                // for(const key in req.body.meetingContent){
+                //     if(req.body.meetingContent[key].length === 0) arr.push(key);
+                // }
                 // const str = arr.join(', ')
-                // res.json({ message: str + " field missing" });
+                // console.log(str + " field missing" );
                 res.json({ message: "Please fill out all required fields" });
                 return;
             }

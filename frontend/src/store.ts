@@ -18,9 +18,9 @@ import { MainNavState, mainNavReducer } from './redux/mainNav/reducers';
 
 declare global {
   /* tslint:disable:interface-name */
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
-  }
+  // interface Window {
+  //   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
+  // }
 }
 // export type RootAction = QuestionsActions|RoomsActions|AuthActions;
 
@@ -51,7 +51,8 @@ const reducer = combineReducers<RootState>({
   mainNav: mainNavReducer
 })
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =  compose;
 
 export const store = createStore(reducer,
   composeEnhancers(
