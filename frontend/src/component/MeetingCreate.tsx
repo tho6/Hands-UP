@@ -55,6 +55,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                         onFocusChange={({ focused }) => setFocus({ focused })} // PropTypes.func.isRequired
                         id="your_unique_id" // PropTypes.string.isRequired,
                         readOnly={true}
+                        small={true}
                     />
                     {/* <input type="time" onChange={(e)=>console.log(e.target.value)} className="input-area"{...raw({name:"time"})} required /> */}
                     <input type="time"  value={time1} className="input-area" required onChange={(e)=>{
