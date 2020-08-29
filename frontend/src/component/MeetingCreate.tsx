@@ -20,7 +20,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
     // const [formState, { text, date, time, radio }] = useFormState();
     const [data, setData] = useState<{ date: moment.Moment | null }>({ date: null })
     const [focused, setFocus] = useState<{ focused: boolean | null }>({ focused: false })
-    const [time1, setTime] = useState<string>("0");
+    const [time1, setTime] = useState<string>("");
 
     // const auth = useSelector((rootState: RootState) => rootState.auth);
     const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                     <SingleDatePicker
                         date={data.date} // momentPropTypes.momentObj or null
                         onDateChange={date => {setData({ date })
-                        if(time1 === "0") return
+                        if(time1 === "") return
                         const tmp = new Date(`${date?.format('YYYY-MM-DD')} ${time1}`);
                         const str = tmp.getTime()>new Date().getTime()?`${time1}`:`${new Date().getHours()}:${new Date().getMinutes()}`
                         setTime(str);
