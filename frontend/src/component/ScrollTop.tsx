@@ -16,6 +16,7 @@ const ScrollTop: React.FC = () => {
       window.removeEventListener('scroll', scrollHandler);
     };
   }, []);
+  console.log('this is scroll top!')
   return (
     <div className="scroll-top-background d-flex justify-content-center align-items-end">
       <div className="scroll-top-container d-flex">
