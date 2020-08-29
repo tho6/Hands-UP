@@ -106,6 +106,7 @@ export class LiveRouter {
             const checkLiveStatus = setInterval(async () => {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=status&access_token=${accessToken}`)
                 const result = await fetchRes.json()
+                if (!result.status) return;
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
                     console.log('[Facebook] live closed')
