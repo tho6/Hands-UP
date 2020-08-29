@@ -93,10 +93,10 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                         <i className="fas fa-video fa-3x"></i>
                     </div>
                     <div className="meeting-live-content-right">
-                        <div className="meeting-live-content-right-name">{isEdit ? <input className='meeting-text-area'{...text('name')} /> : meeting.name}</div>
+                        <div className="meeting-live-content-right-name">{isEdit ? <input className='meeting-text-area'{...text('name')} maxLength={10} /> : meeting.name}</div>
                         <div className="meeting-live-content-input">
                             <div className="meeting-live-content-field">Code: </div>
-                            <div className="meeting-live-content-answer">{isEdit ? <input className='meeting-text-area' {...text('code')} /> : meeting.code}</div>
+                            <div className="meeting-live-content-answer">{isEdit ? <input className='meeting-text-area' {...text('code')} maxLength={10} /> : meeting.code}</div>
                         </div>
                         <div className="meeting-live-content-input">
                             <div className="meeting-live-content-field">Url: </div>
