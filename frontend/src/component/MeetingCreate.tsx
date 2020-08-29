@@ -49,6 +49,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                         focused={focused.focused} // PropTypes.bool
                         onFocusChange={({ focused }) => setFocus({ focused })} // PropTypes.func.isRequired
                         id="your_unique_id" // PropTypes.string.isRequired,
+                        readOnly={true}
                     />
                     <input className="input-area"{...time('time')} required />
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
