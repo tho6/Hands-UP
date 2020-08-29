@@ -92,7 +92,8 @@ export function editMeeting(meetingId: number, name: string, code:string, dateTi
             })
             const result = await res.json();
             if (!result.status) {
-                dispatch(message(true, result.message));
+                window.alert(result.message);
+                // dispatch(message(true, result.message));
                 return;
             }
             dispatch(editMeetingAction(meetingId, code, dateTime ,name))
