@@ -38,7 +38,7 @@ export function createMeeting(meetingContent: StateValues<any>, datetime: Date, 
             const result = await res.json();
             if (!result.meeting_id) {
                 console.log(result)
-                window.alert(result.message);
+                window.alert(result.message??"Invalid form input");
                 return false;
             }
             dispatch(fetchMeeting(result.meeting_id))

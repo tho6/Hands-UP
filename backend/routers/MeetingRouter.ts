@@ -53,6 +53,16 @@ export class MeetingRouter {
             const fake_url = req.body.meetingContent.code;
             // const userId = 1 // change later
             // console.log(req.body.name);
+            if (!name|| !code|| !question_limit|| !pre_can_moderate|| !pre_can_upload_file) {
+                const arr=[];
+                for(const key in req.body.meetingContent){
+                    if(req.body.meetingContent[key].length === 0) arr.push(key);
+                }
+                // const str = arr.join(', ')
+                // res.json({ message: str + " field missing" });
+                res.json({ message: "Please fill out all required fields" });
+                return;
+            }
             console.log(code)
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
@@ -66,6 +76,7 @@ export class MeetingRouter {
                 res.json({ message: "Meeting name existed already" });
                 return;
             }
+
             if (!userId) {
                 return res.json({ message: "UserId not found" });
             }
