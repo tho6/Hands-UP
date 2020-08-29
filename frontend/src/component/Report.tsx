@@ -115,11 +115,11 @@ export function Report() {
                     <div className='report-desktop-first-row'>
                         <div className='report-snap-container'>
                             <div className="report-peak-view-outer">
-                                <div className="report-header"><span>Peak Views</span></div>
+                                <div className="report-header"><span>Peak Views (compared with last meeting)</span></div>
                                 <ReportPeakViews data={views} pastData={pastViews}/>
                             </div>
                             <div className="report-total-questions-outer">
-                                <div className="report-header"><span>Total Questions</span></div>
+                                <div className="report-header"><span>Total Questions (compared with last meeting)</span></div>
                                 <ReportTotalQuestions data={questions} pastData={pastQuestions}/>
                             </div>
                         </div>

@@ -45,7 +45,8 @@ declare global {
 
 const app = express();
 const server = http.createServer(app);
-const io = SocketIO(server,{pingTimeout:60000})
+const allowedOrigins = `http://localhost:* ${process.env.REACT_APP_FRONTEND_URL!}:*`;
+const io = SocketIO(server,{pingTimeout:60000,origins:allowedOrigins})
 
 /* Enable cors */
 app.use(cors({
@@ -165,7 +166,7 @@ io.on('connection', socket => {
     const idx = 'event:' + meetingId;
     socket.join(idx);
     const room = io.sockets.adapter.rooms[idx];
-    console.log(room);
+    // console.log(room);
     if (counter[idx])  return
     if(counter[idx]=== undefined) liveRouter.createViewsTimer(meetingId);
         counter[idx] = true;
