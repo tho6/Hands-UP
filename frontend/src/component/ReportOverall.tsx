@@ -220,18 +220,19 @@ const ReportOverall: React.FC = () => {
                 <span>Converage</span>
               </div>
               <div>
-                {(
-                  (pieChartData.isAnswered / pieChartData.totalQuestions) *
-                  100
-                ).toFixed(2)}
-                %
+                {
+                  (((pieChartData.isAnswered??0 / pieChartData.totalQuestions??0) *
+                  100)
+                ).toFixed(2) + 
+                "%"
+              }
               </div>
             </div>
             <div className="report-peak-view-outer flex-grow-1">
               <div className="report-header">
                 <span>Avg. Questions</span>
               </div>
-              <div>{Math.floor(numberOfQuestions / numberOfMeetings)}</div>
+              <div>{Math.floor(numberOfQuestions??0 / numberOfMeetings??0)}</div>
             </div>
           </div>
           <div className="views-chart-outer">

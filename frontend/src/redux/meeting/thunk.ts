@@ -1,7 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadMeetings, deleteMeetingAction, editMeetingAction } from "./action";
 import { StateValues } from "react-use-form-state";
-import { message } from "../rooms/actions";
+// import { message } from "../rooms/actions";
 import { deleteReportMeeting } from "../report/actions";
 // import { IMeetingLive } from "./reducers";
 
@@ -14,7 +14,7 @@ export function fetchMeeting(meetingId: number) {
             },
         })
         const result = await res.json();
-        console.log(result.message);
+        // console.log(result.message);
         // if (!result.message.message) {
         //     return      
         // }
