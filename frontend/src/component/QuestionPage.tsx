@@ -111,7 +111,7 @@ const QuestionPage: React.FC = () => {
     dispatch(fetchRoomInformation(parseInt(meetingId)));
   }, [dispatch, meetingId]);
   useEffect(() => {
-    console.log(isHost);
+    // console.log(isHost);
     if (!isHost) return;
     dispatch(getLiveStatus(parseInt(meetingId)));
   }, [dispatch, meetingId, isHost]);

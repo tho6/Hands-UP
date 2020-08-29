@@ -12,7 +12,7 @@ export function fetchQuestions(meetingId: number) {
                 'Authorization': `Bearer ${getState().auth.accessToken}`,
             }}); // GET + 'memos'
             const result = await res.json();
-            console.log(result);
+            // console.log(result);
             if (result.status) {
                 dispatch(loadQuestions(meetingId, result.message));
             } else {
