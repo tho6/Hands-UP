@@ -165,7 +165,7 @@ io.on('connection', socket => {
     const idx = 'event:' + meetingId;
     socket.join(idx);
     const room = io.sockets.adapter.rooms[idx];
-    console.log(room);
+    // console.log(room);
     if (counter[idx])  return
     if(counter[idx]=== undefined) liveRouter.createViewsTimer(meetingId);
         counter[idx] = true;
