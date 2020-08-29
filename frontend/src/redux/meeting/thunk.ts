@@ -38,7 +38,7 @@ export function createMeeting(meetingContent: StateValues<any>, datetime: Date) 
             const result = await res.json();
             if (!result.meeting_id) {
                 console.log(result)
-                window.alert(result);
+                // window.alert(result);
                 return;
             }
             dispatch(fetchMeeting(result.meeting_id))
@@ -46,8 +46,8 @@ export function createMeeting(meetingContent: StateValues<any>, datetime: Date) 
             console.log(result)
             return;
         } catch (err) {
-
-            window.alert(err.message);
+            console.log(err.message);
+            // window.alert(err.message);
         }
     }
 }
@@ -63,14 +63,16 @@ export function deleteMeeting(meetingId: number) {
             })
             const result = await res.json();
             if (!result.success) {
-                window.alert(result.message);
+                console.log(result.message);
+                // window.alert(result.message);
             }
             dispatch(deleteMeetingAction(result.message))
             dispatch(deleteReportMeeting(result.message))
             // dispatch(fetchMeeting(0))
             return;
         } catch (err) {
-            window.alert(err.message);
+            console.log(err.message);
+            // window.alert(err.message);
         }
     }
 }
@@ -95,7 +97,8 @@ export function editMeeting(meetingId: number, name: string, code:string, dateTi
             dispatch(editMeetingAction(meetingId, code, dateTime ,name))
             return;
         } catch (err) {
-            window.alert(err.message);
+            console.log(err.message);
+            // window.alert(err.message);
         }
     }
 }

@@ -51,7 +51,7 @@ export class AuthRouter {
                 if (!info || err) return res.status(401).json({ success: false, message: "Invalid Token" })
                 try {
                     const authCode = req.body.authCode
-                    console.log(authCode);
+                    // console.log(authCode);
                     //take profile is ok since it includes sub (unique id) NO NEED OpenId
                     const fetchRes = await fetch('https://oauth2.googleapis.com/token', {
                         method: "POST",
@@ -69,7 +69,7 @@ export class AuthRouter {
                     )
 
                     const result = await fetchRes.json()
-                    console.log(result);
+                    // console.log(result);
                     if (!result.id_token) return res.status(401).json({ success: false, message: 'Access code is not found' })
 
                     const decodedResult: GoogleUser | string | null | { [key: string]: any; } = jwt.decode(result.id_token)
