@@ -85,7 +85,7 @@ export class AuthRouter {
                     const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
                     const storedRefreshToken = await this.authService.saveRefreshTokenAccessToken(userRefreshToken, userAccessToken)
                     if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
-                    return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } }).setHeader("Set-Cookie", "HttpOnly;Secure;SameSite=Strict")
+                    return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
                 } catch (error) {
                     console.log(error)
                     return error.name == 'RangeError' ?
@@ -181,12 +181,8 @@ export class AuthRouter {
         try {
             if (!req.body.refreshToken) return res.status(401).json({ success: false, message: 'No Refresh Token' })
             const refreshToken = req.body.refreshToken
-            const deletedRows = await this.authService.deleteRefreshToken(refreshToken)
-            if (deletedRows > 0) {
-                return res.status(200).json({ success: true, message: "Logout Successful" })
-            } else {
-                return res.status(403).json({ success: false, message: "Logout Failed" })
-            }
+            await this.authService.deleteRefreshToken(refreshToken)
+            return res.status(200).json({ success: true, message: "Logout Successful" })
 
         } catch (error) {
             console.log(error)
