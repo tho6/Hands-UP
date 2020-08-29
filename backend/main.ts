@@ -45,7 +45,7 @@ declare global {
 
 const app = express();
 const server = http.createServer(app);
-const io = SocketIO(server)
+const io = SocketIO(server,{pingTimeout:60000})
 
 /* Enable cors */
 app.use(cors({
