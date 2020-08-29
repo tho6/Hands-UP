@@ -32,7 +32,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Meeting name</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area" {...text('name')} required />
+                    <input className="input-area" {...text('name')} placeholder="Max. 10 characters" maxLength={10} required />
                     {formState.touched.name && formState.values.name === '' && <div className="form-remind">Please fill in the meeting name</div>}
                 </div>
             </div>
@@ -55,7 +55,7 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Meeting code</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area"{...text('code')} required />
+                    <input className="input-area"{...text('code')} placeholder="Max. 10 characters" maxLength={10} required />
                     {formState.touched.code && formState.values.code === '' && <div className="form-remind">Please fill in the meeting code</div>}
                 </div>
             </div>

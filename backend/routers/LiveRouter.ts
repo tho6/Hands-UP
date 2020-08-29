@@ -106,6 +106,7 @@ export class LiveRouter {
             const checkLiveStatus = setInterval(async () => {
                 const fetchRes = await fetch(`https://graph.facebook.com/v7.0/${liveVideoId}?fields=status&access_token=${accessToken}`)
                 const result = await fetchRes.json()
+                if (!result.status) return;
                 if (result.status.toLowerCase() !== 'live') {
                     fetchCommentsRes.close()
                     console.log('[Facebook] live closed')
@@ -218,7 +219,7 @@ export class LiveRouter {
             const liveChatId = result.items[0].snippet.liveChatId;
             const videoId = result.items[0].id;
             /* fetch comments from youtube  */
-            console.log('[LiveRouter] create new instance for youtube comments');
+            // console.log('[LiveRouter] create new instance for youtube comments');
             this.fetchYTComments(videoId, req.personInfo.userId, liveChatId, parseInt(req.params.meetingId), accessToken, req.youtubeRefreshToken); //setTimer, set this.eventSourceExistence
             return res.status(200).json({ status: true, message: 'Start to fetch comments from Youtube' });
         } catch (error) {
@@ -245,7 +246,7 @@ export class LiveRouter {
         let viewCounter = 0;
         const fetchYTTimer = setInterval(async () => {
             try {
-                console.log('[LiveRouter] fetch Youtube Comments');
+                // console.log('[LiveRouter] fetch Youtube Comments');
                 const fetchLiveChat = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&part=authorDetails&${pageTokenString}key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {
@@ -390,7 +391,7 @@ export class LiveRouter {
     }
     fetchYTViews = async (accessToken: string, videoId: string, userId: number, meetingId:number) => {
         try {
-                console.log('[LiveRouter] fetch views from Youtube');
+                // console.log('[LiveRouter] fetch views from Youtube');
                 const fetchViewRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`, {
                     method: "GET",
                     headers: {
@@ -440,7 +441,7 @@ export class LiveRouter {
             const {youtube, facebook, handsup} = this.viewsTimer[`${roomId}`]
             try{ 
                 await this.liveService.saveViews(roomId, youtube,facebook, handsup)
-                console.log('[LiveRouter][viewsTimer] youtube: '+youtube+'facebook: '+facebook+'handsup: '+handsup);
+                // console.log('[LiveRouter][viewsTimer] youtube: '+youtube+'facebook: '+facebook+'handsup: '+handsup);
             }catch(e){
                 this.removeViewsTimer(roomId);
                 this.createViewsTimer(roomId);

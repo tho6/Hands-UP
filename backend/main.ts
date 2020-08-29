@@ -45,7 +45,7 @@ declare global {
 
 const app = express();
 const server = http.createServer(app);
-const io = SocketIO(server)
+const io = SocketIO(server,{pingTimeout:60000})
 
 /* Enable cors */
 app.use(cors({
@@ -156,73 +156,59 @@ app.use('/meetings', userGuard, meetingRouter.router());
 
 /* Socket Io */
 
-let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean }} = {}
+// let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean }} = {}
+let counter: { [id: string]:  boolean } = {}
 
 io.on('connection', socket => {
   let isAdd = false;
   socket.on('join_event', (meetingId: number, guestId:number) => {
     const idx = 'event:' + meetingId;
     socket.join(idx);
-    if (counter[idx]) {
-      // counter[idx].count += 1;
-      if(counter[idx].count[`${socket.id}`]){ //guesttId
-        io.to(socket.id).emit('re-connect');
-        console.log('[Reconnect] Client Reconnect to server!')
-      }
-      counter[idx].count[`${socket.id}`] = true; //guestId
-      if (!counter[idx].counting) {
-        counter[idx].counting = true;
+    const room = io.sockets.adapter.rooms[idx];
+    console.log(room);
+    if (counter[idx])  return
+    if(counter[idx]=== undefined) liveRouter.createViewsTimer(meetingId);
+        counter[idx] = true;
         setTimeout(() => {
-          if(!counter[idx]) return
-          counter[idx].counting = false;
-          // io.in(idx).emit('update-count', counter[idx].count);
-          io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-          liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
+          if(counter[idx] === undefined) return
+          counter[idx] = false;
+          io.in(idx).emit('update-count', room?.length??0);
+          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
         }, 3000)
-      }
-    } else {
-      // counter[idx] = { count: 1, counting: true };
-      counter[idx] = { count: {[`${socket.id}`]:true}, counting: true }; //guestId
-      liveRouter.createViewsTimer(meetingId);
-      setTimeout(() => {
-        if(!counter[idx]) return;
-        counter[idx].counting = false;
-        // io.in(idx).emit('update-count', counter[idx].count);
-        io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-        liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
-      }, 3000)
-    }
     if(isAdd===false){
       socket.on('disconnect',()=>{
-        if(!counter[idx]) return;
-        delete counter[idx].count[`${socket.id}`];
-        if(Object.keys(counter[idx].count).length === 0) {
+        if(counter[idx] === undefined) return;
+        if(room?.length === 0) {
           delete counter[idx];
           liveRouter.removeViewsTimer(meetingId);
+          return;
         }
+        setTimeout(() => {
+          if(counter[idx] === undefined) return
+          counter[idx] = false;
+          io.in(idx).emit('update-count', room?.length??0);
+          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
+        }, 3000)
       })
       isAdd = true;
-    }
-  });
+    }})
+  
   socket.on('leave_event', (meetingId: number, guestId:number) => {
     const idx = 'event:' + meetingId;
     socket.leave(idx);
-    if (!counter[idx]) return;
-    // counter[idx].count -= 1;
-    delete counter[idx].count[`${socket.id}`]; //guestId
-    if(Object.keys(counter[idx].count).length === 0) {
+    const room = io.sockets.adapter.rooms[idx];
+    if(room?.length === 0) {
       delete counter[idx];
       liveRouter.removeViewsTimer(meetingId);
     }
-    if (!counter[idx]) return;
-    if (!counter[idx].counting) {
-      counter[idx].counting = true;
+    if (counter[idx] === undefined) return;
+    if (counter[idx] === false) {
+      counter[idx] = true;
       setTimeout(() => {
-        if (!counter[idx]) return;
-        counter[idx].counting = false;
-        // io.in(idx).emit('update-count', counter[idx].count);
-        io.in(idx).emit('update-count', Object.keys(counter[idx].count).length);
-        liveRouter.updateHandsUpViewsCount(Object.keys(counter[idx].count).length,meetingId);
+        if (counter[idx] === undefined) return;
+        counter[idx] = false;
+        io.in(idx).emit('update-count', room?.length ??0);
+        liveRouter.updateHandsUpViewsCount(room?.length ?? 0,meetingId);
       }, 3000)
     }
   });
