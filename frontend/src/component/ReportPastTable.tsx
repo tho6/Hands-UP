@@ -23,10 +23,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchReportQuestions, fetchReportViews } from '../redux/report/thunk';
 import { RootState } from '../store';
 import { IPeakViews } from '../models/IReport';
-import UncontrolledLottie from './UncontrolledLottie';
 import { TextField } from '@material-ui/core';
 import { deleteMeeting, fetchMeeting } from '../redux/meeting/thunk';
 import { Modal,Button } from 'react-bootstrap';
+import NoDataLottie from './NoDataLottie';
 
 
 interface Data {
@@ -392,9 +392,9 @@ export function ReportPastTable() {
   let rows: Data[] = [];
   // console.log(arrQuestions)
   // console.log(questionsByMeetingId)
-  console.log(questions)
+  // console.log(questions)
   if ( Object.keys(views).length === 0 || Object.keys(questions).length === 0) {
-    return <UncontrolledLottie />
+    return <NoDataLottie />
   } else {
     for (const id of arrQuestions) {
       const meetingViews = viewsByMeetingId[id]?.map((i: number) => views[i])
@@ -511,10 +511,10 @@ export function ReportPastTable() {
   console.log(searchKey);
   if(searchKey.trim().length!==0){
     const temp = rows.filter(elem=>elem.meetingName.toLowerCase().includes(searchKey));
-    console.log(temp);
+    // console.log(temp);
     rows = temp;
   }
-  console.log(rows)
+  // console.log(rows)
 
 
 

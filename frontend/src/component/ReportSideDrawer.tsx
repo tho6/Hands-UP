@@ -20,7 +20,7 @@ export const ReportSideDrawer = () => {
     const meetings = sortedMeetingId.map((id)=>{
         return {name: meetingsById[id].name, id: meetingsById[id].id}
     })
-    console.log(meetings)
+    // console.log(meetings)
     useEffect(() => {
         // if(!dropdownRef.current?.firstChild)
        setMenuHeight(dropdownRef.current?.firstChild!.offsetHeight)

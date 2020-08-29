@@ -14,7 +14,7 @@ export function fetchMeeting(meetingId: number) {
             },
         })
         const result = await res.json();
-        console.log(result.message);
+        // console.log(result.message);
         // if (!result.message.message) {
         //     return      
         // }
