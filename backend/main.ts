@@ -45,7 +45,8 @@ declare global {
 
 const app = express();
 const server = http.createServer(app);
-const io = SocketIO(server,{pingTimeout:60000})
+const allowedOrigins = `http://localhost:* ${process.env.REACT_APP_FRONTEND_URL!}:*`;
+const io = SocketIO(server,{pingTimeout:60000,origins:allowedOrigins})
 
 /* Enable cors */
 app.use(cors({
