@@ -85,7 +85,7 @@ export class AuthRouter {
                     const userRefreshToken = this.generateRefreshToken({ guestId: info.guestId, userId: userId })
                     const storedRefreshToken = await this.authService.saveRefreshTokenAccessToken(userRefreshToken, userAccessToken)
                     if (!storedRefreshToken) return res.status(500).json({ success: false, message: "Internal Server Error" })
-                    return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } })
+                    return res.status(200).json({ success: true, message: { accessToken: userAccessToken, refreshToken: userRefreshToken } }).setHeader("Set-Cookie", "HttpOnly;Secure;SameSite=Strict")
                 } catch (error) {
                     console.log(error)
                     return error.name == 'RangeError' ?

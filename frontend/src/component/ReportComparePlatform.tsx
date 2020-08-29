@@ -41,11 +41,13 @@ export const ReportComparePlatform:React.FC<{currentData:{'youtube':number, 'fac
                         <span className="currentViews">{currentData['facebook']}</span>
                     </div>
                     <div className="report-compare-platform-compare">
-                        {
+                        
+                        {pastData['facebook'] ?
                             (currentData['facebook'] && pastData['facebook']) && currentData['facebook'] - pastData['facebook'] > 0? 
-                            <><i className="fas fa-arrow-up increase"></i><span className='increase'>+{currentData['facebook'] - pastData['facebook']}</span><span className='increase-percent'>({Math.round((currentData['facebook']! - pastData['facebook']!)/pastData['facebook']!*100)}%)</span></>
-                            :<><i className="fas fa-arrow-down decrease"></i><span className='decrease'>{currentData['facebook']! - pastData['facebook']!}</span><span className='decrease-percent'>({Math.round((currentData['facebook']! - pastData['facebook']!)/pastData['facebook']!*100)}%)</span></>
-                            }
+                            <><i className="fas fa-arrow-up increase"></i><span className='increase'>+{currentData['facebook'] - pastData['facebook']}</span><span className='increase-percent'>{pastData['facebook']!=null?(Math.round((currentData['facebook']! - pastData['facebook']!)/pastData['facebook']!*100)+"%"): "0%"}</span></>
+                            :<><i className="fas fa-arrow-down decrease"></i><span className='decrease'>{currentData['facebook']! - pastData['facebook']!}</span><span className='decrease-percent'>{pastData['facebook']!=null?Math.round((currentData['facebook']! - pastData['facebook']!)/pastData['facebook']!*100)+"%": "0%"}</span></>
+                            : "0%"
+                        }
                     </div>
                 </div>
                 <div className='report-compare-platform-items'>
@@ -58,8 +60,8 @@ export const ReportComparePlatform:React.FC<{currentData:{'youtube':number, 'fac
                     <div className="report-compare-platform-compare">
                         {
                             (currentData['handsup'] && pastData['handsup']) && currentData['handsup'] - pastData['handsup'] > 0? 
-                            <><i className="fas fa-arrow-up increase"></i><span className='increase'>+{currentData['handsup'] - pastData['handsup']}</span><span className='increase-percent'>({Math.round((currentData['handsup']! - pastData['handsup']!)/pastData['handsup']!*100)}%)</span></>
-                            :<><i className="fas fa-arrow-down decrease"></i><span className='decrease'>{currentData['handsup']! - pastData['handsup']!}</span><span className='decrease-percent'>({Math.round((currentData['handsup']! - pastData['handsup']!)/pastData['handsup']!*100)}%)</span></>
+                            <><i className="fas fa-arrow-up increase"></i><span className='increase'>+{currentData['handsup'] - pastData['handsup']}</span><span className='increase-percent'>{pastData['handsup']!=null?(Math.round((currentData['handsup']! - pastData['handsup']!)/pastData['handsup']!*100)+"%"): "0%"}</span></>
+                        :<><i className="fas fa-arrow-down decrease"></i><span className='decrease'>{currentData['handsup']! - pastData['handsup']!}</span><span className='decrease-percent'>{pastData['handsup']!=null?Math.round((currentData['handsup']! - pastData['handsup']!)/pastData['handsup']!*100)+"%": "0%"}</span></>
                             }
                     </div>
                 </div>
