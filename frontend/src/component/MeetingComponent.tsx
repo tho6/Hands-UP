@@ -42,7 +42,7 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                         <span>{moment(meeting.date_time).startOf('hour').fromNow()}</span>
                         <span>
                             {!isEdit && <>
-                            {/* {!isEdit && <>{moment(meeting.date_time).format('D MMM YYYY h:mma')} */}
+                                {/* {!isEdit && <>{moment(meeting.date_time).format('D MMM YYYY h:mma')} */}
                                 <button className='meeting-live-edit-btn' onClick={() => {
                                     //dispatch(editMeeting(meeting.id))
                                     setIsEdit(true);
@@ -102,7 +102,7 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                             <div className="meeting-live-content-field">Url: </div>
                             <div className="meeting-live-content-answer">{process.env.REACT_APP_FRONTEND_URL}/room/{meeting.id}/questions/main</div>
                             <div className="meeting-live-content-copy-to-clipboard">
-                            <Clipboard className="meeting-live-content-copy-to-clipboard-btn" data-clipboard-text={`${process.env.REACT_APP_FRONTEND_URL}/room/${meeting.id}/questions/main`}>Copy</Clipboard></div>
+                                <Clipboard className="meeting-live-content-copy-to-clipboard-btn" data-clipboard-text={`${process.env.REACT_APP_FRONTEND_URL}/room/${meeting.id}/questions/main`}>Copy</Clipboard></div>
                         </div>
                         {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
                         <div className="meeting-live-content-input">
@@ -123,9 +123,13 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                         </div> */}
                     </div>
                 </div>
+
                 <div className="meeting-live-join-btn">
-                    <Button variant="info" className="meeting-live-join-btn-green" href={`/room/${meeting.id}/questions/main`}>JOIN</Button>
+                    {!isEdit &&
+                        <Button variant="info" className="meeting-live-join-btn-green" href={`/room/${meeting.id}/questions/main`}>JOIN</Button>
+                    }
                 </div>
+
             </div>
             {showYesNoModal && <YesNoModal title={'Discard changes?'} message={'Are you sure you want to discard the changes?'} yes={() => {
                 formState.reset();

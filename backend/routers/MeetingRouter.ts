@@ -57,7 +57,13 @@ export class MeetingRouter {
             const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
             if (checkMeeting) {
                 console.log("Meeting code existed already")
-                res.json({ message: "Meeting code existed" });
+                res.json({ message: "Meeting code existed already" });
+                return;
+            }
+            const checkMeetingName = await this.meetingService.getMeetingByMeetingName(name);
+            if (checkMeetingName) {
+                console.log("Meeting name existed already")
+                res.json({ message: "Meeting name existed already" });
                 return;
             }
             if (!userId) {

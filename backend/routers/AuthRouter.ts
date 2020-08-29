@@ -78,7 +78,7 @@ export class AuthRouter {
 
                     let userId: number | null = user?.id
                     if (!user) {
-                        console.log('create user')
+                        // console.log('create user')
                         userId = await this.userService.createUser(decodedResult['name'], decodedResult['email'], decodedResult['sub'], decodedResult['picture'])
                     }
                     const userAccessToken = this.generateAccessToken({ guestId: info.guestId, userId: userId })

@@ -23,7 +23,7 @@ export function fetchMeeting(meetingId: number) {
     }
 }
 
-export function createMeeting(meetingContent: StateValues<any>, datetime: Date) {
+export function createMeeting(meetingContent: StateValues<any>, datetime: Date, onClose:()=>void) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             console.log(meetingContent)
@@ -38,13 +38,14 @@ export function createMeeting(meetingContent: StateValues<any>, datetime: Date) 
             const result = await res.json();
             if (!result.meeting_id) {
                 console.log(result)
-                // window.alert(result);
-                return;
+                window.alert(result.message);
+                return false;
             }
             dispatch(fetchMeeting(result.meeting_id))
             // dispatch(createMeetingAction(result.meetingId))
             console.log(result)
-            return;
+            onClose();
+            return true;
         } catch (err) {
             console.log(err.message);
             // window.alert(err.message);

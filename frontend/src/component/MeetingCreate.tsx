@@ -16,7 +16,7 @@ interface IProps {
 }
 
 const CreateMeeting: React.FC<IProps> = (props) => {
-    const [formState, { text, time, radio }] = useFormState();
+    const [formState, { raw, text, time, radio }] = useFormState({name:'', question_limit:''});
     // const [formState, { text, date, time, radio }] = useFormState();
     const [data, setData] = useState<{ date: moment.Moment | null }>({ date: null })
     const [focused, setFocus] = useState<{ focused: boolean | null }>({ focused: false })
@@ -32,8 +32,11 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Meeting name</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area" {...text('name')} placeholder="Max. 10 characters" maxLength={10} required />
-                    {formState.touched.name && formState.values.name === '' && <div className="form-remind">Please fill in the meeting name</div>}
+                    <input className="input-area"  {...raw({name:'name', onChange:(e)=>{
+                        const temp =  e.target.value.replace(/[^A-Za-z0-9]/g, '')
+                        return temp;
+                       } })} placeholder="Max. 10 characters" maxLength={10} required />
+                    {formState.touched.name && formState.values.name === '' && <div className="form-remind">Please fill in the meeting name, no special characters</div>}
                 </div>
             </div>
             <div className="create-meeting-input">
@@ -69,7 +72,10 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-meeting-input">
                 <div className='create-meeting-field'>Question limit per person</div>
                 <div className='create-meeting-input-answer'>
-                    <input className="input-area"{...text('question_limit')} required />
+                    <input className="input-area"{...raw({name:'question_limit', onChange:(e)=>{
+                        const temp =  e.target.value.replace(/[^0-9]/g, '')
+                        return temp;
+                       } })} placeholder="Per person per 10 sec" required />
                     {formState.touched.question_limit && formState.values.question_limit === '' && <div className="form-remind">Please set the question limit</div>}
                 </div>
             </div>
@@ -96,11 +102,10 @@ const CreateMeeting: React.FC<IProps> = (props) => {
             <div className="create-buttons">
                 <Button variant="info" className="create-button-colour" onClick={() => {
                     const tmp = new Date(`${data.date?.format('YYYY-MM-DD')} ${formState.values.time}`);
-                    console.log(data.date?.format('YYYY-MM-DD'));
-                    console.log(tmp)
-                    dispatch(createMeeting(formState.values, tmp))
+                    // console.log(data.date?.format('YYYY-MM-DD'));
+                    // console.log(tmp)
+                    dispatch(createMeeting(formState.values, tmp, props.close))
                     // formState.clear
-                    props.close()
                 }}><b>CREATE</b>
                 </Button>
                 <Button variant="secondary" className="reset-button-colour" onClick={formState.clear}>
