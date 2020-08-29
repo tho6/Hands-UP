@@ -27,7 +27,7 @@ export function fetchReportViews(meetingId: string | number[]){
                 'Authorization': `Bearer ${getState().auth.accessToken}`,
             }});
         const result = await res.json()
-        console.log(result)
+        // console.log(result)
         if(!result.success){
             return
         }

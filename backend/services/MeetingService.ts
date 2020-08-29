@@ -41,6 +41,19 @@ export class MeetingService {
         }
     }
 
+
+    async getMeetingByMeetingName(name: string) {
+        try {
+            return (
+                await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE name = ?`,
+                    [name]
+                )
+            ).rows[0] as IMeeting;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async createMeeting(name: string, date_time: Date, code: string, url: string, owner_id: number, question_limit: number, can_moderate: boolean, can_upload_file: boolean) {
         try {
             let check = await this.knex.raw(/*SQL*/`SELECT * FROM meetings WHERE code = ?`, [code]);

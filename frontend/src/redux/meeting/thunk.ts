@@ -1,7 +1,7 @@
 import { ThunkDispatch, RootState } from "../../store";
 import { loadMeetings, deleteMeetingAction, editMeetingAction } from "./action";
 import { StateValues } from "react-use-form-state";
-import { message } from "../rooms/actions";
+// import { message } from "../rooms/actions";
 import { deleteReportMeeting } from "../report/actions";
 // import { IMeetingLive } from "./reducers";
 
@@ -14,7 +14,7 @@ export function fetchMeeting(meetingId: number) {
             },
         })
         const result = await res.json();
-        console.log(result.message);
+        // console.log(result.message);
         // if (!result.message.message) {
         //     return      
         // }
@@ -23,7 +23,7 @@ export function fetchMeeting(meetingId: number) {
     }
 }
 
-export function createMeeting(meetingContent: StateValues<any>, datetime: Date) {
+export function createMeeting(meetingContent: StateValues<any>, datetime: Date, onClose:()=>void) {
     return async (dispatch: ThunkDispatch, getState: () => RootState) => {
         try {
             console.log(meetingContent)
@@ -38,13 +38,14 @@ export function createMeeting(meetingContent: StateValues<any>, datetime: Date) 
             const result = await res.json();
             if (!result.meeting_id) {
                 console.log(result)
-                // window.alert(result);
-                return;
+                window.alert(result.message);
+                return false;
             }
             dispatch(fetchMeeting(result.meeting_id))
             // dispatch(createMeetingAction(result.meetingId))
             console.log(result)
-            return;
+            onClose();
+            return true;
         } catch (err) {
             console.log(err.message);
             // window.alert(err.message);
@@ -91,7 +92,8 @@ export function editMeeting(meetingId: number, name: string, code:string, dateTi
             })
             const result = await res.json();
             if (!result.status) {
-                dispatch(message(true, result.message));
+                window.alert(result.message);
+                // dispatch(message(true, result.message));
                 return;
             }
             dispatch(editMeetingAction(meetingId, code, dateTime ,name))
