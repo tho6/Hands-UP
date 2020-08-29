@@ -16,15 +16,15 @@ interface IProps {
 }
 
 const CreateMeeting: React.FC<IProps> = (props) => {
-    const [formState, { raw, text, time, radio }] = useFormState({name:'', question_limit:''});
+    const [formState, { raw, text, radio }] = useFormState({name:'', question_limit:''});
     // const [formState, { text, date, time, radio }] = useFormState();
     const [data, setData] = useState<{ date: moment.Moment | null }>({ date: null })
     const [focused, setFocus] = useState<{ focused: boolean | null }>({ focused: false })
+    const [time1, setTime] = useState<string>("0");
+
     // const auth = useSelector((rootState: RootState) => rootState.auth);
     const dispatch = useDispatch();
-    // useEffect(() => {
-    //     dispatch(createMeeting())
-    // }, [dispatch])
+
 
     return (
         <div className="create-form">
@@ -45,13 +45,23 @@ const CreateMeeting: React.FC<IProps> = (props) => {
                     {/* <input className="input-area"{...date('date')} required /> */}
                     <SingleDatePicker
                         date={data.date} // momentPropTypes.momentObj or null
-                        onDateChange={date => setData({ date })} // PropTypes.func.isRequired
+                        onDateChange={date => {setData({ date })
+                        if(time1 === "0") return
+                        const tmp = new Date(`${date?.format('YYYY-MM-DD')} ${time1}`);
+                        const str = tmp.getTime()>new Date().getTime()?`${time1}`:`${new Date().getHours()}:${new Date().getMinutes()}`
+                        setTime(str);
+                    }} // PropTypes.func.isRequired
                         focused={focused.focused} // PropTypes.bool
                         onFocusChange={({ focused }) => setFocus({ focused })} // PropTypes.func.isRequired
                         id="your_unique_id" // PropTypes.string.isRequired,
                         readOnly={true}
                     />
-                    <input className="input-area"{...time('time')} required />
+                    {/* <input type="time" onChange={(e)=>console.log(e.target.value)} className="input-area"{...raw({name:"time"})} required /> */}
+                    <input type="time"  value={time1} className="input-area" required onChange={(e)=>{
+                        const tmp = new Date(`${data.date?.format('YYYY-MM-DD')} ${e.target.value}`);
+                        const str = tmp.getTime()>new Date().getTime()?`${e.target.value}`:`${new Date().getHours()}:${new Date().getMinutes()}`
+                        setTime(str);
+                        }}/>
                     {formState.touched.date && formState.values.date === '' && <div className="form-remind">Please fill in the meeting date</div>}
                     {formState.touched.time && formState.values.time === '' && <div className="form-remind">Please fill in the meeting time</div>}
                 </div>
