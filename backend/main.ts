@@ -27,6 +27,7 @@ import { ReportService } from "./services/ReportService";
 import multerS3 from "multer-s3";
 import aws from 'aws-sdk';
 import referrerPolicy from 'referrer-policy'
+import {rateLimiter} from "./rateLimiter"
 // import redis from 'redis';
 // const client = redis.createClient();
 import dotenv from 'dotenv'
@@ -113,7 +114,8 @@ const liveSevice = new LiveService(knex)
 const userRouter = new UserRouter(userService);
 const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
-const questionRouter = new routers.QuestionRouter(questionService, upload, io);
+const rateGuard = rateLimiter(questionService)
+const questionRouter = new routers.QuestionRouter(questionService, upload, io, rateGuard);
 const liveRouter = new LiveRouter(questionService, io, userService, liveSevice);
 const meetingRouter = new MeetingRouter(meetingService, io);
 const reportRouter = new ReportRouter(reportService);

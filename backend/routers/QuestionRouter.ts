@@ -7,13 +7,12 @@ import socketIO from 'socket.io';
 
 
 export class QuestionRouter {
-    private counter: { [id: string]: { counting: boolean, count: number } } = {};
-    constructor(private questionService: IQuestionService, private upload:any, private io: socketIO.Server) { }
+    constructor(private questionService: IQuestionService, private upload:any, private io: socketIO.Server, private rateGuard:any) { }
 
     router() {
         const router = express.Router();
         router.get("/:id([0-9]+)/questions", this.getQuestionsByRoomId);//ticketId
-        router.post("/:id([0-9]+)/questions", this.upload.array('images[]', 3), this.createQuestion);
+        router.post("/:id([0-9]+)/questions",this.rateGuard , this.upload.array('images[]', 3), this.createQuestion);
         router.put("/questions/:id([0-9]+)", this.upload.array('images[]', 3), this.updateQuestion);
         router.delete("/questions/:id([0-9]+)", this.deleteQuestion);
         router.put("/questions/:id([0-9]+)/vote", this.addVote);
@@ -40,19 +39,7 @@ export class QuestionRouter {
     createQuestion = async (req: Request, res: Response) => {
         if (req.personInfo) {
             try {
-              // console.log(this.counter[`${req.personInfo.guestId}`]);
-                const idx = `${req.personInfo.guestId}`;
-                const questionLimit = await this.questionService.getRoomQuestionLimitByMeetingId(parseInt(req.params.id));
-                if (this.counter[`${req.personInfo.guestId}`]) {
-                    if (this.counter[idx].count >= questionLimit) throw new Error('Exceed question limits!');
-                    this.counter[idx].count += 1;
-                    console.log( this.counter[idx].count);
-                }else{
-                    this.counter[idx] = {counting: true, count:1};
-                        setTimeout(() => {
-                        delete this.counter[idx];
-                        }, 10000)
-                }
+              
                 /* Validation */
                 const { content } = req.body;
                 if (content.trim().length === 0) throw new Error('Question cannot be empty!');
