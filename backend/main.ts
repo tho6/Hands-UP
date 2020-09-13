@@ -16,7 +16,7 @@ import { GuestRouter } from "./routers/GuestRouter";
 import { AuthRouter } from "./routers/AuthRouter";
 import { PersonInfo } from "./models/AuthInterface";
 import { AuthService } from "./services/AuthService";
-import { LiveRouter } from "./routers/LiveRouter";
+// import { LiveRouter } from "./routers/LiveRouter";
 import { MeetingService } from "./services/MeetingService";
 import { MeetingRouter } from "./routers/MeetingRouter";
 import SocketIO from "socket.io";
@@ -27,19 +27,22 @@ import { ReportService } from "./services/ReportService";
 import multerS3 from "multer-s3";
 import aws from 'aws-sdk';
 import referrerPolicy from 'referrer-policy'
-import {rateLimiter} from "./rateLimiter"
+import { rateLimiter } from "./rateLimiter"
 // import redis from 'redis';
 // const client = redis.createClient();
 import dotenv from 'dotenv'
 import { LiveService } from "./services/LiveService";
+import { LiveRouterV2 } from "./routers/LiveRouterV2";
+import { FacebookRouter } from "./routers/FacebookRouter";
+import { YoutubeRouter } from "./routers/YoutubeRouter";
 dotenv.config()
 
 declare global {
   namespace Express {
     interface Request {
       personInfo?: PersonInfo,
-      youtubeRefreshToken:string;
-      facebookToken:string;
+      youtubeRefreshToken: string;
+      facebookToken: string;
     }
   }
 }
@@ -47,7 +50,7 @@ declare global {
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = `https://localhost:* ${process.env.REACT_APP_FRONTEND_URL!}:*`
-const io = SocketIO(server,{pingTimeout:60000,origins:allowedOrigins})
+const io = SocketIO(server, { pingTimeout: 60000, origins: allowedOrigins })
 
 /* Enable cors */
 app.use(cors({
@@ -86,14 +89,14 @@ const s3 = new aws.S3({
 });
 const upload = multer({
   storage: multerS3({
-      s3: s3,
-      bucket: 'cdn.handsup.host',
-      metadata: (req,file,cb)=>{
-          cb(null,{fieldName: file.fieldname});
-      },
-      key: (req,file,cb)=>{
-          cb(null,`${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
-      }
+    s3: s3,
+    bucket: 'cdn.handsup.host',
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
+    }
   })
 })
 
@@ -108,7 +111,7 @@ const authService = new AuthService(knex);
 const questionService = new services.QuestionService(questionDAO, replyDAO);
 const meetingService = new MeetingService(knex);
 const reportService = new ReportService(knex)
-const liveSevice = new LiveService(knex)
+const liveService = new LiveService(knex)
 
 /* Routers */
 const userRouter = new UserRouter(userService);
@@ -116,9 +119,12 @@ const guestRouter = new GuestRouter(guestService);
 const authRouter = new AuthRouter(userService, guestService, authService);
 const rateGuard = rateLimiter(questionService)
 const questionRouter = new routers.QuestionRouter(questionService, upload, io, rateGuard);
-const liveRouter = new LiveRouter(questionService, io, userService, liveSevice);
+// const liveRouter = new LiveRouter(questionService, io, userService, liveService);
 const meetingRouter = new MeetingRouter(meetingService, io);
 const reportRouter = new ReportRouter(reportService);
+const facebookRouter = new FacebookRouter(questionService, io, userService);
+const youtubeRouter = new YoutubeRouter(questionService, io, userService);
+const liveRouterV2 = new LiveRouterV2(userService, liveService, facebookRouter, youtubeRouter);
 
 //guard
 const guard = authenticateToken(guestService, userService)
@@ -148,7 +154,8 @@ app.use('/auth', authRouter.router())
 app.use('/user', userGuard, userRouter.router())
 app.put('/guest', guard, guestRouter.updateGuests);
 app.use('/guest', userGuard, guestRouter.router())
-app.use('/live', userGuard, liveRouter.router())
+// app.use('/live', userGuard, liveRouter.router())
+app.use('/live', userGuard, liveRouterV2.router())
 app.use('/report', userGuard, reportRouter.router())
 app.use('/rooms', guard, questionRouter.router());
 // app.use(`${API_VERSION}/meetings`, meetingRouter.router())
@@ -160,49 +167,51 @@ app.use('/meetings', userGuard, meetingRouter.router());
 /* Socket Io */
 
 // let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean }} = {}
-let counter: { [id: string]:  boolean } = {}
+let counter: { [id: string]: boolean } = {}
 
 io.on('connection', socket => {
   let isAdd = false;
-  socket.on('join_event', (meetingId: number, guestId:number) => {
+  socket.on('join_event', (meetingId: number, guestId: number) => {
     const idx = 'event:' + meetingId;
     socket.join(idx);
     const room = io.sockets.adapter.rooms[idx];
     // console.log(room);
-    if (counter[idx])  return
-    if(counter[idx]=== undefined) liveRouter.createViewsTimer(meetingId);
-        counter[idx] = true;
-        setTimeout(() => {
-          if(counter[idx] === undefined) return
-          counter[idx] = false;
-          io.in(idx).emit('update-count', room?.length??0);
-          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
-        }, 3000)
-    if(isAdd===false){
-      socket.on('disconnect',()=>{
-        if(counter[idx] === undefined) return;
-        if(room?.length === 0) {
+    if (counter[idx]) return
+    if (counter[idx] === undefined) liveRouterV2.createViewsTimer(meetingId);
+    counter[idx] = true;
+    setTimeout(() => {
+      if (counter[idx] === undefined) return
+      counter[idx] = false;
+      io.in(idx).emit('update-count', room?.length ?? 0);
+      liveRouterV2.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
+    }, 3000)
+    if (isAdd === false) {
+      socket.on('disconnect', () => {
+        if (counter[idx] === undefined) return;
+        if (!room) {
           delete counter[idx];
-          liveRouter.removeViewsTimer(meetingId);
+          liveRouterV2.removeViewsTimer(meetingId);
           return;
         }
         setTimeout(() => {
-          if(counter[idx] === undefined) return
+          if (counter[idx] === undefined) return
           counter[idx] = false;
-          io.in(idx).emit('update-count', room?.length??0);
-          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
+          io.in(idx).emit('update-count', room?.length ?? 0);
+          liveRouterV2.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
         }, 3000)
       })
       isAdd = true;
-    }})
-  
-  socket.on('leave_event', (meetingId: number, guestId:number) => {
+    }
+  })
+
+  socket.on('leave_event', (meetingId: number, guestId: number) => {
     const idx = 'event:' + meetingId;
     socket.leave(idx);
     const room = io.sockets.adapter.rooms[idx];
-    if(room?.length === 0) {
+    // console.log("leave_event", room)
+    if (!room) {
       delete counter[idx];
-      liveRouter.removeViewsTimer(meetingId);
+      liveRouterV2.removeViewsTimer(meetingId);
     }
     if (counter[idx] === undefined) return;
     if (counter[idx] === false) {
@@ -210,21 +219,21 @@ io.on('connection', socket => {
       setTimeout(() => {
         if (counter[idx] === undefined) return;
         counter[idx] = false;
-        io.in(idx).emit('update-count', room?.length ??0);
-        liveRouter.updateHandsUpViewsCount(room?.length ?? 0,meetingId);
+        io.in(idx).emit('update-count', room?.length ?? 0);
+        liveRouterV2.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
       }, 3000)
     }
   });
-  socket.on('join-host', (userId:number)=>{
+  socket.on('join-host', (userId: number) => {
     socket.join('host:' + userId)
   })
-  socket.on('leave-host', (userId:number)=>{
+  socket.on('leave-host', (userId: number) => {
     socket.leave('host:' + userId)
   })
-  socket.on('answering', (meetingId:number, id:number)=>{
+  socket.on('answering', (meetingId: number, id: number) => {
     io.in('event:' + meetingId).emit('answering', id)
   })
-  socket.on('new-user-join',(userId:number)=>{
+  socket.on('new-user-join', (userId: number) => {
     io.in('host:' + userId).emit('new-user-join');
   })
 });
