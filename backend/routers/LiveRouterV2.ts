@@ -25,9 +25,9 @@ export class LiveRouterV2 {
             const meetingId = req.params.meetingId;
             const youtubeExistence = await getAsync(`EVENTSOURCE_${meetingId}_YOUTUBE`).then((data: any) => data)
             const facebookExistence = await getAsync(`EVENTSOURCE_${meetingId}_FACEBOOK`).then((data: any) => data)
-            if (youtubeExistence === null && facebookExistence === null) return res.status(200).json({ status: true, message: { facebook: null, youtube: false } });
-            const youtube = youtubeExistence === null ? false : youtubeExistence === "true"
-            const facebook = youtubeExistence === null ? null : facebookExistence === "true"
+            if (youtubeExistence === undefined && facebookExistence === undefined) return res.status(200).json({ status: true, message: { facebook: null, youtube: false } });
+            const youtube = youtubeExistence === undefined ? false : youtubeExistence === "true"
+            const facebook = youtubeExistence === undefined ? null : facebookExistence === "true"
             return res.status(200).json({ status: true, message: { youtube, facebook } });
         } catch (e) {
             console.error(e);
