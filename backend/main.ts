@@ -37,8 +37,8 @@ declare global {
   namespace Express {
     interface Request {
       personInfo?: PersonInfo,
-      youtubeRefreshToken:string;
-      facebookToken:string;
+      youtubeRefreshToken: string;
+      facebookToken: string;
     }
   }
 }
@@ -46,7 +46,7 @@ declare global {
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = `https://localhost:* ${process.env.REACT_APP_FRONTEND_URL!}:*`
-const io = SocketIO(server,{pingTimeout:60000,origins:allowedOrigins})
+const io = SocketIO(server, { pingTimeout: 60000, origins: allowedOrigins })
 
 /* Enable cors */
 app.use(cors({
@@ -85,14 +85,14 @@ const s3 = new aws.S3({
 });
 const upload = multer({
   storage: multerS3({
-      s3: s3,
-      bucket: 'cdn.handsup.host',
-      metadata: (req,file,cb)=>{
-          cb(null,{fieldName: file.fieldname});
-      },
-      key: (req,file,cb)=>{
-          cb(null,`${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
-      }
+    s3: s3,
+    bucket: 'cdn.handsup.host',
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, `${file.fieldname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
+    }
   })
 })
 
@@ -158,47 +158,48 @@ app.use('/meetings', userGuard, meetingRouter.router());
 /* Socket Io */
 
 // let counter: { [id: string]: { count: {[id:string]:boolean}, counting: boolean }} = {}
-let counter: { [id: string]:  boolean } = {}
+let counter: { [id: string]: boolean } = {}
 
 io.on('connection', socket => {
   let isAdd = false;
-  socket.on('join_event', (meetingId: number, guestId:number) => {
+  socket.on('join_event', (meetingId: number, guestId: number) => {
     const idx = 'event:' + meetingId;
     socket.join(idx);
     const room = io.sockets.adapter.rooms[idx];
     // console.log(room);
-    if (counter[idx])  return
-    if(counter[idx]=== undefined) liveRouter.createViewsTimer(meetingId);
-        counter[idx] = true;
-        setTimeout(() => {
-          if(counter[idx] === undefined) return
-          counter[idx] = false;
-          io.in(idx).emit('update-count', room?.length??0);
-          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
-        }, 3000)
-    if(isAdd===false){
-      socket.on('disconnect',()=>{
-        if(counter[idx] === undefined) return;
-        if(room?.length === 0) {
+    if (counter[idx]) return
+    if (counter[idx] === undefined) liveRouter.createViewsTimer(meetingId);
+    counter[idx] = true;
+    setTimeout(() => {
+      if (counter[idx] === undefined) return
+      counter[idx] = false;
+      io.in(idx).emit('update-count', room?.length ?? 0);
+      liveRouter.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
+    }, 3000)
+    if (isAdd === false) {
+      socket.on('disconnect', () => {
+        if (counter[idx] === undefined) return;
+        if (!room) {
           delete counter[idx];
           liveRouter.removeViewsTimer(meetingId);
           return;
         }
         setTimeout(() => {
-          if(counter[idx] === undefined) return
+          if (counter[idx] === undefined) return
           counter[idx] = false;
-          io.in(idx).emit('update-count', room?.length??0);
-          liveRouter.updateHandsUpViewsCount(room?.length??0,meetingId);
+          io.in(idx).emit('update-count', room?.length ?? 0);
+          liveRouter.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
         }, 3000)
       })
       isAdd = true;
-    }})
-  
-  socket.on('leave_event', (meetingId: number, guestId:number) => {
+    }
+  })
+
+  socket.on('leave_event', (meetingId: number, guestId: number) => {
     const idx = 'event:' + meetingId;
     socket.leave(idx);
     const room = io.sockets.adapter.rooms[idx];
-    if(room?.length === 0) {
+    if (!room) {
       delete counter[idx];
       liveRouter.removeViewsTimer(meetingId);
     }
@@ -208,21 +209,21 @@ io.on('connection', socket => {
       setTimeout(() => {
         if (counter[idx] === undefined) return;
         counter[idx] = false;
-        io.in(idx).emit('update-count', room?.length ??0);
-        liveRouter.updateHandsUpViewsCount(room?.length ?? 0,meetingId);
+        io.in(idx).emit('update-count', room?.length ?? 0);
+        liveRouter.updateHandsUpViewsCount(room?.length ?? 0, meetingId);
       }, 3000)
     }
   });
-  socket.on('join-host', (userId:number)=>{
+  socket.on('join-host', (userId: number) => {
     socket.join('host:' + userId)
   })
-  socket.on('leave-host', (userId:number)=>{
+  socket.on('leave-host', (userId: number) => {
     socket.leave('host:' + userId)
   })
-  socket.on('answering', (meetingId:number, id:number)=>{
+  socket.on('answering', (meetingId: number, id: number) => {
     io.in('event:' + meetingId).emit('answering', id)
   })
-  socket.on('new-user-join',(userId:number)=>{
+  socket.on('new-user-join', (userId: number) => {
     io.in('host:' + userId).emit('new-user-join');
   })
 });
