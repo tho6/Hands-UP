@@ -53,6 +53,16 @@ export const ReportOverallLineChart: React.FC<IProps> = (props) => {
     dataMap[2].data.push({ x: elem.meetingName, y: elem.count });
   }
   const data = dataMap;
+  
+  const axisBottom:any ={
+    orient: 'bottom',
+    tickSize: 5,
+    tickPadding: 5,
+    tickRotation: range !== '5' ? 50 : 0,
+    legend: 'Events',
+    legendOffset: 36,
+    legendPosition: 'middle'
+  }
   return (
     <ResponsiveLine
       data={data}
@@ -62,16 +72,8 @@ export const ReportOverallLineChart: React.FC<IProps> = (props) => {
       axisRight={null}
       axisBottom={
         range === 'all'
-          ? null
-          : {
-              orient: 'bottom',
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: range !== '5' ? 50 : 0,
-              legend: 'Events',
-              legendOffset: 36,
-              legendPosition: 'middle'
-            }
+          ? (dataMap[3].data.length>15?null:axisBottom)
+          : axisBottom
       }
       axisLeft={{
         orient: 'left',
@@ -88,9 +90,9 @@ export const ReportOverallLineChart: React.FC<IProps> = (props) => {
         'rgba(30, 183, 197, 0.808)',
         'rgba(0, 0, 0, 0.808)'
       ]}
-      enablePoints={range!=='all'}
-      enableGridX={range!=='all'}
-      enableGridY={range!=='all'}
+      enablePoints={dataMap[3].data.length <=15}
+      enableGridX={dataMap[3].data.length <=15}
+      enableGridY={dataMap[3].data.length <=15}
       lineWidth={6}
       pointSize={9}
       pointColor="#ffffff"

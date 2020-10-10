@@ -40,7 +40,7 @@ export function successfullyToggleYoutubeLiveStatus(meetingId: number, isFetch: 
         meetingId
     }
 }
-export function successfullyToggleFacebookLiveStatus(meetingId: number, isFetch: boolean) {
+export function successfullyToggleFacebookLiveStatus(meetingId: number, isFetch: boolean|null) {
     return {
         type: '@@ROOMS/TOGGLE_FACEBOOK_LIVE_STATUS' as '@@ROOMS/TOGGLE_FACEBOOK_LIVE_STATUS',
         isFetch,

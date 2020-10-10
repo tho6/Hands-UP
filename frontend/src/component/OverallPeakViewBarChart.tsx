@@ -21,7 +21,7 @@ handsupColor:'hsl(185, 73.6%, 44.5%)',
 facebookColor:'hsl(70, 70%, 50%)'
 }
 export const OverallPeakViewBarChart:React.FC<IProps> = (props) =>{
-    console.log(props);
+    // console.log(props);
     const data = props.data.map(elem=>{
         const obj = {...elem, ...color}
         return obj;

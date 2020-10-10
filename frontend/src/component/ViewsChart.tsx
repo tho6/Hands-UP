@@ -85,7 +85,7 @@ export const ViewsChart:React.FC<{data:IReportView[]}> = (props) => {
         tmp.push({x:parseInt(key), y:Math.floor(ytobj[key]), count:0})
       }
       dataArr[0].data = tmp;
-      console.log(tmp);
+      // console.log(tmp);
     }
     if(data.id==='facebook'){
       const tmp =[]

@@ -50,16 +50,16 @@ export function Report() {
         })
         // need comment for others to understand why `<= 0`
         const idx = arr.indexOf(meetingId!)  <= 0 ? null:arr.indexOf(meetingId!) - 1
-        console.log(idx)
-        console.log(arr)
+        // console.log(idx)
+        // console.log(arr)
         if(idx){
-            console.log(arr[idx])
+            // console.log(arr[idx])
         }
         return idx !== null?arr[idx]:null
     })
-    console.log(pastMeetingId)
+    // console.log(pastMeetingId)
 
-    const pastQuestionsByMeeting = useSelector((state:RootState)=>state.report.questionsByMeetingId) 
+    // const pastQuestionsByMeeting = useSelector((state:RootState)=>state.report.questionsByMeetingId)
     const pastQuestionsByMeetingId = useSelector((state:RootState)=>state.report.questionsByMeetingId[pastMeetingId!])
     const pastQuestions = useSelector((state:RootState)=>pastQuestionsByMeetingId?.map((id:number) => state.report.questions[id]))
     const pastViewsByMeetingId = useSelector((state:RootState)=>state.report.viewsByMeetingId[pastMeetingId!])
@@ -75,11 +75,11 @@ export function Report() {
         <NoDataLottie />
         </div>)
     }
-    console.log(meetingId)
-    console.log(pastMeetingId)
-    console.log(pastQuestionsByMeeting)
-    console.log(pastQuestionsByMeetingId)
-    console.log(pastViews)
+    // console.log(meetingId)
+    // console.log(pastMeetingId)
+    // console.log(pastQuestionsByMeeting)
+    // console.log(pastQuestionsByMeetingId)
+    // console.log(pastViews)
 
     return (<>
                 <ReportSideDrawer />

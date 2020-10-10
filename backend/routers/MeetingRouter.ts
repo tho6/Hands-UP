@@ -70,12 +70,12 @@ export class MeetingRouter {
                 res.json({ message: "Meeting code existed already" });
                 return;
             }
-            const checkMeetingName = await this.meetingService.getMeetingByMeetingName(name);
-            if (checkMeetingName) {
-                console.log("Meeting name existed already")
-                res.json({ message: "Meeting name existed already" });
-                return;
-            }
+            // const checkMeetingName = await this.meetingService.getMeetingByMeetingName(name);
+            // if (checkMeetingName) {
+            //     console.log("Meeting name existed already")
+            //     res.json({ message: "Meeting name existed already" });
+            //     return;
+            // }
 
             if (!userId) {
                 return res.json({ message: "UserId not found" });
@@ -106,18 +106,20 @@ export class MeetingRouter {
                 res.status(400).json({ message: "Meeting Id is not a number" })
                 return;
             }
-            const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
-            if (checkMeeting) {
-                console.log("Meeting code existed already")
-                res.json({ message: "Can't edit meeting. Meeting code existed already" });
-                return;
+            if(code !== meeting.code){
+                const checkMeeting = await this.meetingService.getMeetingByMeetingCode(code);
+                if (checkMeeting) {
+                    console.log("Meeting code existed already")
+                    res.json({ message: "Can't edit meeting. Meeting code existed already" });
+                    return;
+                }
             }
-            const checkMeetingName = await this.meetingService.getMeetingByMeetingName(name);
-            if (checkMeetingName) {
-                console.log("Meeting name existed already")
-                res.json({ message: "Can't edit meeting. Meeting name existed already" });
-                return;
-            }
+            // const checkMeetingName = await this.meetingService.getMeetingByMeetingName(name);
+            // if (checkMeetingName) {
+            //     console.log("Meeting name existed already")
+            //     res.json({ message: "Can't edit meeting. Meeting name existed already" });
+            //     return;
+            // }
             await this.meetingService.editMeeting(parseInt(req.params.id), name, code, dateTime);
             return res.status(200).json({status:true});
         }

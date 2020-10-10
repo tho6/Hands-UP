@@ -7,8 +7,8 @@ import { ReportComparePlatform } from './ReportComparePlatform'
 export const ReportPeakViews:React.FC<{data:IReportView[], pastData: IReportView[]}> = (props) => {
     const currentData = props.data? [...props.data]:''
     const pastData = props.pastData? [...props.pastData]:''
-    console.log(currentData)
-    console.log(pastData)
+    // console.log(currentData)
+    // console.log(pastData)
     const arrMap = [
         'youtube',
         'facebook',

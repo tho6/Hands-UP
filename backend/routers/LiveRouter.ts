@@ -230,8 +230,8 @@ export class LiveRouter {
     }
 
     createQuestion = async (meetingId: number, message: string, platformId: number, name: string) => {
-        const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+|(\？)+|^(can)+|(呢)$/, 'i');
-        if (!regex.test(message)) return;
+        // const regex = RegExp(/(不如)+|(.唔.)+|(點)+|(幾)+|(問)+|(多數)+|(how)+|(what)+|(when)+|(why)+|(where)+|(如果)+|(\?)+|(\？)+|^(can)+|(呢)$/, 'i');
+        // if (!regex.test(message)) return;
         try {
             const question = await this.questionService.createQuestionFromPlatform(meetingId, message, platformId, name);
             this.io.in(`event:${question.meetingId}`).emit('create-question', question);

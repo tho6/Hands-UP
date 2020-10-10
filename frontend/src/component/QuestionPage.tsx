@@ -250,7 +250,7 @@ const QuestionPage: React.FC = () => {
     };
     const turnOffFacebookLive = () => {
       dispatch(
-        successfullyToggleFacebookLiveStatus(parseInt(meetingId), false)
+        successfullyToggleFacebookLiveStatus(parseInt(meetingId), null)
       );
     };
     const youtubeViewsStop = (msg: string) => {
@@ -623,6 +623,16 @@ const QuestionPage: React.FC = () => {
         {isQuestion[0] && (
           <>
             <div className="text-left mb-2 mb-lg-3 mt-lg-2 mb-xl-4 mt-xl-3 d-flex question-util-container">
+            <button
+                className={`util-spacing will-hover rounded question-page-tab ${
+                  page === 'latest' && 'is-active'
+                }`}
+                onClick={() => {
+                  dispatch(push(`/room/${meetingId}/questions/latest`));
+                }}
+              >
+                Latest
+              </button>
               <button
                 className={`util-spacing will-hover rounded question-page-tab ${
                   page === 'main' && 'is-active'
@@ -632,16 +642,6 @@ const QuestionPage: React.FC = () => {
                 }}
               >
                 Most Popular
-              </button>
-              <button
-                className={`util-spacing will-hover rounded question-page-tab ${
-                  page === 'latest' && 'is-active'
-                }`}
-                onClick={() => {
-                  dispatch(push(`/room/${meetingId}/questions/latest`));
-                }}
-              >
-                Latest
               </button>
               <button
                 className={`util-spacing will-hover rounded question-page-tab ${

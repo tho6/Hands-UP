@@ -5,6 +5,7 @@ import { IRoomConfiguration } from '../models/IRoomInformation';
 import { useDispatch } from 'react-redux';
 import { updateRoom, removeToken } from '../redux/rooms/thunk';
 
+const youtubeMsg = "Due to Google's restrictions, once you have completed a live and you want to host a new live with the same YouTube account, you will have to remove Hands UP's permission on Google."
 interface IProps {
   meetingId: number;
   roomConfig: IRoomConfiguration;
@@ -92,15 +93,17 @@ const RoomSettingButton: React.FC<IProps> = (props) => {
           <div
             className="py-2"
             onClick={() => {
+              if(!window.confirm(youtubeMsg)) return 
               dispatch(removeToken('youtube'));
               setShowSetting(false);
             }}
           >
-            <button className='room-button'>Reset Youtube Platform</button>
+            <button className='room-button'>Reset YouTube Platform</button>
           </div>
           <div
             className="py-2"
             onClick={() => {
+              if(!window.confirm(youtubeMsg)) return 
               dispatch(removeToken('all'));
               setShowSetting(false);
             }}

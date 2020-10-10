@@ -100,9 +100,9 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
                         </div>
                         <div className="meeting-live-content-input">
                             <div className="meeting-live-content-field">Url: </div>
-                            <div className="meeting-live-content-answer">{process.env.REACT_APP_FRONTEND_URL}/room/{meeting.id}/questions/main</div>
+                            <div className="meeting-live-content-answer">{process.env.REACT_APP_FRONTEND_URL}/room/{meeting.id}/questions/latest</div>
                             <div className="meeting-live-content-copy-to-clipboard">
-                                <Clipboard className="meeting-live-content-copy-to-clipboard-btn" data-clipboard-text={`${process.env.REACT_APP_FRONTEND_URL}/room/${meeting.id}/questions/main`}>Copy</Clipboard></div>
+                                <Clipboard className="meeting-live-content-copy-to-clipboard-btn" data-clipboard-text={`${process.env.REACT_APP_FRONTEND_URL}/room/${meeting.id}/questions/latest`}>Copy</Clipboard></div>
                         </div>
                         {/* <div>Meeting time: {meeting.date_time.toString()}</div> */}
                         <div className="meeting-live-content-input">
@@ -126,7 +126,7 @@ export const MeetingComponent: React.FC<IProps> = (props) => {
 
                 <div className="meeting-live-join-btn">
                     {!isEdit &&
-                        <Button variant="info" className="meeting-live-join-btn-green" href={`/room/${meeting.id}/questions/main`}>JOIN</Button>
+                        <Button variant="info" className="meeting-live-join-btn-green" href={`/room/${meeting.id}/questions/latest`}>JOIN</Button>
                     }
                 </div>
 

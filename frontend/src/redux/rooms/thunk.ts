@@ -165,10 +165,10 @@ export function updateYoutubeRefreshToken(meetingId: number, code: string) {
             });
             const result = await res.json();
             // if (!result.status) dispatch(message(true, result.message));
-            window.location.replace(`/room/${meetingId}/questions/main${result.status?'':'/youtube-error'}`);
+            window.location.replace(`/room/${meetingId}/questions/latest${result.status?'':'/youtube-error'}`);
         } catch (e) {
             window.alert(e.message);
-            window.location.replace(`/room/${meetingId}/questions/main`);
+            window.location.replace(`/room/${meetingId}/questions/latest`);
         } 
     }
 }
@@ -207,7 +207,7 @@ export function convertCodeToId(code: string) {
             const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/meetings/convert?code=${code}`,{ headers: { 'Authorization': `Bearer ${getState().auth.accessToken}` } }); // GET + 'memos'
             const result = await res.json();
             if (result.status) {
-                dispatch(push(`/room/${result.message}/questions/main`));
+                dispatch(push(`/room/${result.message}/questions/latest`));
             } else {
                 dispatch(message(true,result.message));
             }
