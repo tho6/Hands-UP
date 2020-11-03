@@ -29,7 +29,6 @@ function App() {
     dispatch(checkToken())
   }, [dispatch, accessToken])
 
-  
   const isAuthenticated = useSelector((state:RootState)=>state.auth.isAuthenticated)
   const isMove = useSelector((state:RootState)=>state.mainNav.isOpen);
 
